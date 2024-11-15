@@ -78,7 +78,7 @@ export default function NongRegisterPage({
               <MenuItem
                 onClick={() => {
                   setChoiceAnswers(
-                    choiceAnswers.map(
+                    (previous) => previous.map(
                       modifyElementInUseStateArray<Choice | "-">("A", i)
                     )
                   );
@@ -90,7 +90,7 @@ export default function NongRegisterPage({
               <MenuItem
                 onClick={() => {
                   setChoiceAnswers(
-                    choiceAnswers.map(
+                    (previous) => previous.map(
                       modifyElementInUseStateArray<Choice | "-">("B", i)
                     )
                   );
@@ -102,7 +102,7 @@ export default function NongRegisterPage({
               <MenuItem
                 onClick={() => {
                   setChoiceAnswers(
-                    choiceAnswers.map(
+                    (previous) => previous.map(
                       modifyElementInUseStateArray<Choice | "-">("C", i)
                     )
                   );
@@ -114,7 +114,7 @@ export default function NongRegisterPage({
               <MenuItem
                 onClick={() => {
                   setChoiceAnswers(
-                    choiceAnswers.map(
+                    (previous) => previous.map(
                       modifyElementInUseStateArray<Choice | "-">("D", i)
                     )
                   );
@@ -126,7 +126,7 @@ export default function NongRegisterPage({
               <MenuItem
                 onClick={() => {
                   setChoiceAnswers(
-                    choiceAnswers.map(
+                    (previous) => previous.map(
                       modifyElementInUseStateArray<Choice | "-">("E", i)
                     )
                   );
@@ -138,7 +138,7 @@ export default function NongRegisterPage({
               <MenuItem
                 onClick={() => {
                   setChoiceAnswers(
-                    choiceAnswers.map(
+                    (previous) => previous.map(
                       modifyElementInUseStateArray<Choice | "-">("-", i)
                     )
                   );
@@ -185,7 +185,7 @@ export default function NongRegisterPage({
               }}
               className="w-3/5 bg-white rounded-2xl shadow-inner"
               onChange={(e) => {
-                setTextAnswers(textAnswers.map(modifyElementInUseStateArray(e.target.value,i)))
+                setTextAnswers((previous) => previous.map(modifyElementInUseStateArray(e.target.value,i)))
               }}
               defaultValue={textAnswers[i]}
             />

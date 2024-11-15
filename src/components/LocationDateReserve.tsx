@@ -19,7 +19,7 @@ export default function LocationDateReserve({
   token: string;
   user: InterUser;
 }) {
-  const [shirtSize, setShertSize] = useState<Size>(user.shirtSize);
+  const [shirtSize, setShirtSize] = useState<Size>(user.shirtSize);
   const [haveBottle, setHaveBottle] = useState<boolean>(user.haveBottle);
   const [likeToSleepAtCamp, setLikeToSleepAtCamp] = useState<boolean>(
     user.likeToSleepAtCamp
@@ -29,7 +29,7 @@ export default function LocationDateReserve({
       <div className="flex flex-row items-center my-5">
         <label className="w-2/5 text-2xl text-slate-200">เลือกขนาดเสื้อ</label>
 
-        <SelectSize select={setShertSize} def={user.shirtSize} />
+        <SelectSize select={setShirtSize} def={user.shirtSize} />
       </div>
 
       <div className="flex flex-row items-center my-5">

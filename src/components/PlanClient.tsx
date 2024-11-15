@@ -11,9 +11,16 @@ import AllInOneLock from "./AllInOneLock";
 import PlaceSelect from "./PlaceSelect";
 import FinishButton from "./FinishButton";
 import planUpdateCamp from "@/libs/camp/planUpdateCamp";
-import { getId, modifyElementInUseStateArray, peeLookupNong } from "./setup";
+import {
+  getId,
+  modifyElementInUseStateArray,
+  peeLookupNong,
+  waiting,
+} from "./setup";
 import CampNumberTable from "./CampNumberTable";
 import React from "react";
+import Waiting from "./Waiting";
+import getAllPlanData from "@/libs/camp/getAllPlanData";
 interface BundleRoleAndUser {
   role: "พี่" | "น้อง" | "ปีโต";
   user: InterUser;
@@ -48,6 +55,7 @@ export default function PlanClient({
   function petoToBundle(user: InterUser): BundleRoleAndUser {
     return { user, role: "ปีโต" };
   }
+  const [timeOut, setTimeOut] = useState<boolean>(false);
   return (
     <div
       style={{
@@ -59,103 +67,124 @@ export default function PlanClient({
         borderRadius: "30px",
       }}
     >
-      <table>
-        <tr>
-          <th>{data.groupName}ทั้งหมด</th>
-          <th>ห้อง{data.groupName}ปกติ</th>
-          {data.isOverNightCamp ? (
-            <>
-              <th>ห้องนอนน้องผู้ชาย</th>
-              <th>ห้องนอนน้องผู้หญิง</th>
-            </>
-          ) : null}
-        </tr>
-        {data.baanDatas.map((baan, i) => (
-          <tr key={i}>
-            <td>{baan.name}</td>
-            <td>
-              <PlaceSelect
-                allPlaceData={allPlaceData}
-                buildingText="ตึก"
-                place={normals[i]}
-                placeText="ชั้นและตึก"
-                onClick={(out) => {
-                  setNormals(normals.map(modifyElementInUseStateArray(out,i)));
-                }}
-              />
-            </td>
-            {data.isOverNightCamp ? (
-              <>
+      {timeOut ? (
+        <Waiting />
+      ) : (
+        <>
+          <table>
+            <tr>
+              <th>{data.groupName}ทั้งหมด</th>
+              <th>ห้อง{data.groupName}ปกติ</th>
+              {data.isOverNightCamp ? (
+                <>
+                  <th>ห้องนอนน้องผู้ชาย</th>
+                  <th>ห้องนอนน้องผู้หญิง</th>
+                </>
+              ) : null}
+            </tr>
+            {data.baanDatas.map((baan, i) => (
+              <tr key={i}>
+                <td>{baan.name}</td>
                 <td>
                   <PlaceSelect
                     allPlaceData={allPlaceData}
                     buildingText="ตึก"
-                    place={boys[i]}
+                    place={normals[i]}
                     placeText="ชั้นและตึก"
                     onClick={(out) => {
-                      setBoys(boys.map(modifyElementInUseStateArray(out,i)));
+                      setNormals(
+                        (previous) => previous.map(modifyElementInUseStateArray(out, i))
+                      );
                     }}
                   />
                 </td>
+                {data.isOverNightCamp ? (
+                  <>
+                    <td>
+                      <PlaceSelect
+                        allPlaceData={allPlaceData}
+                        buildingText="ตึก"
+                        place={boys[i]}
+                        placeText="ชั้นและตึก"
+                        onClick={(out) => {
+                          setBoys(
+                            (previous) => previous.map(modifyElementInUseStateArray(out, i))
+                          );
+                        }}
+                      />
+                    </td>
+                    <td>
+                      <PlaceSelect
+                        allPlaceData={allPlaceData}
+                        buildingText="ตึก"
+                        place={girls[i]}
+                        placeText="ชั้นและตึก"
+                        onClick={(out) => {
+                          setGirls(
+                            (previous) => previous.map(modifyElementInUseStateArray(out, i))
+                          );
+                        }}
+                      />
+                    </td>
+                  </>
+                ) : null}
+              </tr>
+            ))}
+          </table>
+          <table>
+            <tr>
+              <th>ฝ่ายทั้งหมด</th>
+              <th>ห้องฝ่าย</th>
+            </tr>
+            {data.partDatas.map((part, i) => (
+              <tr key={i}>
+                <td>{part.name}</td>
                 <td>
                   <PlaceSelect
                     allPlaceData={allPlaceData}
                     buildingText="ตึก"
-                    place={girls[i]}
+                    place={partPlaces[i]}
                     placeText="ชั้นและตึก"
                     onClick={(out) => {
-                      setGirls(girls.map(modifyElementInUseStateArray(out,i)));
+                      setPartPlaces(
+                        (previous) => previous.map(modifyElementInUseStateArray(out, i))
+                      );
                     }}
                   />
                 </td>
-              </>
-            ) : null}
-          </tr>
-        ))}
-      </table>
-      <table>
-        <tr>
-          <th>ฝ่ายทั้งหมด</th>
-          <th>ห้องฝ่าย</th>
-        </tr>
-        {data.partDatas.map((part, i) => (
-          <tr key={i}>
-            <td>{part.name}</td>
-            <td>
-              <PlaceSelect
-                allPlaceData={allPlaceData}
-                buildingText="ตึก"
-                place={partPlaces[i]}
-                placeText="ชั้นและตึก"
-                onClick={(out) => {
-                  setPartPlaces(partPlaces.map(modifyElementInUseStateArray(out,i)));
-                }}
-              />
-            </td>
-          </tr>
-        ))}
-      </table>
-      <FinishButton
-        text="update สถานที่"
-        onClick={() =>
-          planUpdateCamp(
-            {
-              baanDatas: data.baanDatas.map((baan, i) => ({
-                _id: baan._id,
-                boyId: getId(boys[i]),
-                girlId: getId(girls[i]),
-                normalId: getId(normals[i]),
-              })),
-              partDatas: data.partDatas.map((part, i) => ({
-                _id: part._id,
-                placeId: getId(partPlaces[i]),
-              })),
-              _id: data._id,
-            },
-            token
-          )
-        }
-      />
+              </tr>
+            ))}
+          </table>
+          <FinishButton
+            text="update สถานที่"
+            onClick={async () => {
+              await waiting(async () => {
+                await planUpdateCamp(
+                  {
+                    baanDatas: data.baanDatas.map((baan, i) => ({
+                      _id: baan._id,
+                      boyId: getId(boys[i]),
+                      girlId: getId(girls[i]),
+                      normalId: getId(normals[i]),
+                    })),
+                    partDatas: data.partDatas.map((part, i) => ({
+                      _id: part._id,
+                      placeId: getId(partPlaces[i]),
+                    })),
+                    _id: data._id,
+                  },
+                  token
+                );
+                const newData = await getAllPlanData(data._id);
+                setBoys(newData.baanDatas.map((baan) => baan.boy));
+                setGirls(newData.baanDatas.map((baan) => baan.girl));
+                setNormals(newData.baanDatas.map((baan) => baan.normal));
+                setPartPlaces(newData.partDatas.map((part) => part.place));
+              }, setTimeOut);
+            }}
+          />
+        </>
+      )}
       <AllInOneLock lock={!data.isOverNightCamp}>
         จำนวนสมาชิกชายที่ค้างคืน
         <CampNumberTable
@@ -173,7 +202,7 @@ export default function PlanClient({
           partNumbers={data.partGirlSleeps}
           groupName={data.groupName}
         />
-        {data.baanSleepDatas.map((baan,i) => (
+        {data.baanSleepDatas.map((baan, i) => (
           <div key={i}>
             รายชื่อ{data.groupName}
             {baan.name}ผู้ชายที่นอนค้างคืน
@@ -187,7 +216,7 @@ export default function PlanClient({
               {peeLookupNong(
                 baan.peeBoys.map(peeToBundle),
                 baan.nongBoys.map(nongToBundle)
-              ).map((user,i) => (
+              ).map((user, i) => (
                 <tr key={i}>
                   <td>{user.user.nickname}</td>
                   <td>{user.user.name}</td>
@@ -208,7 +237,7 @@ export default function PlanClient({
               {peeLookupNong(
                 baan.peeGirls.map(peeToBundle),
                 baan.nongGirls.map(nongToBundle)
-              ).map((user,i) => (
+              ).map((user, i) => (
                 <tr key={i}>
                   <td>{user.user.nickname}</td>
                   <td>{user.user.name}</td>
@@ -219,7 +248,7 @@ export default function PlanClient({
             </table>
           </div>
         ))}
-        {data.partSleepDatas.map((part,i) => (
+        {data.partSleepDatas.map((part, i) => (
           <div key={i}>
             รายชื่อฝ่าย{part.name}ผู้ชายที่นอนค้างคืน
             <table>
@@ -232,7 +261,7 @@ export default function PlanClient({
               {part.peeBoys
                 .map(peeToBundle)
                 .concat(part.petoBoys.map(petoToBundle))
-                .map((user,i) => (
+                .map((user, i) => (
                   <tr key={i}>
                     <td>{user.user.nickname}</td>
                     <td>{user.user.name}</td>
@@ -252,7 +281,7 @@ export default function PlanClient({
               {part.peeGirls
                 .map(peeToBundle)
                 .concat(part.petoGirls.map(petoToBundle))
-                .map((user,i) => (
+                .map((user, i) => (
                   <tr key={i}>
                     <td>{user.user.nickname}</td>
                     <td>{user.user.name}</td>

@@ -12,7 +12,6 @@ export default async function userSignup(signUp: Register) {
       body: JSON.stringify(signUp),
       cache: "no-store",
     });
-    alert(response.status);
     if (!response.ok) {
       throw new Error("Failed to log-in");
     }

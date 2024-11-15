@@ -36,7 +36,7 @@ export default function PlaceSelect({
     <>
       <div className="flex flex-row items-center my-5">
         <label className="w-2/5 text-2xl text-white">{buildingText}</label>
-        <Select
+        <Select value={nB}
           variant="standard"
           name="location"
           id="location"
@@ -57,7 +57,7 @@ export default function PlaceSelect({
       </div>
       <div className="flex flex-row items-center my-5">
         <label className="w-2/5 text-2xl text-white">{placeText}</label>
-        <Select
+        <Select value={`${nP?.floor} ${nP?.room}`}
           variant="standard"
           name="location"
           id="location"

@@ -38,7 +38,7 @@ export function swop(olds: Id | null, news: Id | null, array: Id[]): Id[] {
     }
     return array;
   }
-  const re = array.filter((e) => e != olds);
+  const re = array.filter((e) => e.toString() != olds.toString());
   if (news) {
     re.push(news);
   }
@@ -373,8 +373,16 @@ export function selectCheck(
   checked: boolean
 ): [Id | null, Id | null] {
   if (checked) {
-    return [id, null];
-  } else {
     return [null, id];
+  } else {
+    return [id, null];
   }
+}
+export async function waiting(
+  update: () => Promise<void>,
+  setTimeOut: (isTimeout: boolean) => void
+) {
+  setTimeOut(true);
+  await update();
+  setTimeOut(false);
 }

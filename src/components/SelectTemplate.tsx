@@ -7,7 +7,7 @@ export default function SelectTemplate<T>({
   select,
   buttonText,
 }: {
-  mapIn: {key:T,value:string}[]
+  mapIn: { key: T; value: string }[];
   select: (output: T) => void;
   buttonText: string;
 }) {
@@ -22,9 +22,10 @@ export default function SelectTemplate<T>({
         id="location"
         className="h-[2em] w-[200px]"
       >
-        {mapIn.map((choice: {key:T,value:string},i) => {
+        {mapIn.map((choice: { key: T; value: string }, i) => {
           return (
-            <MenuItem key={i}
+            <MenuItem
+              key={i}
               value={choice.value}
               onClick={() => {
                 setChose(choice.key);
@@ -43,13 +44,7 @@ export default function SelectTemplate<T>({
         onClick={async () => {
           console.log(userRef);
           if (chose) {
-            console.log("ffffffffffffffffffffffffffff");
-            try {
-              console.log("ffffffffffffffffffffffffffff");
-              select(chose);
-            } catch (error) {
-              console.log(error);
-            }
+            select(chose);
           } else {
             alert("Please type in all the details!");
           }

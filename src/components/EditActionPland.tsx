@@ -110,7 +110,7 @@ export default function EditActionPland({
         />
         <FinishButton
           text={"remove"}
-          onClick={() => setPlaces(places.filter(removeElementInUseStateArray))}
+          onClick={() => setPlaces((previous) => previous.filter(removeElementInUseStateArray))}
         />
         {places.map((v, i) => (
           <PlaceSelect
@@ -118,7 +118,7 @@ export default function EditActionPland({
             place={v}
             allPlaceData={allPlaceData}
             onClick={(outPut) => {
-              setPlaces(places.map(modifyElementInUseStateArray(outPut, i)));
+              setPlaces((previous) => previous.map(modifyElementInUseStateArray(outPut, i)));
             }}
             buildingText={`ตึกที่${i + 1}`}
             placeText={`ชั้นและห้องที่${i + 1}`}

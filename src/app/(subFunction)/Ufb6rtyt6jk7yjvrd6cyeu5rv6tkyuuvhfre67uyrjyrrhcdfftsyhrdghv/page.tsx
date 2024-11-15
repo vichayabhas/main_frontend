@@ -50,7 +50,6 @@ export default function page() {
           <MenuItem key={i}
             onClick={() => {
               setGroup(g);
-              alert(g);
             }}
             value={g}
           >

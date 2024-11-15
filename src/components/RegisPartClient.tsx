@@ -13,7 +13,7 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 import { Checkbox } from "@mui/material";
-import { getValue, swop } from "./setup";
+import { getValue, selectCheck, swop } from "./setup";
 import SelectTemplate from "./SelectTemplate";
 import FinishButton from "./FinishButton";
 import admission from "@/libs/camp/admission";
@@ -42,13 +42,13 @@ export default function RegisterPartClient({
   partMap: MyMap[];
 }) {
   const router = useRouter();
-  const [nongPendingIds, set1] = useState<Id[]>([]);
-  const [nongInterviewIds, set2] = useState<Id[]>([]);
-  const [nongPaidIds, set4] = useState<Id[]>([]);
-  const [nongSureIds, set5] = useState<Id[]>([]);
-  const [peePassIds, set6] = useState<Id[]>([]);
-  const [members, set7] = useState<Id[]>([]);
-  const [userIds, set8] = useState<Id[]>([]);
+  const [nongPendingIds, setNongPendingIds] = useState<Id[]>([]);
+  const [nongInterviewIds, setNongInterviewIds] = useState<Id[]>([]);
+  const [nongPaidIds, setNongPaidIds] = useState<Id[]>([]);
+  const [nongSureIds, setNongSureIds] = useState<Id[]>([]);
+  const [peePassIds, setPeePassIds] = useState<Id[]>([]);
+  const [members, setMembers] = useState<Id[]>([]);
+  const [userIds, setUserIds] = useState<Id[]>([]);
   const [timeOut, setTimeOut] = useState<boolean>(false);
   const [camp, setCamp] = useState<InterCampFront>(campInput);
   const mapIn: MyMap[] = regisBaans.map((regisBaan) => ({
@@ -65,7 +65,6 @@ export default function RegisterPartClient({
     await update();
     const buffer = await getCamp(camp._id);
     setCamp(buffer);
-    await new Promise((resolve) => setTimeout(resolve, 5000));
     setTimeOut(false);
   }
   return (
@@ -107,11 +106,10 @@ export default function RegisterPartClient({
                 <td className=" border border-x-black">
                   <Checkbox
                     onChange={(e, c) => {
-                      if (c) {
-                        set1(swop(null, v.key, nongPendingIds));
-                      } else {
-                        set1(swop(v.key, null, nongPendingIds));
-                      }
+                      const instants = selectCheck(v.key, c);
+                      setNongPendingIds((previous) =>
+                        swop(instants[0], instants[1], previous)
+                      );
                     }}
                   />
                 </td>
@@ -138,7 +136,7 @@ export default function RegisterPartClient({
                         "interview",
                         token
                       );
-                      set1([]);
+                      setNongPendingIds([]);
                     });
                   }}
                 />
@@ -151,7 +149,7 @@ export default function RegisterPartClient({
                         "kick/nong",
                         token
                       );
-                      set1([]);
+                      setNongPendingIds([]);
                     });
                   }}
                 />
@@ -185,11 +183,10 @@ export default function RegisterPartClient({
                     <td className=" border border-x-black">
                       <Checkbox
                         onChange={(e, c) => {
-                          if (c) {
-                            set2(swop(null, v.key, nongInterviewIds));
-                          } else {
-                            set2(swop(v.key, null, nongInterviewIds));
-                          }
+                          const instants = selectCheck(v.key, c);
+                          setNongInterviewIds((previous) =>
+                            swop(instants[0], instants[1], previous)
+                          );
                         }}
                       />
                     </td>
@@ -214,7 +211,7 @@ export default function RegisterPartClient({
                         "pass",
                         token
                       );
-                      set2([]);
+                      setNongInterviewIds([]);
                     });
                   }}
                 />
@@ -227,7 +224,7 @@ export default function RegisterPartClient({
                         "kick/nong",
                         token
                       );
-                      set1([]);
+                      setNongInterviewIds([]);
                     });
                   }}
                 />
@@ -253,7 +250,7 @@ export default function RegisterPartClient({
                         "pass",
                         token
                       );
-                      set2([]);
+                      setNongPendingIds([]);
                     });
                   }}
                 />
@@ -266,7 +263,7 @@ export default function RegisterPartClient({
                         "kick/nong",
                         token
                       );
-                      set1([]);
+                      setNongPendingIds([]);
                     });
                   }}
                 />
@@ -338,11 +335,10 @@ export default function RegisterPartClient({
                       <td className=" border border-x-black">
                         <Checkbox
                           onChange={(e, c) => {
-                            if (c) {
-                              set4(swop(null, v.key, nongPaidIds));
-                            } else {
-                              set4(swop(v.key, null, nongPaidIds));
-                            }
+                            const instants = selectCheck(v.key, c);
+                            setNongPaidIds((previous) =>
+                              swop(instants[0], instants[1], previous)
+                            );
                           }}
                         />
                       </td>
@@ -367,7 +363,7 @@ export default function RegisterPartClient({
                         "sure",
                         token
                       );
-                      set4([]);
+                      setNongPaidIds([]);
                     });
                   }}
                 />
@@ -380,7 +376,7 @@ export default function RegisterPartClient({
                         "kick/nong",
                         token
                       );
-                      set1([]);
+                      setNongPendingIds([]);
                     });
                   }}
                 />
@@ -414,11 +410,10 @@ export default function RegisterPartClient({
                 <td className=" border border-x-black">
                   <Checkbox
                     onChange={(e, c) => {
-                      if (c) {
-                        set5(swop(null, v, nongSureIds));
-                      } else {
-                        set5(swop(v, null, nongSureIds));
-                      }
+                      const instants = selectCheck(v, c);
+                      setNongSureIds((previous) =>
+                        swop(instants[0], instants[1], previous)
+                      );
                     }}
                   />
                 </td>
@@ -452,11 +447,10 @@ export default function RegisterPartClient({
                 <td className=" border border-x-black">
                   <Checkbox
                     onChange={(e, c) => {
-                      if (c) {
-                        set6(swop(null, v.userId, peePassIds));
-                      } else {
-                        set6(swop(v.userId, null, peePassIds));
-                      }
+                      const instants = selectCheck(v.userId, c);
+                      setPeePassIds((previous) =>
+                        swop(instants[0], instants[1], previous)
+                      );
                     }}
                   />
                 </td>
@@ -483,9 +477,9 @@ export default function RegisterPartClient({
               "add"
             );
             await changeBaan({ userIds: members, baanId }, token);
-            set5([]);
-            set6([]);
-            set7([]);
+            setNongSureIds([]);
+            setPeePassIds([]);
+            setMembers([]);
           });
         }}
         buttonText={"จัดบ้าน"}
@@ -561,11 +555,10 @@ export default function RegisterPartClient({
                   <td>
                     <Checkbox
                       onChange={(e, c) => {
-                        if (c) {
-                          set6(swop(null, user._id, members));
-                        } else {
-                          set6(swop(user._id, null, members));
-                        }
+                        const instants = selectCheck(user._id, c);
+                        setMembers((previous) =>
+                          swop(instants[0], instants[1], previous)
+                        );
                       }}
                     />
                   </td>
@@ -642,11 +635,10 @@ export default function RegisterPartClient({
                   <td className=" border border-x-black">
                     <Checkbox
                       onChange={(e, c) => {
-                        if (c) {
-                          set6(swop(null, user._id, members));
-                        } else {
-                          set6(swop(user._id, null, members));
-                        }
+                        const instants = selectCheck(user._id, c);
+                        setMembers((previous) =>
+                          swop(instants[0], instants[1], previous)
+                        );
                       }}
                     />
                   </td>
@@ -732,11 +724,10 @@ export default function RegisterPartClient({
                     {have ? (
                       <Checkbox
                         onChange={(e, c) => {
-                          if (c) {
-                            set8(swop(null, user._id, userIds));
-                          } else {
-                            set8(swop(user._id, null, userIds));
-                          }
+                          const instants = selectCheck(user._id, c);
+                          setUserIds((previous) =>
+                            swop(instants[0], instants[1], previous)
+                          );
                         }}
                       />
                     ) : null}
@@ -813,11 +804,10 @@ export default function RegisterPartClient({
                     {have ? (
                       <Checkbox
                         onChange={(e, c) => {
-                          if (c) {
-                            set8(swop(null, user._id, userIds));
-                          } else {
-                            set8(swop(user._id, null, userIds));
-                          }
+                          const instants = selectCheck(user._id, c);
+                          setUserIds((previous) =>
+                            swop(instants[0], instants[1], previous)
+                          );
                         }}
                       />
                     ) : null}

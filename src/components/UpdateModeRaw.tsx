@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import FinishButton from "./FinishButton";
 import peeUpdateMode from "@/libs/user/peeUpdateMode";
 import { Checkbox, Input, TextField } from "@mui/material";
-import { swop } from "./setup";
+import { selectCheck, swop } from "./setup";
 
 export default function UpdateModeRaw({
   session,
@@ -25,9 +25,7 @@ export default function UpdateModeRaw({
   }
   const [linkHash, setLinkHash] = useState<string>(user.linkHash);
   const [mode, setMode] = useState<"pee" | "nong" | null>(null);
-  const [filterIds, setFilterIds] = useState<Id[]>(
-    user.filterIds
-  );
+  const [filterIds, setFilterIds] = useState<Id[]>(user.filterIds);
   console.log(filterIds);
   //alert(filterIds.length)
 
@@ -101,7 +99,7 @@ export default function UpdateModeRaw({
             }}
           />
         </div>
-        {camps.map((camp: InterCampFront,i) => {
+        {camps.map((camp: InterCampFront, i) => {
           return (
             <div className="text-2xl my-10 text-white" key={i}>
               <Checkbox
@@ -111,11 +109,10 @@ export default function UpdateModeRaw({
                   },
                 }}
                 onChange={(v) => {
-                  if (!v.target.checked) {
-                    setFilterIds(swop(camp._id, null, filterIds));
-                  } else {
-                    setFilterIds(swop(null, camp._id, filterIds));
-                  }
+                  const instants = selectCheck(camp._id, v.target.checked);
+                  setFilterIds((previous) =>
+                    swop(instants[0], instants[1], previous)
+                  );
                 }}
                 defaultChecked={filterIds.includes(camp._id)}
               />

@@ -20,18 +20,18 @@ export default function TestDateTime({
   displayOffset: InterTimeOffset;
 }) {
   const [selectMinute, setSelectMinute] = useState<number>(selectOffset.minute);
-  const [selecthour, setSelectHour] = useState<number>(selectOffset.hour);
-  const [selectday, setSelectDay] = useState<number>(selectOffset.day);
-  const [displayMinute, setDisplaytMinute] = useState<number>(
+  const [selectHour, setSelectHour] = useState<number>(selectOffset.hour);
+  const [selectDay, setSelectDay] = useState<number>(selectOffset.day);
+  const [displayMinute, setDisplayMinute] = useState<number>(
     displayOffset.minute
   );
-  const [displayhour, setDisplayHour] = useState<number>(displayOffset.hour);
-  const [displayday, setDisplayDay] = useState<number>(displayOffset.day);
+  const [displayHour, setDisplayHour] = useState<number>(displayOffset.hour);
+  const [displayDay, setDisplayDay] = useState<number>(displayOffset.day);
   const [select, setSelect] = useState<Dayjs>(dayjs(Date.now()));
-  const dateObjn = dayjs(new Date(Date.now()))
+  const dateObj = dayjs(new Date(Date.now()))
     .add(-displayMinute, "minutes")
-    .add(-displayhour, "hours")
-    .add(-displayday, "days")
+    .add(-displayHour, "hours")
+    .add(-displayDay, "days")
     .toDate();
   const monthArray = [
     "January",
@@ -47,15 +47,15 @@ export default function TestDateTime({
     "November",
     "December",
   ];
-  const dayn = String(dateObjn.getDate()).padStart(2, "0");
-  const monthn = monthArray[dateObjn.getMonth()];
-  const yearn = dateObjn.getFullYear();
-  const hoursn = String(dateObjn.getHours()).padStart(2, "0");
-  const minutesn = String(dateObjn.getMinutes()).padStart(2, "0");
+  const dayn = String(dateObj.getDate()).padStart(2, "0");
+  const monthn = monthArray[dateObj.getMonth()];
+  const yearn = dateObj.getFullYear();
+  const hoursn = String(dateObj.getHours()).padStart(2, "0");
+  const minutesn = String(dateObj.getMinutes()).padStart(2, "0");
   const dateObjs = select
     ?.add(-(displayMinute + selectMinute), "minutes")
-    .add(-(displayhour + selecthour), "hours")
-    .add(-(displayday + selectday), "days")
+    .add(-(displayHour + selectHour), "hours")
+    .add(-(displayDay + selectDay), "days")
     .toDate();
   const days = String(dateObjs.getDate()).padStart(2, "0");
   const months = monthArray[dateObjs.getMonth()];
@@ -77,7 +77,7 @@ export default function TestDateTime({
           name="Name"
           id="Name"
           type="number"
-          defaultValue={displayday}
+          defaultValue={displayDay}
           className="w-3/5 bg-slate-100 rounded-2xl shadow-inner"
           onChange={(e) => setDisplayDay(parseInt(e.target.value))}
         />
@@ -88,7 +88,7 @@ export default function TestDateTime({
           name="LastName"
           id="LastName"
           type="number"
-          defaultValue={displayhour}
+          defaultValue={displayHour}
           className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
           onChange={(e) => setDisplayHour(parseInt(e.target.value))}
         />
@@ -101,7 +101,7 @@ export default function TestDateTime({
           type="number"
           defaultValue={displayMinute}
           className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-          onChange={(e) => setDisplaytMinute(parseInt(e.target.value))}
+          onChange={(e) => setDisplayMinute(parseInt(e.target.value))}
         />
       </div>
 
@@ -118,7 +118,7 @@ export default function TestDateTime({
           name="Name"
           id="Name"
           type="number"
-          defaultValue={displayday}
+          defaultValue={displayDay}
           className="w-3/5 bg-slate-100 rounded-2xl shadow-inner"
           onChange={(e) => setSelectDay(parseInt(e.target.value))}
         />
@@ -129,7 +129,7 @@ export default function TestDateTime({
           name="LastName"
           id="LastName"
           type="number"
-          defaultValue={displayhour}
+          defaultValue={displayHour}
           className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
           onChange={(e) => setSelectHour(parseInt(e.target.value))}
         />
@@ -161,13 +161,13 @@ export default function TestDateTime({
           updateTimeOffset(
             {
               display: {
-                day: displayday,
+                day: displayDay,
                 minute: displayMinute,
-                hour: displayhour,
+                hour: displayHour,
               },
               select: {
-                day: selectday,
-                hour: selecthour,
+                day: selectDay,
+                hour: selectHour,
                 minute: selectMinute,
               },
             },

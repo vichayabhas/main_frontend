@@ -231,7 +231,6 @@ export default function PartClient({
               value={start}
               onChange={(newValue) => {
                 setStart(newValue);
-                console.log(newValue);
               }}
             />
             <div
@@ -263,7 +262,6 @@ export default function PartClient({
               value={end}
               onChange={(newValue) => {
                 setEnd(newValue);
-                console.log(newValue);
               }}
             />
             <div
@@ -276,13 +274,13 @@ export default function PartClient({
         <FinishButton
           text={"add"}
           onClick={() => {
-            setPlaces([...places, null]);
+            setPlaces((previous) => [...previous, null]);
           }}
         />
         <FinishButton
           text={"remove"}
           onClick={() => {
-            setPlaces(places.filter(removeElementInUseStateArray));
+            setPlaces((previous) => previous.filter(removeElementInUseStateArray));
           }}
         />
         {places.map((v, i) => (
@@ -290,7 +288,7 @@ export default function PartClient({
             place={v}
             onClick={(outPut) => {
               setPlaces(
-                places.map(
+                (previous) => previous.map(
                   modifyElementInUseStateArray(outPut, i)
                 )
               );

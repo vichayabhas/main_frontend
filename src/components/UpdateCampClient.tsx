@@ -12,12 +12,7 @@ import {
 import { InterBaanFront } from "../../interface";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import {
-  TextField,
-  Checkbox,
-  Select,
-  MenuItem,
-} from "@mui/material";
+import { TextField, Checkbox, Select, MenuItem } from "@mui/material";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import updateCamp from "@/libs/admin/updateCamp";
@@ -41,30 +36,32 @@ import editQuestion from "@/libs/camp/editQuestion";
 import getAllQuestion from "@/libs/camp/getAllQuestion";
 import Waiting from "./Waiting";
 import React from "react";
+import deleteChoiceQuestion from "@/libs/camp/deleteChoiceQuestion";
+import deleteTextQuestion from "@/libs/camp/deleteTextQuestion";
 interface QuestionReady {
   element: React.ReactNode;
   order: number;
 }
-// interface GetAllQuestionReady {
-//   choiceIds: (Id | null)[];
-//   choiceQuestions: string[];
-//   as: string[];
-//   bs: string[];
-//   cs: string[];
-//   ds: string[];
-//   es: string[];
-//   scoreAs: number[];
-//   scoreBs: number[];
-//   scoreCs: number[];
-//   scoreDs: number[];
-//   scoreEs: number[];
-//   corrects: (Choice | "-")[];
-//   choiceOrder: number[];
-//   textQuestions: string[];
-//   textIds: (Id | null)[];
-//   scores: number[];
-//   textOrder: number[];
-// }
+interface GetAllQuestionReady {
+  choiceIds: (Id | null)[];
+  choiceQuestions: string[];
+  as: string[];
+  bs: string[];
+  cs: string[];
+  ds: string[];
+  es: string[];
+  scoreAs: [number[]];
+  scoreBs: [number[]];
+  scoreCs: [number[]];
+  scoreDs: [number[]];
+  scoreEs: [number[]];
+  corrects: (Choice | "-")[];
+  choiceOrder: number[];
+  textQuestions: [string[]];
+  textIds: [(Id | null)[]];
+  scores: [number[]];
+  textOrder: [number[]];
+}
 
 export default function UpdateCampClient({
   baans,
@@ -141,8 +138,12 @@ export default function UpdateCampClient({
   const [deleteChoiceIds, setDeleteChoiceIds] = useState<Id[]>([]);
   const scores = useState(questions.texts.map((text) => text.score));
   const textOrder = useState(questions.texts.map((text) => text.order));
-  function questionReady(isDelete: boolean): QuestionReady[] {
-    return choiceQuestions
+
+  function questionReady(
+    isDelete: boolean,
+    data: GetAllQuestionReady
+  ): QuestionReady[] {
+    return data.choiceQuestions
       .map((choice, i) => {
         return {
           element: (
@@ -154,39 +155,41 @@ export default function UpdateCampClient({
                 id="location"
                 className="h-[2em] w-[200px] mb-5 text-white"
               >
-                <MenuItem value={`${as[i]} คะแนน ${scoreAs[0][i]}`}>
-                  {as[i]} คะแนน {scoreAs[0][i]}
+                <MenuItem value={`${data.as[i]} คะแนน ${data.scoreAs[0][i]}`}>
+                  {data.as[i]} คะแนน {data.scoreAs[0][i]}
                 </MenuItem>
-                <MenuItem value={`${bs[i]} คะแนน ${scoreBs[0][i]}`}>
-                  {bs[i]} คะแนน {scoreBs[0][i]}
+                <MenuItem value={`${data.bs[i]} คะแนน ${data.scoreBs[0][i]}`}>
+                  {data.bs[i]} คะแนน {data.scoreBs[0][i]}
                 </MenuItem>
-                <MenuItem value={`${cs[i]} คะแนน ${scoreCs[0][i]}`}>
-                  {cs[i]} คะแนน {scoreCs[0][i]}
+                <MenuItem value={`${data.cs[i]} คะแนน ${data.scoreCs[0][i]}`}>
+                  {data.cs[i]} คะแนน {data.scoreCs[0][i]}
                 </MenuItem>
-                <MenuItem value={`${ds[i]} คะแนน ${scoreDs[0][i]}`}>
-                  `${ds[i]} คะแนน ${scoreDs[0][i]}`
+                <MenuItem value={`${data.ds[i]} คะแนน ${data.scoreDs[0][i]}`}>
+                  {data.ds[i]} คะแนน {data.scoreDs[0][i]}
                 </MenuItem>
-                <MenuItem value={`${es[i]} คะแนน ${scoreEs[0][i]}`}>
-                  {es[i]} คะแนน {scoreEs[0][i]}
+                <MenuItem value={`${data.es[i]} คะแนน ${data.scoreEs[0][i]}`}>
+                  {data.es[i]} คะแนน {data.scoreEs[0][i]}
                 </MenuItem>
               </Select>
+              {deleteChoiceIds.length}
               {isDelete ? (
                 <Checkbox
                   onChange={(e, check) => {
-                    const instants = selectCheck(choiceIds[i], check);
-                    setDeleteChoiceIds(
-                      swop(instants[0], instants[1], deleteChoiceIds)
+                    const instants = selectCheck(data.choiceIds[i], check);
+                    setDeleteChoiceIds((previous) =>
+                      swop(instants[0], instants[1], previous)
                     );
                   }}
                 />
               ) : null}
+              {data.choiceIds[i]?.toString()}
             </>
           ),
-          order: choiceOrder[i],
+          order: data.choiceOrder[i],
         };
       })
       .concat(
-        textQuestions[0].map((text, i) => ({
+        data.textQuestions[0].map((text, i) => ({
           element: (
             <div className="flex flex-row items-center mt-4">
               <label
@@ -195,80 +198,122 @@ export default function UpdateCampClient({
                   textAlign: "left",
                 }}
               >
-                {text} คะแนน {scores[0][i]}
+                {text} คะแนน {data.scores[0][i]}
               </label>
+              {deleteTextIds.length}
               {isDelete ? (
                 <Checkbox
                   onChange={(e, check) => {
-                    const instants = selectCheck(choiceIds[i], check);
-                    setDeleteTextIds(
-                      swop(instants[0], instants[1], deleteTextIds)
+                    const instants = selectCheck(data.textIds[0][i], check);
+                    setDeleteTextIds((previous) =>
+                      swop(instants[0], instants[1], previous)
                     );
                   }}
                 />
               ) : null}
+              {data.textIds[0][i]?.toString()}
             </div>
           ),
-          order: textOrder[0][i],
+          order: data.textOrder[0][i],
         }))
       )
       .sort((a, b) => a.order - b.order);
   }
   const [preview, setPreview] = useState<React.ReactNode>(
-    questionReady(false).map((v) => v.element)
+    questionReady(false, {
+      choiceIds,
+      choiceQuestions,
+      as,
+      bs,
+      cs,
+      ds,
+      es,
+      scoreAs: [scoreAs[0]],
+      scoreBs: [scoreBs[0]],
+      scoreCs: [scoreCs[0]],
+      scoreDs: [scoreDs[0]],
+      scoreEs: [scoreEs[0]],
+      corrects,
+      choiceOrder,
+      textQuestions: [textQuestions[0]],
+      textIds: [textIds[0]],
+      scores: [scores[0]],
+      textOrder: [textOrder[0]],
+    }).map((v) => v.element)
   );
   const [deletePreview, setDeletePreview] = useState<React.ReactNode>(
-    questionReady(true).map((v) => v.element)
+    questionReady(true, {
+      choiceIds,
+      choiceQuestions,
+      as,
+      bs,
+      cs,
+      ds,
+      es,
+      scoreAs: [scoreAs[0]],
+      scoreBs: [scoreBs[0]],
+      scoreCs: [scoreCs[0]],
+      scoreDs: [scoreDs[0]],
+      scoreEs: [scoreEs[0]],
+      corrects,
+      choiceOrder,
+      textQuestions: [textQuestions[0]],
+      textIds: [textIds[0]],
+      scores: [scores[0]],
+      textOrder: [textOrder[0]],
+    }).map((v) => v.element)
   );
   function safeToDeleteTextQuestion() {
     if (textIds[0][textIds[0].length - 1]) {
       return;
     }
-    textQuestions[1](textQuestions[0].filter(removeElementInUseStateArray));
-    textIds[1](textIds[0].filter(removeElementInUseStateArray));
-    scores[1](scores[0].filter(removeElementInUseStateArray));
-    textOrder[1](textOrder[0].filter(removeElementInUseStateArray));
+    textQuestions[1]((previous) => previous.filter(removeElementInUseStateArray));
+    textIds[1]((previous) => previous.filter(removeElementInUseStateArray));
+    scores[1]((previous) => previous.filter(removeElementInUseStateArray));
+    textOrder[1]((previous) => previous.filter(removeElementInUseStateArray));
   }
   function safeToDeleteChoiceQuestion() {
     if (choiceIds[choiceIds.length - 1]) {
       return;
     }
-    setChoiceIds(choiceIds.filter(removeElementInUseStateArray));
-    setChoiceQuestions(choiceQuestions.filter(removeElementInUseStateArray));
-    setAs(as.filter(removeElementInUseStateArray));
-    setBs(bs.filter(removeElementInUseStateArray));
-    setCs(cs.filter(removeElementInUseStateArray));
-    setDs(ds.filter(removeElementInUseStateArray));
-    setEs(es.filter(removeElementInUseStateArray));
-    scoreAs[1](scoreAs[0].filter(removeElementInUseStateArray));
-    scoreBs[1](scoreBs[0].filter(removeElementInUseStateArray));
-    scoreCs[1](scoreCs[0].filter(removeElementInUseStateArray));
-    scoreDs[1](scoreDs[0].filter(removeElementInUseStateArray));
-    scoreEs[1](scoreEs[0].filter(removeElementInUseStateArray));
+    setChoiceIds((previous) => previous.filter(removeElementInUseStateArray));
+    setChoiceQuestions((previous) =>
+      previous.filter(removeElementInUseStateArray)
+    );
+    setAs((previous) => previous.filter(removeElementInUseStateArray));
+    setBs((previous) => previous.filter(removeElementInUseStateArray));
+    setCs((previous) => previous.filter(removeElementInUseStateArray));
+    setDs((previous) => previous.filter(removeElementInUseStateArray));
+    setEs((previous) => previous.filter(removeElementInUseStateArray));
+    scoreAs[1]((previous) => previous.filter(removeElementInUseStateArray));
+    scoreBs[1]((previous) => previous.filter(removeElementInUseStateArray));
+    scoreCs[1]((previous) => previous.filter(removeElementInUseStateArray));
+    scoreDs[1]((previous) => previous.filter(removeElementInUseStateArray));
+    scoreEs[1]((previous) => previous.filter(removeElementInUseStateArray));
     setCorrect(corrects.filter(removeElementInUseStateArray));
-    setChoiceOrder(choiceOrder.filter(removeElementInUseStateArray));
+    setChoiceOrder((previous) => previous.filter(removeElementInUseStateArray));
   }
   function addTextQuestion() {
-    textIds[1]([...textIds[0], null]);
-    textQuestions[1]([...textQuestions[0], "-"]);
-    scores[1]([...scores[0], 0]);
-    textOrder[1]([...textOrder[0], 0]);
+    textIds[1]((previous) => [...previous, null]);
+    textQuestions[1]((previous) => [...previous, "-"]);
+    scores[1]((previous) => [...previous, 0]);
+    textOrder[1]((previous) => [...previous, 0]);
   }
   function addChoiceQuestion() {
-    setChoiceIds([...choiceIds, null]);
+    setChoiceIds((previous) => [...previous, null]);
     setChoiceQuestions([...choiceQuestions, "-"]);
-    setAs([...as, "-"]);
-    setBs([...bs, "-"]);
-    setCs([...cs, "-"]);
-    setDs([...ds, "-"]);
-    setEs([...es, "-"]);
-    scoreAs[1]([...scoreAs[0], 0]);
-    scoreBs[1]([...scoreBs[0], 0]);
-    scoreCs[1]([...scoreCs[0], 0]);
-    scoreDs[1]([...scoreDs[0], 0]);
-    scoreEs[1]([...scoreEs[0], 0]);
-    setCorrect([...corrects, "-"]);
-    setChoiceOrder([...choiceOrder, 0]);
+    setAs((previous) => [...previous, "-"]);
+    setBs((previous) => [...previous, "-"]);
+    setCs((previous) => [...previous, "-"]);
+    setDs((previous) => [...previous, "-"]);
+    setEs((previous) => [...previous, "-"]);
+    scoreAs[1]((previous) => [...previous, 0]);
+    scoreBs[1]((previous) => [...previous, 0]);
+    scoreCs[1]((previous) => [...previous, 0]);
+    scoreDs[1]((previous) => [...previous, 0]);
+    scoreEs[1]((previous) => [...previous, 0]);
+    setCorrect((previous) => [...previous, "-"]);
+    setChoiceOrder((previous) => [...previous, 0]);
   }
   function clearAllCache() {
     setChoiceIds(questions.choices.map((choice) => choice._id));
@@ -342,8 +387,163 @@ export default function UpdateCampClient({
     textIds[1](newQuestions.texts.map((text) => text._id));
     scores[1](newQuestions.texts.map((text) => text.score));
     textOrder[1](newQuestions.texts.map((text) => text.order));
-    setPreview(questionReady(false).map((v) => v.element));
-    setDeletePreview(questionReady(true).map((v) => v.element));
+    setPreview(
+      questionReady(
+        false,
+        {
+          choiceIds: newQuestions.choices.map((choice) => choice._id),
+          choiceQuestions: newQuestions.choices.map(
+            (choice) => choice.question
+          ),
+          as: newQuestions.choices.map((choice) => choice.a),
+          bs: newQuestions.choices.map((choice) => choice.b),
+          cs: newQuestions.choices.map((choice) => choice.c),
+          ds: newQuestions.choices.map((choice) => choice.d),
+          es: newQuestions.choices.map((choice) => choice.e),
+          scoreAs: [newQuestions.choices.map((choice) => choice.scoreA)],
+          scoreBs: [newQuestions.choices.map((choice) => choice.scoreB)],
+          scoreCs: [newQuestions.choices.map((choice) => choice.scoreC)],
+          scoreDs: [newQuestions.choices.map((choice) => choice.scoreD)],
+          scoreEs: [newQuestions.choices.map((choice) => choice.scoreE)],
+          corrects: newQuestions.choices.map((choice) => choice.correct),
+          choiceOrder: newQuestions.choices.map((choice) => choice.order),
+          textQuestions: [newQuestions.texts.map((text) => text.question)],
+          textIds: [newQuestions.texts.map((text) => text._id)],
+          scores: [newQuestions.texts.map((text) => text.score)],
+          textOrder: [newQuestions.texts.map((text) => text.order)],
+        }
+      ).map((v) => v.element)
+    );
+    setDeletePreview(
+      questionReady(
+        true,
+        {
+          choiceIds: newQuestions.choices.map((choice) => choice._id),
+          choiceQuestions: newQuestions.choices.map(
+            (choice) => choice.question
+          ),
+          as: newQuestions.choices.map((choice) => choice.a),
+          bs: newQuestions.choices.map((choice) => choice.b),
+          cs: newQuestions.choices.map((choice) => choice.c),
+          ds: newQuestions.choices.map((choice) => choice.d),
+          es: newQuestions.choices.map((choice) => choice.e),
+          scoreAs: [newQuestions.choices.map((choice) => choice.scoreA)],
+          scoreBs: [newQuestions.choices.map((choice) => choice.scoreB)],
+          scoreCs: [newQuestions.choices.map((choice) => choice.scoreC)],
+          scoreDs: [newQuestions.choices.map((choice) => choice.scoreD)],
+          scoreEs: [newQuestions.choices.map((choice) => choice.scoreE)],
+          corrects: newQuestions.choices.map((choice) => choice.correct),
+          choiceOrder: newQuestions.choices.map((choice) => choice.order),
+          textQuestions: [newQuestions.texts.map((text) => text.question)],
+          textIds: [newQuestions.texts.map((text) => text._id)],
+          scores: [newQuestions.texts.map((text) => text.score)],
+          textOrder: [newQuestions.texts.map((text) => text.order)],
+        }
+      ).map((v) => v.element)
+    );
+    setEditMode("normal");
+  }
+  async function deleteQuestion() {
+    if (!session) {
+      router.push("/");
+      return;
+    }
+    setEditMode("wait");
+    let i = 0;
+    while (i < deleteChoiceIds.length) {
+      await deleteChoiceQuestion(deleteChoiceIds[i++], session.user.token);
+    }
+    i = 0;
+    while (i < deleteTextIds.length) {
+      await deleteTextQuestion(deleteTextIds[i++], session.user.token);
+    }
+    setDeleteChoiceIds([]);
+    setDeleteTextIds([]);
+    const newQuestions = await getAllQuestion(session.user.token, camp._id);
+    setChoiceIds(newQuestions.choices.map((choice) => choice._id));
+    setChoiceQuestions(newQuestions.choices.map((choice) => choice.question));
+    setAs(newQuestions.choices.map((choice) => choice.a));
+    setBs(newQuestions.choices.map((choice) => choice.b));
+    setCs(newQuestions.choices.map((choice) => choice.c));
+    setDs(newQuestions.choices.map((choice) => choice.d));
+    setEs(newQuestions.choices.map((choice) => choice.e));
+    scoreAs[1](newQuestions.choices.map((choice) => choice.scoreA));
+    scoreBs[1](newQuestions.choices.map((choice) => choice.scoreB));
+    scoreCs[1](newQuestions.choices.map((choice) => choice.scoreC));
+    scoreDs[1](newQuestions.choices.map((choice) => choice.scoreD));
+    scoreEs[1](newQuestions.choices.map((choice) => choice.scoreE));
+    setCorrect(newQuestions.choices.map((choice) => choice.correct));
+    setChoiceOrder(newQuestions.choices.map((choice) => choice.order));
+    textQuestions[1](newQuestions.texts.map((text) => text.question));
+    textIds[1](newQuestions.texts.map((text) => text._id));
+    scores[1](newQuestions.texts.map((text) => text.score));
+    textOrder[1](newQuestions.texts.map((text) => text.order));
+    setPreview(
+      questionReady(
+        false,
+        {
+          choiceIds: newQuestions.choices.map((choice) => choice._id),
+          choiceQuestions: newQuestions.choices.map(
+            (choice) => choice.question
+          ),
+          as: newQuestions.choices.map((choice) => choice.a),
+          bs: newQuestions.choices.map((choice) => choice.b),
+          cs: newQuestions.choices.map((choice) => choice.c),
+          ds: newQuestions.choices.map((choice) => choice.d),
+          es: newQuestions.choices.map((choice) => choice.e),
+          scoreAs: [newQuestions.choices.map((choice) => choice.scoreA)],
+          scoreBs: [newQuestions.choices.map((choice) => choice.scoreB)],
+          scoreCs: [newQuestions.choices.map((choice) => choice.scoreC)],
+          scoreDs: [newQuestions.choices.map((choice) => choice.scoreD)],
+          scoreEs: [newQuestions.choices.map((choice) => choice.scoreE)],
+          corrects: newQuestions.choices.map((choice) => choice.correct),
+          choiceOrder: newQuestions.choices.map((choice) => choice.order),
+          textQuestions: [newQuestions.texts.map((text) => text.question)],
+          textIds: [newQuestions.texts.map((text) => text._id)],
+          scores: [newQuestions.texts.map((text) => text.score)],
+          textOrder: [newQuestions.texts.map((text) => text.order)],
+        }
+        // {
+        //   deleteTextIds,
+        //   setDeleteTextIds,
+        //   deleteChoiceIds,
+        //   setDeleteChoiceIds,
+        // }
+      ).map((v) => v.element)
+    );
+    setDeletePreview(
+      questionReady(
+        true,
+        {
+          choiceIds: newQuestions.choices.map((choice) => choice._id),
+          choiceQuestions: newQuestions.choices.map(
+            (choice) => choice.question
+          ),
+          as: newQuestions.choices.map((choice) => choice.a),
+          bs: newQuestions.choices.map((choice) => choice.b),
+          cs: newQuestions.choices.map((choice) => choice.c),
+          ds: newQuestions.choices.map((choice) => choice.d),
+          es: newQuestions.choices.map((choice) => choice.e),
+          scoreAs: [newQuestions.choices.map((choice) => choice.scoreA)],
+          scoreBs: [newQuestions.choices.map((choice) => choice.scoreB)],
+          scoreCs: [newQuestions.choices.map((choice) => choice.scoreC)],
+          scoreDs: [newQuestions.choices.map((choice) => choice.scoreD)],
+          scoreEs: [newQuestions.choices.map((choice) => choice.scoreE)],
+          corrects: newQuestions.choices.map((choice) => choice.correct),
+          choiceOrder: newQuestions.choices.map((choice) => choice.order),
+          textQuestions: [newQuestions.texts.map((text) => text.question)],
+          textIds: [newQuestions.texts.map((text) => text._id)],
+          scores: [newQuestions.texts.map((text) => text.score)],
+          textOrder: [newQuestions.texts.map((text) => text.order)],
+        }
+        // {
+        //   deleteTextIds,
+        //   setDeleteTextIds,
+        //   deleteChoiceIds,
+        //   setDeleteChoiceIds,
+        // }
+      ).map((v) => v.element)
+    );
     setEditMode("normal");
   }
 
@@ -354,7 +554,8 @@ export default function UpdateCampClient({
           <div>บ้าน</div>
           {baans.map((baan, i) => {
             return (
-              <div key={i}
+              <div
+                key={i}
                 onClick={() => {
                   router.push(`/admin/baan/${baan._id}`);
                 }}
@@ -366,7 +567,8 @@ export default function UpdateCampClient({
           <div>ฝ่าย</div>
           {parts.map((part, i) => {
             return (
-              <div key={i}
+              <div
+                key={i}
                 onClick={() => {
                   router.push(`/admin/part/${part._id}`);
                 }}
@@ -426,7 +628,6 @@ export default function UpdateCampClient({
               text="สร้างบ้าน"
               onClick={() => {
                 if (newBaanName) {
-                  alert(newBaanName);
                   addBaan(newBaanName, camp._id, session.user.token);
                 }
               }}
@@ -590,7 +791,7 @@ export default function UpdateCampClient({
               />
             </div>
             {camp.memberStructure ===
-              "nong->highSchool,pee->1year,peto->2upYear" ? (
+            "nong->highSchool,pee->1year,peto->2upYear" ? (
               <div className="flex flex-row items-center my-5">
                 <label className="w-2/5 text-2xl text-white">
                   ล็อกข้อมูลปีโตหรือไม่
@@ -781,7 +982,10 @@ export default function UpdateCampClient({
                   setEditMode("edit");
                 }}
               />
-              <FinishButton text="delete question" onClick={() => setEditMode('delete')} />
+              <FinishButton
+                text="delete question"
+                onClick={() => setEditMode("delete")}
+              />
               <button
                 className="bg-white p-3 font-bold rounded-lg shadow-[10px_10px_10px_-10px_rgba(0,0,0,0.5)] hover:bg-rose-700 hover:text-pink-50"
                 style={{
@@ -899,7 +1103,7 @@ export default function UpdateCampClient({
                     }}
                     onChange={(e) => {
                       setChoiceQuestions(
-                        choiceQuestions.map(
+                        (previous) => previous.map(
                           modifyElementInUseStateArray(e.target.value, i)
                         )
                       );
@@ -930,7 +1134,7 @@ export default function UpdateCampClient({
                     }}
                     onChange={(e) => {
                       setAs(
-                        as.map(modifyElementInUseStateArray(e.target.value, i))
+                        (previous) => previous.map(modifyElementInUseStateArray(e.target.value, i))
                       );
                     }}
                     defaultValue={as[i]}
@@ -959,7 +1163,7 @@ export default function UpdateCampClient({
                     }}
                     onChange={(e) => {
                       setBs(
-                        bs.map(modifyElementInUseStateArray(e.target.value, i))
+                        (previous) => previous.map(modifyElementInUseStateArray(e.target.value, i))
                       );
                     }}
                     defaultValue={bs[i]}
@@ -988,7 +1192,7 @@ export default function UpdateCampClient({
                     }}
                     onChange={(e) => {
                       setCs(
-                        cs.map(modifyElementInUseStateArray(e.target.value, i))
+                        (previous) => previous.map(modifyElementInUseStateArray(e.target.value, i))
                       );
                     }}
                     defaultValue={cs[i]}
@@ -1017,7 +1221,7 @@ export default function UpdateCampClient({
                     }}
                     onChange={(e) => {
                       setDs(
-                        ds.map(modifyElementInUseStateArray(e.target.value, i))
+                        (previous) => previous.map(modifyElementInUseStateArray(e.target.value, i))
                       );
                     }}
                     defaultValue={ds[i]}
@@ -1046,7 +1250,7 @@ export default function UpdateCampClient({
                     }}
                     onChange={(e) => {
                       setEs(
-                        es.map(modifyElementInUseStateArray(e.target.value, i))
+                        (previous) => previous.map(modifyElementInUseStateArray(e.target.value, i))
                       );
                     }}
                     defaultValue={es[i]}
@@ -1076,7 +1280,7 @@ export default function UpdateCampClient({
                     }}
                     onChange={(e) => {
                       scoreAs[1](
-                        scoreAs[0].map(
+                        (previous) => previous.map(
                           modifyElementInUseStateArray(
                             parseFloat(e.target.value),
                             i
@@ -1111,7 +1315,7 @@ export default function UpdateCampClient({
                     }}
                     onChange={(e) => {
                       scoreBs[1](
-                        scoreBs[0].map(
+                        (previous) => previous.map(
                           modifyElementInUseStateArray(
                             parseFloat(e.target.value),
                             i
@@ -1146,7 +1350,7 @@ export default function UpdateCampClient({
                     }}
                     onChange={(e) => {
                       scoreCs[1](
-                        scoreCs[0].map(
+                        (previous) => previous.map(
                           modifyElementInUseStateArray(
                             parseFloat(e.target.value),
                             i
@@ -1181,7 +1385,7 @@ export default function UpdateCampClient({
                     }}
                     onChange={(e) => {
                       scoreDs[1](
-                        scoreDs[0].map(
+                        (previous) => previous.map(
                           modifyElementInUseStateArray(
                             parseFloat(e.target.value),
                             i
@@ -1216,7 +1420,7 @@ export default function UpdateCampClient({
                     }}
                     onChange={(e) => {
                       scoreEs[1](
-                        scoreEs[0].map(
+                        (previous) => previous.map(
                           modifyElementInUseStateArray(
                             parseFloat(e.target.value),
                             i
@@ -1241,7 +1445,7 @@ export default function UpdateCampClient({
                   <MenuItem
                     onClick={() => {
                       setCorrect(
-                        corrects.map(
+                        (previous) => previous.map(
                           modifyElementInUseStateArray<Choice | "-">("A", i)
                         )
                       );
@@ -1253,7 +1457,7 @@ export default function UpdateCampClient({
                   <MenuItem
                     onClick={() => {
                       setCorrect(
-                        corrects.map(
+                        (previous) => previous.map(
                           modifyElementInUseStateArray<Choice | "-">("B", i)
                         )
                       );
@@ -1265,7 +1469,7 @@ export default function UpdateCampClient({
                   <MenuItem
                     onClick={() => {
                       setCorrect(
-                        corrects.map(
+                        (previous) => previous.map(
                           modifyElementInUseStateArray<Choice | "-">("C", i)
                         )
                       );
@@ -1277,7 +1481,7 @@ export default function UpdateCampClient({
                   <MenuItem
                     onClick={() => {
                       setCorrect(
-                        corrects.map(
+                        (previous) => previous.map(
                           modifyElementInUseStateArray<Choice | "-">("D", i)
                         )
                       );
@@ -1289,7 +1493,7 @@ export default function UpdateCampClient({
                   <MenuItem
                     onClick={() => {
                       setCorrect(
-                        corrects.map(
+                        (previous) => previous.map(
                           modifyElementInUseStateArray<Choice | "-">("E", i)
                         )
                       );
@@ -1301,7 +1505,7 @@ export default function UpdateCampClient({
                   <MenuItem
                     onClick={() => {
                       setCorrect(
-                        corrects.map(
+                        (previous) => previous.map(
                           modifyElementInUseStateArray<Choice | "-">("-", i)
                         )
                       );
@@ -1335,7 +1539,7 @@ export default function UpdateCampClient({
                     }}
                     onChange={(e) => {
                       setChoiceOrder(
-                        choiceOrder.map(
+                        (previous) => previous.map(
                           modifyElementInUseStateArray(
                             parseInt(e.target.value),
                             i
@@ -1384,7 +1588,7 @@ export default function UpdateCampClient({
                   }}
                   onChange={(e) => {
                     textQuestions[1](
-                      textQuestions[0].map(
+                      (previous) => previous.map(
                         modifyElementInUseStateArray(e.target.value, i)
                       )
                     );
@@ -1416,7 +1620,7 @@ export default function UpdateCampClient({
                   }}
                   onChange={(e) => {
                     scores[1](
-                      scores[0].map(
+                      (previous) => previous.map(
                         modifyElementInUseStateArray(
                           parseFloat(e.target.value),
                           i
@@ -1451,7 +1655,7 @@ export default function UpdateCampClient({
                   }}
                   onChange={(e) => {
                     textOrder[1](
-                      textOrder[0].map(
+                      (previous) => previous.map(
                         modifyElementInUseStateArray(
                           parseInt(e.target.value),
                           i
@@ -1485,21 +1689,26 @@ export default function UpdateCampClient({
     }
     case "delete": {
       return (
-        <div className="w-[30%] items-center p-10 rounded-3xl "
+        <div
+          className="w-[30%] items-center p-10 rounded-3xl "
           style={{
             backgroundColor: "#961A1D",
             width: "70%",
             marginTop: "20px",
-          }}>
+          }}
+        >
           {deletePreview}
           <FinishButton
             text="clear"
             onClick={() => {
               setDeleteChoiceIds([]);
               setDeleteTextIds([]);
-              setEditMode('normal');
+              setEditMode("normal");
             }}
           />
+          <FinishButton text="delete" onClick={deleteQuestion} />
+          {deleteChoiceIds.length + deleteTextIds.length}
+          {deleteTextIds.toString()}
         </div>
       );
     }

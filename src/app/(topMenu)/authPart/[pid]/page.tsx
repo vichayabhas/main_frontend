@@ -64,7 +64,7 @@ export default async function Baan({ params }: { params: { pid: string } }) {
     }
     case camp.partBoardId.toString(): {
       return (
-        <AllInOneLock token={token} lock={user.mode == "nong"} pushToHome>
+        <AllInOneLock token={token} lock={user.mode == "nong"} pushToHome bypass>
           <UpdateCampServer campId={camp._id} token={token} />
           <RegisterPartServer campId={camp._id} token={token} isBoard={true} />
           <WelfareServer campId={camp._id} token={token} />

@@ -432,13 +432,6 @@ export default function AdminClient({
               }
             } else {
               alert("Please type in all the details!");
-              alert(chose);
-              alert(boardIds);
-              alert(registerModel);
-              alert(round);
-              alert(dateEnd);
-              alert(dateStart);
-              alert(memberStructure);
               console.log({
                 nameId: chose,
                 boardIds,
