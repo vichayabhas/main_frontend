@@ -1,0 +1,65 @@
+.menucontainer{
+    height: 60px;
+    background-color: #961A1D;
+    color: white;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    z-index: 30;
+    display: flex;
+    flex-direction: row;
+    border-radius: 30px;
+    outline-style: solid;
+    outline-color: white;
+    outline-width:5px;
+    overflow: hidden;
+}
+.logoimg{
+    height: 100%;
+    width: auto;
+
+}
+.itemcontainer {
+    width: 120px;
+    text-align: center;
+    margin-top: auto;
+    margin-bottom: auto;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 10pt;
+    color: gray;
+}
+.topMenuItem{
+    color: white;
+    font-weight: bold;
+    width: 120px;
+    height: 40px;
+    font-size: 14px;
+    border-radius: 20px;
+    padding-top: 10px;
+    margin-left: 4px;
+    margin-right: 4px;
+    margin-top: 2px;
+}
+.topMenuItem:hover{
+    background-color: white;
+    color: #961A1D;
+}
+
+.menucontainerCamp{
+    height: 60px;
+    background-color: #373737;
+    color: white;
+    position: fixed;
+    top: 75px;
+    left: 30px;
+    right: 30px;
+    z-index: 30;
+    display: flex;
+    flex-direction: row;
+    border-radius: 8px 8px 30px 30px;
+    outline-style: solid;
+    outline-color: white;
+    outline-width:5px;
+}
+
