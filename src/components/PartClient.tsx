@@ -25,6 +25,7 @@ import {
   modifyElementInUseStateArray,
   notEmpty,
   removeElementInUseStateArray,
+  stringToInt,
 } from "./setup";
 import createWorkingItem from "@/libs/camp/createWorkingItem";
 import plusActionPlan from "@/libs/camp/plusActionPlan";
@@ -392,7 +393,7 @@ export default function PartClient({
                 },
               },
             }}
-            onChange={(e) => setPlus(parseInt(e.target.value))}
+            onChange={(e) => setPlus(stringToInt(e.target.value))}
           />
           <FinishButton
             text="+- action plan"

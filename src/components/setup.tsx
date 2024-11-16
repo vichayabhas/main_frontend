@@ -386,3 +386,35 @@ export async function waiting(
   await update();
   setTimeOut(false);
 }
+export function copy<T>(input: T): T {
+  return input;
+}
+export function modifyElementInUseStateArray2Dimension<T>(
+  i1: number,
+  i2: number,
+  value: T,
+) {
+  return  (v2: T[], i3: number) => {
+    if (i3 == i1) {
+     return v2.map(modifyElementInUseStateArray(value,i2))
+    } else {
+      return v2;
+    }
+  };
+}
+export function stringToFloat(input:string):number{
+  const out=parseFloat(input)
+  if(isNaN(out)){
+    return 0
+  }else{
+    return out
+  }
+}
+export function stringToInt(input:string):number{
+  const out=parseInt(input)
+  if(isNaN(out)){
+    return 0
+  }else{
+    return out
+  }
+}

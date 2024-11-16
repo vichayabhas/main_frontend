@@ -978,6 +978,7 @@ export interface GetChoiceQuestion extends InterChoiceQuestion {
 export interface GetTextQuestion extends InterTextQuestion {
     answer: string,
     answerId: Id | null,
+    answerScore: number,
 }
 export interface GetAllQuestion {
     choices: GetChoiceQuestion[],
@@ -1017,4 +1018,27 @@ export interface ReceiveAirQuality {
             },
         }[]
     }
+}
+export interface UserAndAllQuestionPack {
+    user: InterUser,
+    questions: GetAllQuestion
+}
+export interface GetAllAnswerAndQuestion {
+    nongsAnswers: UserAndAllQuestionPack[],
+    peeAnswers: UserAndAllQuestionPack[],
+    mainChoices: InterChoiceQuestion[],
+    mainTexts: InterTextQuestion[],
+    nongPendingAnswers: UserAndAllQuestionPack[],                            /////////////i
+    nongPassAnswers: UserAndAllQuestionPack[],
+    nongSureAnswers: UserAndAllQuestionPack[],
+    nongPaidAnswers: UserAndAllQuestionPack[],
+    nongInterviewAnswers: UserAndAllQuestionPack[],
+}
+export interface ScoreTextQuestion {
+    id: Id | null,
+    score: number,
+}
+export interface ScoreTextQuestions {
+    scores: ScoreTextQuestion[][],
+    campId: Id,
 }

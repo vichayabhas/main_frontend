@@ -17,7 +17,7 @@ import {
 } from "../../interface";
 import addPartName from "@/libs/admin/addPartName";
 import FinishButton from "./FinishButton";
-import { getBackendUrl, stringToId } from "./setup";
+import { getBackendUrl, stringToId, stringToInt } from "./setup";
 //import { InterNameContainer, CreateCamp } from "../../interface";
 
 export default function AdminClient({
@@ -116,7 +116,7 @@ export default function AdminClient({
             className="text-white"
             required
             onChange={(e) => {
-              setRound(parseInt(e.target.value));
+              setRound(stringToInt(e.target.value));
             }}
           />
         </div>

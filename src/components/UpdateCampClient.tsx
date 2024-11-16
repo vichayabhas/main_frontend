@@ -30,6 +30,8 @@ import {
   notEmpty,
   removeElementInUseStateArray,
   selectCheck,
+  stringToFloat,
+  stringToInt,
   swop,
 } from "./setup";
 import editQuestion from "@/libs/camp/editQuestion";
@@ -182,7 +184,6 @@ export default function UpdateCampClient({
                   }}
                 />
               ) : null}
-              {data.choiceIds[i]?.toString()}
             </>
           ),
           order: data.choiceOrder[i],
@@ -211,7 +212,6 @@ export default function UpdateCampClient({
                   }}
                 />
               ) : null}
-              {data.textIds[0][i]?.toString()}
             </div>
           ),
           order: data.textOrder[0][i],
@@ -1282,13 +1282,13 @@ export default function UpdateCampClient({
                       scoreAs[1](
                         (previous) => previous.map(
                           modifyElementInUseStateArray(
-                            parseFloat(e.target.value),
+                            stringToFloat(e.target.value),
                             i
                           )
                         )
                       );
                     }}
-                    defaultValue={scoreAs[0][i].toString()}
+                    defaultValue={scoreAs[0][i]}
                   />
                 </div>
                 <div className="flex flex-row items-center my-5">
@@ -1317,7 +1317,7 @@ export default function UpdateCampClient({
                       scoreBs[1](
                         (previous) => previous.map(
                           modifyElementInUseStateArray(
-                            parseFloat(e.target.value),
+                            stringToFloat(e.target.value),
                             i
                           )
                         )
@@ -1352,7 +1352,7 @@ export default function UpdateCampClient({
                       scoreCs[1](
                         (previous) => previous.map(
                           modifyElementInUseStateArray(
-                            parseFloat(e.target.value),
+                            stringToFloat(e.target.value),
                             i
                           )
                         )
@@ -1387,7 +1387,7 @@ export default function UpdateCampClient({
                       scoreDs[1](
                         (previous) => previous.map(
                           modifyElementInUseStateArray(
-                            parseFloat(e.target.value),
+                            stringToFloat(e.target.value),
                             i
                           )
                         )
@@ -1422,7 +1422,7 @@ export default function UpdateCampClient({
                       scoreEs[1](
                         (previous) => previous.map(
                           modifyElementInUseStateArray(
-                            parseFloat(e.target.value),
+                            stringToFloat(e.target.value),
                             i
                           )
                         )
@@ -1541,7 +1541,7 @@ export default function UpdateCampClient({
                       setChoiceOrder(
                         (previous) => previous.map(
                           modifyElementInUseStateArray(
-                            parseInt(e.target.value),
+                            stringToInt(e.target.value),
                             i
                           )
                         )
@@ -1622,7 +1622,7 @@ export default function UpdateCampClient({
                     scores[1](
                       (previous) => previous.map(
                         modifyElementInUseStateArray(
-                          parseFloat(e.target.value),
+                          stringToFloat(e.target.value),
                           i
                         )
                       )
@@ -1657,7 +1657,7 @@ export default function UpdateCampClient({
                     textOrder[1](
                       (previous) => previous.map(
                         modifyElementInUseStateArray(
-                          parseInt(e.target.value),
+                          stringToInt(e.target.value),
                           i
                         )
                       )
@@ -1707,8 +1707,6 @@ export default function UpdateCampClient({
             }}
           />
           <FinishButton text="delete" onClick={deleteQuestion} />
-          {deleteChoiceIds.length + deleteTextIds.length}
-          {deleteTextIds.toString()}
         </div>
       );
     }

@@ -1,0 +1,353 @@
+"use client";
+
+import getAllAnswerAndQuestion from "@/libs/camp/getAllAnswerAndQuestion";
+import {
+  GetAllAnswerAndQuestion,
+  GetChoiceQuestion,
+  GetTextQuestion,
+  Id,
+  InterUser,
+  UserAndAllQuestionPack,
+} from "../../interface";
+import AllAnswerAndQuestionPageBreakDown from "./AllAnswerAndQuestionPageBreakDown";
+import { copy, stringToId } from "./setup";
+import React, { useState } from "react";
+import { Checkbox, TextField } from "@mui/material";
+interface AnswerReady {
+  element: React.ReactNode;
+  order: number;
+  id: Id;
+}
+interface UserAndAllQuestionReady {
+  user: InterUser;
+  answer: AnswerReady[];
+}
+function getChooseChoice(input: GetChoiceQuestion): React.ReactNode {
+  let chooseChoice: React.ReactNode;
+  switch (input.answer) {
+    case "A": {
+      chooseChoice = (
+        <>
+          <div>A</div>
+          <div>{input.a}</div>
+          <div>คะแนน {input.scoreA}</div>
+        </>
+      );
+      break;
+    }
+    case "B": {
+      chooseChoice = (
+        <>
+          <div>B</div>
+          <div>{input.b}</div>
+          <div>คะแนน {input.scoreB}</div>
+        </>
+      );
+      break;
+    }
+    case "C": {
+      chooseChoice = (
+        <>
+          <div>C</div>
+          <div>{input.c}</div>
+          <div>คะแนน {input.scoreC}</div>
+        </>
+      );
+      break;
+    }
+    case "D": {
+      chooseChoice = (
+        <>
+          <div>D</div>
+          <div>{input.d}</div>
+          <div>คะแนน {input.scoreD}</div>
+        </>
+      );
+      break;
+    }
+    case "E": {
+      chooseChoice = (
+        <>
+          <div>E</div>
+          <div>{input.e}</div>
+          <div>คะแนน {input.scoreE}</div>
+        </>
+      );
+      break;
+    }
+    case "-": {
+      chooseChoice = "-";
+      break;
+    }
+  }
+  return chooseChoice;
+}
+function getTextElement(input: GetTextQuestion): React.ReactNode {
+  return (
+    <>
+      <div>{input.answer}</div>
+      <div>คะแนนที่ได้ {input.answerScore}</div>
+      <div>คะแนนเต็ม {input.score}</div>
+    </>
+  );
+}
+export default function AllAnswerAndQuestionPage({
+  dataInput,
+  token,
+  campIdInput,
+}: {
+  dataInput: GetAllAnswerAndQuestion;
+  token: string;
+  campIdInput: string;
+}) {
+  const campId = stringToId(campIdInput);
+  const [data, setData] = useState(dataInput);
+  const [search, setSearch] = useState("");
+  const [showAll, setShowAll] = useState(true);
+  async function update() {
+    const buffer = await getAllAnswerAndQuestion(campId);
+    setData(buffer);
+    return buffer;
+  }
+  const choiceQuestions = data.mainChoices
+    .map(copy)
+    .sort((a, b) => a._id.toString().localeCompare(b._id.toString()))
+    .sort((a, b) => a.order - b.order);
+  const textQuestions = data.mainTexts
+    .map(copy)
+    .sort((a, b) => a._id.toString().localeCompare(b._id.toString()))
+    .sort((a, b) => a.order - b.order);
+  //const userAndAllQuestionReady:UserAndAllQuestionReady[]=
+  const headTableRaw: AnswerReady[] = choiceQuestions
+    .map((v) => ({
+      id: v._id,
+      order: v.order,
+      element: <th>{v.question}</th>,
+    }))
+    .concat(
+      textQuestions.map((v) => ({
+        id: v._id,
+        order: v.order,
+        element: <th>{v.question}</th>,
+      }))
+    )
+    .sort((a, b) => a.id.toString().localeCompare(b.id.toString()))
+    .sort((a, b) => a.order - b.order);
+  const headTable: React.ReactNode = (
+    <tr>
+      <th>ชือเล่น</th>
+      <th>ชื่อจริง</th>
+      <th>นามสกุล</th>
+      <th>เพศ</th>
+      {headTableRaw.map((v) => v.element)}
+    </tr>
+  );
+  function getAllAnswerAndQuestionReadyRaw(
+    input: UserAndAllQuestionPack[]
+  ): UserAndAllQuestionReady[] {
+    return input.map(({ user, questions }) => ({
+      user,
+      answer: questions.choices
+        .map((v) => ({
+          id: v._id,
+          order: v.order,
+          element: getChooseChoice(v),
+        }))
+        .concat(
+          questions.texts.map((v) => ({
+            id: v._id,
+            order: v.order,
+            element: getTextElement(v),
+          }))
+        )
+        .sort((a, b) => a.id.toString().localeCompare(b.id.toString()))
+        .sort((a, b) => a.order - b.order),
+    }));
+  }
+  function getAllAnswerAndQuestionReady(
+    input: UserAndAllQuestionPack[]
+  ): React.ReactNode {
+    const buffer = getAllAnswerAndQuestionReadyRaw(input);
+    if (search == "") {
+      return buffer.map((v, i) => (
+        <tr key={i}>
+          <td>{v.user.nickname}</td>
+          <td>{v.user.name}</td>
+          <td>{v.user.lastname}</td>
+          <td>{v.user.gender}</td>
+          {v.answer.map((v, i) => (
+            <td key={i}>{v.element}</td>
+          ))}
+        </tr>
+      ));
+    } else {
+      return buffer
+        .filter((n) => n.user.nickname == search)
+        .map((v, i) => (
+          <tr key={i}>
+            <td>{v.user.nickname}</td>
+            <td>{v.user.name}</td>
+            <td>{v.user.lastname}</td>
+            <td>{v.user.gender}</td>
+            {v.answer.map((v, i) => (
+              <td key={i}>{v.element}</td>
+            ))}
+          </tr>
+        ));
+    }
+  }
+  return (
+    <div>
+      <Checkbox onChange={(e) => setShowAll(e.target.checked)} defaultChecked />
+      filter
+      <TextField value={search} onChange={(e) => setSearch(e.target.value)} />
+      {showAll ? (
+        <>
+          <table>
+            <tr>
+              <th>คำถาม/ตัวเลือก</th>
+              <th>A</th>
+              <th>B</th>
+              <th>C</th>
+              <th>D</th>
+              <th>E</th>
+            </tr>
+            {choiceQuestions.map((choiceQuestion, i) => (
+              <tr key={i}>
+                <td>{choiceQuestion.question}</td>
+                <td>
+                  <div>{choiceQuestion.a}</div>
+                  <div>จำนวนน้องที่ตอบ {choiceQuestion.nongAnswerA}</div>
+                  <div>จำนวนพี่ที่ตอบ {choiceQuestion.peeAnswerA}</div>
+                  <div>คะแนน {choiceQuestion.scoreA}</div>
+                </td>
+                <td>
+                  <div>{choiceQuestion.b}</div>
+                  <div>จำนวนน้องที่ตอบ {choiceQuestion.nongAnswerB}</div>
+                  <div>จำนวนพี่ที่ตอบ {choiceQuestion.peeAnswerB}</div>
+                  <div>คะแนน {choiceQuestion.scoreB}</div>
+                </td>
+                <td>
+                  <div>{choiceQuestion.c}</div>
+                  <div>จำนวนน้องที่ตอบ {choiceQuestion.nongAnswerC}</div>
+                  <div>จำนวนพี่ที่ตอบ {choiceQuestion.peeAnswerC}</div>
+                  <div>คะแนน {choiceQuestion.scoreC}</div>
+                </td>
+                <td>
+                  <div>{choiceQuestion.d}</div>
+                  <div>จำนวนน้องที่ตอบ {choiceQuestion.nongAnswerD}</div>
+                  <div>จำนวนพี่ที่ตอบ {choiceQuestion.peeAnswerD}</div>
+                  <div>คะแนน {choiceQuestion.scoreD}</div>
+                </td>
+                <td>
+                  <div>{choiceQuestion.e}</div>
+                  <div>จำนวนน้องที่ตอบ {choiceQuestion.nongAnswerE}</div>
+                  <div>จำนวนพี่ที่ตอบ {choiceQuestion.peeAnswerE}</div>
+                  <div>คะแนน {choiceQuestion.scoreE}</div>
+                </td>
+              </tr>
+            ))}
+          </table>
+          น้องที่สมัครเข้ามา
+          <AllAnswerAndQuestionPageBreakDown
+            data={data}
+            textQuestions={textQuestions}
+            token={token}
+            campId={campId}
+            update={update}
+            setMode={(dataInput2) => dataInput2.nongPendingAnswers}
+          />
+          น้องที่ผ่านสัมภาส
+          <AllAnswerAndQuestionPageBreakDown
+            data={data}
+            textQuestions={textQuestions}
+            token={token}
+            campId={campId}
+            update={update}
+            setMode={(dataInput2) => dataInput2.nongInterviewAnswers}
+          />
+          น้องที่ผ่านเข้าค่าย
+          <AllAnswerAndQuestionPageBreakDown
+            data={data}
+            textQuestions={textQuestions}
+            token={token}
+            campId={campId}
+            update={update}
+            setMode={(dataInput2) => dataInput2.nongPassAnswers}
+          />
+          น้องที่จ่ายตังแล้ว
+          <AllAnswerAndQuestionPageBreakDown
+            data={data}
+            textQuestions={textQuestions}
+            token={token}
+            campId={campId}
+            update={update}
+            setMode={(dataInput2) => dataInput2.nongPaidAnswers}
+          />
+          น้องที่ยืนยันแล้ว
+          <AllAnswerAndQuestionPageBreakDown
+            data={data}
+            textQuestions={textQuestions}
+            token={token}
+            campId={campId}
+            update={update}
+            setMode={(dataInput2) => dataInput2.nongSureAnswers}
+          />
+          น้องในค่าย
+          <AllAnswerAndQuestionPageBreakDown
+            data={data}
+            textQuestions={textQuestions}
+            token={token}
+            campId={campId}
+            update={update}
+            setMode={(dataInput2) => dataInput2.nongsAnswers}
+          />
+          พี่พี่
+          <AllAnswerAndQuestionPageBreakDown
+            data={data}
+            textQuestions={textQuestions}
+            token={token}
+            campId={campId}
+            update={update}
+            setMode={(dataInput2) => dataInput2.peeAnswers}
+          />
+        </>
+      ) : null}
+      น้องที่สมัครเข้ามา
+      <table>
+        {headTable}
+        {getAllAnswerAndQuestionReady(data.nongPendingAnswers)}
+      </table>
+      น้องที่ผ่านสัมภาส
+      <table>
+        {headTable}
+        {getAllAnswerAndQuestionReady(data.nongInterviewAnswers)}
+      </table>
+      น้องที่ผ่านเข้าค่าย
+      <table>
+        {headTable}
+        {getAllAnswerAndQuestionReady(data.nongPassAnswers)}
+      </table>
+      น้องที่จ่ายตังแล้ว
+      <table>
+        {headTable}
+        {getAllAnswerAndQuestionReady(data.nongPaidAnswers)}
+      </table>
+      น้องที่ยืนยันแล้ว
+      <table>
+        {headTable}
+        {getAllAnswerAndQuestionReady(data.nongSureAnswers)}
+      </table>
+      น้องในค่าย
+      <table>
+        {headTable}
+        {getAllAnswerAndQuestionReady(data.nongsAnswers)}
+      </table>
+      พี่พี่
+      <table>
+        {headTable}
+        {getAllAnswerAndQuestionReady(data.peeAnswers)}
+      </table>
+    </div>
+  );
+}

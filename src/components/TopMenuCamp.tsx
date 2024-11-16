@@ -26,6 +26,10 @@ export default function TopMenuCamp({
               pageRef={`/camp/${campId}/baan/nongChat`}
             />
             <TopMenuItem
+              title="ตอบคำถาม"
+              pageRef={`/camp/${campId}/answerTheQuestion`}
+            />
+            <TopMenuItem
               title="อ่านแชตทั้งหมด"
               pageRef={`/camp/${campId}/allChat`}
             />
@@ -49,6 +53,10 @@ export default function TopMenuCamp({
                 <TopMenuItem
                   title="พี่บ้านคุยกัน"
                   pageRef={`/camp/${campId}/peebaanChat`}
+                />
+                <TopMenuItem
+                  title="ตอบคำถาม"
+                  pageRef={`/camp/${campId}/answerTheQuestion`}
                 />
                 <TopMenuItem
                   title="อ่านแชตทั้งหมด"
@@ -82,6 +90,14 @@ export default function TopMenuCamp({
                   pageRef={`/camp/${campId}/part`}
                 />
                 <TopMenuItem
+                  title="รวมคำถามและคำตอบ"
+                  pageRef={`/camp/${campId}/allAnswerAndQuestion`}
+                />
+                <TopMenuItem
+                  title="ตอบคำถาม"
+                  pageRef={`/camp/${campId}/answerTheQuestion`}
+                />
+                <TopMenuItem
                   title="อ่านแชตทั้งหมด"
                   pageRef={`/camp/${campId}/allChat`}
                 />
@@ -103,6 +119,10 @@ export default function TopMenuCamp({
                   pageRef={`/camp/${campId}/peebaanChat`}
                 />
                 <TopMenuItem
+                  title="ตอบคำถาม"
+                  pageRef={`/camp/${campId}/answerTheQuestion`}
+                />
+                <TopMenuItem
                   title="อ่านแชตทั้งหมด"
                   pageRef={`/camp/${campId}/allChat`}
                 />
@@ -120,6 +140,14 @@ export default function TopMenuCamp({
                 <TopMenuItem
                   title="คุยกันในฝ่าย"
                   pageRef={`/camp/${campId}/part`}
+                />
+                <TopMenuItem
+                  title="รวมคำถามและคำตอบ"
+                  pageRef={`/camp/${campId}/allAnswerAndQuestion`}
+                />
+                <TopMenuItem
+                  title="ตอบคำถาม"
+                  pageRef={`/camp/${campId}/answerTheQuestion`}
                 />
                 <TopMenuItem
                   title="อ่านแชตทั้งหมด"

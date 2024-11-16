@@ -10,6 +10,7 @@ import { TextField } from "@mui/material";
 import FinishButton from "./FinishButton";
 import updateTimeOffset from "@/libs/user/updateTimeOffset";
 import React from "react";
+import { stringToInt } from "./setup";
 export default function TestDateTime({
   token,
   selectOffset,
@@ -79,7 +80,7 @@ export default function TestDateTime({
           type="number"
           defaultValue={displayDay}
           className="w-3/5 bg-slate-100 rounded-2xl shadow-inner"
-          onChange={(e) => setDisplayDay(parseInt(e.target.value))}
+          onChange={(e) => setDisplayDay(stringToInt(e.target.value))}
         />
       </div>
       <div className="flex flex-row items-center my-5">
@@ -90,7 +91,7 @@ export default function TestDateTime({
           type="number"
           defaultValue={displayHour}
           className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-          onChange={(e) => setDisplayHour(parseInt(e.target.value))}
+          onChange={(e) => setDisplayHour(stringToInt(e.target.value))}
         />
       </div>
       <div className="flex flex-row items-center">
@@ -101,7 +102,7 @@ export default function TestDateTime({
           type="number"
           defaultValue={displayMinute}
           className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-          onChange={(e) => setDisplayMinute(parseInt(e.target.value))}
+          onChange={(e) => setDisplayMinute(stringToInt(e.target.value))}
         />
       </div>
 
@@ -120,7 +121,7 @@ export default function TestDateTime({
           type="number"
           defaultValue={displayDay}
           className="w-3/5 bg-slate-100 rounded-2xl shadow-inner"
-          onChange={(e) => setSelectDay(parseInt(e.target.value))}
+          onChange={(e) => setSelectDay(stringToInt(e.target.value))}
         />
       </div>
       <div className="flex flex-row items-center my-5">
@@ -131,7 +132,7 @@ export default function TestDateTime({
           type="number"
           defaultValue={displayHour}
           className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-          onChange={(e) => setSelectHour(parseInt(e.target.value))}
+          onChange={(e) => setSelectHour(stringToInt(e.target.value))}
         />
       </div>
       <div className="flex flex-row items-center">
@@ -142,7 +143,7 @@ export default function TestDateTime({
           type="number"
           defaultValue={displayMinute}
           className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-          onChange={(e) => setSelectMinute(parseInt(e.target.value))}
+          onChange={(e) => setSelectMinute(stringToInt(e.target.value))}
         />
       </div>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -151,7 +152,6 @@ export default function TestDateTime({
           value={select}
           onChange={(newValue) => {
             setSelect(newValue || dayjs(Date.now()));
-            console.log(newValue);
           }}
         />
       </LocalizationProvider>
