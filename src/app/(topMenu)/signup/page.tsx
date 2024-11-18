@@ -1,5 +1,6 @@
 "use client";
 import SelectSize from "@/components/SelectSize";
+import { setTextToString } from "@/components/setup";
 import userSignup from "@/libs/user/userSignup";
 import { Checkbox, Input, TextField } from "@mui/material";
 import Link from "next/link";
@@ -53,7 +54,7 @@ export default function signupPage() {
                 }
               }
             }}
-            onChange={(e) => setName(e.target.value)}
+            onChange={setTextToString(setName)}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -77,7 +78,7 @@ export default function signupPage() {
                 }
               }
             }}
-            onChange={(e) => setLastname(e.target.value)}
+            onChange={setTextToString(setLastname)}
           />
         </div>
         <div className="flex flex-row items-center">
@@ -101,7 +102,7 @@ export default function signupPage() {
                 }
               }
             }}
-            onChange={(e) => setNickname(e.target.value)}
+            onChange={setTextToString(setNickname)}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -125,7 +126,7 @@ export default function signupPage() {
                 }
               }
             }}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={setTextToString(setEmail)}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -149,7 +150,7 @@ export default function signupPage() {
                 }
               }
             }}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={setTextToString(setPassword)}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -173,7 +174,7 @@ export default function signupPage() {
                 }
               }
             }}
-            onChange={(e) => setTel(e.target.value)}
+            onChange={setTextToString(setTel)}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -199,7 +200,7 @@ export default function signupPage() {
                 }
               }
             }}
-            onChange={(e) => setCitizenId(e.target.value)}
+            onChange={setTextToString(setCitizenId)}
           />
         </div>
         <div className="flex flex-row items-center my-5">

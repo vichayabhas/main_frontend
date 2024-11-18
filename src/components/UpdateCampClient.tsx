@@ -29,10 +29,11 @@ import {
   modifyElementInUseStateArray,
   notEmpty,
   removeElementInUseStateArray,
-  selectCheck,
-  stringToFloat,
-  stringToInt,
-  swop,
+  setMap,
+  setSwop,
+  setTextToFloat,
+  setTextToInt,
+  setTextToString,
 } from "./setup";
 import editQuestion from "@/libs/camp/editQuestion";
 import getAllQuestion from "@/libs/camp/getAllQuestion";
@@ -110,6 +111,9 @@ export default function UpdateCampClient({
   const [showCorrectAnswerAndScore, setShowCorrectAnswerAndScore] = useState(
     camp.showCorrectAnswerAndScore
   );
+  const [canAnswerTheQuestion, setCanAnswerTheQuestion] = useState(
+    camp.canAnswerTheQuestion
+  );
   const [choiceIds, setChoiceIds] = useState<(Id | null)[]>(
     questions.choices.map((choice) => choice._id)
   );
@@ -176,12 +180,7 @@ export default function UpdateCampClient({
               {deleteChoiceIds.length}
               {isDelete ? (
                 <Checkbox
-                  onChange={(e, check) => {
-                    const instants = selectCheck(data.choiceIds[i], check);
-                    setDeleteChoiceIds((previous) =>
-                      swop(instants[0], instants[1], previous)
-                    );
-                  }}
+                  onChange={setSwop(data.choiceIds[i],setDeleteChoiceIds)}
                 />
               ) : null}
             </>
@@ -204,12 +203,7 @@ export default function UpdateCampClient({
               {deleteTextIds.length}
               {isDelete ? (
                 <Checkbox
-                  onChange={(e, check) => {
-                    const instants = selectCheck(data.textIds[0][i], check);
-                    setDeleteTextIds((previous) =>
-                      swop(instants[0], instants[1], previous)
-                    );
-                  }}
+                  onChange={setSwop(data.textIds[0][i],setDeleteTextIds)}
                 />
               ) : null}
             </div>
@@ -267,7 +261,9 @@ export default function UpdateCampClient({
     if (textIds[0][textIds[0].length - 1]) {
       return;
     }
-    textQuestions[1]((previous) => previous.filter(removeElementInUseStateArray));
+    textQuestions[1]((previous) =>
+      previous.filter(removeElementInUseStateArray)
+    );
     textIds[1]((previous) => previous.filter(removeElementInUseStateArray));
     scores[1]((previous) => previous.filter(removeElementInUseStateArray));
     textOrder[1]((previous) => previous.filter(removeElementInUseStateArray));
@@ -388,58 +384,48 @@ export default function UpdateCampClient({
     scores[1](newQuestions.texts.map((text) => text.score));
     textOrder[1](newQuestions.texts.map((text) => text.order));
     setPreview(
-      questionReady(
-        false,
-        {
-          choiceIds: newQuestions.choices.map((choice) => choice._id),
-          choiceQuestions: newQuestions.choices.map(
-            (choice) => choice.question
-          ),
-          as: newQuestions.choices.map((choice) => choice.a),
-          bs: newQuestions.choices.map((choice) => choice.b),
-          cs: newQuestions.choices.map((choice) => choice.c),
-          ds: newQuestions.choices.map((choice) => choice.d),
-          es: newQuestions.choices.map((choice) => choice.e),
-          scoreAs: [newQuestions.choices.map((choice) => choice.scoreA)],
-          scoreBs: [newQuestions.choices.map((choice) => choice.scoreB)],
-          scoreCs: [newQuestions.choices.map((choice) => choice.scoreC)],
-          scoreDs: [newQuestions.choices.map((choice) => choice.scoreD)],
-          scoreEs: [newQuestions.choices.map((choice) => choice.scoreE)],
-          corrects: newQuestions.choices.map((choice) => choice.correct),
-          choiceOrder: newQuestions.choices.map((choice) => choice.order),
-          textQuestions: [newQuestions.texts.map((text) => text.question)],
-          textIds: [newQuestions.texts.map((text) => text._id)],
-          scores: [newQuestions.texts.map((text) => text.score)],
-          textOrder: [newQuestions.texts.map((text) => text.order)],
-        }
-      ).map((v) => v.element)
+      questionReady(false, {
+        choiceIds: newQuestions.choices.map((choice) => choice._id),
+        choiceQuestions: newQuestions.choices.map((choice) => choice.question),
+        as: newQuestions.choices.map((choice) => choice.a),
+        bs: newQuestions.choices.map((choice) => choice.b),
+        cs: newQuestions.choices.map((choice) => choice.c),
+        ds: newQuestions.choices.map((choice) => choice.d),
+        es: newQuestions.choices.map((choice) => choice.e),
+        scoreAs: [newQuestions.choices.map((choice) => choice.scoreA)],
+        scoreBs: [newQuestions.choices.map((choice) => choice.scoreB)],
+        scoreCs: [newQuestions.choices.map((choice) => choice.scoreC)],
+        scoreDs: [newQuestions.choices.map((choice) => choice.scoreD)],
+        scoreEs: [newQuestions.choices.map((choice) => choice.scoreE)],
+        corrects: newQuestions.choices.map((choice) => choice.correct),
+        choiceOrder: newQuestions.choices.map((choice) => choice.order),
+        textQuestions: [newQuestions.texts.map((text) => text.question)],
+        textIds: [newQuestions.texts.map((text) => text._id)],
+        scores: [newQuestions.texts.map((text) => text.score)],
+        textOrder: [newQuestions.texts.map((text) => text.order)],
+      }).map((v) => v.element)
     );
     setDeletePreview(
-      questionReady(
-        true,
-        {
-          choiceIds: newQuestions.choices.map((choice) => choice._id),
-          choiceQuestions: newQuestions.choices.map(
-            (choice) => choice.question
-          ),
-          as: newQuestions.choices.map((choice) => choice.a),
-          bs: newQuestions.choices.map((choice) => choice.b),
-          cs: newQuestions.choices.map((choice) => choice.c),
-          ds: newQuestions.choices.map((choice) => choice.d),
-          es: newQuestions.choices.map((choice) => choice.e),
-          scoreAs: [newQuestions.choices.map((choice) => choice.scoreA)],
-          scoreBs: [newQuestions.choices.map((choice) => choice.scoreB)],
-          scoreCs: [newQuestions.choices.map((choice) => choice.scoreC)],
-          scoreDs: [newQuestions.choices.map((choice) => choice.scoreD)],
-          scoreEs: [newQuestions.choices.map((choice) => choice.scoreE)],
-          corrects: newQuestions.choices.map((choice) => choice.correct),
-          choiceOrder: newQuestions.choices.map((choice) => choice.order),
-          textQuestions: [newQuestions.texts.map((text) => text.question)],
-          textIds: [newQuestions.texts.map((text) => text._id)],
-          scores: [newQuestions.texts.map((text) => text.score)],
-          textOrder: [newQuestions.texts.map((text) => text.order)],
-        }
-      ).map((v) => v.element)
+      questionReady(true, {
+        choiceIds: newQuestions.choices.map((choice) => choice._id),
+        choiceQuestions: newQuestions.choices.map((choice) => choice.question),
+        as: newQuestions.choices.map((choice) => choice.a),
+        bs: newQuestions.choices.map((choice) => choice.b),
+        cs: newQuestions.choices.map((choice) => choice.c),
+        ds: newQuestions.choices.map((choice) => choice.d),
+        es: newQuestions.choices.map((choice) => choice.e),
+        scoreAs: [newQuestions.choices.map((choice) => choice.scoreA)],
+        scoreBs: [newQuestions.choices.map((choice) => choice.scoreB)],
+        scoreCs: [newQuestions.choices.map((choice) => choice.scoreC)],
+        scoreDs: [newQuestions.choices.map((choice) => choice.scoreD)],
+        scoreEs: [newQuestions.choices.map((choice) => choice.scoreE)],
+        corrects: newQuestions.choices.map((choice) => choice.correct),
+        choiceOrder: newQuestions.choices.map((choice) => choice.order),
+        textQuestions: [newQuestions.texts.map((text) => text.question)],
+        textIds: [newQuestions.texts.map((text) => text._id)],
+        scores: [newQuestions.texts.map((text) => text.score)],
+        textOrder: [newQuestions.texts.map((text) => text.order)],
+      }).map((v) => v.element)
     );
     setEditMode("normal");
   }
@@ -614,7 +600,7 @@ export default function UpdateCampClient({
                     },
                   },
                 }}
-                onChange={(e) => setNewBaanName(e.target.value)}
+                onChange={setTextToString(setNewBaanName)}
                 defaultValue={null}
               />
             </div>
@@ -664,7 +650,7 @@ export default function UpdateCampClient({
                     },
                   },
                 }}
-                onChange={(e) => setRegisterSheetLink(e.target.value)}
+                onChange={setTextToString(setRegisterSheetLink)}
                 defaultValue={camp.registerSheetLink}
               />
             </div>
@@ -692,7 +678,7 @@ export default function UpdateCampClient({
                     },
                   },
                 }}
-                onChange={(e) => setLink(e.target.value)}
+                onChange={setTextToString(setLink)}
                 defaultValue={camp.link}
               />
             </div>
@@ -701,13 +687,10 @@ export default function UpdateCampClient({
               {pictureUrls[0].map((pictureUrl, i) => (
                 <div key={i}>
                   <TypingImageSource
-                    onChange={function (imgSrc: string | null): void {
-                      pictureUrls[1](
-                        pictureUrls[0].map(
-                          modifyElementInUseStateArray(imgSrc, i)
-                        )
-                      );
-                    }}
+                    onChange={setMap(
+                      pictureUrls[1],
+                      modifyElementInUseStateArray(i)
+                    )}
                     defaultSrc={pictureUrl}
                   />
                 </div>
@@ -754,7 +737,7 @@ export default function UpdateCampClient({
                     },
                   },
                 }}
-                onChange={(e) => setGroupName(e.target.value)}
+                onChange={setTextToString(setGroupName)}
                 defaultValue={groupName}
               />
             </div>
@@ -892,6 +875,22 @@ export default function UpdateCampClient({
             </div>
             <div className="flex flex-row items-center my-5">
               <label className="w-2/5 text-2xl text-white">
+                เปิดให้ตอบคำถามหรือไม่
+              </label>
+              <Checkbox
+                sx={{
+                  "&.Mui-checked": {
+                    color: "#FFFFFF", // Custom color when checked
+                  },
+                }}
+                onChange={(e, state) => {
+                  setCanAnswerTheQuestion(state);
+                }}
+                defaultChecked={canAnswerTheQuestion}
+              />
+            </div>
+            <div className="flex flex-row items-center my-5">
+              <label className="w-2/5 text-2xl text-white">
                 ค่ายเสร็จหรือยัง
               </label>
               <Checkbox
@@ -933,9 +932,7 @@ export default function UpdateCampClient({
                     },
                   }}
                   value={dateStart}
-                  onChange={(newValue) => {
-                    setDateStart(newValue);
-                  }}
+                  onChange={setDateStart}
                   disablePast
                 />
               </LocalizationProvider>
@@ -967,9 +964,7 @@ export default function UpdateCampClient({
                     },
                   }}
                   value={dateEnd}
-                  onChange={(newValue) => {
-                    setDateEnd(newValue);
-                  }}
+                  onChange={setDateEnd}
                   disablePast
                 />
               </LocalizationProvider>
@@ -1012,6 +1007,7 @@ export default function UpdateCampClient({
                           petoDataLock,
                           haveCloth,
                           showCorrectAnswerAndScore,
+                          canAnswerTheQuestion,
                         },
                         camp._id,
                         session.user.token
@@ -1101,13 +1097,12 @@ export default function UpdateCampClient({
                         },
                       },
                     }}
-                    onChange={(e) => {
-                      setChoiceQuestions(
-                        (previous) => previous.map(
-                          modifyElementInUseStateArray(e.target.value, i)
-                        )
-                      );
-                    }}
+                    onChange={setTextToString(
+                      setMap(
+                        setChoiceQuestions,
+                        modifyElementInUseStateArray(i)
+                      )
+                    )}
                     defaultValue={choiceQuestions[i]}
                   />
                 </div>
@@ -1132,11 +1127,9 @@ export default function UpdateCampClient({
                         },
                       },
                     }}
-                    onChange={(e) => {
-                      setAs(
-                        (previous) => previous.map(modifyElementInUseStateArray(e.target.value, i))
-                      );
-                    }}
+                    onChange={setTextToString(
+                      setMap(setAs, modifyElementInUseStateArray(i))
+                    )}
                     defaultValue={as[i]}
                   />
                 </div>
@@ -1161,11 +1154,9 @@ export default function UpdateCampClient({
                         },
                       },
                     }}
-                    onChange={(e) => {
-                      setBs(
-                        (previous) => previous.map(modifyElementInUseStateArray(e.target.value, i))
-                      );
-                    }}
+                    onChange={setTextToString(
+                      setMap(setBs, modifyElementInUseStateArray(i))
+                    )}
                     defaultValue={bs[i]}
                   />
                 </div>
@@ -1190,11 +1181,9 @@ export default function UpdateCampClient({
                         },
                       },
                     }}
-                    onChange={(e) => {
-                      setCs(
-                        (previous) => previous.map(modifyElementInUseStateArray(e.target.value, i))
-                      );
-                    }}
+                    onChange={setTextToString(
+                      setMap(setCs, modifyElementInUseStateArray(i))
+                    )}
                     defaultValue={cs[i]}
                   />
                 </div>
@@ -1219,11 +1208,9 @@ export default function UpdateCampClient({
                         },
                       },
                     }}
-                    onChange={(e) => {
-                      setDs(
-                        (previous) => previous.map(modifyElementInUseStateArray(e.target.value, i))
-                      );
-                    }}
+                    onChange={setTextToString(
+                      setMap(setDs, modifyElementInUseStateArray(i))
+                    )}
                     defaultValue={ds[i]}
                   />
                 </div>
@@ -1248,11 +1235,9 @@ export default function UpdateCampClient({
                         },
                       },
                     }}
-                    onChange={(e) => {
-                      setEs(
-                        (previous) => previous.map(modifyElementInUseStateArray(e.target.value, i))
-                      );
-                    }}
+                    onChange={setTextToString(
+                      setMap(setEs, modifyElementInUseStateArray(i))
+                    )}
                     defaultValue={es[i]}
                   />
                 </div>
@@ -1278,16 +1263,9 @@ export default function UpdateCampClient({
                         },
                       },
                     }}
-                    onChange={(e) => {
-                      scoreAs[1](
-                        (previous) => previous.map(
-                          modifyElementInUseStateArray(
-                            stringToFloat(e.target.value),
-                            i
-                          )
-                        )
-                      );
-                    }}
+                    onChange={setTextToFloat(
+                      setMap(scoreAs[1], modifyElementInUseStateArray(i))
+                    )}
                     defaultValue={scoreAs[0][i]}
                   />
                 </div>
@@ -1313,16 +1291,9 @@ export default function UpdateCampClient({
                         },
                       },
                     }}
-                    onChange={(e) => {
-                      scoreBs[1](
-                        (previous) => previous.map(
-                          modifyElementInUseStateArray(
-                            stringToFloat(e.target.value),
-                            i
-                          )
-                        )
-                      );
-                    }}
+                    onChange={setTextToFloat(
+                      setMap(scoreBs[1], modifyElementInUseStateArray(i))
+                    )}
                     defaultValue={scoreBs[0][i]}
                   />
                 </div>
@@ -1348,16 +1319,9 @@ export default function UpdateCampClient({
                         },
                       },
                     }}
-                    onChange={(e) => {
-                      scoreCs[1](
-                        (previous) => previous.map(
-                          modifyElementInUseStateArray(
-                            stringToFloat(e.target.value),
-                            i
-                          )
-                        )
-                      );
-                    }}
+                    onChange={setTextToFloat(
+                      setMap(scoreCs[1], modifyElementInUseStateArray(i))
+                    )}
                     defaultValue={scoreCs[0][i]}
                   />
                 </div>
@@ -1383,17 +1347,10 @@ export default function UpdateCampClient({
                         },
                       },
                     }}
-                    onChange={(e) => {
-                      scoreDs[1](
-                        (previous) => previous.map(
-                          modifyElementInUseStateArray(
-                            stringToFloat(e.target.value),
-                            i
-                          )
-                        )
-                      );
-                    }}
-                    defaultValue={scoreDs[i]}
+                    onChange={setTextToFloat(
+                      setMap(scoreDs[1], modifyElementInUseStateArray(i))
+                    )}
+                    defaultValue={scoreDs[0][i]}
                   />
                 </div>
                 <div className="flex flex-row items-center my-5">
@@ -1418,16 +1375,9 @@ export default function UpdateCampClient({
                         },
                       },
                     }}
-                    onChange={(e) => {
-                      scoreEs[1](
-                        (previous) => previous.map(
-                          modifyElementInUseStateArray(
-                            stringToFloat(e.target.value),
-                            i
-                          )
-                        )
-                      );
-                    }}
+                    onChange={setTextToFloat(
+                      setMap(scoreEs[1], modifyElementInUseStateArray(i))
+                    )}
                     defaultValue={scoreEs[0][i]}
                   />
                 </div>
@@ -1444,11 +1394,7 @@ export default function UpdateCampClient({
                 >
                   <MenuItem
                     onClick={() => {
-                      setCorrect(
-                        (previous) => previous.map(
-                          modifyElementInUseStateArray<Choice | "-">("A", i)
-                        )
-                      );
+                      setMap(setCorrect, modifyElementInUseStateArray(i))("A");
                     }}
                     value={`A ${as[i]} คะแนน ${scoreAs[0][i]}`}
                   >
@@ -1456,11 +1402,7 @@ export default function UpdateCampClient({
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
-                      setCorrect(
-                        (previous) => previous.map(
-                          modifyElementInUseStateArray<Choice | "-">("B", i)
-                        )
-                      );
+                      setMap(setCorrect, modifyElementInUseStateArray(i))("B");
                     }}
                     value={`B ${bs[i]} คะแนน ${scoreBs[0][i]}`}
                   >
@@ -1468,11 +1410,7 @@ export default function UpdateCampClient({
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
-                      setCorrect(
-                        (previous) => previous.map(
-                          modifyElementInUseStateArray<Choice | "-">("C", i)
-                        )
-                      );
+                      setMap(setCorrect, modifyElementInUseStateArray(i))("C");
                     }}
                     value={`C ${cs[i]} คะแนน ${scoreCs[0][i]}`}
                   >
@@ -1480,11 +1418,7 @@ export default function UpdateCampClient({
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
-                      setCorrect(
-                        (previous) => previous.map(
-                          modifyElementInUseStateArray<Choice | "-">("D", i)
-                        )
-                      );
+                      setMap(setCorrect, modifyElementInUseStateArray(i))("D");
                     }}
                     value={`D ${ds[i]} คะแนน ${scoreDs[0][i]}`}
                   >
@@ -1492,11 +1426,7 @@ export default function UpdateCampClient({
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
-                      setCorrect(
-                        (previous) => previous.map(
-                          modifyElementInUseStateArray<Choice | "-">("E", i)
-                        )
-                      );
+                      setMap(setCorrect, modifyElementInUseStateArray(i))("E");
                     }}
                     value={`E ${es[i]} คะแนน ${scoreEs[0][i]}`}
                   >
@@ -1504,11 +1434,7 @@ export default function UpdateCampClient({
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
-                      setCorrect(
-                        (previous) => previous.map(
-                          modifyElementInUseStateArray<Choice | "-">("-", i)
-                        )
-                      );
+                      setMap(setCorrect, modifyElementInUseStateArray(i))("-");
                     }}
                     value={"-"}
                   >
@@ -1537,16 +1463,7 @@ export default function UpdateCampClient({
                         },
                       },
                     }}
-                    onChange={(e) => {
-                      setChoiceOrder(
-                        (previous) => previous.map(
-                          modifyElementInUseStateArray(
-                            stringToInt(e.target.value),
-                            i
-                          )
-                        )
-                      );
-                    }}
+                    onChange={setTextToInt(setMap(setChoiceOrder,modifyElementInUseStateArray(i)))}
                     defaultValue={as[i]}
                   />
                 </div>
@@ -1586,13 +1503,7 @@ export default function UpdateCampClient({
                       },
                     },
                   }}
-                  onChange={(e) => {
-                    textQuestions[1](
-                      (previous) => previous.map(
-                        modifyElementInUseStateArray(e.target.value, i)
-                      )
-                    );
-                  }}
+                  onChange={setTextToString(setMap(textQuestions[1],modifyElementInUseStateArray(i)))}
                   defaultValue={textQuestions[0][i]}
                 />
               </div>
@@ -1618,16 +1529,7 @@ export default function UpdateCampClient({
                       },
                     },
                   }}
-                  onChange={(e) => {
-                    scores[1](
-                      (previous) => previous.map(
-                        modifyElementInUseStateArray(
-                          stringToFloat(e.target.value),
-                          i
-                        )
-                      )
-                    );
-                  }}
+                  onChange={setTextToFloat(setMap(scores[1],modifyElementInUseStateArray(i)))}
                   defaultValue={scores[0][i]}
                 />
               </div>
@@ -1653,16 +1555,7 @@ export default function UpdateCampClient({
                       },
                     },
                   }}
-                  onChange={(e) => {
-                    textOrder[1](
-                      (previous) => previous.map(
-                        modifyElementInUseStateArray(
-                          stringToInt(e.target.value),
-                          i
-                        )
-                      )
-                    );
-                  }}
+                  onChange={setTextToInt(setMap(textOrder[1],modifyElementInUseStateArray(i)))}
                   defaultValue={textOrder[0][i]}
                 />
               </div>

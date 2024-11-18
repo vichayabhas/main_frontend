@@ -3,7 +3,12 @@
 import { useState } from "react";
 import { Choice, GetAllQuestion } from "../../interface";
 import { Select, MenuItem, TextField } from "@mui/material";
-import { modifyElementInUseStateArray, stringToId } from "./setup";
+import {
+  modifyElementInUseStateArray,
+  setMap,
+  setTextToString,
+  stringToId,
+} from "./setup";
 import React from "react";
 import peeAnswerQuestion from "@/libs/camp/peeAnswerQuestion";
 interface QuestionReady {
@@ -17,9 +22,9 @@ export default function PureQuestion({
 }: {
   token: string;
   questions: GetAllQuestion;
-  campIdString:string;
+  campIdString: string;
 }) {
-    const campId=stringToId(campIdString)
+  const campId = stringToId(campIdString);
   const [choiceAnswers, setChoiceAnswers] = useState<(Choice | "-")[]>(
     questions.choices.map((choice) => choice.answer)
   );
@@ -59,7 +64,7 @@ export default function PureQuestion({
         element: (
           <>
             <div>{choice.question}</div>
-            <Select
+            <Select<string>
               defaultValue={chooseChoice}
               variant="standard"
               name="location"
@@ -67,73 +72,49 @@ export default function PureQuestion({
               className="h-[2em] w-[200px] mb-5 text-white"
             >
               <MenuItem
-                onClick={() => {
-                  setChoiceAnswers((previous) =>
-                    previous.map(
-                      modifyElementInUseStateArray<Choice | "-">("A", i)
-                    )
-                  );
-                }}
+                onClick={() =>
+                  setMap(setChoiceAnswers, modifyElementInUseStateArray(i))("A")
+                }
                 value={choice.a}
               >
                 {choice.a}
               </MenuItem>
               <MenuItem
-                onClick={() => {
-                  setChoiceAnswers((previous) =>
-                    previous.map(
-                      modifyElementInUseStateArray<Choice | "-">("B", i)
-                    )
-                  );
-                }}
+                onClick={() =>
+                  setMap(setChoiceAnswers, modifyElementInUseStateArray(i))("B")
+                }
                 value={choice.b}
               >
                 {choice.b}
               </MenuItem>
               <MenuItem
-                onClick={() => {
-                  setChoiceAnswers((previous) =>
-                    previous.map(
-                      modifyElementInUseStateArray<Choice | "-">("C", i)
-                    )
-                  );
-                }}
+                onClick={() =>
+                  setMap(setChoiceAnswers, modifyElementInUseStateArray(i))("C")
+                }
                 value={choice.c}
               >
                 {choice.c}
               </MenuItem>
               <MenuItem
-                onClick={() => {
-                  setChoiceAnswers((previous) =>
-                    previous.map(
-                      modifyElementInUseStateArray<Choice | "-">("D", i)
-                    )
-                  );
-                }}
+                onClick={() =>
+                  setMap(setChoiceAnswers, modifyElementInUseStateArray(i))("D")
+                }
                 value={choice.d}
               >
                 {choice.d}
               </MenuItem>
               <MenuItem
-                onClick={() => {
-                  setChoiceAnswers((previous) =>
-                    previous.map(
-                      modifyElementInUseStateArray<Choice | "-">("E", i)
-                    )
-                  );
-                }}
+                onClick={() =>
+                  setMap(setChoiceAnswers, modifyElementInUseStateArray(i))("E")
+                }
                 value={choice.e}
               >
                 {choice.e}
               </MenuItem>
               <MenuItem
-                onClick={() => {
-                  setChoiceAnswers((previous) =>
-                    previous.map(
-                      modifyElementInUseStateArray<Choice | "-">("-", i)
-                    )
-                  );
-                }}
+                onClick={() =>
+                  setMap(setChoiceAnswers, modifyElementInUseStateArray(i))("-")
+                }
                 value={"-"}
               >
                 -
@@ -175,11 +156,9 @@ export default function PureQuestion({
                 },
               }}
               className="w-3/5 bg-white rounded-2xl shadow-inner"
-              onChange={(e) => {
-                setTextAnswers((previous) =>
-                  previous.map(modifyElementInUseStateArray(e.target.value, i))
-                );
-              }}
+              onChange={setTextToString(
+                setMap(setTextAnswers, modifyElementInUseStateArray(i))
+              )}
               defaultValue={textAnswers[i]}
             />
           </div>
@@ -191,33 +170,34 @@ export default function PureQuestion({
   return (
     <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
       <div className="text-4xl font-medium">Register</div>
-
       <form className="w-[30%] items-center bg-slate-600 p-10 rounded-3xl shadow-[25px_25px_40px_-10px_rgba(0,0,0,0.7)]">
         {questionReady.map((e) => e.element)}
         <div className="flex flex-row justify-end">
-          <button
-            className="bg-pink-300 p-3 rounded-lg shadow-[10px_10px_10px_-10px_rgba(0,0,0,0.5)] hover:bg-rose-700 hover:text-pink-50"
-            onClick={async () => {
-              peeAnswerQuestion(
-                {
-                  campId,
-                  textAnswers: textAnswers.map((text, i) => ({
-                    answer: text,
-                    questionId: questions.texts[i]._id,
-                    answerId: questions.texts[i].answerId,
-                  })),
-                  choiceAnswers: choiceAnswers.map((choice, i) => ({
-                    answer: choice,
-                    questionId: questions.choices[i]._id,
-                    answerId: questions.choices[i].answerId,
-                  })),
-                },
-                token
-              );
-            }}
-          >
-            Register
-          </button>
+          {questions.canAnswerTheQuestion ? (
+            <button
+              className="bg-pink-300 p-3 rounded-lg shadow-[10px_10px_10px_-10px_rgba(0,0,0,0.5)] hover:bg-rose-700 hover:text-pink-50"
+              onClick={async () => {
+                peeAnswerQuestion(
+                  {
+                    campId,
+                    textAnswers: textAnswers.map((text, i) => ({
+                      answer: text,
+                      questionId: questions.texts[i]._id,
+                      answerId: questions.texts[i].answerId,
+                    })),
+                    choiceAnswers: choiceAnswers.map((choice, i) => ({
+                      answer: choice,
+                      questionId: questions.choices[i]._id,
+                      answerId: questions.choices[i].answerId,
+                    })),
+                  },
+                  token
+                );
+              }}
+            >
+              Register
+            </button>
+          ) : null}
         </div>
       </form>
     </div>

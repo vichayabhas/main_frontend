@@ -14,5 +14,5 @@ export default async function page({params}:{params:{cid:string}}){
     }
     const data=await getAllAnswerAndQuestion(campId)
     //return<></>
-    return <AllAnswerAndQuestionPage dataInput={data} token={session.user.token} campIdInput={campId.toString()} />
+    return <AllAnswerAndQuestionPage dataInput={data} token={session.user.token} campIdInput={campId.toString()} readOnly />
 }

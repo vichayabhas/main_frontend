@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { TextField } from "@mui/material";
 import FinishButton from "./FinishButton";
 import checkPassword from "@/libs/user/checkPassword";
+import { setTextToString } from "./setup";
 export default function PasswordLock({
   children,
   token,
@@ -50,7 +51,7 @@ export default function PasswordLock({
                   },
                 },
               }}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={setTextToString(setPassword)}
             />
             <FinishButton
               text="submit"

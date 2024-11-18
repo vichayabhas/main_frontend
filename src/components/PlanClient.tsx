@@ -15,6 +15,7 @@ import {
   getId,
   modifyElementInUseStateArray,
   peeLookupNong,
+  setMap,
   waiting,
 } from "./setup";
 import CampNumberTable from "./CampNumberTable";
@@ -91,11 +92,10 @@ export default function PlanClient({
                     buildingText="ตึก"
                     place={normals[i]}
                     placeText="ชั้นและตึก"
-                    onClick={(out) => {
-                      setNormals(
-                        (previous) => previous.map(modifyElementInUseStateArray(out, i))
-                      );
-                    }}
+                    onClick={setMap(
+                      setNormals,
+                      modifyElementInUseStateArray(i)
+                    )}
                   />
                 </td>
                 {data.isOverNightCamp ? (
@@ -106,11 +106,7 @@ export default function PlanClient({
                         buildingText="ตึก"
                         place={boys[i]}
                         placeText="ชั้นและตึก"
-                        onClick={(out) => {
-                          setBoys(
-                            (previous) => previous.map(modifyElementInUseStateArray(out, i))
-                          );
-                        }}
+                        onClick={setMap(setBoys,modifyElementInUseStateArray(i))}
                       />
                     </td>
                     <td>
@@ -119,11 +115,7 @@ export default function PlanClient({
                         buildingText="ตึก"
                         place={girls[i]}
                         placeText="ชั้นและตึก"
-                        onClick={(out) => {
-                          setGirls(
-                            (previous) => previous.map(modifyElementInUseStateArray(out, i))
-                          );
-                        }}
+                        onClick={setMap(setGirls,modifyElementInUseStateArray(i))}
                       />
                     </td>
                   </>
@@ -145,11 +137,7 @@ export default function PlanClient({
                     buildingText="ตึก"
                     place={partPlaces[i]}
                     placeText="ชั้นและตึก"
-                    onClick={(out) => {
-                      setPartPlaces(
-                        (previous) => previous.map(modifyElementInUseStateArray(out, i))
-                      );
-                    }}
+                    onClick={setMap(setNormals,modifyElementInUseStateArray(i))}
                   />
                 </td>
               </tr>

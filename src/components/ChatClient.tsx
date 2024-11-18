@@ -9,6 +9,7 @@ import createNongChat from "@/libs/randomthing/createNongChat";
 import createPeeBaanChat from "@/libs/randomthing/createPeeBaanChat";
 import StringToHtml from "./StringToHtml";
 import React from "react";
+import { setTextToString } from "./setup";
 export default function ChatClient({
   data,
   token,
@@ -165,7 +166,7 @@ export default function ChatClient({
                   },
                 },
               }}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={setTextToString(setMessage)}
             />
           </div>
           <div

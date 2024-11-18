@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import { MenuItem, Select, TextField } from "@mui/material";
 import PlaceSelect from "./PlaceSelect";
 import addLostAndFound from "@/libs/randomthing/addLostAndFound";
-import { getId } from "./setup";
+import { getId, setTextToString } from "./setup";
 import React from "react";
 export default function LostAndFoundClient({
   mapIn,
@@ -90,7 +90,7 @@ export default function LostAndFoundClient({
                 },
               },
             }}
-            onChange={(e) => setName(e.target.value)}
+            onChange={setTextToString(setName)}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -114,7 +114,7 @@ export default function LostAndFoundClient({
                 },
               },
             }}
-            onChange={(e) => setDetail(e.target.value)}
+            onChange={setTextToString(setDetail)}
           />
         </div>
         <PlaceSelect

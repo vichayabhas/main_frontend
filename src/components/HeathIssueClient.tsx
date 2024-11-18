@@ -5,6 +5,7 @@ import { FoodLimit, foodLimits, HeathIssueBody } from "../../interface";
 import { Checkbox, MenuItem, Select, TextField } from "@mui/material";
 import FinishButton from "./FinishButton";
 import updateHeath from "@/libs/user/updateHeath";
+import { setTextToString } from "./setup";
 
 export default function HeathIssueClient({
   heathIssue,
@@ -60,7 +61,7 @@ export default function HeathIssueClient({
                 },
               },
             }}
-            onChange={(e) => set1(e.target.value)}
+            onChange={setTextToString(set1)}
             defaultValue={food}
           />
         </div>
@@ -85,7 +86,7 @@ export default function HeathIssueClient({
                 },
               },
             }}
-            onChange={(e) => set2(e.target.value)}
+            onChange={setTextToString(set2)}
             defaultValue={medicine}
           />
         </div>
@@ -112,7 +113,7 @@ export default function HeathIssueClient({
                 },
               },
             }}
-            onChange={(e) => set3(e.target.value)}
+            onChange={setTextToString(set3)}
             defaultValue={chronicDisease}
           />
         </div>
@@ -139,7 +140,7 @@ export default function HeathIssueClient({
                 },
               },
             }}
-            onChange={(e) => set7(e.target.value)}
+            onChange={setTextToString(set7)}
             defaultValue={foodConcern}
           />
         </div>
@@ -216,7 +217,7 @@ export default function HeathIssueClient({
                     },
                   },
                 }}
-                onChange={(e) => set5(e.target.value)}
+                onChange={setTextToString(set5)}
                 defaultValue={extra}
               />
             </div>

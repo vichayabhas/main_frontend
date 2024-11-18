@@ -10,6 +10,7 @@ import SelectTemplate from "./SelectTemplate";
 import updateWorkingItem from "@/libs/camp/updateWorkingItem";
 import deleteWorkingItem from "@/libs/camp/deleteWorkingItem";
 import React from "react";
+import { setTextToString } from "./setup";
 export default function EditWorkingItem({
   workingItem,
   parts,
@@ -70,7 +71,7 @@ export default function EditWorkingItem({
               name="Email"
               id="Email"
               className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-              onChange={(e) => setLink(e.target.value)}
+              onChange={setTextToString(setLink)}
               defaultValue={link}
             />
           </div>
@@ -81,7 +82,7 @@ export default function EditWorkingItem({
             name="Tel"
             id="Tel"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-            onChange={(e) => setName(e.target.value)}
+            onChange={setTextToString(setName)}
             defaultValue={name}
           />
         </div>
@@ -122,7 +123,7 @@ export default function EditWorkingItem({
             name="Tel"
             id="Tel"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-            onChange={(e) => setNewName(e.target.value)}
+            onChange={setTextToString(setNewName)}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -131,7 +132,7 @@ export default function EditWorkingItem({
             name="Email"
             id="Email"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-            onChange={(e) => setNewLink(e.target.value)}
+            onChange={setTextToString(setNewLink)}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -140,7 +141,7 @@ export default function EditWorkingItem({
             name="Email"
             id="Email"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={setTextToString(setPassword)}
             defaultValue={password}
           />
         </div>

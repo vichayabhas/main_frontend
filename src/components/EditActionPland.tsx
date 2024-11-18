@@ -18,6 +18,8 @@ import {
   modifyElementInUseStateArray,
   notEmpty,
   removeElementInUseStateArray,
+  setMap,
+  setTextToString,
 } from "./setup";
 import { useSession } from "next-auth/react";
 import updateActionPlan from "@/libs/camp/updateActionPlan";
@@ -110,16 +112,18 @@ export default function EditActionPland({
         />
         <FinishButton
           text={"remove"}
-          onClick={() => setPlaces((previous) => previous.filter(removeElementInUseStateArray))}
+          onClick={() =>
+            setPlaces((previous) =>
+              previous.filter(removeElementInUseStateArray)
+            )
+          }
         />
         {places.map((v, i) => (
           <PlaceSelect
             key={i}
             place={v}
             allPlaceData={allPlaceData}
-            onClick={(outPut) => {
-              setPlaces((previous) => previous.map(modifyElementInUseStateArray(outPut, i)));
-            }}
+            onClick={setMap(setPlaces, modifyElementInUseStateArray(i))}
             buildingText={`ตึกที่${i + 1}`}
             placeText={`ชั้นและห้องที่${i + 1}`}
           />
@@ -132,7 +136,7 @@ export default function EditActionPland({
             name="Tel"
             id="Tel"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-            onChange={(e) => setAction(e.target.value)}
+            onChange={setTextToString(setAction)}
             defaultValue={action}
           />
         </div>
@@ -142,7 +146,7 @@ export default function EditActionPland({
             name="Email"
             id="Email"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-            onChange={(e) => setBody(e.target.value)}
+            onChange={setTextToString(setBody)}
             defaultValue={body}
           />
         </div>

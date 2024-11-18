@@ -4,6 +4,7 @@ import verifyEmail from "@/libs/user/verifyEmail";
 import { TextField } from "@mui/material";
 import { useRef, useState } from "react";
 import React from "react";
+import { setTextToString } from "./setup";
 export default function VerifileClient({ token }: { token: string }) {
   const userRef = useRef("");
 
@@ -22,7 +23,7 @@ export default function VerifileClient({ token }: { token: string }) {
             id="Password"
             type="password"
             className="w-full bg-slate-100 rounded-2xl border-gray-200"
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={setTextToString(setPassword)}
           />
         </div>
 

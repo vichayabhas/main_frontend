@@ -14,6 +14,7 @@ import { Size } from "../../interface";
 import FinishButton from "./FinishButton";
 import bypassRole from "@/libs/user/bypassRole";
 import React from "react";
+import { setTextToString } from "./setup";
 // note fixed text box border bg-white ,width to 60%, title color ,button color &  mx-2, checkbox color
 
 export default function UpdateProfileRaw({
@@ -80,7 +81,7 @@ export default function UpdateProfileRaw({
                 },
               },
             }}
-            onChange={(e) => setName(e.target.value)}
+            onChange={setTextToString(setName)}
             required
           />
         </div>
@@ -106,7 +107,7 @@ export default function UpdateProfileRaw({
                 },
               },
             }}
-            onChange={(e) => setLastname(e.target.value)}
+            onChange={setTextToString(setLastname)}
             required
           />
         </div>
@@ -132,7 +133,7 @@ export default function UpdateProfileRaw({
                 },
               },
             }}
-            onChange={(e) => setNickname(e.target.value)}
+            onChange={setTextToString(setNickname)}
             required
           />
         </div>
@@ -158,7 +159,7 @@ export default function UpdateProfileRaw({
                 },
               },
             }}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={setTextToString(setEmail)}
             defaultValue={email}
             required
           />
@@ -186,7 +187,7 @@ export default function UpdateProfileRaw({
                 },
               },
             }}
-            onChange={(e) => setTel(e.target.value)}
+            onChange={setTextToString(setTel)}
             defaultValue={tel}
             required
           />
@@ -217,7 +218,7 @@ export default function UpdateProfileRaw({
                 },
               },
             }}
-            onChange={(e) => setCitizenId(e.target.value)}
+            onChange={setTextToString(setCitizenId)}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -325,7 +326,7 @@ export default function UpdateProfileRaw({
                     },
                   },
                 }}
-                onChange={(e) => setKey(e.target.value)}
+                onChange={setTextToString(setKey)}
               />
             </div>
             <FinishButton

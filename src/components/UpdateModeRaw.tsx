@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import FinishButton from "./FinishButton";
 import peeUpdateMode from "@/libs/user/peeUpdateMode";
 import { Checkbox, Input, TextField } from "@mui/material";
-import { selectCheck, swop } from "./setup";
+import { setSwop } from "./setup";
 
 export default function UpdateModeRaw({
   session,
@@ -108,12 +108,7 @@ export default function UpdateModeRaw({
                     color: "#FFFFFF", // Custom color when checked
                   },
                 }}
-                onChange={(v) => {
-                  const instants = selectCheck(camp._id, v.target.checked);
-                  setFilterIds((previous) =>
-                    swop(instants[0], instants[1], previous)
-                  );
-                }}
+                onChange={setSwop(camp._id,setFilterIds)}
                 defaultChecked={filterIds.includes(camp._id)}
               />
               {camp.campName}

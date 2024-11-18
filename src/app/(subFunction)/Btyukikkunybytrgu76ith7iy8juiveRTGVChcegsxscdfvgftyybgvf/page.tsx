@@ -7,7 +7,7 @@ import { MenuItem, Select, TextField } from "@mui/material";
 import { useSession } from "next-auth/react";
 import BackToHome from "@/components/BackToHome";
 import FinishButton from "@/components/FinishButton";
-import { getBackendUrl } from "@/components/setup";
+import { getBackendUrl, setTextToString } from "@/components/setup";
 import React from "react";
 export default function page() {
   const { data: session } = useSession();
@@ -55,9 +55,7 @@ export default function page() {
       </Select>
       <label>รหัสประจำตัวนิสิต</label>
       <TextField
-        onChange={(e) => {
-          setStudentId(e.target.value);
-        }}
+        onChange={setTextToString(setStudentId)}
       />
       <FinishButton
         text="bypass"

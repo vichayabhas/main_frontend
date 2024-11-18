@@ -12,6 +12,7 @@ import { Checkbox, TextField } from "@mui/material";
 import updateBaan from "@/libs/admin/updateBaan";
 import BackToHome from "./BackToHome";
 import PlaceSelect from "./PlaceSelect";
+import { setTextToString } from "./setup";
 export default function UpdateBaanClient({
   baan,
   boy,
@@ -57,7 +58,7 @@ export default function UpdateBaanClient({
             name="Email"
             id="Email"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-            onChange={(e) => setName(e.target.value)}
+            onChange={setTextToString(setName)}
             defaultValue={baan.name}
           />
         </div>
@@ -68,7 +69,7 @@ export default function UpdateBaanClient({
             name="Tel"
             id="Tel"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-            onChange={(e) => setFullName(e.target.value)}
+            onChange={setTextToString(setFullName)}
             defaultValue={baan.fullName}
           />
         </div>
@@ -78,7 +79,7 @@ export default function UpdateBaanClient({
             name="Tel"
             id="Tel"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-            onChange={(e) => setLink(e.target.value)}
+            onChange={setTextToString(setLink)}
             defaultValue={baan.link}
           />
         </div>
@@ -90,17 +91,13 @@ export default function UpdateBaanClient({
               placeText="เลือกชั้นและห้องที่ใช้เป็นห้องนอนน้องผู้ชาย"
               allPlaceData={allPlaceData}
               place={boy}
-              onClick={(place) => {
-                setBP(place);
-              }}
+              onClick={setBP}
             />
             <PlaceSelect
               buildingText="เลือกตึกที่ใช้เป็นห้องนอนน้องผู้หญิง"
               placeText="เลือกชั้นและห้องที่ใช้เป็นห้องนอนน้องผู้หญิง"
               place={girl}
-              onClick={(place) => {
-                setGP(place);
-              }}
+              onClick={setGP}
               allPlaceData={allPlaceData}
             />
           </>
@@ -110,9 +107,7 @@ export default function UpdateBaanClient({
           placeText="เลือกชั้นและห้องที่ใช้เป็นห้องบ้าน"
           allPlaceData={allPlaceData}
           place={normal}
-          onClick={(place) => {
-            setNP(place);
-          }}
+          onClick={setNP}
         />
         <div className="flex flex-row items-center my-5">
           <label className="w-2/5 text-2xl text-white">

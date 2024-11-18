@@ -17,7 +17,7 @@ import {
 } from "../../interface";
 import addPartName from "@/libs/admin/addPartName";
 import FinishButton from "./FinishButton";
-import { getBackendUrl, stringToId, stringToInt } from "./setup";
+import { getBackendUrl, setTextToInt, setTextToString, stringToId } from "./setup";
 //import { InterNameContainer, CreateCamp } from "../../interface";
 
 export default function AdminClient({
@@ -115,9 +115,7 @@ export default function AdminClient({
             name="name"
             className="text-white"
             required
-            onChange={(e) => {
-              setRound(stringToInt(e.target.value));
-            }}
+            onChange={setTextToInt(setRound)}
           />
         </div>
       </div>
@@ -149,10 +147,7 @@ export default function AdminClient({
               },
             }}
             value={dateStart}
-            onChange={(newValue) => {
-              setDateStart(newValue);
-              console.log(newValue);
-            }}
+            onChange={setDateStart}
             disablePast
           />
         </LocalizationProvider>
@@ -185,10 +180,7 @@ export default function AdminClient({
               },
             }}
             value={dateEnd}
-            onChange={(newValue) => {
-              setDateEnd(newValue);
-              console.log(newValue);
-            }}
+            onChange={setDateEnd}
             disablePast
           />
         </LocalizationProvider>
@@ -269,25 +261,25 @@ export default function AdminClient({
             onClick={() => {
               setRegisterModel("all");
             }}
-            value="มีสัมภาสและค่าใช้จ่าย"
+            value="มีสัมภาษณ์และค่าใช้จ่าย"
           >
-            มีสัมภาสและค่าใช้จ่าย
+            มีสัมภาษณ์และค่าใช้จ่าย
           </MenuItem>
           <MenuItem
             onClick={() => {
               setRegisterModel("noInterview");
             }}
-            value="ไม่มีสัมภาสแต่มีค่าใช้จ่าย"
+            value="ไม่มีสัมภาษณ์แต่มีค่าใช้จ่าย"
           >
-            ไม่มีสัมภาสแต่มีค่าใช้จ่าย
+            ไม่มีสัมภาษณ์แต่มีค่าใช้จ่าย
           </MenuItem>
           <MenuItem
             onClick={() => {
               setRegisterModel("noPaid");
             }}
-            value="ไม่มีสัมภาสและไม่มีค่าใช้จ่าย"
+            value="ไม่มีสัมภาษณ์และไม่มีค่าใช้จ่าย"
           >
-            ไม่มีสัมภาสและไม่มีค่าใช้จ่าย
+            ไม่มีสัมภาษณ์และไม่มีค่าใช้จ่าย
           </MenuItem>
         </Select>
       </div>
@@ -390,7 +382,7 @@ export default function AdminClient({
             },
           }}
           className="w-3/5 bg-white rounded-2xl shadow-inner"
-          onChange={(e) => setBoardIds(e.target.value)}
+          onChange={setTextToString(setBoardIds)}
         />
       </div>
       <div className=" rounded-lg ">
@@ -480,7 +472,7 @@ export default function AdminClient({
             },
           }}
           className="w-3/5 bg-white rounded-2xl shadow-inner"
-          onChange={(e) => setNewName(e.target.value)}
+          onChange={setTextToString(setNewName)}
         />
       </div>
       <button
@@ -524,7 +516,7 @@ export default function AdminClient({
           name="Name"
           id="Name"
           className="w-3/5 bg-white rounded-2xl shadow-inner"
-          onChange={(e) => setNewPartName(e.target.value)}
+          onChange={setTextToString(setNewPartName)}
         />
       </div>
       <button

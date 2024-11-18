@@ -13,6 +13,7 @@ import {
   UpdateTimeOffsetRaw,
 } from "../../interface";
 import dayjs from "dayjs";
+import React from "react";
 export function startSize(): Map<
   "S" | "M" | "L" | "XL" | "XXL" | "3XL",
   number
@@ -31,19 +32,7 @@ export function startSize(): Map<
   });
   return size;
 }
-export function swop(olds: Id | null, news: Id | null, array: Id[]): Id[] {
-  if (!olds) {
-    if (news) {
-      return [...array, news];
-    }
-    return array;
-  }
-  const re = array.filter((e) => e.toString() != olds.toString());
-  if (news) {
-    re.push(news);
-  }
-  return re;
-}
+
 export function calculate(
   input: unknown | number | undefined,
   plus: unknown | number | undefined,
@@ -356,27 +345,19 @@ export function removeElementInUseStateArray(
 ) {
   return i < a.length - 1;
 }
-export function modifyElementInUseStateArray<T>(v: T, i: number) {
-  return (v2: T, i2: number) => {
-    if (i == i2) {
-      return v;
-    } else {
-      return v2;
-    }
+export function modifyElementInUseStateArray<T>(i: number) {
+  return (v: T) => {
+    return (v2: T, i2: number) => {
+      if (i == i2) {
+        return v;
+      } else {
+        return v2;
+      }
+    };
   };
 }
 export function copyArray<T>(input: T[]): T[] {
   return input.map((e) => e);
-}
-export function selectCheck(
-  id: Id | null,
-  checked: boolean
-): [Id | null, Id | null] {
-  if (checked) {
-    return [null, id];
-  } else {
-    return [id, null];
-  }
 }
 export async function waiting(
   update: () => Promise<void>,
@@ -391,30 +372,71 @@ export function copy<T>(input: T): T {
 }
 export function modifyElementInUseStateArray2Dimension<T>(
   i1: number,
-  i2: number,
-  value: T,
+  i2: number
 ) {
-  return  (v2: T[], i3: number) => {
-    if (i3 == i1) {
-     return v2.map(modifyElementInUseStateArray(value,i2))
+  return (value: T) => {
+    return (v2: T[], i3: number) => {
+      if (i3 == i1) {
+        return v2.map(modifyElementInUseStateArray<T>(i2)(value));
+      } else {
+        return v2;
+      }
+    };
+  };
+}
+export function setTextToInt(
+  set: (input: number) => void
+): React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> {
+  return (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const out = parseInt(event.target.value);
+    if (isNaN(out)) {
+      set(0);
     } else {
-      return v2;
+      set(out);
     }
   };
 }
-export function stringToFloat(input:string):number{
-  const out=parseFloat(input)
-  if(isNaN(out)){
-    return 0
-  }else{
-    return out
-  }
+export function setTextToFloat(
+  set: (input: number) => void
+): React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> {
+  return (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const out = parseFloat(event.target.value);
+    if (isNaN(out)) {
+      set(0);
+    } else {
+      set(out);
+    }
+  };
 }
-export function stringToInt(input:string):number{
-  const out=parseInt(input)
-  if(isNaN(out)){
-    return 0
-  }else{
-    return out
-  }
+export function setMap<T, T2>(
+  set: (setter: (input: T2[]) => T2[]) => void,
+  mapIn: (v: T) => (v2: T2, i3: number) => T2
+): (get: T) => void {
+  return (get: T) => {
+    set((previous: T2[]) => previous.map(mapIn(get)));
+  };
+}
+export function setTextToString(
+  set: (input: string) => void
+): React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> {
+  return (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    set(event.target.value);
+  };
+}
+export function setSwop(
+  input: Id | null,
+  set: (setter: (input: Id[]) => Id[]) => void
+): (event: React.ChangeEvent<HTMLInputElement>) => void {
+  return (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!input) {
+      return;
+    }
+    if (event.target.checked) {
+      set((previous) => [...previous, input]);
+    } else {
+      set((previous: Id[]) =>
+        previous.filter((e) => e.toString() != input.toString())
+      );
+    }
+  };
 }

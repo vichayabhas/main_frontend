@@ -6,11 +6,12 @@ import {
   GetChoiceQuestion,
   GetTextQuestion,
   Id,
+  InterTextQuestion,
   InterUser,
   UserAndAllQuestionPack,
 } from "../../interface";
 import AllAnswerAndQuestionPageBreakDown from "./AllAnswerAndQuestionPageBreakDown";
-import { copy, stringToId } from "./setup";
+import { copy, setTextToString, stringToId } from "./setup";
 import React, { useState } from "react";
 import { Checkbox, TextField } from "@mui/material";
 interface AnswerReady {
@@ -21,6 +22,14 @@ interface AnswerReady {
 interface UserAndAllQuestionReady {
   user: InterUser;
   answer: AnswerReady[];
+}
+interface DataReady {
+  data: GetAllAnswerAndQuestion;
+  textQuestions: InterTextQuestion[];
+  token: string;
+  campId: Id;
+  update: () => Promise<GetAllAnswerAndQuestion>;
+  readOnly: boolean | undefined;
 }
 function getChooseChoice(input: GetChoiceQuestion): React.ReactNode {
   let chooseChoice: React.ReactNode;
@@ -95,10 +104,12 @@ export default function AllAnswerAndQuestionPage({
   dataInput,
   token,
   campIdInput,
+  readOnly,
 }: {
   dataInput: GetAllAnswerAndQuestion;
   token: string;
   campIdInput: string;
+  readOnly?: boolean;
 }) {
   const campId = stringToId(campIdInput);
   const [data, setData] = useState(dataInput);
@@ -142,6 +153,16 @@ export default function AllAnswerAndQuestionPage({
       {headTableRaw.map((v) => v.element)}
     </tr>
   );
+  function getDataReady(): DataReady {
+    return {
+      data,
+      token,
+      campId,
+      update,
+      readOnly,
+      textQuestions,
+    };
+  }
   function getAllAnswerAndQuestionReadyRaw(
     input: UserAndAllQuestionPack[]
   ): UserAndAllQuestionReady[] {
@@ -200,7 +221,7 @@ export default function AllAnswerAndQuestionPage({
     <div>
       <Checkbox onChange={(e) => setShowAll(e.target.checked)} defaultChecked />
       filter
-      <TextField value={search} onChange={(e) => setSearch(e.target.value)} />
+      <TextField value={search} onChange={setTextToString(setSearch)} />
       {showAll ? (
         <>
           <table>
@@ -250,66 +271,38 @@ export default function AllAnswerAndQuestionPage({
           </table>
           น้องที่สมัครเข้ามา
           <AllAnswerAndQuestionPageBreakDown
-            data={data}
-            textQuestions={textQuestions}
-            token={token}
-            campId={campId}
-            update={update}
             setMode={(dataInput2) => dataInput2.nongPendingAnswers}
+            dataReady={getDataReady()}
           />
-          น้องที่ผ่านสัมภาส
+          น้องที่ผ่านสัมภาษณ์
           <AllAnswerAndQuestionPageBreakDown
-            data={data}
-            textQuestions={textQuestions}
-            token={token}
-            campId={campId}
-            update={update}
             setMode={(dataInput2) => dataInput2.nongInterviewAnswers}
+            dataReady={getDataReady()}
           />
           น้องที่ผ่านเข้าค่าย
           <AllAnswerAndQuestionPageBreakDown
-            data={data}
-            textQuestions={textQuestions}
-            token={token}
-            campId={campId}
-            update={update}
             setMode={(dataInput2) => dataInput2.nongPassAnswers}
+            dataReady={getDataReady()}
           />
           น้องที่จ่ายตังแล้ว
           <AllAnswerAndQuestionPageBreakDown
-            data={data}
-            textQuestions={textQuestions}
-            token={token}
-            campId={campId}
-            update={update}
             setMode={(dataInput2) => dataInput2.nongPaidAnswers}
+            dataReady={getDataReady()}
           />
           น้องที่ยืนยันแล้ว
           <AllAnswerAndQuestionPageBreakDown
-            data={data}
-            textQuestions={textQuestions}
-            token={token}
-            campId={campId}
-            update={update}
             setMode={(dataInput2) => dataInput2.nongSureAnswers}
+            dataReady={getDataReady()}
           />
-          น้องในค่าย
+          น้องค่าย
           <AllAnswerAndQuestionPageBreakDown
-            data={data}
-            textQuestions={textQuestions}
-            token={token}
-            campId={campId}
-            update={update}
             setMode={(dataInput2) => dataInput2.nongsAnswers}
+            dataReady={getDataReady()}
           />
           พี่พี่
           <AllAnswerAndQuestionPageBreakDown
-            data={data}
-            textQuestions={textQuestions}
-            token={token}
-            campId={campId}
-            update={update}
             setMode={(dataInput2) => dataInput2.peeAnswers}
+            dataReady={getDataReady()}
           />
         </>
       ) : null}
@@ -318,7 +311,7 @@ export default function AllAnswerAndQuestionPage({
         {headTable}
         {getAllAnswerAndQuestionReady(data.nongPendingAnswers)}
       </table>
-      น้องที่ผ่านสัมภาส
+      น้องที่ผ่านสัมภาษณ์
       <table>
         {headTable}
         {getAllAnswerAndQuestionReady(data.nongInterviewAnswers)}
@@ -338,7 +331,7 @@ export default function AllAnswerAndQuestionPage({
         {headTable}
         {getAllAnswerAndQuestionReady(data.nongSureAnswers)}
       </table>
-      น้องในค่าย
+      น้องค่าย
       <table>
         {headTable}
         {getAllAnswerAndQuestionReady(data.nongsAnswers)}

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Group } from "../../../../interface";
 import { MenuItem, Select, TextField } from "@mui/material";
 import FinishButton from "@/components/FinishButton";
-import { getBackendUrl } from "@/components/setup";
+import { getBackendUrl, setTextToString } from "@/components/setup";
 import { useSession } from "next-auth/react";
 import BackToHome from "@/components/BackToHome";
 import React from "react";
@@ -45,9 +45,10 @@ export default function page() {
   return (
     <div>
       <label>กรุปของนิสิต</label>
-      <Select value={group}>
-        {allGroup.map((g,i) => (
-          <MenuItem key={i}
+      <Select<Group | null> value={group}>
+        {allGroup.map((g, i) => (
+          <MenuItem
+            key={i}
             onClick={() => {
               setGroup(g);
             }}
@@ -59,28 +60,23 @@ export default function page() {
       </Select>
       <label>รหัสประจำตัวนิสิต</label>
       <TextField
-        onChange={(e) => {
-          setStudentId(e.target.value);
-        }}
+        onChange={setTextToString(setStudentId)}
       />
       <FinishButton
         text="bypass"
         onClick={async () => {
-          await fetch(
-            `${getBackendUrl()}/subfunction/adminBypass`,
-            {
-              method: "POST",
-              cache: "no-store",
-              headers: {
-                "Content-Type": "application/json",
-                authorization: `Bearer ${session.user.token}`,
-              },
-              body: JSON.stringify({
-                studentId,
-                group,
-              }),
-            }
-          );
+          await fetch(`${getBackendUrl()}/subfunction/adminBypass`, {
+            method: "POST",
+            cache: "no-store",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${session.user.token}`,
+            },
+            body: JSON.stringify({
+              studentId,
+              group,
+            }),
+          });
         }}
       />
     </div>

@@ -25,7 +25,9 @@ import {
   modifyElementInUseStateArray,
   notEmpty,
   removeElementInUseStateArray,
-  stringToInt,
+  setMap,
+  setTextToInt,
+  setTextToString,
 } from "./setup";
 import createWorkingItem from "@/libs/camp/createWorkingItem";
 import plusActionPlan from "@/libs/camp/plusActionPlan";
@@ -287,13 +289,7 @@ export default function PartClient({
         {places.map((v, i) => (
           <PlaceSelect key={i}
             place={v}
-            onClick={(outPut) => {
-              setPlaces(
-                (previous) => previous.map(
-                  modifyElementInUseStateArray(outPut, i)
-                )
-              );
-            }}
+            onClick={setMap(setPlaces,modifyElementInUseStateArray(i))}
             buildingText={`ตึกที่${i + 1}`}
             placeText={`ชั้นและห้องที่${i + 1}`}
             allPlaceData={allPlaceData}
@@ -322,7 +318,7 @@ export default function PartClient({
                 },
               },
             }}
-            onChange={(e) => setAction(e.target.value)}
+            onChange={setTextToString(setAction)}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -393,7 +389,7 @@ export default function PartClient({
                 },
               },
             }}
-            onChange={(e) => setPlus(stringToInt(e.target.value))}
+            onChange={setTextToInt(setPlus)}
           />
           <FinishButton
             text="+- action plan"
@@ -432,7 +428,7 @@ export default function PartClient({
                 },
               },
             }}
-            onChange={(e) => setName(e.target.value)}
+            onChange={setTextToString(setName)}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -456,7 +452,7 @@ export default function PartClient({
                 },
               },
             }}
-            onChange={(e) => setLink(e.target.value)}
+            onChange={setTextToString(setLink)}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -480,7 +476,7 @@ export default function PartClient({
                 },
               },
             }}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={setTextToString(setPassword)}
             defaultValue={password}
           />
         </div>

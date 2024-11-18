@@ -5,7 +5,7 @@ import { TextField } from "@mui/material";
 import { useState } from "react";
 import { InterPlace } from "../../interface";
 import createPlace from "@/libs/randomthing/createPlace";
-import { stringToId } from "./setup";
+import { setTextToString, stringToId } from "./setup";
 import React from "react";
 export default function PlaceClient({
   places,
@@ -61,7 +61,7 @@ export default function PlaceClient({
           name="Name"
           id="Name"
           className="w-3/5 bg-slate-100 rounded-2xl shadow-inner"
-          onChange={(e) => setFloor(e.target.value)}
+          onChange={setTextToString(setFloor)}
         />
       </div>
       <div className="flex flex-row items-center">
@@ -70,7 +70,7 @@ export default function PlaceClient({
           name="Name"
           id="Name"
           className="w-3/5 bg-slate-100 rounded-2xl shadow-inner"
-          onChange={(e) => setRoom(e.target.value)}
+          onChange={setTextToString(setRoom)}
         />
       </div>
       <button

@@ -6,6 +6,7 @@ import { TextField } from "@mui/material";
 import { useState } from "react";
 import createBuilding from "@/libs/randomthing/createBuilding";
 import React from "react";
+import { setTextToString } from "./setup";
 export default function BuildingClient({
   buildings,
   token,
@@ -40,7 +41,7 @@ export default function BuildingClient({
           name="Name"
           id="Name"
           className="w-3/5 bg-slate-100 rounded-2xl shadow-inner"
-          onChange={(e) => setNewName(e.target.value)}
+          onChange={setTextToString(setNewName)}
         />
       </div>
       <button

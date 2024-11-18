@@ -8,7 +8,12 @@ import {
   InterCampFront,
   InterUser,
 } from "../../interface";
-import { getValue, modifyElementInUseStateArray } from "./setup";
+import {
+  getValue,
+  modifyElementInUseStateArray,
+  setMap,
+  setTextToString,
+} from "./setup";
 import Link from "next/link";
 import React from "react";
 
@@ -77,11 +82,10 @@ export default function NongPendingPage({
             >
               <MenuItem
                 onClick={() => {
-                  setChoiceAnswers(
-                    (previous) => previous.map(
-                      modifyElementInUseStateArray<Choice | "-">("A", i)
-                    )
-                  );
+                  setMap(
+                    setChoiceAnswers,
+                    modifyElementInUseStateArray(i)
+                  )("A");
                 }}
                 value={choice.a}
               >
@@ -89,11 +93,10 @@ export default function NongPendingPage({
               </MenuItem>
               <MenuItem
                 onClick={() => {
-                  setChoiceAnswers(
-                    (previous) => previous.map(
-                      modifyElementInUseStateArray<Choice | "-">("B", i)
-                    )
-                  );
+                  setMap(
+                    setChoiceAnswers,
+                    modifyElementInUseStateArray(i)
+                  )("B");
                 }}
                 value={choice.b}
               >
@@ -101,11 +104,10 @@ export default function NongPendingPage({
               </MenuItem>
               <MenuItem
                 onClick={() => {
-                  setChoiceAnswers(
-                    (previous) => previous.map(
-                      modifyElementInUseStateArray<Choice | "-">("C", i)
-                    )
-                  );
+                  setMap(
+                    setChoiceAnswers,
+                    modifyElementInUseStateArray(i)
+                  )("C");
                 }}
                 value={choice.c}
               >
@@ -113,11 +115,10 @@ export default function NongPendingPage({
               </MenuItem>
               <MenuItem
                 onClick={() => {
-                  setChoiceAnswers(
-                    (previous) => previous.map(
-                      modifyElementInUseStateArray<Choice | "-">("D", i)
-                    )
-                  );
+                  setMap(
+                    setChoiceAnswers,
+                    modifyElementInUseStateArray(i)
+                  )("D");
                 }}
                 value={choice.d}
               >
@@ -125,11 +126,10 @@ export default function NongPendingPage({
               </MenuItem>
               <MenuItem
                 onClick={() => {
-                  setChoiceAnswers(
-                    (previous) => previous.map(
-                      modifyElementInUseStateArray<Choice | "-">("E", i)
-                    )
-                  );
+                  setMap(
+                    setChoiceAnswers,
+                    modifyElementInUseStateArray(i)
+                  )("E");
                 }}
                 value={choice.e}
               >
@@ -137,11 +137,10 @@ export default function NongPendingPage({
               </MenuItem>
               <MenuItem
                 onClick={() => {
-                  setChoiceAnswers(
-                    (previous) => previous.map(
-                      modifyElementInUseStateArray<Choice | "-">("-", i)
-                    )
-                  );
+                  setMap(
+                    setChoiceAnswers,
+                    modifyElementInUseStateArray(i)
+                  )("-");
                 }}
                 value={"-"}
               >
@@ -184,9 +183,9 @@ export default function NongPendingPage({
                 },
               }}
               className="w-3/5 bg-white rounded-2xl shadow-inner"
-              onChange={(e) => {
-                setTextAnswers((previous) => previous.map(modifyElementInUseStateArray(e.target.value,i)))
-              }}
+              onChange={setTextToString(
+                setMap(setTextAnswers, modifyElementInUseStateArray(i))
+              )}
               defaultValue={textAnswers[i]}
             />
           </div>
@@ -216,7 +215,7 @@ export default function NongPendingPage({
               name="Name"
               id="Name"
               className="w-3/5 bg-slate-100 rounded-2xl shadow-inner"
-              onChange={(e) => setLink(e.target.value)}
+              onChange={setTextToString(setLink)}
               defaultValue={link}
             />
           </div>

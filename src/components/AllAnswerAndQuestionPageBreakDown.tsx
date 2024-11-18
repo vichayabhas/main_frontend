@@ -10,12 +10,21 @@ import { TextField } from "@mui/material";
 import {
   copy,
   modifyElementInUseStateArray2Dimension,
-  stringToFloat,
+  setMap,
+  setTextToFloat,
   waiting,
 } from "./setup";
 import FinishButton from "./FinishButton";
 import scoreTextQuestions from "@/libs/camp/scoreTextQuestions";
 import Waiting from "./Waiting";
+interface DataReady {
+  data: GetAllAnswerAndQuestion;
+  textQuestions: InterTextQuestion[];
+  token: string;
+  campId: Id;
+  update: () => Promise<GetAllAnswerAndQuestion>;
+  readOnly: boolean | undefined;
+}
 function setDefaultScore(input: UserAndAllQuestionPack[]): number[][] {
   return input.map((v) =>
     v.questions.texts
@@ -26,18 +35,10 @@ function setDefaultScore(input: UserAndAllQuestionPack[]): number[][] {
   );
 }
 export default function AllAnswerAndQuestionPageBreakDown({
-  data,
-  textQuestions,
-  token,
-  campId,
-  update,
+  dataReady: { data, campId, update, textQuestions, token, readOnly },
   setMode,
 }: {
-  data: GetAllAnswerAndQuestion;
-  textQuestions: InterTextQuestion[];
-  token: string;
-  campId: Id;
-  update: () => Promise<GetAllAnswerAndQuestion>;
+  dataReady: DataReady;
   setMode: (dataIn: GetAllAnswerAndQuestion) => UserAndAllQuestionPack[];
 }) {
   const [textScores, setTextScores] = useState(setDefaultScore(setMode(data)));
@@ -76,8 +77,8 @@ export default function AllAnswerAndQuestionPageBreakDown({
                 <th key={i}>{v.question}</th>
               ))}
             </tr>
-            {setMode(data).map((pack, packIndex) => (
-              <tr key={packIndex}>
+            {setMode(data).map((pack, i) => (
+              <tr key={i}>
                 <td>{pack.user.nickname}</td>
                 <td>{pack.user.name}</td>
                 <td>{pack.user.lastname}</td>
@@ -88,29 +89,21 @@ export default function AllAnswerAndQuestionPageBreakDown({
                     a._id.toString().localeCompare(b._id.toString())
                   )
                   .sort((a, b) => a.order - b.order)
-                  .map((textQuestion, textQuestionIndex) => (
-                    <td key={textQuestionIndex}>
+                  .map((textQuestion, j) => (
+                    <td key={j}>
                       <div>{textQuestion.answer}</div>
                       <div>
                         <TextField
-                          defaultValue={textScores[packIndex][
-                            textQuestionIndex
-                          ].toString()}
-                          onChange={(e) => {
-                            setTextScores((previous) =>
-                              previous.map(
-                                modifyElementInUseStateArray2Dimension(
-                                  packIndex,
-                                  textQuestionIndex,
-                                  stringToFloat(e.target.value)
-                                )
-                              )
-                            );
-                          }}
+                          defaultValue={textScores[i][j].toString()}
+                          onChange={setTextToFloat(
+                            setMap(
+                              setTextScores,
+                              modifyElementInUseStateArray2Dimension(i, j)
+                            )
+                          )}
                           type="number"
-                          value={textScores[packIndex][
-                            textQuestionIndex
-                          ].toString()}
+                          value={textScores[i][j].toString()}
+                          inputProps={{ readOnly }}
                         />
                       </div>
                     </td>

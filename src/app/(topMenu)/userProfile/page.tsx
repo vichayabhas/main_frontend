@@ -1,4 +1,5 @@
 "use client";
+import { setTextToString } from "@/components/setup";
 import { TextField } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -25,7 +26,7 @@ export default function HospitalDetailPage() {
             name="Tel"
             id="Tel"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-            onChange={(e) => setTel(e.target.value)}
+            onChange={setTextToString(setTel)}
             defaultValue={tel}
           />
         </div>

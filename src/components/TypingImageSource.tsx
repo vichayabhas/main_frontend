@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Select, MenuItem, TextField } from "@mui/material";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { setTextToString } from "./setup";
 const providers = ["bypass", "google drive"] as const;
 type Provider = (typeof providers)[number];
 function change(provider: Provider, typing: string | null) {
@@ -37,7 +38,7 @@ function showImage(imgSrc: string | null) {
         priority
       />
     );
-  } catch  {
+  } catch {
     return "invalid";
   }
 }
@@ -74,14 +75,13 @@ export default function TypingImageSource({
           },
         }}
         className="w-3/5 bg-white rounded-2xl shadow-inner"
-        onChange={(e) => {
-          setTyping(e.target.value);
-          const out = change(provider, e.target.value);
-          //alert(out)
+        onChange={setTextToString((e) => {
+          setTyping(e);
+          const out = change(provider, e);
           setImgSrc(out);
           onChange(out);
           router.refresh();
-        }}
+        })}
       />
       <Select
         variant="standard"
@@ -90,8 +90,9 @@ export default function TypingImageSource({
         className="h-[2em] w-[200px] mb-5 text-white"
         defaultValue={provider}
       >
-        {providers.map((v,i) => (
-          <MenuItem key={i}
+        {providers.map((v, i) => (
+          <MenuItem
+            key={i}
             onClick={() => {
               const out = change(v, typing);
               setProvider(v);

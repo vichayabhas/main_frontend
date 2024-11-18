@@ -1,4 +1,5 @@
 "use client";
+import { setTextToString } from "@/components/setup";
 import changeModeToPee from "@/libs/user/changeModeToPee";
 import { TextField } from "@mui/material";
 import { useSession } from "next-auth/react";
@@ -26,7 +27,7 @@ export default function peeOnlyPage() {
             id="Password"
             type="password"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={setTextToString(setPassword)}
           />
         </div>
 

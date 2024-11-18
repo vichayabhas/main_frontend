@@ -151,6 +151,7 @@ export interface InterCampBack {
     mapAnswerPackIdByUserId: Map<Id, Id>,
     peeAnswerIds: Id[],
     showCorrectAnswerAndScore: boolean,
+    canAnswerTheQuestion:boolean
 }
 export interface InterCampStyle {
     refId: Id,
@@ -461,6 +462,7 @@ export interface InterCampFront {
     mapAnswerPackIdByUserId: MapObjectId[],
     peeAnswerIds: Id[],
     showCorrectAnswerAndScore: boolean,
+    canAnswerTheQuestion:boolean
 }
 export interface InterPartFront {
     nameId: Id,
@@ -534,6 +536,7 @@ export interface UpdateCamp {
     petoDataLock: boolean,
     haveCloth: boolean,
     showCorrectAnswerAndScore: boolean,
+    canAnswerTheQuestion:boolean
 }
 export interface CreateCamp {
     nameId: Id,
@@ -982,7 +985,8 @@ export interface GetTextQuestion extends InterTextQuestion {
 }
 export interface GetAllQuestion {
     choices: GetChoiceQuestion[],
-    texts: GetTextQuestion[]
+    texts: GetTextQuestion[],
+    canAnswerTheQuestion:boolean,
 }
 export interface ReceiveAirQuality {
     id: string,
