@@ -25,6 +25,8 @@ import {
 import createFood from "@/libs/randomthing/createFood";
 import updateMeal from "@/libs/randomthing/updateMeal";
 import dayjs from "dayjs";
+import deleteMeal from "@/libs/randomthing/deleteMeal";
+import AllInOneLock from "./AllInOneLock";
 
 export default function MealClient({
   params,
@@ -213,12 +215,20 @@ export default function MealClient({
             อาหารนี้สำหรับคนที่แพ้อาหารหรือไม่
           </label>
           <Checkbox
-            onChange={setBoolean(setIsWhiteList)}
+            onChange={setBoolean((c) => {
+              if (c) {
+                setIsWhiteList(true);
+              } else {
+                setListPriority(false);
+                setIsWhiteList(false);
+              }
+            })}
             sx={{
               "&.Mui-checked": {
                 color: "#FFFFFF", // Custom color when checked
               },
             }}
+            checked={isWhiteList}
           />
         </div>
 
@@ -227,12 +237,20 @@ export default function MealClient({
             อาหารนี้เฉพาะเจาะจงหรือไม่
           </label>
           <Checkbox
-            onChange={setBoolean(setListPriority)}
+            onChange={setBoolean((c) => {
+              if (c) {
+                setListPriority(true);
+                setIsWhiteList(true);
+              } else {
+                setListPriority(false);
+              }
+            })}
             sx={{
               "&.Mui-checked": {
                 color: "#FFFFFF", // Custom color when checked
               },
             }}
+            checked={listPriority}
           />
         </div>
 
@@ -299,6 +317,12 @@ export default function MealClient({
           }}
         />
       </form>
+      <AllInOneLock token={token}>
+        <FinishButton
+          text="delete"
+          onClick={() => deleteMeal(meal._id, token)}
+        />
+      </AllInOneLock>
     </div>
   );
 }

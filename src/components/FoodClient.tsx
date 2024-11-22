@@ -10,6 +10,8 @@ import { peeLookupNong, setBoolean, setSwop, setTextToString } from "./setup";
 import GetTimeHtml from "./GetTimeHtml";
 import FinishButton from "./FinishButton";
 import updateFood from "@/libs/randomthing/updateFood";
+import AllInOneLock from "./AllInOneLock";
+import deleteFood from "@/libs/randomthing/deleteFood";
 export default function FoodClient({
   timeOffset,
   food,
@@ -94,13 +96,20 @@ export default function FoodClient({
             อาหารนี้สำหรับคนที่แพ้อาหารหรือไม่
           </label>
           <Checkbox
-            onChange={setBoolean(setIsWhiteList)}
+            onChange={setBoolean((c) => {
+              if (c) {
+                setIsWhiteList(true);
+              } else {
+                setListPriority(false);
+                setIsWhiteList(false);
+              }
+            })}
             sx={{
               "&.Mui-checked": {
                 color: "#FFFFFF", // Custom color when checked
               },
             }}
-            defaultChecked={isWhiteList}
+            checked={isWhiteList}
           />
         </div>
 
@@ -109,13 +118,20 @@ export default function FoodClient({
             อาหารนี้เฉพาะเจาะจงหรือไม่
           </label>
           <Checkbox
-            onChange={setBoolean(setListPriority)}
+            onChange={setBoolean((c) => {
+              if (c) {
+                setListPriority(true);
+                setIsWhiteList(true);
+              } else {
+                setListPriority(false);
+              }
+            })}
             sx={{
               "&.Mui-checked": {
                 color: "#FFFFFF", // Custom color when checked
               },
             }}
-            defaultChecked={listPriority}
+            checked={listPriority}
           />
         </div>
 
@@ -272,6 +288,12 @@ export default function FoodClient({
           );
         }}
       />
+      <AllInOneLock token={token}>
+        <FinishButton
+          text="delete"
+          onClick={() => deleteFood(food._id, token)}
+        />
+      </AllInOneLock>
     </div>
   );
 }
