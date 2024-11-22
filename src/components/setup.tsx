@@ -5,7 +5,6 @@ import {
   InterActionPlan,
   MapObjectId,
   MyMap,
-  InterTimeOffset,
   ShowMember,
   ShowNong,
   HeathIssueBody,
@@ -14,6 +13,9 @@ import {
 } from "../../interface";
 import dayjs from "dayjs";
 import React from "react";
+import getUserProfile from "@/libs/user/getUserProfile";
+import getTimeOffset from "@/libs/user/getTimeOffset";
+import { Session } from "next-auth";
 export function startSize(): Map<
   "S" | "M" | "L" | "XL" | "XXL" | "3XL",
   number
@@ -195,7 +197,10 @@ export const sendNotification = () => {
     new Notification("Push Notification", notificationOptions);
   });
 };
-export function addTime(input: Date, add: InterTimeOffset): Date {
+export function addTime(
+  input: dayjs.ConfigType,
+  add: UpdateTimeOffsetRaw
+): Date {
   return dayjs(input)
     .add(-add.day, "days")
     .add(-add.hour, "hours")
@@ -345,15 +350,17 @@ export function removeElementInUseStateArray(
 ) {
   return i < a.length - 1;
 }
-export function modifyElementInUseStateArray<T>(i: number) {
-  return (v: T) => {
-    return (v2: T, i2: number) => {
+export function modifyElementInUseStateArray<T>(
+  i: number
+): (v: T, array: T[]) => T[] {
+  return (v: T, array: T[]) => {
+    return array.map((v2: T, i2: number) => {
       if (i == i2) {
         return v;
       } else {
         return v2;
       }
-    };
+    });
   };
 }
 export function copyArray<T>(input: T[]): T[] {
@@ -373,16 +380,12 @@ export function copy<T>(input: T): T {
 export function modifyElementInUseStateArray2Dimension<T>(
   i1: number,
   i2: number
-) {
-  return (value: T) => {
-    return (v2: T[], i3: number) => {
-      if (i3 == i1) {
-        return v2.map(modifyElementInUseStateArray<T>(i2)(value));
-      } else {
-        return v2;
-      }
-    };
-  };
+): (v: T, array: T[][]) => T[][] {
+  return (value: T, arrays: T[][]) =>
+    modifyElementInUseStateArray<T[]>(i1)(
+      modifyElementInUseStateArray<T>(i2)(value, arrays[i1]),
+      arrays
+    );
 }
 export function setTextToInt(
   set: (input: number) => void
@@ -409,11 +412,11 @@ export function setTextToFloat(
   };
 }
 export function setMap<T, T2>(
-  set: (setter: (input: T2[]) => T2[]) => void,
-  mapIn: (v: T) => (v2: T2, i3: number) => T2
+  set: (setter: (input: T2) => T2) => void,
+  mapIn: (v: T, array: T2) => T2
 ): (get: T) => void {
   return (get: T) => {
-    set((previous: T2[]) => previous.map(mapIn(get)));
+    set((array) => mapIn(get, array));
   };
 }
 export function setTextToString(
@@ -439,4 +442,32 @@ export function setSwop(
       );
     }
   };
+}
+export function setBoolean(
+  set: (input: boolean) => void
+): (event: React.ChangeEvent<HTMLInputElement>) => void {
+  return (event: React.ChangeEvent<HTMLInputElement>) => {
+    set(event.target.checked);
+  };
+}
+export async function getTimeOffsetByToken(token: string) {
+  const user = await getUserProfile(token);
+  return await getTimeOffset(user.displayOffsetId);
+}
+export async function getTimeOffsetBySession(session: Session | null) {
+  if (!session) {
+    return zeroTimeOffset;
+  }
+  const user = await getUserProfile(session.user.token);
+  return await getTimeOffset(user.displayOffsetId);
+}
+export function selectTimeToSystem(
+  input: dayjs.ConfigType,
+  add: UpdateTimeOffsetRaw
+): Date {
+  return dayjs(input)
+    .add(add.day, "days")
+    .add(add.hour, "hours")
+    .add(add.minute, "minutes")
+    .toDate();
 }

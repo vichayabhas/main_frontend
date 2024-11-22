@@ -1,14 +1,35 @@
 "use client";
 
 import { useState } from "react";
-import { CampWelfarePack } from "../../interface";
-import { MenuItem, Select } from "@mui/material";
+import {
+  CampWelfarePack,
+  InterTimeOffset,
+  RoleCamp,
+  UpdateTimeOffsetRaw,
+} from "../../interface";
+import { Checkbox, MenuItem, Select } from "@mui/material";
 import CampNumberTable from "./CampNumberTable";
 import React from "react";
+import { copy, selectTimeToSystem, setBoolean } from "./setup";
+import dayjs from "dayjs";
+import GetTimeHtml from "./GetTimeHtml";
+import { useRouter } from "next/navigation";
+import FinishButton from "./FinishButton";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import createMeal from "@/libs/randomthing/createMeal";
 export default function WelfareClient({
   welfare,
+  timeOffset,
+  partIdString,
+  token,
+  selectOffset,
 }: {
   welfare: CampWelfarePack;
+  timeOffset: UpdateTimeOffsetRaw;
+  partIdString: string;
+  token: string;
+  selectOffset: InterTimeOffset;
 }) {
   const welfareModes = [
     "ดูเฉพาะขนาดเสื้อ",
@@ -18,13 +39,20 @@ export default function WelfareClient({
   ] as const;
   type WelfareMode = (typeof welfareModes)[number];
   const [welfareMode, setWelfareMode] = useState<WelfareMode>("ดูทั้งหมด");
+  const [nong, setNong] = useState(true);
+  const [pee, setPee] = useState(true);
+  const [peto, setPeto] = useState(welfare.isHavePeto);
+  const [time, setTime] = useState<Date | null>(null);
+
   const showPart =
     welfare.isHavePeto || welfareMode != "ซ่อนปัญหาสุขภาพพี่บ้านในฝ่าย";
+  const router = useRouter();
   return (
     <>
       <Select value={welfareMode}>
-        {welfareModes.map((e,i) => (
-          <MenuItem key={i}
+        {welfareModes.map((e, i) => (
+          <MenuItem
+            key={i}
             onClick={() => {
               setWelfareMode(e);
             }}
@@ -90,7 +118,7 @@ export default function WelfareClient({
             </>
           ) : null}
         </tr>
-        {welfare.baanWelfares.map((data,i) => (
+        {welfare.baanWelfares.map((data, i) => (
           <tr key={i}>
             <td>{data.name}</td>
             <td>{data.nongSize.sizeS}</td>
@@ -117,7 +145,7 @@ export default function WelfareClient({
             ) : null}
           </tr>
         ))}
-        {welfare.partWelfares.map((data,i) => (
+        {welfare.partWelfares.map((data, i) => (
           <tr key={i}>
             <td>{data.name}</td>
             <td>{data.nongSize.sizeS}</td>
@@ -162,7 +190,7 @@ export default function WelfareClient({
 
           {welfare.baanWelfares.map((baan) => (
             <>
-              {baan.nongHealths.map((nong,i) => (
+              {baan.nongHealths.map((nong, i) => (
                 <tr key={i}>
                   <td>{nong.user.nickname}</td>
                   <td>{nong.user.name}</td>
@@ -177,7 +205,7 @@ export default function WelfareClient({
                   ) : null}
                 </tr>
               ))}
-              {baan.peeHealths.map((pee,i) => (
+              {baan.peeHealths.map((pee, i) => (
                 <tr key={i}>
                   <td>{pee.user.nickname}</td>
                   <td>{pee.user.name}</td>
@@ -198,12 +226,12 @@ export default function WelfareClient({
             ? welfare.partWelfares.map((part) => (
                 <>
                   {welfare.isHavePeto
-                    ? part.petoHealths.map((peto,i) => (
+                    ? part.petoHealths.map((peto, i) => (
                         <tr key={i}>
                           <td>{peto.user.nickname}</td>
                           <td>{peto.user.name}</td>
                           <td>{peto.user.lastname}</td>
-                          <td>{peto.user.name}</td>
+                          <td>{part.name}</td>
                           <td>ปีโต</td>
                           <td>{peto.heathIssue.food}</td>
                           <td>{peto.heathIssue.foodConcern}</td>
@@ -217,7 +245,7 @@ export default function WelfareClient({
                       ))
                     : null}
                   {welfareMode != "ซ่อนปัญหาสุขภาพพี่บ้านในฝ่าย"
-                    ? part.peeHealths.map((pee,i) => (
+                    ? part.peeHealths.map((pee, i) => (
                         <tr key={i}>
                           <td>{pee.user.nickname}</td>
                           <td>{pee.user.name}</td>
@@ -248,6 +276,113 @@ export default function WelfareClient({
         partNumbers={welfare.partHaveBottles}
         groupName={welfare.groupName}
       />
+      <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
+        <form
+          className="w-[70%] items-center p-10 rounded-3xl"
+          style={{
+            backgroundColor: "#961A1D",
+          }}
+        >
+          <div className="flex flex-row items-center my-5">
+            <label className="w-2/5 text-2xl text-white">
+              ข้าวมื้อนี้ให้น้องค่ายหรือไม่
+            </label>
+            <Checkbox
+              onChange={setBoolean(setNong)}
+              sx={{
+                "&.Mui-checked": {
+                  color: "#FFFFFF", // Custom color when checked
+                },
+              }}
+              defaultChecked
+            />
+          </div>
+          <div className="flex flex-row items-center my-5">
+            <label className="w-2/5 text-2xl text-white">
+              ข้าวมื้อนี้ให้พี่{welfare.groupName}หรือไม่
+            </label>
+            <Checkbox
+              onChange={setBoolean(setPee)}
+              sx={{
+                "&.Mui-checked": {
+                  color: "#FFFFFF", // Custom color when checked
+                },
+              }}
+              defaultChecked
+            />
+          </div>
+          {welfare.isHavePeto ? (
+            <div className="flex flex-row items-center my-5">
+              <label className="w-2/5 text-2xl text-white">
+                ข้าวมื้อนี้ให้ปีโตหรือไม่
+              </label>
+              <Checkbox
+                onChange={setBoolean(setPeto)}
+                sx={{
+                  "&.Mui-checked": {
+                    color: "#FFFFFF", // Custom color when checked
+                  },
+                }}
+                defaultChecked
+              />
+            </div>
+          ) : null}
+          <div className="flex flex-row items-center my-5">
+            <label className="w-2/5 text-2xl text-white">
+              ข้าวมื้อนี้กินเวลาไหน
+            </label>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateTimePicker
+                className="bg-white m-10"
+                value={time}
+                onChange={setTime}
+              />
+            </LocalizationProvider>
+          </div>
+          <div className="flex flex-row justify-end">
+            <FinishButton
+              text="สร้างมื้ออาหาร"
+              onClick={() => {
+                if (!time) {
+                  alert("please select time");
+                } else {
+                  const roles: RoleCamp[] = [];
+                  if (nong) {
+                    roles.push("nong");
+                  }
+                  if (pee) {
+                    roles.push("pee");
+                  }
+                  if (peto) {
+                    roles.push("peto");
+                  }
+                  createMeal(
+                    {
+                      campId: welfare._id,
+                      roles,
+                      time: selectTimeToSystem(time, selectOffset),
+                    },
+                    token
+                  );
+                }
+              }}
+            />
+          </div>
+        </form>
+      </div>
+      {welfare.meals
+        .map(copy)
+        .sort((a, b) => dayjs(a.time.toString()).diff(b.time.toString()))
+        .map((v, i) => (
+          <div
+            key={i}
+            onClick={() =>
+              router.push(`/authPart/${partIdString}/welfare/${v._id}`)
+            }
+          >
+            <GetTimeHtml offset={timeOffset} input={v.time.toString()} />
+          </div>
+        ))}
     </>
   );
 }

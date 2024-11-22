@@ -13,6 +13,7 @@ import getCamp from "@/libs/camp/getCamp";
 import getPart from "@/libs/camp/getPart";
 import getPeeCamp from "@/libs/camp/getPeeCamp";
 import getCampMemberCardByCampId from "@/libs/user/getCampMemberCardByCampId";
+import getTimeOffset from "@/libs/user/getTimeOffset";
 import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";
 import React from "react";
@@ -26,6 +27,7 @@ export default async function Baan({ params }: { params: { pid: string } }) {
   const user = await getUserProfile(session.user.token);
   const part = await getPart(partId);
   const camp = await getCamp(part.campId);
+  const selectOffset=await getTimeOffset(user.selectOffsetId)
   const campMemberCard = await getCampMemberCardByCampId(part.campId, token);
   if (
     !user.authPartIds.includes(camp.partBoardId) &&
@@ -36,7 +38,7 @@ export default async function Baan({ params }: { params: { pid: string } }) {
   ) {
     return <BackToHome />;
   }
-  const dataInput=await getAllAnswerAndQuestion(camp._id)
+  const dataInput = await getAllAnswerAndQuestion(camp._id);
   switch (partId.toString()) {
     case camp.partCoopId.toString(): {
       switch (campMemberCard.role) {
@@ -48,7 +50,11 @@ export default async function Baan({ params }: { params: { pid: string } }) {
           return (
             <AllInOneLock token={token} lock={user.mode == "nong"} pushToHome>
               <UpdateBaanServer baanId={peeCamp.baanId} />
-              <AllAnswerAndQuestionPage token={token} dataInput={dataInput} campIdInput={camp._id.toString()} />
+              <AllAnswerAndQuestionPage
+                token={token}
+                dataInput={dataInput}
+                campIdInput={camp._id.toString()}
+              />
             </AllInOneLock>
           );
         }
@@ -58,7 +64,11 @@ export default async function Baan({ params }: { params: { pid: string } }) {
               {camp.baanIds.map((baanId, i) => (
                 <UpdateBaanServer key={i} baanId={baanId} />
               ))}
-              <AllAnswerAndQuestionPage token={token} dataInput={dataInput} campIdInput={camp._id.toString()} />
+              <AllAnswerAndQuestionPage
+                token={token}
+                dataInput={dataInput}
+                campIdInput={camp._id.toString()}
+              />
             </AllInOneLock>
           );
         }
@@ -70,9 +80,18 @@ export default async function Baan({ params }: { params: { pid: string } }) {
         <AllInOneLock token={token} lock={user.mode == "nong"} pushToHome>
           <UpdateCampServer campId={camp._id} token={token} />
           <RegisterPartServer campId={camp._id} token={token} isBoard={true} />
-          <WelfareServer campId={camp._id} token={token} />
+          <WelfareServer
+            campId={camp._id}
+            token={token}
+            partIdString={part._id.toString()}
+            selectOffset={selectOffset}
+          />
           <PlanServer campId={camp._id} token={token} />
-          <AllAnswerAndQuestionPage token={token} dataInput={dataInput} campIdInput={camp._id.toString()} />
+          <AllAnswerAndQuestionPage
+            token={token}
+            dataInput={dataInput}
+            campIdInput={camp._id.toString()}
+          />
         </AllInOneLock>
       );
     }
@@ -80,14 +99,23 @@ export default async function Baan({ params }: { params: { pid: string } }) {
       return (
         <AllInOneLock token={token} lock={user.mode == "nong"} pushToHome>
           <RegisterPartServer campId={camp._id} token={token} isBoard={false} />
-          <AllAnswerAndQuestionPage token={token} dataInput={dataInput} campIdInput={camp._id.toString()} />
+          <AllAnswerAndQuestionPage
+            token={token}
+            dataInput={dataInput}
+            campIdInput={camp._id.toString()}
+          />
         </AllInOneLock>
       );
     }
     case camp.partWelfareId.toString(): {
       return (
         <AllInOneLock token={token} lock={user.mode == "nong"} pushToHome>
-          <WelfareServer campId={camp._id} token={token} />
+          <WelfareServer
+            campId={camp._id}
+            token={token}
+            partIdString={part._id.toString()}
+            selectOffset={selectOffset}
+          />
         </AllInOneLock>
       );
     }

@@ -29,6 +29,7 @@ import { getServerSession } from "next-auth";
 import { Id, MyMap } from "../../../../../interface";
 import chatStyle from "@/components/chat.module.css";
 import React from "react";
+import getMealsByUser from "@/libs/randomthing/getMealsByUser";
 export default async function HospitalDetailPage({
   params,
 }: {
@@ -44,8 +45,9 @@ export default async function HospitalDetailPage({
     if (!user) {
       return <PushToCamps />;
     }
-    const userId: Id= user._id;
-    const timeOffset = await getTimeOffset(user.selectOffsetId);
+    const userId: Id = user._id;
+    const selectOffset = await getTimeOffset(user.selectOffsetId);
+    const displayOffset = await getTimeOffset(user.displayOffsetId);
     const partMap: MyMap[] = [];
     let i = 0;
     const questions = await getAllQuestion(token, campDetail._id);
@@ -75,6 +77,8 @@ export default async function HospitalDetailPage({
       const healthIssue = campMemberCard.healthIssueId
         ? await getHeathIssue(campMemberCard.healthIssueId)
         : emptyHealthIssue;
+      const meals = await getMealsByUser(campDetail._id, token);
+
       return (
         <>
           <TopMenuCamp role="nong" mode={user.mode} campId={campDetail._id} />
@@ -198,6 +202,8 @@ export default async function HospitalDetailPage({
             user={user}
             campMemberCard={campMemberCard}
             healthIssue={healthIssue}
+            meals={meals}
+            displayOffset={displayOffset}
           />
         </>
       );
@@ -226,6 +232,7 @@ export default async function HospitalDetailPage({
       const healthIssue = campMemberCard.healthIssueId
         ? await getHeathIssue(campMemberCard.healthIssueId)
         : emptyHealthIssue;
+      const meals = await getMealsByUser(campDetail._id, token);
       return (
         <>
           <TopMenuCamp role="pee" mode={user.mode} campId={campDetail._id} />
@@ -375,7 +382,7 @@ export default async function HospitalDetailPage({
             part={part}
             user={user}
             allPlaceData={allPlaceData}
-            timeOffset={timeOffset}
+            selectOffset={selectOffset}
             camp={campDetail}
           />
           <ShowOwnCampData
@@ -383,6 +390,8 @@ export default async function HospitalDetailPage({
             user={user}
             campMemberCard={campMemberCard}
             healthIssue={healthIssue}
+            meals={meals}
+            displayOffset={displayOffset}
           />
         </>
       );
@@ -399,6 +408,7 @@ export default async function HospitalDetailPage({
       const healthIssue = campMemberCard.healthIssueId
         ? await getHeathIssue(campMemberCard.healthIssueId)
         : emptyHealthIssue;
+      const meals = await getMealsByUser(campDetail._id, token);
       return (
         <>
           <TopMenuCamp role="peto" mode={user.mode} campId={campDetail._id} />
@@ -460,7 +470,7 @@ export default async function HospitalDetailPage({
             part={part}
             user={user}
             allPlaceData={allPlaceData}
-            timeOffset={timeOffset}
+            selectOffset={selectOffset}
             camp={campDetail}
           />
           <ShowOwnCampData
@@ -468,6 +478,8 @@ export default async function HospitalDetailPage({
             user={user}
             campMemberCard={campMemberCard}
             healthIssue={healthIssue}
+            meals={meals}
+            displayOffset={displayOffset}
           />
         </>
       );

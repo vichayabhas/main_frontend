@@ -14,7 +14,7 @@ import { Size } from "../../interface";
 import FinishButton from "./FinishButton";
 import bypassRole from "@/libs/user/bypassRole";
 import React from "react";
-import { setTextToString } from "./setup";
+import { setBoolean, setTextToString } from "./setup";
 // note fixed text box border bg-white ,width to 60%, title color ,button color &  mx-2, checkbox color
 
 export default function UpdateProfileRaw({
@@ -50,7 +50,7 @@ export default function UpdateProfileRaw({
           color: "#961A1D",
         }}
       >
-        Update Profile{" "}
+        Update Profile
       </div>
 
       <form
@@ -232,9 +232,7 @@ export default function UpdateProfileRaw({
             มีกระติกน้ำหรือไม่
           </label>
           <Checkbox
-            onChange={(e, state) => {
-              setHaveBottle(state);
-            }}
+            onChange={setBoolean(setHaveBottle)}
             sx={{
               "&.Mui-checked": {
                 color: "#FFFFFF", // Custom color when checked
@@ -250,9 +248,7 @@ export default function UpdateProfileRaw({
             ประสงค์นอนในค่ายหรือไม่
           </label>
           <Checkbox
-            onChange={(e, state) => {
-              setLikeToSleepAtCamp(state);
-            }}
+            onChange={setBoolean(setLikeToSleepAtCamp)}
             sx={{
               "&.Mui-checked": {
                 color: "#FFFFFF", // Custom color when checked

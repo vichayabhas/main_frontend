@@ -10,6 +10,7 @@ import { updateBottle } from "@/libs/user/updateBottle";
 import updateSize from "@/libs/user/updateSize";
 import updateSleep from "@/libs/user/updateSleep";
 import React from "react";
+import { setBoolean } from "./setup";
 export default function LocationDateReserve({
   partMap,
   token,
@@ -37,9 +38,7 @@ export default function LocationDateReserve({
           มีกระติกน้ำหรือไม่
         </label>
         <Checkbox
-          onChange={(e, state) => {
-            setHaveBottle(state);
-          }}
+          onChange={setBoolean(setHaveBottle)}
           defaultChecked={user.haveBottle}
         />
       </div>
@@ -50,9 +49,7 @@ export default function LocationDateReserve({
           ประสงค์นอนในค่ายหรือไม่
         </label>
         <Checkbox
-          onChange={(e, state) => {
-            setLikeToSleepAtCamp(state);
-          }}
+          onChange={setBoolean(setLikeToSleepAtCamp)}
           defaultChecked={user.likeToSleepAtCamp}
         />
       </div>

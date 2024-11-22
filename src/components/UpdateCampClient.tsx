@@ -29,6 +29,7 @@ import {
   modifyElementInUseStateArray,
   notEmpty,
   removeElementInUseStateArray,
+  setBoolean,
   setMap,
   setSwop,
   setTextToFloat,
@@ -93,7 +94,7 @@ export default function UpdateCampClient({
   const [link, setLink] = useState<string | null>(camp.link);
   const pictureUrls = useState<(string | null)[]>(camp.pictureUrls);
   const [logoUrl, setLogoUrl] = useState<string | null>(camp.logoUrl);
-  const [dataLock, setDataLock] = useState<boolean>(camp.dataLock);
+  const [nongDataLock, setDataLock] = useState<boolean>(camp.nongDataLock);
   const [open, setOpen] = useState<boolean>(camp.open);
   const [peeLock, setPeeLock] = useState<boolean>(!camp.peeLock);
   const [lockChangePickup, setLockChangePickup] = useState<boolean>(
@@ -751,10 +752,8 @@ export default function UpdateCampClient({
                     color: "#FFFFFF", // Custom color when checked
                   },
                 }}
-                onChange={(e, state) => {
-                  setDataLock(state);
-                }}
-                defaultChecked={dataLock}
+                onChange={setBoolean(setDataLock)}
+                defaultChecked={nongDataLock}
               />
             </div>
             <div className="flex flex-row items-center my-5">
@@ -767,9 +766,7 @@ export default function UpdateCampClient({
                     color: "#FFFFFF", // Custom color when checked
                   },
                 }}
-                onChange={(e, state) => {
-                  setPeeDataLock(state);
-                }}
+                onChange={setBoolean(setPeeDataLock)}
                 defaultChecked={peeDataLock}
               />
             </div>
@@ -785,9 +782,7 @@ export default function UpdateCampClient({
                       color: "#FFFFFF", // Custom color when checked
                     },
                   }}
-                  onChange={(e, state) => {
-                    setPetoDataLock(state);
-                  }}
+                  onChange={setBoolean(setPetoDataLock)}
                   defaultChecked={petoDataLock}
                 />
               </div>
@@ -802,9 +797,7 @@ export default function UpdateCampClient({
                     color: "#FFFFFF", // Custom color when checked
                   },
                 }}
-                onChange={(e, state) => {
-                  setOpen(state);
-                }}
+                onChange={setBoolean(setOpen)}
                 defaultChecked={open}
               />
             </div>
@@ -818,9 +811,7 @@ export default function UpdateCampClient({
                     color: "#FFFFFF", // Custom color when checked
                   },
                 }}
-                onChange={(e, state) => {
-                  setPeeLock(state);
-                }}
+                onChange={setBoolean(setPeeLock)}
                 defaultChecked={peeLock}
               />
             </div>
@@ -834,9 +825,7 @@ export default function UpdateCampClient({
                     color: "#FFFFFF", // Custom color when checked
                   },
                 }}
-                onChange={(e, state) => {
-                  setHaveCloth(state);
-                }}
+                onChange={setBoolean(setHaveCloth)}
                 defaultChecked={haveCloth}
               />
             </div>
@@ -850,9 +839,7 @@ export default function UpdateCampClient({
                     color: "#FFFFFF", // Custom color when checked
                   },
                 }}
-                onChange={(e, state) => {
-                  setShowCorrectAnswerAndScore(state);
-                }}
+                onChange={setBoolean(setShowCorrectAnswerAndScore)}
                 defaultChecked={showCorrectAnswerAndScore}
               />
             </div>
@@ -883,9 +870,7 @@ export default function UpdateCampClient({
                     color: "#FFFFFF", // Custom color when checked
                   },
                 }}
-                onChange={(e, state) => {
-                  setCanAnswerTheQuestion(state);
-                }}
+                onChange={setBoolean(setCanAnswerTheQuestion)}
                 defaultChecked={canAnswerTheQuestion}
               />
             </div>
@@ -899,9 +884,7 @@ export default function UpdateCampClient({
                     color: "#FFFFFF", // Custom color when checked
                   },
                 }}
-                onChange={(e, state) => {
-                  setAllDone(state);
-                }}
+                onChange={setBoolean(setAllDone)}
                 defaultChecked={allDone}
               />
             </div>
@@ -995,7 +978,7 @@ export default function UpdateCampClient({
                           lockChangePickup,
                           logoUrl,
                           peeLock: !peeLock,
-                          dataLock,
+                          nongDataLock,
                           dateEnd: dateEnd.toDate(),
                           dateStart: dateStart.toDate(),
                           pictureUrls: pictureUrls[0].filter(notEmpty),

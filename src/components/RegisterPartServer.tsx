@@ -6,6 +6,7 @@ import getUserFromCamp from "@/libs/camp/getUserFromCamp";
 import getPart from "@/libs/camp/getPart";
 import RegisterPartClient from "./RegisPartClient";
 import React from "react";
+import getAllNongRegister from "@/libs/camp/getAllNongRegister";
 export default async function RegisterPartServer({
   campId,
   token,
@@ -18,6 +19,7 @@ export default async function RegisterPartServer({
   const camp = await getCamp(campId);
   const baans = await getBaans(campId);
   const peeRegister = await getShowRegisters(campId, token);
+  const nongRegister = await getAllNongRegister(campId, token);
   let i = 0;
   const regisParts: RegisPart[] = [];
   const regisBaans: RegisBaan[] = [];
@@ -39,7 +41,7 @@ export default async function RegisterPartServer({
     });
   }
   const partMap: MyMap[] = [];
-   i = 0;
+  i = 0;
   while (i < camp.partIds.length) {
     const part = await getPart(camp.partIds[i++]);
 
@@ -54,6 +56,7 @@ export default async function RegisterPartServer({
       token={token}
       isBoard={isBoard}
       partMap={partMap}
+      nongRegister={nongRegister}
     />
   );
 }

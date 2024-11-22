@@ -1,6 +1,6 @@
 "use client";
 import SelectSize from "@/components/SelectSize";
-import { setTextToString } from "@/components/setup";
+import { setBoolean, setTextToString } from "@/components/setup";
 import userSignup from "@/libs/user/userSignup";
 import { Checkbox, Input, TextField } from "@mui/material";
 import Link from "next/link";
@@ -233,9 +233,7 @@ export default function signupPage() {
             ประสงค์ใช้ในค่ายหรือไม่
           </label>
           <Checkbox
-            onChange={(e, state) => {
-              setHaveBottle(state);
-            }}
+            onChange={setBoolean(setHaveBottle)}
             sx={{
               "&.Mui-checked": {
                 color: "#FFFFFF", // Custom color when checked
@@ -248,9 +246,7 @@ export default function signupPage() {
             ประสงค์นอนในค่ายหรือไม่
           </label>
           <Checkbox
-            onChange={(e, state) => {
-              setLikeToSleepAtCamp(state);
-            }}
+            onChange={setBoolean(setLikeToSleepAtCamp)}
             sx={{
               "&.Mui-checked": {
                 color: "#FFFFFF", // Custom color when checked

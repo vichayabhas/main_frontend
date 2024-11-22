@@ -9,6 +9,8 @@ import getUserFromCamp from "@/libs/camp/getUserFromCamp";
 import { getAllPlaceData } from "@/components/placeSetUp";
 import { stringToId } from "@/components/setup";
 import React from "react";
+import getTimeOffset from "@/libs/user/getTimeOffset";
+import getUserProfile from "@/libs/user/getUserProfile";
 export default async function HospitalDetailPage({
   params,
 }: {
@@ -31,6 +33,8 @@ export default async function HospitalDetailPage({
   const allPlaceData = await getAllPlaceData();
   const pees = await getUserFromCamp("getPeesFromPartId", actionPlan.partId);
   const petos = await getUserFromCamp("getPetosFromPartId", actionPlan.partId);
+  const user=await getUserProfile(session.user.token)
+  const timeOffset=await getTimeOffset(user.selectOffsetId)
   return (
     <>
       <EditActionPland
@@ -39,6 +43,7 @@ export default async function HospitalDetailPage({
         actionPlan={actionPlan}
         pls={places}
         allPlaceData={allPlaceData}
+        timeOffset={timeOffset}
       />
     </>
   );

@@ -1,56 +1,41 @@
 "use client";
 import React from "react";
 import { useState } from "react";
-import {
-  AllPlaceData,
-  InterBaanFront,
-  InterCampFront,
-  InterPlace,
-} from "../../interface";
+import { AllPlaceData, GetCoopData, InterPlace } from "../../interface";
 import { useSession } from "next-auth/react";
 import { Checkbox, TextField } from "@mui/material";
 import updateBaan from "@/libs/admin/updateBaan";
 import BackToHome from "./BackToHome";
 import PlaceSelect from "./PlaceSelect";
-import { setTextToString } from "./setup";
+import { peeLookupNong, setBoolean, setTextToString } from "./setup";
 export default function UpdateBaanClient({
-  baan,
-  boy,
-  girl,
-  normal,
-  camp,
+  coopData,
   allPlaceData,
 }: {
-  baan: InterBaanFront;
-  boy: InterPlace | null;
-  girl: InterPlace | null;
-  normal: InterPlace | null;
-  camp: InterCampFront;
+  coopData: GetCoopData;
   allPlaceData: AllPlaceData;
 }) {
   // dispatch = useDispatch<AppDispatch>();
   //const update = useAppSelector((state) => state.bookSlice.bookItem);
   const { data: session } = useSession();
-  const [bP, setBP] = useState<InterPlace | null>(boy);
-  const [gP, setGP] = useState<InterPlace | null>(girl);
-  const [nP, setNP] = useState<InterPlace | null>(normal);
-  const [name, setName] = useState<string>(baan.name);
-  const [fullName, setFullName] = useState<string | null>(baan.fullName);
-  const [link, setLink] = useState<string | null>(baan.link);
-  const buildings: string[] = [];
-  const [nongSendMessage, setNongSendMessage] = useState<boolean>(
-    baan.nongSendMessage
+  const [boy, setBoy] = useState<InterPlace | null>(coopData.boy);
+  const [girl, setGirl] = useState<InterPlace | null>(coopData.girl);
+  const [normal, setNormal] = useState<InterPlace | null>(coopData.normal);
+  const [name, setName] = useState<string>(coopData.baan.name);
+  const [fullName, setFullName] = useState<string | null>(
+    coopData.baan.fullName
   );
-  allPlaceData.allPlace.forEach((e, input: string) => {
-    buildings.push(input);
-  });
+  const [link, setLink] = useState<string | null>(coopData.baan.link);
+  const [nongSendMessage, setNongSendMessage] = useState<boolean>(
+    coopData.baan.nongSendMessage
+  );
+  const [highMode, setHighMode] = useState(false);
   if (!session) {
     return <BackToHome />;
   }
   return (
     <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
       <div className="text-4xl font-medium">Update บ้าน </div>
-
       <form className="w-[30%] items-center bg-slate-600 p-10 rounded-3xl shadow-[25px_25px_40px_-10px_rgba(0,0,0,0.7)]">
         <div className="flex flex-row items-center my-5">
           <label className="w-2/5 text-2xl text-slate-200"> ชื่อย่อ</label>
@@ -59,10 +44,9 @@ export default function UpdateBaanClient({
             id="Email"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
             onChange={setTextToString(setName)}
-            defaultValue={baan.name}
+            defaultValue={coopData.baan.name}
           />
         </div>
-
         <div className="flex flex-row items-center my-5">
           <label className="w-2/5 text-2xl text-slate-200">ชื่อเต็ม</label>
           <TextField
@@ -70,7 +54,7 @@ export default function UpdateBaanClient({
             id="Tel"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
             onChange={setTextToString(setFullName)}
-            defaultValue={baan.fullName}
+            defaultValue={coopData.baan.fullName}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -80,24 +64,23 @@ export default function UpdateBaanClient({
             id="Tel"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
             onChange={setTextToString(setLink)}
-            defaultValue={baan.link}
+            defaultValue={coopData.baan.link}
           />
         </div>
-
-        {camp.nongSleepModel == "ไม่มีการค้างคืน" ? null : (
+        {coopData.camp.nongSleepModel == "ไม่มีการค้างคืน" ? null : (
           <>
             <PlaceSelect
               buildingText="เลือกตึกที่ใช้เป็นห้องนอนน้องผู้ชาย"
               placeText="เลือกชั้นและห้องที่ใช้เป็นห้องนอนน้องผู้ชาย"
               allPlaceData={allPlaceData}
               place={boy}
-              onClick={setBP}
+              onClick={setBoy}
             />
             <PlaceSelect
               buildingText="เลือกตึกที่ใช้เป็นห้องนอนน้องผู้หญิง"
               placeText="เลือกชั้นและห้องที่ใช้เป็นห้องนอนน้องผู้หญิง"
               place={girl}
-              onClick={setGP}
+              onClick={setGirl}
               allPlaceData={allPlaceData}
             />
           </>
@@ -107,16 +90,14 @@ export default function UpdateBaanClient({
           placeText="เลือกชั้นและห้องที่ใช้เป็นห้องบ้าน"
           allPlaceData={allPlaceData}
           place={normal}
-          onClick={setNP}
+          onClick={setNormal}
         />
         <div className="flex flex-row items-center my-5">
           <label className="w-2/5 text-2xl text-white">
             อนุญาตให้น้องส่งข้อขวามในห้องบ้านหรือไม่
           </label>
           <Checkbox
-            onChange={(e, state) => {
-              setNongSendMessage(state);
-            }}
+            onChange={setBoolean(setNongSendMessage)}
             sx={{
               "&.Mui-checked": {
                 color: "#FFFFFF", // Custom color when checked
@@ -134,11 +115,11 @@ export default function UpdateBaanClient({
                   {
                     name,
                     fullName,
-                    baanId: baan._id,
+                    baanId: coopData.baan._id,
                     link,
-                    girlSleepPlaceId: gP ? gP._id : null,
-                    boySleepPlaceId: bP ? bP._id : null,
-                    normalPlaceId: nP ? nP._id : null,
+                    girlSleepPlaceId: girl ? girl._id : null,
+                    boySleepPlaceId: boy ? boy._id : null,
+                    normalPlaceId: normal ? normal._id : null,
                     nongSendMessage,
                   },
                   session.user.token
@@ -152,6 +133,54 @@ export default function UpdateBaanClient({
           </button>
         </div>
       </form>
+      <div className="flex flex-row items-center my-5">
+        <label className="w-2/5 text-2xl text-white">ดูข้อมูลขั้นสูง</label>
+        <Checkbox
+          onChange={setBoolean(setHighMode)}
+          sx={{
+            "&.Mui-checked": {
+              color: "#FFFFFF", // Custom color when checked
+            },
+          }}
+          defaultChecked={nongSendMessage}
+        />
+      </div>
+      <table>
+        <tr>
+          <th>ชื่อเล่น</th>
+          <th>ชื่อจริง</th>
+          <th>นามสกุล</th>
+          <th>บทบาท</th>
+          <th>เน้นย้ำเรื่องอาหารอะไรบ้าง</th>
+          {highMode ? <th>ใส่แพมเพิสหรือไม่</th> : null}
+        </tr>
+        {peeLookupNong(
+          coopData.peeHealths.map((health, i) => (
+            <tr key={i}>
+              <td>{health.user.nickname}</td>
+              <td>{health.user.name}</td>
+              <td>{health.user.lastname}</td>
+              <td>พี่{coopData.camp.groupName}</td>
+              <td>{health.heathIssue.extra}</td>
+              {highMode ? (
+                <td>{health.heathIssue.isWearing ? "ใส่" : "ไม่ใส่"}</td>
+              ) : null}
+            </tr>
+          )),
+          coopData.nongHealths.map((health, i) => (
+            <tr key={i}>
+              <td>{health.user.nickname}</td>
+              <td>{health.user.name}</td>
+              <td>{health.user.lastname}</td>
+              <td>น้องค่าย</td>
+              <td>{health.heathIssue.extra}</td>
+              {highMode ? (
+                <td>{health.heathIssue.isWearing ? "ใส่" : "ไม่ใส่"}</td>
+              ) : null}
+            </tr>
+          ))
+        )}
+      </table>
     </div>
   );
 }

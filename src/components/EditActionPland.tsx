@@ -9,15 +9,18 @@ import {
   InterPlace,
   MyMap,
   ShowMember,
+  UpdateTimeOffsetRaw,
   showActionPlan,
 } from "../../interface";
 import FinishButton from "./FinishButton";
 import PlaceSelect from "./PlaceSelect";
 import SelectTemplate from "./SelectTemplate";
 import {
+  addTime,
   modifyElementInUseStateArray,
   notEmpty,
   removeElementInUseStateArray,
+  selectTimeToSystem,
   setMap,
   setTextToString,
 } from "./setup";
@@ -33,12 +36,14 @@ export default function EditActionPland({
   actionPlan,
   pls,
   allPlaceData,
+  timeOffset,
 }: {
   pees: ShowMember[];
   petos: ShowMember[];
   actionPlan: showActionPlan;
   pls: InterPlace[];
   allPlaceData: AllPlaceData;
+  timeOffset: UpdateTimeOffsetRaw;
 }) {
   const { data: session } = useSession();
   if (!session) {
@@ -46,8 +51,12 @@ export default function EditActionPland({
   }
   const [action, setAction] = useState<string | null>(actionPlan.action);
   const [places, setPlaces] = useState<(InterPlace | null)[]>(pls);
-  const [start, setStart] = useState<Dayjs | null>(dayjs(actionPlan.start));
-  const [end, setEnd] = useState<Dayjs | null>(dayjs(actionPlan.end));
+  const [start, setStart] = useState<Dayjs | null>(
+    dayjs(addTime(actionPlan.start, timeOffset))
+  );
+  const [end, setEnd] = useState<Dayjs | null>(
+    dayjs(addTime(actionPlan.end, timeOffset))
+  );
   const [body, setBody] = useState<string | null>(actionPlan.body);
   const maps: MyMap[] = [];
   let i = 0;
@@ -87,7 +96,6 @@ export default function EditActionPland({
               value={start}
               onChange={(newValue) => {
                 setStart(newValue);
-                console.log(newValue);
               }}
             />
           </LocalizationProvider>
@@ -99,7 +107,6 @@ export default function EditActionPland({
               value={end}
               onChange={(newValue) => {
                 setEnd(newValue);
-                console.log(newValue);
               }}
             />
           </LocalizationProvider>
@@ -158,8 +165,8 @@ export default function EditActionPland({
                 {
                   action,
                   placeIds: places.filter(notEmpty).map((e) => e._id),
-                  start: start.toDate(),
-                  end: end.toDate(),
+                  start: selectTimeToSystem(start, timeOffset),
+                  end: selectTimeToSystem(end, timeOffset),
                   headId,
                   body,
                 },

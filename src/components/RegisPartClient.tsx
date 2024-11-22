@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import {
+  AllNongRegister,
   Id,
   InterCampFront,
   MyMap,
@@ -9,11 +10,11 @@ import {
   RegisPart,
   ShowMember,
   ShowRegister,
+  ShowRegisterNong,
 } from "../../interface";
-import Link from "next/link";
 import { useState } from "react";
-import { Checkbox } from "@mui/material";
-import { getValue, setSwop } from "./setup";
+import { Checkbox, TextField } from "@mui/material";
+import { setSwop, setTextToString } from "./setup";
 import SelectTemplate from "./SelectTemplate";
 import FinishButton from "./FinishButton";
 import admission from "@/libs/camp/admission";
@@ -23,6 +24,7 @@ import changePart from "@/libs/camp/changePart";
 import React from "react";
 import getCamp from "@/libs/camp/getCamp";
 import Waiting from "./Waiting";
+import StringToHtml from "./StringToHtml";
 
 export default function RegisterPartClient({
   regisBaans,
@@ -32,6 +34,7 @@ export default function RegisterPartClient({
   token,
   isBoard,
   partMap,
+  nongRegister,
 }: {
   regisParts: RegisPart[];
   regisBaans: RegisBaan[];
@@ -40,6 +43,7 @@ export default function RegisterPartClient({
   token: string;
   isBoard: boolean;
   partMap: MyMap[];
+  nongRegister: AllNongRegister;
 }) {
   const router = useRouter();
   const [nongPendingIds, setNongPendingIds] = useState<Id[]>([]);
@@ -51,6 +55,9 @@ export default function RegisterPartClient({
   const [userIds, setUserIds] = useState<Id[]>([]);
   const [timeOut, setTimeOut] = useState<boolean>(false);
   const [camp, setCamp] = useState<InterCampFront>(campInput);
+  const [name, setName] = useState<string>("");
+  const [nickname, setNickname] = useState<string>("");
+  const [lastname, setLastname] = useState<string>("");
   const mapIn: MyMap[] = regisBaans.map((regisBaan) => ({
     key: regisBaan.baan._id,
     value: regisBaan.baan.name,
@@ -67,12 +74,104 @@ export default function RegisterPartClient({
     setCamp(buffer);
     setTimeOut(false);
   }
+  function filterNong(input: ShowRegisterNong): boolean {
+    return (
+      input.user.name.search(name) == 0 &&
+      input.user.nickname.search(nickname) == 0 &&
+      input.user.lastname.search(lastname) == 0
+    );
+  }
+  function filterUser(input: ShowMember): boolean {
+    return (
+      input.name.search(name) == 0 &&
+      input.nickname.search(nickname) == 0 &&
+      input.lastname.search(lastname) == 0
+    );
+  }
   return (
     <div
       style={{
         marginLeft: "5%",
       }}
     >
+      <div className="flex flex-row items-center">
+        <label className="w-2/5 text-2xl text-white">ชื่อจริง</label>
+        <TextField
+          name="Name"
+          id="Name"
+          defaultValue={name}
+          className="w-3/5 bg-white rounded-2xl "
+          sx={{
+            backgroundColor: "#f5f5f5",
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderRadius: " 1rem",
+                borderColor: "transparent",
+              },
+              "&:hover fieldset": {
+                borderColor: "#5479FF",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#5479FF",
+              },
+            },
+          }}
+          onChange={setTextToString(setName)}
+          required
+        />
+      </div>
+      <div className="flex flex-row items-center my-5">
+        <label className="w-2/5 text-2xl text-white">นามสกุล</label>
+        <TextField
+          name="LastName"
+          id="LastName"
+          defaultValue={lastname}
+          className="w-3/5 bg-white rounded-2xl border-gray-200"
+          sx={{
+            backgroundColor: "#f5f5f5",
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderRadius: " 1rem",
+                borderColor: "transparent",
+              },
+              "&:hover fieldset": {
+                borderColor: "#5479FF",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#5479FF",
+              },
+            },
+          }}
+          onChange={setTextToString(setLastname)}
+          required
+        />
+      </div>
+      <div className="flex flex-row items-center">
+        <label className="w-2/5 text-2xl text-white">ชือเล่น</label>
+        <TextField
+          name="Nickname"
+          id="Nickname"
+          defaultValue={nickname}
+          className="w-3/5 bg-white rounded-2xl border-gray-200"
+          sx={{
+            backgroundColor: "#f5f5f5",
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderRadius: " 1rem",
+                borderColor: "transparent",
+              },
+              "&:hover fieldset": {
+                borderColor: "#5479FF",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#5479FF",
+              },
+            },
+          }}
+          onChange={setTextToString(setNickname)}
+          required
+        />
+      </div>
       {timeOut ? (
         <Waiting />
       ) : (
@@ -88,25 +187,31 @@ export default function RegisterPartClient({
           </div>
           <table className="table-auto border border-x-black border-separate">
             <th className=" border border-x-black">รหัส</th>
+            <th className=" border border-x-black">ชือเล่น</th>
+            <th className=" border border-x-black">ชื่อจริง</th>
+            <th className=" border border-x-black">นามสกุล</th>
+            <th className=" border border-x-black">เพศ</th>
             <th className=" border border-x-black">link</th>
             <th className=" border border-x-black">select</th>
-            {camp.nongPendingIds.map((v, i) => (
+            {nongRegister.pendings.filter(filterNong).map((v, i) => (
               <tr key={i}>
                 <td
                   className=" border border-x-black"
                   onClick={() => {
-                    router.push(`/userProfile/${v.key}`);
+                    router.push(`/userProfile/${v.user._id}`);
                   }}
                 >
-                  {getValue(camp.nongMapIdGtoL, v.key)}
+                  {v.localId}
+                </td>
+                <td>{v.user.nickname}</td>
+                <td>{v.user.name}</td>
+                <td>{v.user.lastname}</td>
+                <td>{v.user.gender}</td>
+                <td className=" border border-x-black">
+                  <StringToHtml input={v.link} />
                 </td>
                 <td className=" border border-x-black">
-                  <Link href={v.value || ""}>link</Link>
-                </td>
-                <td className=" border border-x-black">
-                  <Checkbox
-                    onChange={setSwop(v.key,setNongPendingIds)}
-                  />
+                  <Checkbox onChange={setSwop(v.user._id, setNongPendingIds)} />
                 </td>
               </tr>
             ))}
@@ -158,26 +263,34 @@ export default function RegisterPartClient({
               >
                 ผ่านการสัมภาษณ์
               </div>
-              <table className="table-auto border border-x-blackborder-separate">
+              <table className="table-auto border border-x-black border-separate">
                 <th className=" border border-x-black">รหัส</th>
+                <th className=" border border-x-black">ชือเล่น</th>
+                <th className=" border border-x-black">ชื่อจริง</th>
+                <th className=" border border-x-black">นามสกุล</th>
+                <th className=" border border-x-black">เพศ</th>
                 <th className=" border border-x-black">link</th>
                 <th className=" border border-x-black">select</th>
-                {camp.nongInterviewIds.map((v, i) => (
+                {nongRegister.interviews.filter(filterNong).map((v, i) => (
                   <tr key={i}>
                     <td
                       className=" border border-x-black"
                       onClick={() => {
-                        router.push(`/userProfile/${v.key}`);
+                        router.push(`/userProfile/${v.user._id}`);
                       }}
                     >
-                      {getValue(camp.nongMapIdGtoL, v.key)}
+                      {v.localId}
                     </td>
+                    <td>{v.user.nickname}</td>
+                    <td>{v.user.name}</td>
+                    <td>{v.user.lastname}</td>
+                    <td>{v.user.gender}</td>
                     <td className=" border border-x-black">
-                      <Link href={v.value}>link</Link>
+                      <StringToHtml input={v.link} />
                     </td>
                     <td className=" border border-x-black">
                       <Checkbox
-                        onChange={setSwop(v.key,setNongInterviewIds)}
+                        onChange={setSwop(v.user._id, setNongInterviewIds)}
                       />
                     </td>
                   </tr>
@@ -275,19 +388,27 @@ export default function RegisterPartClient({
           </div>
           <table className="table-auto border border-x-black border-separate">
             <th className=" border border-x-black">รหัส</th>
+            <th className=" border border-x-black">ชือเล่น</th>
+            <th className=" border border-x-black">ชื่อจริง</th>
+            <th className=" border border-x-black">นามสกุล</th>
+            <th className=" border border-x-black">เพศ</th>
             <th className=" border border-x-black">link</th>
-            {camp.nongPassIds.map((v, i) => (
+            {nongRegister.pendings.filter(filterNong).map((v, i) => (
               <tr key={i}>
                 <td
                   className=" border border-x-black"
                   onClick={() => {
-                    router.push(`/userProfile/${v.key}`);
+                    router.push(`/userProfile/${v.user._id}`);
                   }}
                 >
-                  {getValue(camp.nongMapIdGtoL, v.key)}
+                  {v.localId}
                 </td>
+                <td>{v.user.nickname}</td>
+                <td>{v.user.name}</td>
+                <td>{v.user.lastname}</td>
+                <td>{v.user.gender}</td>
                 <td className=" border border-x-black">
-                  <Link href={v.value}>link</Link>
+                  <StringToHtml input={v.link} />
                 </td>
               </tr>
             ))}
@@ -305,28 +426,36 @@ export default function RegisterPartClient({
               </div>
               <table className="table-auto border border-x-black border-separate">
                 <th className=" border border-x-black">รหัส</th>
+                <th className=" border border-x-black">ชือเล่น</th>
+                <th className=" border border-x-black">ชื่อจริง</th>
+                <th className=" border border-x-black">นามสกุล</th>
+                <th className=" border border-x-black">เพศ</th>
                 <th className=" border border-x-black">link</th>
                 <th className=" border border-x-black">select</th>
-                {camp.nongPassIds
-                  .filter((e) => camp.nongPaidIds.includes(e.key))
-                  .map((v, i) => (
-                    <tr key={i}>
-                      <td
-                        className=" border border-x-black"
-                        onClick={() => {
-                          router.push(`/userProfile/${v.key}`);
-                        }}
-                      >
-                        {v.key.toString()}
-                      </td>
-                      <td className=" border border-x-black">
-                        <Link href={v.value}>link</Link>
-                      </td>
-                      <td className=" border border-x-black">
-                        <Checkbox onChange={setSwop(v.key, setNongPaidIds)} />
-                      </td>
-                    </tr>
-                  ))}
+                {nongRegister.paids.filter(filterNong).map((v, i) => (
+                  <tr key={i}>
+                    <td
+                      className=" border border-x-black"
+                      onClick={() => {
+                        router.push(`/userProfile/${v.user._id}`);
+                      }}
+                    >
+                      {v.localId}
+                    </td>
+                    <td>{v.user.nickname}</td>
+                    <td>{v.user.name}</td>
+                    <td>{v.user.lastname}</td>
+                    <td>{v.user.gender}</td>
+                    <td className=" border border-x-black">
+                      <StringToHtml input={v.link} />
+                    </td>
+                    <td className=" border border-x-black">
+                      <Checkbox
+                        onChange={setSwop(v.user._id, setNongPaidIds)}
+                      />
+                    </td>
+                  </tr>
+                ))}
               </table>
               <div
                 style={{
@@ -375,23 +504,35 @@ export default function RegisterPartClient({
           >
             น้องที่มั่นใจว่าเข้าค่ายแน่นอน
           </div>
-          <table>
+          <table className="table-auto border border-x-black border-separate">
             <th className=" border border-x-black">รหัส</th>
 
+            <th className=" border border-x-black">ชือเล่น</th>
+            <th className=" border border-x-black">ชื่อจริง</th>
+            <th className=" border border-x-black">นามสกุล</th>
+            <th className=" border border-x-black">เพศ</th>
+            <th className=" border border-x-black">link</th>
             <th className=" border border-x-black">select</th>
-            {camp.nongSureIds.map((v, i) => (
+            {nongRegister.sures.filter(filterNong).map((v, i) => (
               <tr key={i}>
                 <td
                   className=" border border-x-black"
                   onClick={() => {
-                    router.push(`/userProfile/${v.toString()}`);
+                    router.push(`/userProfile/${v.user._id}`);
                   }}
                 >
-                  {getValue(camp.nongMapIdGtoL, v)}
+                  {v.localId}
                 </td>
 
+                <td>{v.user.nickname}</td>
+                <td>{v.user.name}</td>
+                <td>{v.user.lastname}</td>
+                <td>{v.user.gender}</td>
                 <td className=" border border-x-black">
-                  <Checkbox onChange={setSwop(v, setNongSureIds)} />
+                  <StringToHtml input={v.link} />
+                </td>
+                <td className=" border border-x-black">
+                  <Checkbox onChange={setSwop(v.user._id, setNongSureIds)} />
                 </td>
               </tr>
             ))}
@@ -407,6 +548,9 @@ export default function RegisterPartClient({
           </div>
           <table className="table-auto border border-x-black border-separate">
             <th className=" border border-x-black">รหัส</th>
+            <th className=" border border-x-black">ชือเล่น</th>
+            <th className=" border border-x-black">ชื่อจริง</th>
+            <th className=" border border-x-black">นามสกุล</th>
             <th className=" border border-x-black">link</th>
             <th className=" border border-x-black">select</th>
             {peeRegisters.map((v, i) => (
@@ -417,13 +561,14 @@ export default function RegisterPartClient({
                     router.push(`/userProfile/${v.userId}`);
                   }}
                 >
-                  {v.fullName}
+                  {v.userId.toString()}
                 </td>
+                <td>{v.nickname}</td>
+                <td>{v.name}</td>
+                <td>{v.lastname}</td>
                 <td className=" border border-x-black">{v.partName}</td>
                 <td className=" border border-x-black">
-                  <Checkbox
-                    onChange={setSwop(v.userId,setPeePassIds)}
-                  />
+                  <Checkbox onChange={setSwop(v.userId, setPeePassIds)} />
                 </td>
               </tr>
             ))}
@@ -484,7 +629,7 @@ export default function RegisterPartClient({
                 <th className=" border border-x-black">ปัญหาสุขภาพ</th>
                 <th className=" border border-x-black">select</th>
               </tr>
-              {regisBaan.nongs.map((user: ShowMember, i) => (
+              {regisBaan.nongs.filter(filterUser).map((user: ShowMember, i) => (
                 <tr key={i}>
                   <td className=" border border-x-black">{user.nickname}</td>
                   <td className=" border border-x-black">{user.name}</td>
@@ -524,9 +669,7 @@ export default function RegisterPartClient({
                     <td className=" border border-x-black">-</td>
                   )}
                   <td>
-                    <Checkbox
-                      onChange={setSwop(user._id,setMembers)}
-                    />
+                    <Checkbox onChange={setSwop(user._id, setMembers)} />
                   </td>
                 </tr>
               ))}
@@ -559,7 +702,7 @@ export default function RegisterPartClient({
                 <th className=" border border-x-black">ปัญหาสุขภาพ</th>
                 <th className=" border border-x-black">select</th>
               </tr>
-              {regisBaan.pees.map((user: ShowMember, i) => (
+              {regisBaan.pees.filter(filterUser).map((user: ShowMember, i) => (
                 <tr key={i}>
                   <td className=" border border-x-black">{user.nickname}</td>
                   <td className=" border border-x-black">{user.name}</td>
@@ -599,9 +742,7 @@ export default function RegisterPartClient({
                     <td className=" border border-x-black">-</td>
                   )}
                   <td className=" border border-x-black">
-                    <Checkbox
-                      onChange={setSwop(user._id,setMembers)}
-                    />
+                    <Checkbox onChange={setSwop(user._id, setMembers)} />
                   </td>
                 </tr>
               ))}
@@ -643,52 +784,60 @@ export default function RegisterPartClient({
                   <th className=" border border-x-black">ปัญหาสุขภาพ</th>
                   <th className=" border border-x-black">select</th>
                 </tr>
-                {regisPart.petos.map((user: ShowMember, i) => (
-                  <tr key={i}>
-                    <td className=" border border-x-black">{user.nickname}</td>
-                    <td className=" border border-x-black">{user.name}</td>
-                    <td className=" border border-x-black">{user.lastname}</td>
-                    <td className=" border border-x-black">{user.gender}</td>
-                    <td className=" border border-x-black">
-                      {user.sleep ? <>ค้างคืน</> : <>ไม่ค้างคืน</>}
-                    </td>
-                    <td
-                      className=" border border-x-black"
-                      onClick={() => {
-                        alert(user._id);
-                      }}
-                    >
-                      {user.id}
-                    </td>
-                    <td className=" border border-x-black">{user.studentId}</td>
-                    <td className=" border border-x-black">{user.tel}</td>
-                    <td className=" border border-x-black">{user.email}</td>
-                    <td className=" border border-x-black">
-                      {user.haveBottle.toString()}
-                    </td>
-                    <td className=" border border-x-black">{user.shirtSize}</td>
-                    <td className=" border border-x-black">{user.group}</td>
-                    {user.healthIssueId ? (
+                {regisPart.petos
+                  .filter(filterUser)
+                  .map((user: ShowMember, i) => (
+                    <tr key={i}>
+                      <td className=" border border-x-black">
+                        {user.nickname}
+                      </td>
+                      <td className=" border border-x-black">{user.name}</td>
+                      <td className=" border border-x-black">
+                        {user.lastname}
+                      </td>
+                      <td className=" border border-x-black">{user.gender}</td>
+                      <td className=" border border-x-black">
+                        {user.sleep ? <>ค้างคืน</> : <>ไม่ค้างคืน</>}
+                      </td>
                       <td
                         className=" border border-x-black"
                         onClick={() => {
-                          router.push(
-                            `/healthIssue/${user.healthIssueId?.toString()}`
-                          );
+                          alert(user._id);
                         }}
                       >
-                        {user.healthIssueId.toString()}
+                        {user.id}
                       </td>
-                    ) : (
-                      <td className=" border border-x-black">-</td>
-                    )}
-                    {have ? (
-                      <Checkbox
-                        onChange={setSwop(user._id,setUserIds)}
-                      />
-                    ) : null}
-                  </tr>
-                ))}
+                      <td className=" border border-x-black">
+                        {user.studentId}
+                      </td>
+                      <td className=" border border-x-black">{user.tel}</td>
+                      <td className=" border border-x-black">{user.email}</td>
+                      <td className=" border border-x-black">
+                        {user.haveBottle.toString()}
+                      </td>
+                      <td className=" border border-x-black">
+                        {user.shirtSize}
+                      </td>
+                      <td className=" border border-x-black">{user.group}</td>
+                      {user.healthIssueId ? (
+                        <td
+                          className=" border border-x-black"
+                          onClick={() => {
+                            router.push(
+                              `/healthIssue/${user.healthIssueId?.toString()}`
+                            );
+                          }}
+                        >
+                          {user.healthIssueId.toString()}
+                        </td>
+                      ) : (
+                        <td className=" border border-x-black">-</td>
+                      )}
+                      {have ? (
+                        <Checkbox onChange={setSwop(user._id, setUserIds)} />
+                      ) : null}
+                    </tr>
+                  ))}
               </table>
             </div>
             <div>
@@ -718,52 +867,60 @@ export default function RegisterPartClient({
                   <th className=" border border-x-black">ปัญหาสุขภาพ</th>
                   <th className=" border border-x-black">select</th>
                 </tr>
-                {regisPart.pees.map((user: ShowMember, i) => (
-                  <tr key={i}>
-                    <td className=" border border-x-black">{user.nickname}</td>
-                    <td className=" border border-x-black">{user.name}</td>
-                    <td className=" border border-x-black">{user.lastname}</td>
-                    <td className=" border border-x-black">{user.gender}</td>
-                    <td className=" border border-x-black">
-                      {user.sleep ? <>ค้างคืน</> : <>ไม่ค้างคืน</>}
-                    </td>
-                    <td
-                      className=" border border-x-black"
-                      onClick={() => {
-                        alert(user._id);
-                      }}
-                    >
-                      {user.id}
-                    </td>
-                    <td className=" border border-x-black">{user.studentId}</td>
-                    <td className=" border border-x-black">{user.tel}</td>
-                    <td className=" border border-x-black">{user.email}</td>
-                    <td className=" border border-x-black">
-                      {user.haveBottle.toString()}
-                    </td>
-                    <td className=" border border-x-black">{user.shirtSize}</td>
-                    <td className=" border border-x-black">{user.group}</td>
-                    {user.healthIssueId ? (
+                {regisPart.pees
+                  .filter(filterUser)
+                  .map((user: ShowMember, i) => (
+                    <tr key={i}>
+                      <td className=" border border-x-black">
+                        {user.nickname}
+                      </td>
+                      <td className=" border border-x-black">{user.name}</td>
+                      <td className=" border border-x-black">
+                        {user.lastname}
+                      </td>
+                      <td className=" border border-x-black">{user.gender}</td>
+                      <td className=" border border-x-black">
+                        {user.sleep ? <>ค้างคืน</> : <>ไม่ค้างคืน</>}
+                      </td>
                       <td
                         className=" border border-x-black"
                         onClick={() => {
-                          router.push(
-                            `/healthIssue/${user.healthIssueId?.toString()}`
-                          );
+                          alert(user._id);
                         }}
                       >
-                        {user.healthIssueId.toString()}
+                        {user.id}
                       </td>
-                    ) : (
-                      <td className=" border border-x-black">-</td>
-                    )}
-                    {have ? (
-                      <Checkbox
-                        onChange={setSwop(user._id,setUserIds)}
-                      />
-                    ) : null}
-                  </tr>
-                ))}
+                      <td className=" border border-x-black">
+                        {user.studentId}
+                      </td>
+                      <td className=" border border-x-black">{user.tel}</td>
+                      <td className=" border border-x-black">{user.email}</td>
+                      <td className=" border border-x-black">
+                        {user.haveBottle.toString()}
+                      </td>
+                      <td className=" border border-x-black">
+                        {user.shirtSize}
+                      </td>
+                      <td className=" border border-x-black">{user.group}</td>
+                      {user.healthIssueId ? (
+                        <td
+                          className=" border border-x-black"
+                          onClick={() => {
+                            router.push(
+                              `/healthIssue/${user.healthIssueId?.toString()}`
+                            );
+                          }}
+                        >
+                          {user.healthIssueId.toString()}
+                        </td>
+                      ) : (
+                        <td className=" border border-x-black">-</td>
+                      )}
+                      {have ? (
+                        <Checkbox onChange={setSwop(user._id, setUserIds)} />
+                      ) : null}
+                    </tr>
+                  ))}
               </table>
             </div>
           </>

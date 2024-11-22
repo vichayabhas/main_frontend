@@ -5,7 +5,7 @@ import { FoodLimit, foodLimits, HeathIssueBody } from "../../interface";
 import { Checkbox, MenuItem, Select, TextField } from "@mui/material";
 import FinishButton from "./FinishButton";
 import updateHeath from "@/libs/user/updateHeath";
-import { setTextToString } from "./setup";
+import { setBoolean, setTextToString } from "./setup";
 
 export default function HeathIssueClient({
   heathIssue,
@@ -180,9 +180,7 @@ export default function HeathIssueClient({
             กินเผ็ดไม่ได้ใช่หรือไม่
           </label>
           <Checkbox
-            onChange={(e, c) => {
-              set4(c);
-            }}
+            onChange={setBoolean(set4)}
             sx={{
               "&.Mui-checked": {
                 color: "#FFFFFF", // Custom color when checked
@@ -226,9 +224,7 @@ export default function HeathIssueClient({
                 ใส่แพมเพิสหรือไม่
               </label>
               <Checkbox
-                onChange={(e, c) => {
-                  set6(c);
-                }}
+                onChange={setBoolean(set6)}
                 sx={{
                   "&.Mui-checked": {
                     color: "#FFFFFF", // Custom color when checked
@@ -242,9 +238,7 @@ export default function HeathIssueClient({
         <div>
           <label className="w-2/5 text-2xl text-white">advance</label>
           <Checkbox
-            onChange={(e, c) => {
-              setMode(c);
-            }}
+            onChange={setBoolean(setMode)}
             sx={{
               "&.Mui-checked": {
                 color: "#FFFFFF", // Custom color when checked

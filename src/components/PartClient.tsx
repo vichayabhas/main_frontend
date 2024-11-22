@@ -37,7 +37,7 @@ export default function PartClient({
   part,
   pees,
   petos,
-  timeOffset,
+  selectOffset,
   camp,
   allPlaceData,
 }: {
@@ -45,7 +45,7 @@ export default function PartClient({
   user: InterUser;
   pees: ShowMember[];
   petos: ShowMember[];
-  timeOffset: InterTimeOffset;
+  selectOffset: InterTimeOffset;
   camp: InterCampFront;
   allPlaceData: AllPlaceData;
 }) {
@@ -354,8 +354,8 @@ export default function PartClient({
                   action,
                   partId: part._id,
                   placeIds: places.filter(notEmpty).map((e) => e._id),
-                  start: addTime(start, timeOffset),
-                  end: addTime(end, timeOffset),
+                  start: addTime(start, selectOffset),
+                  end: addTime(end, selectOffset),
                   headId,
                   body,
                 },

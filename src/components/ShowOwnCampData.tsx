@@ -1,21 +1,30 @@
 import {
+  GetMeals,
   HeathIssueBody,
   InterCampMemberCard,
   InterUser,
+  UpdateTimeOffsetRaw,
 } from "../../interface";
 import AllInOneLock from "./AllInOneLock";
 import React from "react";
+import { copy } from "./setup";
+import dayjs from "dayjs";
+import GetTimeHtml from "./GetTimeHtml";
 
 export default function ShowOwnCampData({
   token,
   healthIssue,
   campMemberCard,
   user,
+  meals,
+  displayOffset,
 }: {
   token: string;
   healthIssue: HeathIssueBody;
   campMemberCard: InterCampMemberCard;
   user: InterUser;
+  meals: GetMeals[];
+  displayOffset: UpdateTimeOffsetRaw;
 }) {
   return (
     <AllInOneLock token={token}>
@@ -52,6 +61,28 @@ export default function ShowOwnCampData({
           <td>{healthIssue.spicy ? "ไม่ได้" : "ได้"}</td>
           {healthIssue.isWearing ? <td> ใส่ </td> : null}
         </tr>
+      </table>
+      <table>
+        <tr>
+          <th>วันเวลา</th>
+          <th>อาหารอะไรที่คุณกินได้</th>
+          <th>อาหารอะไรที่คุณกินไม่ได้หรือเตรียมไว้สำหรับคนที่แพ้อาหาร</th>
+        </tr>
+        {meals
+          .map(copy)
+          .sort((a, b) => dayjs(a.time.toString()).diff(b.time.toString()))
+          .map((meal, i) => (
+            <tr key={i}>
+              <td>
+                <GetTimeHtml
+                  offset={displayOffset}
+                  input={meal.time.toString()}
+                />
+              </td>
+              <td>{meal.whiteLists.map((food) => ` ${food.name} `)}</td>
+              <td>{meal.blackLists.map((food) => ` ${food.name} `)}</td>
+            </tr>
+          ))}
       </table>
     </AllInOneLock>
   );

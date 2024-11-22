@@ -92,7 +92,7 @@ export interface InterCampBack {
   nongHeathIssueIds: Id[];
   peeHeathIssueIds: Id[];
   petoHeathIssueIds: Id[];
-  dataLock: boolean;
+  nongDataLock: boolean;
   nongShirtSize: Map<"S" | "M" | "L" | "XL" | "XXL" | "3XL", number>;
   peeShirtSize: Map<"S" | "M" | "L" | "XL" | "XXL" | "3XL", number>;
   petoShirtSize: Map<"S" | "M" | "L" | "XL" | "XXL" | "3XL", number>;
@@ -438,7 +438,7 @@ export interface InterCampFront {
   nongHeathIssueIds: Id[];
   peeHeathIssueIds: Id[];
   petoHeathIssueIds: Id[];
-  dataLock: boolean;
+  nongDataLock: boolean;
   nongShirtSize: InterSize;
   peeShirtSize: InterSize;
   petoShirtSize: InterSize;
@@ -580,7 +580,7 @@ export interface Register {
   likeToSleepAtCamp: boolean;
 }
 export interface UpdateCamp {
-  dataLock: boolean;
+  nongDataLock: boolean;
   open: boolean;
   link: string | null;
   allDone: boolean;
@@ -736,7 +736,9 @@ export interface CreateWorkingItem {
   password: string;
 }
 export interface ShowRegister {
-  fullName: string;
+  name: string;
+  lastname: string;
+  nickname: string;
   userId: Id;
   partId: Id;
   partName: string;
@@ -802,9 +804,9 @@ export interface ShowNong {
   id: number;
 }
 export interface ShowRegisterNong {
-  generalId: Id;
   link: string;
   localId: string;
+  user: InterUser;
 }
 export interface AllNongRegister {
   pendings: ShowRegisterNong[];
@@ -819,7 +821,7 @@ export interface InterChat {
   campModelId: Id;
   role: RoleCamp;
   typeChat: TypeChat;
-  refId: Id; //'น้องคุยส่วนตัวกับพี่','คุยกันในบ้าน'baan,'คุยกันในฝ่าย'part,'พี่คุยกันในบ้าน'baan,'พี่บ้านคุยกัน'part
+  refId: Id; //'น้องคุยส่วนตัวกับพี่','คุยกันในบ้าน' baan,'คุยกันในฝ่าย' part,'พี่คุยกันในบ้าน' baan,'พี่บ้านคุยกัน' part
   campMemberCardIds: Id[];
   date: Date;
 }
@@ -921,6 +923,8 @@ export interface CampWelfarePack {
   baanHaveBottles: CampNumberData[];
   partHaveBottles: CampNumberData[];
   campBottleNumber: CampNumberData;
+  meals: InterMeal[];
+  _id: Id;
 }
 export interface WelfarePack {
   nongHealths: HeathIssuePack[];
@@ -1111,39 +1115,6 @@ export interface GetAllQuestion {
   texts: GetTextQuestion[];
   canAnswerTheQuestion: boolean;
 }
-export interface ReceiveAirQuality {
-  id: string;
-  measurements: {
-    hourly: {
-      ts: string; //date
-      aqi?: number;
-      pm25?: {
-        aqi: number;
-        concentration: number;
-      };
-    }[];
-    daily: {
-      ts: string; //date
-      aqi?: number;
-      pm25?: {
-        aqi: number;
-        concentration: number;
-      };
-      pressure?: number;
-      humidity?: number;
-      wind?: {
-        speed: number;
-        direction: number;
-      };
-      icon?: string;
-      condition?: string;
-      temperature?: {
-        max: number;
-        min: number;
-      };
-    }[];
-  };
-}
 export interface UserAndAllQuestionPack {
   user: InterUser;
   questions: GetAllQuestion;
@@ -1184,6 +1155,7 @@ export interface InterFood {
   lists: FoodLimit[];
   _id: Id;
   isSpicy: boolean;
+  listPriority: boolean;
 }
 export interface InterMeal {
   time: Date;
@@ -1191,7 +1163,6 @@ export interface InterMeal {
   foodIds: Id[];
   roles: RoleCamp[];
   _id: Id;
-  isWhiteList: boolean;
 }
 export interface CreateFood {
   campId: Id;
@@ -1200,29 +1171,25 @@ export interface CreateFood {
   mealId: Id;
   lists: FoodLimit[];
   isSpicy: boolean;
+  listPriority: boolean;
 }
 export interface CreateMeal {
   time: Date;
   campId: Id;
   roles: RoleCamp[];
-  isWhiteList: boolean;
 }
 export interface UpdateFood {
-  campId: Id;
   isWhiteList: boolean;
   nongCampMemberCardIds: Id[];
   peeCampMemberCardIds: Id[];
   petoCampMemberCardIds: Id[];
-  nongRemoveCampMemberCardIds: Id[];
-  peeRemoveCampMemberCardIds: Id[];
-  petoRemoveCampMemberCardIds: Id[];
   name: string;
   lists: FoodLimit[];
   _id: Id;
   isSpicy: boolean;
+  listPriority: boolean;
 }
 export interface GetFoodForUpdate {
-  campId: Id;
   isWhiteList: boolean;
   nongHealths: HeathIssuePack[];
   peeHealths: HeathIssuePack[];
@@ -1234,10 +1201,52 @@ export interface GetFoodForUpdate {
   lists: FoodLimit[];
   _id: Id;
   isSpicy: boolean;
+  camp: InterCampFront;
+  time: Date;
+  listPriority: boolean;
 }
 export interface GetMeals {
   time: Date;
   whiteLists: InterFood[];
   blackLists: InterFood[];
-  remains: InterFood[];
+}
+export interface ReceiveAirQuality {
+  id: string;
+  measurements: {
+    hourly: {
+      ts: string; //date
+      aqi: number;
+      pm25?: {
+        aqi: number;
+        concentration: number;
+      };
+    }[];
+  };
+}
+export interface CampHealthIssuePack {
+  baanHealthIssuePacks: ShowHealthIssuePack[];
+  partHealthIssuePacks: ShowHealthIssuePack[];
+  isHavePeto: boolean;
+  groupName: string;
+  campHealthIssuePack: ShowHealthIssuePack;
+}
+export interface ShowHealthIssuePack {
+  nongHealths: HeathIssuePack[];
+  peeHealths: HeathIssuePack[];
+  petoHealths: HeathIssuePack[];
+  name: string;
+}
+export interface GetCoopData {
+  baan: InterBaanFront;
+  camp: InterCampFront;
+  boy: InterPlace | null;
+  girl: InterPlace | null;
+  normal: InterPlace | null;
+  nongHealths: HeathIssuePack[];
+  peeHealths: HeathIssuePack[];
+}
+export interface UpdateMeal {
+  mealId: Id;
+  time: Date;
+  roles: RoleCamp[];
 }

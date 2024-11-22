@@ -11,7 +11,7 @@ import {
   UserAndAllQuestionPack,
 } from "../../interface";
 import AllAnswerAndQuestionPageBreakDown from "./AllAnswerAndQuestionPageBreakDown";
-import { copy, setTextToString, stringToId } from "./setup";
+import { copy, setBoolean, setTextToString, stringToId } from "./setup";
 import React, { useState } from "react";
 import { Checkbox, TextField } from "@mui/material";
 interface AnswerReady {
@@ -219,7 +219,7 @@ export default function AllAnswerAndQuestionPage({
   }
   return (
     <div>
-      <Checkbox onChange={(e) => setShowAll(e.target.checked)} defaultChecked />
+      <Checkbox onChange={setBoolean(setShowAll)} defaultChecked />
       filter
       <TextField value={search} onChange={setTextToString(setSearch)} />
       {showAll ? (

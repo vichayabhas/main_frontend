@@ -106,7 +106,10 @@ export default function PlanClient({
                         buildingText="ตึก"
                         place={boys[i]}
                         placeText="ชั้นและตึก"
-                        onClick={setMap(setBoys,modifyElementInUseStateArray(i))}
+                        onClick={setMap(
+                          setBoys,
+                          modifyElementInUseStateArray(i)
+                        )}
                       />
                     </td>
                     <td>
@@ -115,7 +118,10 @@ export default function PlanClient({
                         buildingText="ตึก"
                         place={girls[i]}
                         placeText="ชั้นและตึก"
-                        onClick={setMap(setGirls,modifyElementInUseStateArray(i))}
+                        onClick={setMap(
+                          setGirls,
+                          modifyElementInUseStateArray(i)
+                        )}
                       />
                     </td>
                   </>
@@ -137,7 +143,10 @@ export default function PlanClient({
                     buildingText="ตึก"
                     place={partPlaces[i]}
                     placeText="ชั้นและตึก"
-                    onClick={setMap(setNormals,modifyElementInUseStateArray(i))}
+                    onClick={setMap(
+                      setPartPlaces,
+                      modifyElementInUseStateArray(i)
+                    )}
                   />
                 </td>
               </tr>

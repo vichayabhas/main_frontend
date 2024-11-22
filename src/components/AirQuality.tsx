@@ -25,17 +25,20 @@ export default async function AirQuality() {
         <th>pm2.5</th>
         <th>aqi</th>
       </tr>
-      {airQuality.measurements.hourly.map((hourly, i) =>
-        i == airQuality.measurements.hourly.length - 1 ? null : (
+      {airQuality.measurements.hourly.map((hourly, i) => {
+        if (!hourly.pm25) {
+          return null;
+        }
+        return (
           <tr key={i}>
             <td>
               <GetTimeHtml input={hourly.ts} offset={timeOffset} />
             </td>
-            <td>{hourly.pm25?.concentration}</td>
+            <td>{hourly.pm25.concentration}</td>
             <td>{hourly.aqi}</td>
           </tr>
-        )
-      )}
+        );
+      })}
     </table>
   );
 }
