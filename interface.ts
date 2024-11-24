@@ -935,6 +935,18 @@ export interface CampWelfarePack {
   baanHaveBottles: CampNumberData[];
   partHaveBottles: CampNumberData[];
   campBottleNumber: CampNumberData;
+  baanSpicyS: CampNumberData[];
+  partSpicyS: CampNumberData[];
+  campSpicyNumber: CampNumberData;
+  baanHalalS: CampNumberData[];
+  partHalalS: CampNumberData[];
+  campHalalNumber: CampNumberData;
+  baanVegetarians: CampNumberData[];
+  partVegetarians: CampNumberData[];
+  campVegetarianNumber: CampNumberData;
+  baanVegans: CampNumberData[];
+  partVegans: CampNumberData[];
+  campVeganNumber: CampNumberData;
   meals: InterMeal[];
   _id: Id;
 }

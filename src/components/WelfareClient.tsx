@@ -276,6 +276,38 @@ export default function WelfareClient({
         partNumbers={welfare.partHaveBottles}
         groupName={welfare.groupName}
       />
+      จำนวนสมาชิกที่มีกินเผ็ดไม่ได้
+      <CampNumberTable
+        isHavePeto={welfare.isHavePeto}
+        main={welfare.campSpicyNumber}
+        baanNumbers={welfare.baanSpicyS}
+        partNumbers={welfare.partSpicyS}
+        groupName={welfare.groupName}
+      />
+      จำนวนสมาชิกที่ halal
+      <CampNumberTable
+        isHavePeto={welfare.isHavePeto}
+        main={welfare.campHalalNumber}
+        baanNumbers={welfare.baanHalalS}
+        partNumbers={welfare.partHalalS}
+        groupName={welfare.groupName}
+      />
+      จำนวนสมาชิกที่มีมังสวิรัติ
+      <CampNumberTable
+        isHavePeto={welfare.isHavePeto}
+        main={welfare.campVegetarianNumber}
+        baanNumbers={welfare.baanVegetarians}
+        partNumbers={welfare.partVegetarians}
+        groupName={welfare.groupName}
+      />
+      จำนวนสมาชิกที่กินเจ
+      <CampNumberTable
+        isHavePeto={welfare.isHavePeto}
+        main={welfare.campVeganNumber}
+        baanNumbers={welfare.baanVegans}
+        partNumbers={welfare.partVegans}
+        groupName={welfare.groupName}
+      />
       <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
         <form
           className="w-[70%] items-center p-10 rounded-3xl"
