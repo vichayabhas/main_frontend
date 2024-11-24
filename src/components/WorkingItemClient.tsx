@@ -6,8 +6,10 @@ import { useRouter } from "next/navigation";
 
 export default function WorkingItemClient({
   workingItems,
+  baseUrl,
 }: {
   workingItems: InterWorkingItem[];
+  baseUrl: string;
 }) {
   const router = useRouter();
   return (
@@ -22,11 +24,9 @@ export default function WorkingItemClient({
           <th>จาก</th>
           <th>งานถัดไป</th>
         </tr>
-        {workingItems.map((workingItem,i) => (
+        {workingItems.map((workingItem, i) => (
           <tr key={i}>
-            <td
-              onClick={() => router.push(`/trackingSheet/${workingItem._id}`)}
-            >
+            <td onClick={() => router.push(`/${baseUrl}/${workingItem._id}`)}>
               {workingItem._id.toString()}
             </td>
             <td>{workingItem.name}</td>
@@ -38,7 +38,7 @@ export default function WorkingItemClient({
             </td>
             <td
               onClick={() =>
-                router.push(`/trackingSheet/part/${workingItem.partId}`)
+                router.push(`/${baseUrl}/part/${workingItem.partId}`)
               }
             >
               {workingItem.partName}

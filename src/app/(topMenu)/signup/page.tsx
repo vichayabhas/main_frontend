@@ -54,7 +54,9 @@ export default function signupPage() {
                 }
               }
             }}
-            onChange={setTextToString(setName)}
+            onChange={setTextToString(setName,true)}
+            value={name}
+            required
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -78,7 +80,9 @@ export default function signupPage() {
                 }
               }
             }}
-            onChange={setTextToString(setLastname)}
+            onChange={setTextToString(setLastname,true)}
+            value={lastname}
+            required
           />
         </div>
         <div className="flex flex-row items-center">
@@ -103,6 +107,8 @@ export default function signupPage() {
               }
             }}
             onChange={setTextToString(setNickname)}
+            value={nickname}
+            required
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -127,6 +133,8 @@ export default function signupPage() {
               }
             }}
             onChange={setTextToString(setEmail)}
+            value={email}
+            required
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -150,7 +158,9 @@ export default function signupPage() {
                 }
               }
             }}
-            onChange={setTextToString(setPassword)}
+            onChange={setTextToString(setPassword,true)}
+            value={password}
+            required
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -175,6 +185,8 @@ export default function signupPage() {
               }
             }}
             onChange={setTextToString(setTel)}
+            value={tel}
+            required
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -201,6 +213,8 @@ export default function signupPage() {
               }
             }}
             onChange={setTextToString(setCitizenId)}
+            value={citizenId}
+            required
           />
         </div>
         <div className="flex flex-row items-center my-5">

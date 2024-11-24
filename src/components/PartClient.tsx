@@ -319,6 +319,7 @@ export default function PartClient({
               },
             }}
             onChange={setTextToString(setAction)}
+            value={action}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -429,6 +430,7 @@ export default function PartClient({
               },
             }}
             onChange={setTextToString(setName)}
+            value={name}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -453,6 +455,7 @@ export default function PartClient({
               },
             }}
             onChange={setTextToString(setLink)}
+            value={link}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -476,8 +479,8 @@ export default function PartClient({
                 },
               },
             }}
-            onChange={setTextToString(setPassword)}
-            defaultValue={password}
+            onChange={setTextToString(setPassword,true)}
+            value={password}
           />
         </div>
         <FinishButton

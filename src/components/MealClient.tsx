@@ -195,6 +195,7 @@ export default function MealClient({
               },
             }}
             onChange={setTextToString(setName)}
+            value={name}
             required
           />
         </div>

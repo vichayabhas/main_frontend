@@ -22,7 +22,10 @@ function change(provider: Provider, typing: string | null) {
     }
   }
 }
-function showImage(imgSrc: string | null) {
+function showImage(
+  imgSrc: string | null,
+  onChange: (imgSrc: string | null) => void
+) {
   if (!imgSrc) {
     return "null";
   }
@@ -36,6 +39,9 @@ function showImage(imgSrc: string | null) {
         width={180}
         height={37}
         priority
+        onError={() => {
+          onChange(null);
+        }}
       />
     );
   } catch {
@@ -82,6 +88,7 @@ export default function TypingImageSource({
           onChange(out);
           router.refresh();
         })}
+        value={imgSrc}
       />
       <Select
         variant="standard"
@@ -106,7 +113,7 @@ export default function TypingImageSource({
           </MenuItem>
         ))}
       </Select>
-      {showImage(imgSrc)}
+      {showImage(imgSrc, onChange)}
     </>
   );
 }

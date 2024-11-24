@@ -9,7 +9,7 @@ export default function CampNumberTable({
 }: {
   groupName: string;
   isHavePeto: boolean;
-  main:CampNumberData
+  main: CampNumberData;
   baanNumbers: CampNumberData[];
   partNumbers: CampNumberData[];
 }) {
@@ -27,7 +27,7 @@ export default function CampNumberTable({
         <td>{main.peeNumber}</td>
         {isHavePeto ? <td>{main.petoNumber}</td> : null}
       </tr>
-      {baanNumbers.map((baan,i) => (
+      {baanNumbers.map((baan, i) => (
         <tr key={i}>
           <td>
             {groupName}
@@ -38,7 +38,7 @@ export default function CampNumberTable({
           {isHavePeto ? <td>{baan.petoNumber}</td> : null}
         </tr>
       ))}
-      {partNumbers.map((part,i) => (
+      {partNumbers.map((part, i) => (
         <tr key={i}>
           <td>ฝ่าย{part.name}</td>
           <td>{part.nongNumber}</td>

@@ -1,5 +1,5 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import ActionPlandClient from "@/components/ActionPlanClient";
+import ActionPlanClient from "@/components/ActionPlanClient";
 import BackToHome from "@/components/BackToHome";
 import getActionPlans from "@/libs/camp/getActionPlans";
 import getTimeOffset from "@/libs/user/getTimeOffset";
@@ -17,5 +17,5 @@ export default async function HospitalDetailPage() {
   }
   const timeOffset=await getTimeOffset(user.displayOffsetId)
   const actionPlans = await getActionPlans(session.user.token);
-  return <ActionPlandClient actionPlans={actionPlans} timeOffset={timeOffset} />;
+  return <ActionPlanClient actionPlans={actionPlans.data} timeOffset={timeOffset} baseUrl="actionPlan"/>;
 }

@@ -72,7 +72,7 @@ export default function EditWorkingItem({
               id="Email"
               className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
               onChange={setTextToString(setLink)}
-              defaultValue={link}
+              value={link}
             />
           </div>
         ) : null}
@@ -83,7 +83,7 @@ export default function EditWorkingItem({
             id="Tel"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
             onChange={setTextToString(setName)}
-            defaultValue={name}
+            value={name}
           />
         </div>
         <Select
@@ -124,6 +124,7 @@ export default function EditWorkingItem({
             id="Tel"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
             onChange={setTextToString(setNewName)}
+            value={newName}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -133,6 +134,7 @@ export default function EditWorkingItem({
             id="Email"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
             onChange={setTextToString(setNewLink)}
+            value={link}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -141,7 +143,7 @@ export default function EditWorkingItem({
             name="Email"
             id="Email"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-            onChange={setTextToString(setPassword)}
+            onChange={setTextToString(setPassword,true)}
             defaultValue={password}
           />
         </div>

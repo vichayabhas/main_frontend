@@ -23,7 +23,7 @@ export default function VerifileClient({ token }: { token: string }) {
             id="Password"
             type="password"
             className="w-full bg-slate-100 rounded-2xl border-gray-200"
-            onChange={setTextToString(setPassword)}
+            onChange={setTextToString(setPassword, true)}
           />
         </div>
 

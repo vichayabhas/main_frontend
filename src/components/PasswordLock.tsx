@@ -51,7 +51,7 @@ export default function PasswordLock({
                   },
                 },
               }}
-              onChange={setTextToString(setPassword)}
+              onChange={setTextToString(setPassword,true)}
             />
             <FinishButton
               text="submit"

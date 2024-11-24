@@ -61,7 +61,7 @@ export default function PlaceClient({
           name="Name"
           id="Name"
           className="w-3/5 bg-slate-100 rounded-2xl shadow-inner"
-          onChange={setTextToString(setFloor)}
+          onChange={setTextToString(setFloor,true)}
         />
       </div>
       <div className="flex flex-row items-center">
@@ -70,7 +70,7 @@ export default function PlaceClient({
           name="Name"
           id="Name"
           className="w-3/5 bg-slate-100 rounded-2xl shadow-inner"
-          onChange={setTextToString(setRoom)}
+          onChange={setTextToString(setRoom,true)}
         />
       </div>
       <button

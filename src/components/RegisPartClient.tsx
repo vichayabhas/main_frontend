@@ -116,8 +116,8 @@ export default function RegisterPartClient({
               },
             },
           }}
-          onChange={setTextToString(setName)}
-          required
+          onChange={setTextToString(setName,true)}
+          value={name}
         />
       </div>
       <div className="flex flex-row items-center my-5">
@@ -142,8 +142,8 @@ export default function RegisterPartClient({
               },
             },
           }}
-          onChange={setTextToString(setLastname)}
-          required
+          onChange={setTextToString(setLastname,true)}
+          value={lastname}
         />
       </div>
       <div className="flex flex-row items-center">
@@ -169,7 +169,7 @@ export default function RegisterPartClient({
             },
           }}
           onChange={setTextToString(setNickname)}
-          required
+          value={nickname}
         />
       </div>
       {timeOut ? (
@@ -506,7 +506,6 @@ export default function RegisterPartClient({
           </div>
           <table className="table-auto border border-x-black border-separate">
             <th className=" border border-x-black">รหัส</th>
-
             <th className=" border border-x-black">ชือเล่น</th>
             <th className=" border border-x-black">ชื่อจริง</th>
             <th className=" border border-x-black">นามสกุล</th>
@@ -523,7 +522,6 @@ export default function RegisterPartClient({
                 >
                   {v.localId}
                 </td>
-
                 <td>{v.user.nickname}</td>
                 <td>{v.user.name}</td>
                 <td>{v.user.lastname}</td>
@@ -575,7 +573,6 @@ export default function RegisterPartClient({
           </table>
         </>
       )}
-
       <SelectTemplate
         mapIn={mapIn}
         select={(baanId) => {

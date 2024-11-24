@@ -8,9 +8,11 @@ import React from "react";
 export default function ActionPlanClient({
   actionPlans,
   timeOffset,
+  baseUrl,
 }: {
   actionPlans: showActionPlan[];
   timeOffset: InterTimeOffset;
+  baseUrl: string;
 }) {
   const router = useRouter();
   return (
@@ -40,14 +42,12 @@ export default function ActionPlanClient({
           <th>เบอร์โทร</th>
           <th>body</th>
         </tr>
-        {actionPlans.map((actionPlan,i) => {
-          //console.log(actionPlan);
-
+        {actionPlans.map((actionPlan, i) => {
           return (
             <tr style={{ border: "solid", borderColor: "white" }} key={i}>
               <td
                 onClick={() => {
-                  router.push(`/actionPlan/${actionPlan._id}`);
+                  router.push(`/${baseUrl}/${actionPlan._id}`);
                 }}
               >
                 {actionPlan._id.toString()}
@@ -61,7 +61,7 @@ export default function ActionPlanClient({
               <td>{getDifferentMinute(actionPlan.start, actionPlan.end)}</td>
               <td
                 onClick={() => {
-                  router.push(`/actionPlan/part/${actionPlan.partId}`);
+                  router.push(`/${baseUrl}/part/${actionPlan.partId}`);
                 }}
               >
                 {actionPlan.partName}

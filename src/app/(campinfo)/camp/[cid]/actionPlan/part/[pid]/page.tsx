@@ -11,19 +11,28 @@ import React from "react";
 export default async function HospitalDetailPage({
   params,
 }: {
-  params: { pid: string };
+  params: { pid: string; cid: string };
 }) {
   const session = await getServerSession(authOptions);
   if (!session) {
     return <BackToHome />;
   }
   const user = await getUserProfile(session.user.token);
-  if (user.role === "nong") {
+  const timeOffset = await getTimeOffset(user.displayOffsetId);
+  const actionPlans = await getActionPlanByPartId(
+    stringToId(params.pid),
+    session.user.token
+  );
+  if (!actionPlans.success) {
     return <BackToHome />;
   }
-  const timeOffset=await getTimeOffset(user.displayOffsetId)
-  const actionPlans=await getActionPlanByPartId(stringToId(params.pid),session.user.token)
-  return <>
-  <ActionPlanClient actionPlans={actionPlans.data} timeOffset={timeOffset} baseUrl="actionPlan"/>
-  </>;
+  return (
+    <>
+      <ActionPlanClient
+        actionPlans={actionPlans.data}
+        timeOffset={timeOffset}
+        baseUrl={`camp/${params.cid}/actionPlan`}
+      />
+    </>
+  );
 }

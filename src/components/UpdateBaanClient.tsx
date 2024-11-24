@@ -44,7 +44,7 @@ export default function UpdateBaanClient({
             id="Email"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
             onChange={setTextToString(setName)}
-            defaultValue={coopData.baan.name}
+            value={name}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -53,8 +53,8 @@ export default function UpdateBaanClient({
             name="Tel"
             id="Tel"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-            onChange={setTextToString(setFullName)}
-            defaultValue={coopData.baan.fullName}
+            onChange={setTextToString(setFullName,true)}
+            value={fullName}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -64,7 +64,7 @@ export default function UpdateBaanClient({
             id="Tel"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
             onChange={setTextToString(setLink)}
-            defaultValue={coopData.baan.link}
+            value={link}
           />
         </div>
         {coopData.camp.nongSleepModel == "ไม่มีการค้างคืน" ? null : (

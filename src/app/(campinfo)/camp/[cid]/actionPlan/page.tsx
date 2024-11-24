@@ -2,28 +2,34 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import ActionPlanClient from "@/components/ActionPlanClient";
 import BackToHome from "@/components/BackToHome";
 import { stringToId } from "@/components/setup";
-import getActionPlanByPartId from "@/libs/camp/getActionPlanByPartId";
+import getActionPlanByCampId from "@/libs/camp/getActionPlanByCampId";
 import getTimeOffset from "@/libs/user/getTimeOffset";
 import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";
 import React from "react";
-
 export default async function HospitalDetailPage({
   params,
 }: {
-  params: { pid: string };
+  params: { cid: string };
 }) {
   const session = await getServerSession(authOptions);
   if (!session) {
     return <BackToHome />;
   }
   const user = await getUserProfile(session.user.token);
-  if (user.role === "nong") {
+  const timeOffset = await getTimeOffset(user.displayOffsetId);
+  const actionPlans = await getActionPlanByCampId(
+    stringToId(params.cid),
+    session.user.token
+  );
+  if (!actionPlans.success) {
     return <BackToHome />;
   }
-  const timeOffset=await getTimeOffset(user.displayOffsetId)
-  const actionPlans=await getActionPlanByPartId(stringToId(params.pid),session.user.token)
-  return <>
-  <ActionPlanClient actionPlans={actionPlans.data} timeOffset={timeOffset} baseUrl="actionPlan"/>
-  </>;
+  return (
+    <ActionPlanClient
+      actionPlans={actionPlans.data}
+      timeOffset={timeOffset}
+      baseUrl={`camp/${params.cid}/actionPlan`}
+    />
+  );
 }

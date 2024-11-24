@@ -50,7 +50,7 @@ export default function HospitalDetailPage() {
               }
             }}
             onChange={setTextToString(setTel)}
-            defaultValue={tel}
+            value={tel}
           />
         </div>
         <div className="flex flex-row justify-end">

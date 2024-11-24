@@ -27,7 +27,7 @@ export default async function Baan({ params }: { params: { pid: string } }) {
   const user = await getUserProfile(session.user.token);
   const part = await getPart(partId);
   const camp = await getCamp(part.campId);
-  const selectOffset=await getTimeOffset(user.selectOffsetId)
+  const selectOffset = await getTimeOffset(user.selectOffsetId);
   const campMemberCard = await getCampMemberCardByCampId(part.campId, token);
   if (
     !user.authPartIds.includes(camp.partBoardId) &&
@@ -38,7 +38,7 @@ export default async function Baan({ params }: { params: { pid: string } }) {
   ) {
     return <BackToHome />;
   }
-  const dataInput = await getAllAnswerAndQuestion(camp._id);
+  const dataInput = await getAllAnswerAndQuestion(camp._id, token);
   switch (partId.toString()) {
     case camp.partCoopId.toString(): {
       switch (campMemberCard.role) {

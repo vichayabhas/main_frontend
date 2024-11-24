@@ -27,7 +27,7 @@ export default function HospitalDetailPage() {
             id="Tel"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
             onChange={setTextToString(setTel)}
-            defaultValue={tel}
+            value={tel}
           />
         </div>
         <div className="flex flex-row justify-end">

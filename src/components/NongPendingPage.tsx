@@ -184,9 +184,9 @@ export default function NongPendingPage({
               }}
               className="w-3/5 bg-white rounded-2xl shadow-inner"
               onChange={setTextToString(
-                setMap(setTextAnswers, modifyElementInUseStateArray(i))
+                setMap(setTextAnswers, modifyElementInUseStateArray(i)),true
               )}
-              defaultValue={textAnswers[i]}
+              value={textAnswers[i]}
             />
           </div>
         ),
@@ -216,7 +216,7 @@ export default function NongPendingPage({
               id="Name"
               className="w-3/5 bg-slate-100 rounded-2xl shadow-inner"
               onChange={setTextToString(setLink)}
-              defaultValue={link}
+              value={link}
             />
           </div>
           {questionReady.map((e) => e.element)}

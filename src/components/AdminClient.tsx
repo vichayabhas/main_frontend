@@ -383,6 +383,7 @@ export default function AdminClient({
           }}
           className="w-3/5 bg-white rounded-2xl shadow-inner"
           onChange={setTextToString(setBoardIds)}
+          value={boardIds}
         />
       </div>
       <div className=" rounded-lg ">
@@ -473,6 +474,7 @@ export default function AdminClient({
           }}
           className="w-3/5 bg-white rounded-2xl shadow-inner"
           onChange={setTextToString(setNewName)}
+          value={newName}
         />
       </div>
       <button
@@ -517,6 +519,7 @@ export default function AdminClient({
           id="Name"
           className="w-3/5 bg-white rounded-2xl shadow-inner"
           onChange={setTextToString(setNewPartName)}
+          value={newPartName}
         />
       </div>
       <button

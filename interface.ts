@@ -180,6 +180,10 @@ export interface InterCampBack {
   canAnswerTheQuestion: boolean;
   mealIds: Id[];
   foodIds: Id[];
+  canNongSeeAllAnswer: boolean;
+  canNongSeeAllActionPlan: boolean;
+  canNongSeeAllTrackingSheet: boolean;
+  canNongAccessDataWithRoleNong: boolean;
 }
 export interface InterCampStyle {
   refId: Id;
@@ -523,6 +527,10 @@ export interface InterCampFront {
   canAnswerTheQuestion: boolean;
   mealIds: Id[];
   foodIds: Id[];
+  canNongSeeAllAnswer: boolean;
+  canNongSeeAllActionPlan: boolean;
+  canNongSeeAllTrackingSheet: boolean;
+  canNongAccessDataWithRoleNong: boolean;
 }
 export interface InterPartFront {
   nameId: Id;
@@ -597,6 +605,10 @@ export interface UpdateCamp {
   haveCloth: boolean;
   showCorrectAnswerAndScore: boolean;
   canAnswerTheQuestion: boolean;
+  canNongSeeAllAnswer: boolean;
+  canNongSeeAllActionPlan: boolean;
+  canNongSeeAllTrackingSheet: boolean;
+  canNongAccessDataWithRoleNong: boolean;
 }
 export interface CreateCamp {
   nameId: Id;
@@ -1129,6 +1141,7 @@ export interface GetAllAnswerAndQuestion {
   nongSureAnswers: UserAndAllQuestionPack[];
   nongPaidAnswers: UserAndAllQuestionPack[];
   nongInterviewAnswers: UserAndAllQuestionPack[];
+  success: boolean;
 }
 export interface ScoreTextQuestion {
   id: Id | null;
@@ -1249,4 +1262,8 @@ export interface UpdateMeal {
   mealId: Id;
   time: Date;
   roles: RoleCamp[];
+}
+export interface SuccessBase<T> {
+  success: boolean;
+  data: T;
 }

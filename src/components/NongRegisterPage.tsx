@@ -179,7 +179,7 @@ export default function NongRegisterPage({
               }}
               className="w-3/5 bg-white rounded-2xl shadow-inner"
               onChange={setTextToString(
-                setMap(setTextAnswers, modifyElementInUseStateArray(i))
+                setMap(setTextAnswers, modifyElementInUseStateArray(i)),true
               )}
               defaultValue={textAnswers[i]}
             />
@@ -211,6 +211,7 @@ export default function NongRegisterPage({
               id="Name"
               className="w-3/5 bg-slate-100 rounded-2xl shadow-inner"
               onChange={setTextToString(setLink)}
+              value={link}
             />
           </div>
           {questionReady.map((e) => e.element)}

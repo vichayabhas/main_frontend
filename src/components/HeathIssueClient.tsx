@@ -61,7 +61,7 @@ export default function HeathIssueClient({
                 },
               },
             }}
-            onChange={setTextToString(set1)}
+            onChange={setTextToString(set1,true)}
             defaultValue={food}
           />
         </div>
@@ -86,7 +86,7 @@ export default function HeathIssueClient({
                 },
               },
             }}
-            onChange={setTextToString(set2)}
+            onChange={setTextToString(set2,true)}
             defaultValue={medicine}
           />
         </div>
@@ -113,7 +113,7 @@ export default function HeathIssueClient({
                 },
               },
             }}
-            onChange={setTextToString(set3)}
+            onChange={setTextToString(set3,true)}
             defaultValue={chronicDisease}
           />
         </div>
@@ -140,7 +140,7 @@ export default function HeathIssueClient({
                 },
               },
             }}
-            onChange={setTextToString(set7)}
+            onChange={setTextToString(set7,true)}
             defaultValue={foodConcern}
           />
         </div>
@@ -215,7 +215,7 @@ export default function HeathIssueClient({
                     },
                   },
                 }}
-                onChange={setTextToString(set5)}
+                onChange={setTextToString(set5,true)}
                 defaultValue={extra}
               />
             </div>

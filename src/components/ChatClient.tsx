@@ -166,7 +166,8 @@ export default function ChatClient({
                   },
                 },
               }}
-              onChange={setTextToString(setMessage)}
+              onChange={setTextToString(setMessage,true)}
+              value={message}
             />
           </div>
           <div

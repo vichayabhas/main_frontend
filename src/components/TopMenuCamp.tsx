@@ -1,66 +1,115 @@
 "use client";
 import styles from "./topmenu.module.css";
 import TopMenuItem from "./TopMenuItem";
-import { Id, Mode, RoleCamp } from "../../interface";
+import { InterCampFront, InterUser, RoleCamp } from "../../interface";
 import React from "react";
+import AllInOneLock from "./AllInOneLock";
 export default function TopMenuCamp({
-  campId,
+  camp,
   role,
-  mode,
+  user,
 }: {
-  campId: Id;
+  camp: InterCampFront;
   role: RoleCamp;
-  mode: Mode;
+  user: InterUser;
 }) {
   switch (role) {
     case "nong":
       return (
         <div className={styles.menucontainerCamp}>
           <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
+            <AllInOneLock
+              lock={
+                !(
+                  camp.canNongSeeAllActionPlan &&
+                  (user.role != "nong" || camp.canNongAccessDataWithRoleNong)
+                )
+              }
+            >
+              <TopMenuItem
+                title="action plan"
+                pageRef={`/camp/${camp._id}/actionPlan`}
+              />
+            </AllInOneLock>
+            <AllInOneLock
+              lock={
+                !(
+                  camp.canNongSeeAllTrackingSheet &&
+                  (user.role != "nong" || camp.canNongAccessDataWithRoleNong)
+                )
+              }
+            >
+              <TopMenuItem
+                title="tracking sheet"
+                pageRef={`/camp/${camp._id}/trackingSheet`}
+              />
+            </AllInOneLock>
             <TopMenuItem
               title="คุยส่วนตัวกับพี่"
-              pageRef={`/camp/${campId}/allNongChat`}
+              pageRef={`/camp/${camp._id}/allNongChat`}
             />
             <TopMenuItem
               title="คุยกันในบ้าน"
-              pageRef={`/camp/${campId}/baan/nongChat`}
+              pageRef={`/camp/${camp._id}/baan/nongChat`}
             />
             <TopMenuItem
               title="ตอบคำถาม"
-              pageRef={`/camp/${campId}/answerTheQuestion`}
+              pageRef={`/camp/${camp._id}/answerTheQuestion`}
             />
             <TopMenuItem
               title="อ่านแชตทั้งหมด"
-              pageRef={`/camp/${campId}/allChat`}
+              pageRef={`/camp/${camp._id}/allChat`}
             />
           </div>
         </div>
       );
     case "pee": {
-      switch (mode) {
+      switch (user.mode) {
         case "nong":
           return (
             <div className={styles.menucontainerCamp}>
               <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
+                <AllInOneLock
+                  lock={
+                    !camp.canNongSeeAllActionPlan ||
+                    !camp.canNongAccessDataWithRoleNong
+                  }
+                >
+                  <TopMenuItem
+                    title="action plan"
+                    pageRef={`/camp/${camp._id}/actionPlan`}
+                  />
+                </AllInOneLock>
+                <AllInOneLock
+                  lock={
+                    !camp.canNongSeeAllTrackingSheet ||
+                    !camp.canNongAccessDataWithRoleNong
+                  }
+                >
+                  <TopMenuItem
+                    title="tracking sheet"
+                    pageRef={`/camp/${camp._id}/trackingSheet`}
+                  />
+                </AllInOneLock>
                 <TopMenuItem
                   title="คุยส่วนตัวกับน้อง"
-                  pageRef={`/camp/${campId}/allNongChat`}
+                  pageRef={`/camp/${camp._id}/allNongChat`}
                 />
                 <TopMenuItem
                   title="คุยกันในบ้าน"
-                  pageRef={`/camp/${campId}/baan/nongChat`}
+                  pageRef={`/camp/${camp._id}/baan/nongChat`}
                 />
                 <TopMenuItem
                   title="พี่บ้านคุยกัน"
-                  pageRef={`/camp/${campId}/peebaanChat`}
+                  pageRef={`/camp/${camp._id}/peebaanChat`}
                 />
                 <TopMenuItem
                   title="ตอบคำถาม"
-                  pageRef={`/camp/${campId}/answerTheQuestion`}
+                  pageRef={`/camp/${camp._id}/answerTheQuestion`}
                 />
                 <TopMenuItem
                   title="อ่านแชตทั้งหมด"
-                  pageRef={`/camp/${campId}/allChat`}
+                  pageRef={`/camp/${camp._id}/allChat`}
                 />
               </div>
             </div>
@@ -70,61 +119,91 @@ export default function TopMenuCamp({
             <div className={styles.menucontainerCamp}>
               <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
                 <TopMenuItem
+                  title="action plan"
+                  pageRef={`/camp/${camp._id}/actionPlan`}
+                />
+                <TopMenuItem
+                  title="tracking sheet"
+                  pageRef={`/camp/${camp._id}/trackingSheet`}
+                />
+                <TopMenuItem
                   title="คุยส่วนตัวกับน้อง"
-                  pageRef={`/camp/${campId}/allNongChat`}
+                  pageRef={`/camp/${camp._id}/allNongChat`}
                 />
                 <TopMenuItem
                   title="คุยกันในบ้าน+น้อง"
-                  pageRef={`/camp/${campId}/baan/nongChat`}
+                  pageRef={`/camp/${camp._id}/baan/nongChat`}
                 />
                 <TopMenuItem
                   title="คุยกันในบ้าน+พี่บ้าน"
-                  pageRef={`/camp/${campId}/baan/nongChat`}
+                  pageRef={`/camp/${camp._id}/baan/nongChat`}
                 />
                 <TopMenuItem
                   title="พี่บ้านคุยกัน"
-                  pageRef={`/camp/${campId}/peebaanChat`}
+                  pageRef={`/camp/${camp._id}/peebaanChat`}
                 />
                 <TopMenuItem
                   title="คุยกันในฝ่าย"
-                  pageRef={`/camp/${campId}/part`}
+                  pageRef={`/camp/${camp._id}/part`}
                 />
                 <TopMenuItem
                   title="รวมคำถามและคำตอบ"
-                  pageRef={`/camp/${campId}/allAnswerAndQuestion`}
+                  pageRef={`/camp/${camp._id}/allAnswerAndQuestion`}
                 />
                 <TopMenuItem
                   title="ตอบคำถาม"
-                  pageRef={`/camp/${campId}/answerTheQuestion`}
+                  pageRef={`/camp/${camp._id}/answerTheQuestion`}
                 />
                 <TopMenuItem
                   title="อ่านแชตทั้งหมด"
-                  pageRef={`/camp/${campId}/allChat`}
+                  pageRef={`/camp/${camp._id}/allChat`}
                 />
               </div>
             </div>
           );
         }
       }
-      break
+      break;
     }
     case "peto": {
-      switch (mode) {
+      switch (user.mode) {
         case "nong":
           return (
             <div className={styles.menucontainerCamp}>
               <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
+                <AllInOneLock
+                  lock={
+                    !camp.canNongSeeAllActionPlan ||
+                    !camp.canNongAccessDataWithRoleNong
+                  }
+                >
+                  <TopMenuItem
+                    title="action plan"
+                    pageRef={`/camp/${camp._id}/actionPlan`}
+                  />
+                </AllInOneLock>
+                <AllInOneLock
+                  lock={
+                    !camp.canNongSeeAllTrackingSheet ||
+                    !camp.canNongAccessDataWithRoleNong
+                  }
+                >
+                  <TopMenuItem
+                    title="tracking sheet"
+                    pageRef={`/camp/${camp._id}/trackingSheet`}
+                  />
+                </AllInOneLock>
                 <TopMenuItem
                   title="พี่บ้านคุยกัน"
-                  pageRef={`/camp/${campId}/peebaanChat`}
+                  pageRef={`/camp/${camp._id}/peebaanChat`}
                 />
                 <TopMenuItem
                   title="ตอบคำถาม"
-                  pageRef={`/camp/${campId}/answerTheQuestion`}
+                  pageRef={`/camp/${camp._id}/answerTheQuestion`}
                 />
                 <TopMenuItem
                   title="อ่านแชตทั้งหมด"
-                  pageRef={`/camp/${campId}/allChat`}
+                  pageRef={`/camp/${camp._id}/allChat`}
                 />
               </div>
             </div>
@@ -134,24 +213,32 @@ export default function TopMenuCamp({
             <div className={styles.menucontainerCamp}>
               <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
                 <TopMenuItem
+                  title="action plan"
+                  pageRef={`/camp/${camp._id}/actionPlan`}
+                />
+                <TopMenuItem
+                  title="tracking sheet"
+                  pageRef={`/camp/${camp._id}/trackingSheet`}
+                />
+                <TopMenuItem
                   title="พี่บ้านคุยกัน"
-                  pageRef={`/camp/${campId}/peebaanChat`}
+                  pageRef={`/camp/${camp._id}/peebaanChat`}
                 />
                 <TopMenuItem
                   title="คุยกันในฝ่าย"
-                  pageRef={`/camp/${campId}/part`}
+                  pageRef={`/camp/${camp._id}/part`}
                 />
                 <TopMenuItem
                   title="รวมคำถามและคำตอบ"
-                  pageRef={`/camp/${campId}/allAnswerAndQuestion`}
+                  pageRef={`/camp/${camp._id}/allAnswerAndQuestion`}
                 />
                 <TopMenuItem
                   title="ตอบคำถาม"
-                  pageRef={`/camp/${campId}/answerTheQuestion`}
+                  pageRef={`/camp/${camp._id}/answerTheQuestion`}
                 />
                 <TopMenuItem
                   title="อ่านแชตทั้งหมด"
-                  pageRef={`/camp/${campId}/allChat`}
+                  pageRef={`/camp/${camp._id}/allChat`}
                 />
               </div>
             </div>
@@ -170,3 +257,8 @@ export default function TopMenuCamp({
         ) : (
           
         )}*/
+/**camp.nongIds.includes(user._id) &&
+    !(
+      camp.canNongSeeAllActionPlan &&
+      (user.role != "nong" || camp.canNongAccessDataWithRoleNong)
+    ) */

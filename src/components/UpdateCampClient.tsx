@@ -42,6 +42,7 @@ import Waiting from "./Waiting";
 import React from "react";
 import deleteChoiceQuestion from "@/libs/camp/deleteChoiceQuestion";
 import deleteTextQuestion from "@/libs/camp/deleteTextQuestion";
+import AllInOneLock from "./AllInOneLock";
 interface QuestionReady {
   element: React.ReactNode;
   order: number;
@@ -115,6 +116,17 @@ export default function UpdateCampClient({
   const [canAnswerTheQuestion, setCanAnswerTheQuestion] = useState(
     camp.canAnswerTheQuestion
   );
+  const [canNongSeeAllAnswer, setCanNongSeeAllAnswer] = useState(
+    camp.canNongSeeAllAnswer
+  );
+  const [canNongSeeAllActionPlan, setCanNongSeeAllActionPlan] = useState(
+    camp.canNongSeeAllActionPlan
+  );
+  const [canNongSeeAllTrackingSheet, setCanNongSeeAllTrackingSheet] = useState(
+    camp.canNongSeeAllTrackingSheet
+  );
+  const [canNongAccessDataWithRoleNong, setCanNongAccessDataWithRoleNong] =
+    useState(camp.canNongAccessDataWithRoleNong);
   const [choiceIds, setChoiceIds] = useState<(Id | null)[]>(
     questions.choices.map((choice) => choice._id)
   );
@@ -145,6 +157,10 @@ export default function UpdateCampClient({
   const [deleteChoiceIds, setDeleteChoiceIds] = useState<Id[]>([]);
   const scores = useState(questions.texts.map((text) => text.score));
   const textOrder = useState(questions.texts.map((text) => text.order));
+  const isHaveNongInGeneralRoleNong =
+    camp.memberStructure == "nong->highSchool,pee->1year,peto->2upYear" ||
+    camp.memberStructure == "nong->highSchool,pee->2upYear" ||
+    camp.memberStructure == "nong->highSchool,pee->allYear";
 
   function questionReady(
     isDelete: boolean,
@@ -181,7 +197,7 @@ export default function UpdateCampClient({
               {deleteChoiceIds.length}
               {isDelete ? (
                 <Checkbox
-                  onChange={setSwop(data.choiceIds[i],setDeleteChoiceIds)}
+                  onChange={setSwop(data.choiceIds[i], setDeleteChoiceIds)}
                 />
               ) : null}
             </>
@@ -204,7 +220,7 @@ export default function UpdateCampClient({
               {deleteTextIds.length}
               {isDelete ? (
                 <Checkbox
-                  onChange={setSwop(data.textIds[0][i],setDeleteTextIds)}
+                  onChange={setSwop(data.textIds[0][i], setDeleteTextIds)}
                 />
               ) : null}
             </div>
@@ -652,7 +668,7 @@ export default function UpdateCampClient({
                   },
                 }}
                 onChange={setTextToString(setRegisterSheetLink)}
-                defaultValue={camp.registerSheetLink}
+                value={registerSheetLink}
               />
             </div>
             <div className="flex flex-row items-center my-5">
@@ -680,7 +696,7 @@ export default function UpdateCampClient({
                   },
                 }}
                 onChange={setTextToString(setLink)}
-                defaultValue={camp.link}
+                value={link}
               />
             </div>
             <div className="flex flex-row items-center my-5">
@@ -739,7 +755,7 @@ export default function UpdateCampClient({
                   },
                 }}
                 onChange={setTextToString(setGroupName)}
-                defaultValue={groupName}
+                value={groupName}
               />
             </div>
             <div className="flex flex-row items-center my-5">
@@ -888,6 +904,75 @@ export default function UpdateCampClient({
                 defaultChecked={allDone}
               />
             </div>
+            <AllInOneLock
+              token={session.user.token}
+              bypass={camp.canNongAccessDataWithRoleNong}
+            >
+              <div className="flex flex-row items-center my-5">
+                <label className="w-2/5 text-2xl text-white">
+                  อนุญาติให้น้องค่ายดูคำตอบทั้งหมดหรือไม่
+                </label>
+                <Checkbox
+                  sx={{
+                    "&.Mui-checked": {
+                      color: "#FFFFFF", // Custom color when checked
+                    },
+                  }}
+                  onChange={setBoolean(setCanNongSeeAllAnswer)}
+                  defaultChecked={allDone}
+                />
+              </div>
+              <div className="flex flex-row items-center my-5">
+                <label className="w-2/5 text-2xl text-white">
+                  อนุญาติให้น้องค่ายดู action plan ทั้งหมดหรือไม่
+                </label>
+                <Checkbox
+                  sx={{
+                    "&.Mui-checked": {
+                      color: "#FFFFFF", // Custom color when checked
+                    },
+                  }}
+                  onChange={setBoolean(setCanNongSeeAllActionPlan)}
+                  defaultChecked={allDone}
+                />
+              </div>
+              <div className="flex flex-row items-center my-5">
+                <label className="w-2/5 text-2xl text-white">
+                  อนุญาติให้น้องค่ายดู tracking sheet ทั้งหมดหรือไม่
+                </label>
+                <Checkbox
+                  sx={{
+                    "&.Mui-checked": {
+                      color: "#FFFFFF", // Custom color when checked
+                    },
+                  }}
+                  onChange={setBoolean(setCanNongSeeAllTrackingSheet)}
+                  defaultChecked={allDone}
+                />
+              </div>
+              {isHaveNongInGeneralRoleNong ? (
+                <div className="flex flex-row items-center my-5">
+                  <label className="w-2/5 text-2xl text-white">
+                    อนุญาติให้น้องค่ายดูข้อมูลค่ายเบื้องหลังโดยบทบาททั่วไปยังเป็นน้องหรือไม่
+                  </label>
+                  <Checkbox
+                    sx={{
+                      "&.Mui-checked": {
+                        color: "#FFFFFF", // Custom color when checked
+                      },
+                    }}
+                    onChange={setBoolean((c) => {
+                      setCanNongAccessDataWithRoleNong(
+                        c &&
+                          (canNongSeeAllActionPlan ||
+                            canNongSeeAllTrackingSheet)
+                      );
+                    })}
+                    defaultChecked={allDone}
+                  />
+                </div>
+              ) : null}
+            </AllInOneLock>
             <div className=" rounded-lg ">
               <div
                 style={{
@@ -991,6 +1076,10 @@ export default function UpdateCampClient({
                           haveCloth,
                           showCorrectAnswerAndScore,
                           canAnswerTheQuestion,
+                          canNongSeeAllAnswer,
+                          canNongSeeAllActionPlan,
+                          canNongSeeAllTrackingSheet,
+                          canNongAccessDataWithRoleNong,
                         },
                         camp._id,
                         session.user.token
@@ -1084,9 +1173,10 @@ export default function UpdateCampClient({
                       setMap(
                         setChoiceQuestions,
                         modifyElementInUseStateArray(i)
-                      )
+                      ),
+                      true
                     )}
-                    defaultValue={choiceQuestions[i]}
+                    value={choiceQuestions[i]}
                   />
                 </div>
                 <div className="flex flex-row items-center my-5">
@@ -1111,9 +1201,9 @@ export default function UpdateCampClient({
                       },
                     }}
                     onChange={setTextToString(
-                      setMap(setAs, modifyElementInUseStateArray(i))
+                      setMap(setAs, modifyElementInUseStateArray(i)),true
                     )}
-                    defaultValue={as[i]}
+                    value={as[i]}
                   />
                 </div>
                 <div className="flex flex-row items-center my-5">
@@ -1138,9 +1228,9 @@ export default function UpdateCampClient({
                       },
                     }}
                     onChange={setTextToString(
-                      setMap(setBs, modifyElementInUseStateArray(i))
+                      setMap(setBs, modifyElementInUseStateArray(i)),true
                     )}
-                    defaultValue={bs[i]}
+                    value={bs[i]}
                   />
                 </div>
                 <div className="flex flex-row items-center my-5">
@@ -1165,9 +1255,9 @@ export default function UpdateCampClient({
                       },
                     }}
                     onChange={setTextToString(
-                      setMap(setCs, modifyElementInUseStateArray(i))
+                      setMap(setCs, modifyElementInUseStateArray(i)),true
                     )}
-                    defaultValue={cs[i]}
+                    value={cs[i]}
                   />
                 </div>
                 <div className="flex flex-row items-center my-5">
@@ -1192,9 +1282,9 @@ export default function UpdateCampClient({
                       },
                     }}
                     onChange={setTextToString(
-                      setMap(setDs, modifyElementInUseStateArray(i))
+                      setMap(setDs, modifyElementInUseStateArray(i)),true
                     )}
-                    defaultValue={ds[i]}
+                    value={ds[i]}
                   />
                 </div>
                 <div className="flex flex-row items-center my-5">
@@ -1219,9 +1309,9 @@ export default function UpdateCampClient({
                       },
                     }}
                     onChange={setTextToString(
-                      setMap(setEs, modifyElementInUseStateArray(i))
+                      setMap(setEs, modifyElementInUseStateArray(i)),true
                     )}
-                    defaultValue={es[i]}
+                    value={es[i]}
                   />
                 </div>
                 <div className="flex flex-row items-center my-5">
@@ -1446,7 +1536,9 @@ export default function UpdateCampClient({
                         },
                       },
                     }}
-                    onChange={setTextToInt(setMap(setChoiceOrder,modifyElementInUseStateArray(i)))}
+                    onChange={setTextToInt(
+                      setMap(setChoiceOrder, modifyElementInUseStateArray(i))
+                    )}
                     defaultValue={as[i]}
                   />
                 </div>
@@ -1486,8 +1578,10 @@ export default function UpdateCampClient({
                       },
                     },
                   }}
-                  onChange={setTextToString(setMap(textQuestions[1],modifyElementInUseStateArray(i)))}
-                  defaultValue={textQuestions[0][i]}
+                  onChange={setTextToString(
+                    setMap(textQuestions[1], modifyElementInUseStateArray(i)),true
+                  )}
+                  value={textQuestions[0][i]}
                 />
               </div>
               <div className="flex flex-row items-center my-5">
@@ -1512,7 +1606,9 @@ export default function UpdateCampClient({
                       },
                     },
                   }}
-                  onChange={setTextToFloat(setMap(scores[1],modifyElementInUseStateArray(i)))}
+                  onChange={setTextToFloat(
+                    setMap(scores[1], modifyElementInUseStateArray(i))
+                  )}
                   defaultValue={scores[0][i]}
                 />
               </div>
@@ -1538,7 +1634,9 @@ export default function UpdateCampClient({
                       },
                     },
                   }}
-                  onChange={setTextToInt(setMap(textOrder[1],modifyElementInUseStateArray(i)))}
+                  onChange={setTextToInt(
+                    setMap(textOrder[1], modifyElementInUseStateArray(i))
+                  )}
                   defaultValue={textOrder[0][i]}
                 />
               </div>

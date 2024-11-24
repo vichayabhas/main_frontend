@@ -1,22 +1,18 @@
-import { Id, InterWorkingItem, SuccessBase } from "../../../interface";
 import { getBackendUrl } from "@/components/setup";
+import { Id, InterWorkingItem, SuccessBase } from "../../../interface";
 
-export default async function getWorkingItemByPartId(
-  partId: Id,
+export default async function getWorkingItemByCampId(
+  campId: Id,
   token: string
 ): Promise<SuccessBase<InterWorkingItem[]>> {
   const response = await fetch(
-    `${getBackendUrl()}/camp/getWorkingItemByPartId/params/${partId}`,
+    `${getBackendUrl()}/camp/getWorkingItemByCampId/params/${campId}`,
     {
-      method: "GET",
       cache: "no-store",
       headers: {
         authorization: `Bearer ${token}`,
       },
     }
   );
-  if (!response.ok) {
-    throw new Error("Fail");
-  }
   return await response.json();
 }

@@ -60,6 +60,7 @@ export default function page() {
       <label>รหัสประจำตัวนิสิต</label>
       <TextField
         onChange={setTextToString(setStudentId)}
+        value={studentId}
       />
       <FinishButton
         text="bypass"

@@ -157,7 +157,8 @@ export default function PureQuestion({
               }}
               className="w-3/5 bg-white rounded-2xl shadow-inner"
               onChange={setTextToString(
-                setMap(setTextAnswers, modifyElementInUseStateArray(i))
+                setMap(setTextAnswers, modifyElementInUseStateArray(i)),
+                true
               )}
               defaultValue={textAnswers[i]}
             />

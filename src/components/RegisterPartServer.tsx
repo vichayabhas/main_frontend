@@ -3,10 +3,10 @@ import getCamp from "@/libs/camp/getCamp";
 import getShowRegisters from "@/libs/camp/getShowRegisters";
 import { Id, MyMap, RegisBaan, RegisPart } from "../../interface";
 import getUserFromCamp from "@/libs/camp/getUserFromCamp";
-import getPart from "@/libs/camp/getPart";
 import RegisterPartClient from "./RegisPartClient";
 import React from "react";
 import getAllNongRegister from "@/libs/camp/getAllNongRegister";
+import getParts from "@/libs/camp/getParts";
 export default async function RegisterPartServer({
   campId,
   token,
@@ -32,19 +32,15 @@ export default async function RegisterPartServer({
     });
   }
   i = 0;
-  while (i < camp.partIds.length) {
-    const part = await getPart(camp.partIds[i++]);
+  const partMap: MyMap[] = [];
+  const parts = await getParts(camp._id, token);
+  while (i < parts.length) {
+    const part = parts[i++];
     regisParts.push({
       part,
       pees: await getUserFromCamp("getPeesFromPartId", part._id),
       petos: await getUserFromCamp("getPetosFromPartId", part._id),
     });
-  }
-  const partMap: MyMap[] = [];
-  i = 0;
-  while (i < camp.partIds.length) {
-    const part = await getPart(camp.partIds[i++]);
-
     partMap.push({ key: part._id, value: part.partName });
   }
   return (

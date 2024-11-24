@@ -30,16 +30,16 @@ import { Id, MyMap } from "../../../../../interface";
 import chatStyle from "@/components/chat.module.css";
 import React from "react";
 import getMealsByUser from "@/libs/randomthing/getMealsByUser";
+import getParts from "@/libs/camp/getParts";
 export default async function HospitalDetailPage({
   params,
 }: {
   params: { cid: string };
 }) {
-  const campId = params.cid;
   const session = await getServerSession(authOptions);
   if (session) {
     const allPlaceData = await getAllPlaceData();
-    const campDetail = await getCamp(stringToId(campId));
+    const campDetail = await getCamp(stringToId(params.cid));
     const token = session.user.token;
     const user = await getUserProfile(token);
     if (!user) {
@@ -51,8 +51,9 @@ export default async function HospitalDetailPage({
     const partMap: MyMap[] = [];
     let i = 0;
     const questions = await getAllQuestion(token, campDetail._id);
-    while (i < campDetail.partIds.length) {
-      const part = await getPart(campDetail.partIds[i++]);
+    const parts=await getParts(campDetail._id,token)
+    while (i < parts.length) {
+      const part = parts[i++]
       partMap.push({ key: part._id, value: part.partName });
     }
     if (campDetail.nongIds.includes(userId)) {
@@ -81,7 +82,7 @@ export default async function HospitalDetailPage({
 
       return (
         <>
-          <TopMenuCamp role="nong" mode={user.mode} campId={campDetail._id} />
+          <TopMenuCamp role="nong" user={user} camp={campDetail} />
           <div style={{ height: "80px" }}></div>
           <ImagesFromUrl urls={campDetail.pictureUrls} />
           <div
@@ -142,7 +143,7 @@ export default async function HospitalDetailPage({
               <AllInOneLock
                 mode={user.mode}
                 role={campMemberCard.role}
-                bypass={campMemberCard.sleepAtCamp}
+                bypass={campMemberCard.sleepAtCamp && user.gender == "Male"}
                 lock={campDetail.nongSleepModel == "ไม่มีการค้างคืน"}
               >
                 <tr
@@ -166,6 +167,13 @@ export default async function HospitalDetailPage({
                     {boy?.buildingName.toString()}
                   </td>
                 </tr>
+              </AllInOneLock>
+              <AllInOneLock
+                mode={user.mode}
+                role={campMemberCard.role}
+                bypass={campMemberCard.sleepAtCamp && user.gender == "Female"}
+                lock={campDetail.nongSleepModel == "ไม่มีการค้างคืน"}
+              >
                 <tr
                   style={{
                     border: "solid",
@@ -235,7 +243,7 @@ export default async function HospitalDetailPage({
       const meals = await getMealsByUser(campDetail._id, token);
       return (
         <>
-          <TopMenuCamp role="pee" mode={user.mode} campId={campDetail._id} />
+          <TopMenuCamp role="pee" user={user} camp={campDetail} />
           <div style={{ height: "80px" }}></div>
           <ImagesFromUrl urls={campDetail.pictureUrls} />
           <div
@@ -295,7 +303,7 @@ export default async function HospitalDetailPage({
               <AllInOneLock
                 mode={user.mode}
                 role={campMemberCard.role}
-                bypass={campMemberCard.sleepAtCamp}
+                bypass={campMemberCard.sleepAtCamp && user.gender == "Male"}
                 lock={campDetail.nongSleepModel == "ไม่มีการค้างคืน"}
               >
                 <tr
@@ -310,8 +318,8 @@ export default async function HospitalDetailPage({
                     }}
                     className={chatStyle.cell1}
                   >
-                    ห้องนอนน้องผู้ชาย{campDetail.groupName}
-                    {baan.name}
+                    ห้องนอน{campDetail.groupName}
+                    {baan.name}น้องผู้ชาย
                   </td>
                   <td className={chatStyle.cell2}>{boy?.room.toString()}</td>
                   <td className={chatStyle.cell1}>{boy?.floor.toString()}</td>
@@ -319,6 +327,13 @@ export default async function HospitalDetailPage({
                     {boy?.buildingName.toString()}
                   </td>
                 </tr>
+              </AllInOneLock>
+              <AllInOneLock
+                mode={user.mode}
+                role={campMemberCard.role}
+                bypass={campMemberCard.sleepAtCamp && user.gender == "Female"}
+                lock={campDetail.nongSleepModel == "ไม่มีการค้างคืน"}
+              >
                 <tr
                   style={{
                     border: "solid",
@@ -331,8 +346,8 @@ export default async function HospitalDetailPage({
                     }}
                     className={chatStyle.cell1}
                   >
-                    ห้องนอนน้องผู้หญิง{campDetail.groupName}
-                    {baan.name}
+                    ห้องนอน{campDetail.groupName}
+                    {baan.name}น้องผู้หญิง
                   </td>
                   <td className={chatStyle.cell2}>{girl?.room.toString()}</td>
                   <td className={chatStyle.cell1}>{girl?.floor.toString()}</td>
@@ -411,7 +426,7 @@ export default async function HospitalDetailPage({
       const meals = await getMealsByUser(campDetail._id, token);
       return (
         <>
-          <TopMenuCamp role="peto" mode={user.mode} campId={campDetail._id} />
+          <TopMenuCamp role="peto" user={user} camp={campDetail} />
           <div style={{ height: "80px" }}></div>
           <ImagesFromUrl urls={campDetail.pictureUrls} />
           <AllInOneLock mode={user.mode}>

@@ -113,10 +113,12 @@ export default function AllAnswerAndQuestionPage({
 }) {
   const campId = stringToId(campIdInput);
   const [data, setData] = useState(dataInput);
-  const [search, setSearch] = useState("");
   const [showAll, setShowAll] = useState(true);
+  const [name, setName] = useState<string>("");
+  const [nickname, setNickname] = useState<string>("");
+  const [lastname, setLastname] = useState<string>("");
   async function update() {
-    const buffer = await getAllAnswerAndQuestion(campId);
+    const buffer = await getAllAnswerAndQuestion(campId, token);
     setData(buffer);
     return buffer;
   }
@@ -185,43 +187,111 @@ export default function AllAnswerAndQuestionPage({
         .sort((a, b) => a.order - b.order),
     }));
   }
+  function filterUser(input: UserAndAllQuestionReady): boolean {
+    return (
+      input.user.name.search(name) == 0 &&
+      input.user.nickname.search(nickname) == 0 &&
+      input.user.lastname.search(lastname) == 0
+    );
+  }
   function getAllAnswerAndQuestionReady(
     input: UserAndAllQuestionPack[]
   ): React.ReactNode {
     const buffer = getAllAnswerAndQuestionReadyRaw(input);
-    if (search == "") {
-      return buffer.map((v, i) => (
-        <tr key={i}>
-          <td>{v.user.nickname}</td>
-          <td>{v.user.name}</td>
-          <td>{v.user.lastname}</td>
-          <td>{v.user.gender}</td>
-          {v.answer.map((v, i) => (
-            <td key={i}>{v.element}</td>
-          ))}
-        </tr>
-      ));
-    } else {
-      return buffer
-        .filter((n) => n.user.nickname == search)
-        .map((v, i) => (
-          <tr key={i}>
-            <td>{v.user.nickname}</td>
-            <td>{v.user.name}</td>
-            <td>{v.user.lastname}</td>
-            <td>{v.user.gender}</td>
-            {v.answer.map((v, i) => (
-              <td key={i}>{v.element}</td>
-            ))}
-          </tr>
-        ));
-    }
+    return buffer.filter(filterUser).map((v, i) => (
+      <tr key={i}>
+        <td>{v.user.nickname}</td>
+        <td>{v.user.name}</td>
+        <td>{v.user.lastname}</td>
+        <td>{v.user.gender}</td>
+        {v.answer.map((v, i) => (
+          <td key={i}>{v.element}</td>
+        ))}
+      </tr>
+    ));
   }
   return (
     <div>
       <Checkbox onChange={setBoolean(setShowAll)} defaultChecked />
       filter
-      <TextField value={search} onChange={setTextToString(setSearch)} />
+      <div className="flex flex-row items-center">
+        <label className="w-2/5 text-2xl text-white">ชื่อจริง</label>
+        <TextField
+          name="Name"
+          id="Name"
+          defaultValue={name}
+          className="w-3/5 bg-white rounded-2xl "
+          sx={{
+            backgroundColor: "#f5f5f5",
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderRadius: " 1rem",
+                borderColor: "transparent",
+              },
+              "&:hover fieldset": {
+                borderColor: "#5479FF",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#5479FF",
+              },
+            },
+          }}
+          onChange={setTextToString(setName, true)}
+          value={name}
+        />
+      </div>
+      <div className="flex flex-row items-center my-5">
+        <label className="w-2/5 text-2xl text-white">นามสกุล</label>
+        <TextField
+          name="LastName"
+          id="LastName"
+          defaultValue={lastname}
+          className="w-3/5 bg-white rounded-2xl border-gray-200"
+          sx={{
+            backgroundColor: "#f5f5f5",
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderRadius: " 1rem",
+                borderColor: "transparent",
+              },
+              "&:hover fieldset": {
+                borderColor: "#5479FF",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#5479FF",
+              },
+            },
+          }}
+          onChange={setTextToString(setLastname, true)}
+          value={lastname}
+        />
+      </div>
+      <div className="flex flex-row items-center">
+        <label className="w-2/5 text-2xl text-white">ชือเล่น</label>
+        <TextField
+          name="Nickname"
+          id="Nickname"
+          defaultValue={nickname}
+          className="w-3/5 bg-white rounded-2xl border-gray-200"
+          sx={{
+            backgroundColor: "#f5f5f5",
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderRadius: " 1rem",
+                borderColor: "transparent",
+              },
+              "&:hover fieldset": {
+                borderColor: "#5479FF",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#5479FF",
+              },
+            },
+          }}
+          onChange={setTextToString(setNickname)}
+          value={nickname}
+        />
+      </div>
       {showAll ? (
         <>
           <table>

@@ -42,6 +42,7 @@ export default function BuildingClient({
           id="Name"
           className="w-3/5 bg-slate-100 rounded-2xl shadow-inner"
           onChange={setTextToString(setNewName)}
+          value={newName}
         />
       </div>
       <button

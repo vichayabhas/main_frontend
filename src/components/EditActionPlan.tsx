@@ -143,8 +143,8 @@ export default function EditActionPland({
             name="Tel"
             id="Tel"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-            onChange={setTextToString(setAction)}
-            defaultValue={action}
+            onChange={setTextToString(setAction,true)}
+            value={action}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -153,8 +153,8 @@ export default function EditActionPland({
             name="Email"
             id="Email"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-            onChange={setTextToString(setBody)}
-            defaultValue={body}
+            onChange={setTextToString(setBody,true)}
+            value={body}
           />
         </div>
         <SelectTemplate

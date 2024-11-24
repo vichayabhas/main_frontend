@@ -420,10 +420,15 @@ export function setMap<T, T2>(
   };
 }
 export function setTextToString(
-  set: (input: string) => void
+  set: (input: string) => void,
+  keepOriginal?: boolean
 ): React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> {
   return (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    set(event.target.value);
+    if (keepOriginal) {
+      set(event.target.value);
+    } else {
+      set(event.target.value.replace(/\s/g, ""));
+    }
   };
 }
 export function setSwop(
@@ -470,4 +475,7 @@ export function selectTimeToSystem(
     .add(add.hour, "hours")
     .add(add.minute, "minutes")
     .toDate();
+}
+export function cleanString(input: string) {
+  return input.replace(/\s/g, "");
 }

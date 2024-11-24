@@ -81,7 +81,8 @@ export default function UpdateProfileRaw({
                 },
               },
             }}
-            onChange={setTextToString(setName)}
+            onChange={setTextToString(setName,true)}
+            value={name}
             required
           />
         </div>
@@ -107,7 +108,8 @@ export default function UpdateProfileRaw({
                 },
               },
             }}
-            onChange={setTextToString(setLastname)}
+            onChange={setTextToString(setLastname,true)}
+            value={lastname}
             required
           />
         </div>
@@ -135,6 +137,7 @@ export default function UpdateProfileRaw({
             }}
             onChange={setTextToString(setNickname)}
             required
+            value={nickname}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -219,6 +222,8 @@ export default function UpdateProfileRaw({
               },
             }}
             onChange={setTextToString(setCitizenId)}
+            value={citizenId}
+            
           />
         </div>
         <div className="flex flex-row items-center my-5">

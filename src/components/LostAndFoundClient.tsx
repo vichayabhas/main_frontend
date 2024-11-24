@@ -90,7 +90,7 @@ export default function LostAndFoundClient({
                 },
               },
             }}
-            onChange={setTextToString(setName)}
+            onChange={setTextToString(setName, true)}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -114,7 +114,7 @@ export default function LostAndFoundClient({
                 },
               },
             }}
-            onChange={setTextToString(setDetail)}
+            onChange={setTextToString(setDetail, true)}
           />
         </div>
         <PlaceSelect
