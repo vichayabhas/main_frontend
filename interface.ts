@@ -10,6 +10,7 @@ export interface InterActionPlan {
   body: string;
   _id: Id;
   partName: string;
+  //public
 }
 export interface InterBaanBack {
   name: string;
@@ -65,6 +66,7 @@ export interface InterBaanBack {
   peeCampMemberCardHaveHeathIssueIds: Id[];
   nongHaveBottleIds: Id[];
   peeHaveBottleIds: Id[];
+  //public
 }
 export interface InterBuilding {
   name: string;
@@ -77,6 +79,7 @@ export interface InterBuilding {
   girlSleepBaanIds: Id[];
   normalBaanIds: Id[];
   partIds: Id[];
+  //public
 }
 export interface InterCampBack {
   nameId: Id;
@@ -184,11 +187,13 @@ export interface InterCampBack {
   canNongSeeAllActionPlan: boolean;
   canNongSeeAllTrackingSheet: boolean;
   canNongAccessDataWithRoleNong: boolean;
+  //public
 }
 export interface InterCampStyle {
   refId: Id;
   types: "camp" | "baan";
   _id: Id;
+  //public
 }
 export interface InterFridayAct {
   company: string;
@@ -198,17 +203,20 @@ export interface InterFridayAct {
   studentId: Id[];
   placeId: Id;
   _id: Id;
+  //public
 }
 export interface InterHeathIssue extends HeathIssueBody {
   userId: Id;
   _id: Id;
   campIds: Id[];
   campMemberCardIds: Id[];
+  //private
 }
 export interface InterNameContainer {
   campIds: Id[];
   name: string;
   _id: Id;
+  //public
 }
 export interface InterNongCampBack {
   campId: Id;
@@ -217,6 +225,7 @@ export interface InterNongCampBack {
   nongCampMemberCardIds: Id[];
   _id: Id;
   //mapNongCampIdByUserId: Map<string, string>
+  //public
 }
 export interface InterPartBack {
   nameId: Id;
@@ -246,12 +255,14 @@ export interface InterPartBack {
   petoCampMemberCardHaveHeathIssueIds: Id[];
   peeHaveBottleIds: Id[];
   petoHaveBottleIds: Id[];
+  //public
 }
 export interface InterPartNameContainer {
   campIds: Id[];
   name: string;
   partIds: Id[];
   _id: Id;
+  //public
 }
 export interface InterPeeCamp {
   campId: Id;
@@ -260,6 +271,7 @@ export interface InterPeeCamp {
   peeIds: Id[];
   peeCampMemberCardIds: Id[];
   _id: Id;
+  //public
 }
 export interface InterPetoCamp {
   campId: Id;
@@ -267,6 +279,7 @@ export interface InterPetoCamp {
   petoCampMemberCardIds: Id;
   petoIds: Id[];
   _id: Id;
+  //public
 }
 export interface InterPlace {
   buildingId: Id;
@@ -281,6 +294,7 @@ export interface InterPlace {
   actCap: number;
   studyCap: number;
   _id: Id;
+  //public
 }
 export interface InterCampMemberCard {
   userId: Id;
@@ -298,6 +312,7 @@ export interface InterCampMemberCard {
   healthIssueId: Id | null;
   blackListFoodIds: Id[];
   whiteListFoodIds: Id[];
+  //private
 }
 export interface InterSong {
   name: string;
@@ -308,6 +323,7 @@ export interface InterSong {
   link: string;
   userLikeIds: Id[];
   _id: Id;
+  //public
 }
 export interface InterUser {
   _id: Id;
@@ -315,7 +331,6 @@ export interface InterUser {
   lastname: string;
   nickname: string;
   email: string;
-
   password: string;
   tel: string;
   resetPasswordToken: string;
@@ -325,7 +340,6 @@ export interface InterUser {
   shirtSize: Size;
   healthIssueId: Id;
   haveBottle: boolean;
-
   mode: Mode;
   nongCampIds: Id[];
   peeCampIds: Id[];
@@ -351,6 +365,7 @@ export interface InterUser {
   chatIds: Id[];
   nongAnswerPackIds: Id[];
   peeAnswerPackIds: Id[];
+  //private
 }
 export interface InterWorkingItem {
   name: string;
@@ -363,6 +378,7 @@ export interface InterWorkingItem {
   _id: Id;
   password: string;
   partName: string;
+  //public
 }
 export interface InterSize {
   _id: Id | null;
@@ -372,6 +388,7 @@ export interface InterSize {
   sizeXL: number;
   sizeXXL: number;
   size3XL: number;
+  //utility
 }
 export interface InterBaanFront {
   name: string;
@@ -426,6 +443,7 @@ export interface InterBaanFront {
   peeCampMemberCardHaveHeathIssueIds: Id[];
   nongHaveBottleIds: Id[];
   peeHaveBottleIds: Id[];
+  //public
 }
 
 export interface InterCampFront {
@@ -531,6 +549,7 @@ export interface InterCampFront {
   canNongSeeAllActionPlan: boolean;
   canNongSeeAllTrackingSheet: boolean;
   canNongAccessDataWithRoleNong: boolean;
+  //public
 }
 export interface InterPartFront {
   nameId: Id;
@@ -559,10 +578,12 @@ export interface InterPartFront {
   petoCampMemberCardHaveHeathIssueIds: Id[];
   peeHaveBottleIds: Id[];
   petoHaveBottleIds: Id[];
+  //public
 }
 export interface MyMap {
   key: Id;
   value: string;
+  //utility
 }
 export interface InterLostAndFound {
   campId: Id | null;
@@ -573,6 +594,7 @@ export interface InterLostAndFound {
   placeId: Id | null;
   buildingId: Id | null;
   _id: Id;
+  //public
 }
 export interface Register {
   name: string;
@@ -586,6 +608,7 @@ export interface Register {
   tel: string;
   citizenId: string;
   likeToSleepAtCamp: boolean;
+  //private
 }
 export interface UpdateCamp {
   nongDataLock: boolean;
@@ -609,6 +632,7 @@ export interface UpdateCamp {
   canNongSeeAllActionPlan: boolean;
   canNongSeeAllTrackingSheet: boolean;
   canNongAccessDataWithRoleNong: boolean;
+  //public
 }
 export interface CreateCamp {
   nameId: Id;
@@ -628,10 +652,12 @@ export interface CreateCamp {
     | "เลือกได้ว่าจะค้างคืนหรือไม่"
     | "ไม่มีการค้างคืน";
   peeSleepModel: "นอนทุกคน" | "เลือกได้ว่าจะค้างคืนหรือไม่" | "ไม่มีการค้างคืน";
+  //public
 }
 export interface MapObjectId {
   key: Id;
   value: Id;
+  //utility
 }
 export interface ShowMember {
   //                          id ของ mongodb
@@ -672,6 +698,7 @@ export interface ShowMember {
   spicy: boolean;
   id: number;
   campMemberCardId: Id;
+  //private
 }
 export interface UpdateBaan {
   name: string;
@@ -682,6 +709,7 @@ export interface UpdateBaan {
   boySleepPlaceId: Id | null;
   normalPlaceId: Id | null;
   nongSendMessage: boolean;
+  //public
 }
 export type Group =
   | "A"
@@ -715,6 +743,7 @@ export interface HeathIssueBody {
   spicy: boolean;
   foodConcern: string;
   foodLimit: FoodLimit;
+  //private
 }
 export interface CreateActionPlan {
   action: string;
@@ -724,6 +753,7 @@ export interface CreateActionPlan {
   end: Date;
   headId: Id;
   body: string;
+  //public
 }
 export interface showActionPlan {
   _id: Id;
@@ -738,6 +768,7 @@ export interface showActionPlan {
   headTel: string;
   partName: string;
   placeName: string[];
+  //public
 }
 
 export interface CreateWorkingItem {
@@ -746,6 +777,7 @@ export interface CreateWorkingItem {
   partId: Id;
   fromId: Id | null;
   password: string;
+  //public
 }
 export interface ShowRegister {
   name: string;
@@ -754,16 +786,19 @@ export interface ShowRegister {
   userId: Id;
   partId: Id;
   partName: string;
+  //private
 }
 export interface RegisBaan {
   pees: ShowMember[];
   nongs: ShowMember[];
   baan: InterBaanFront;
+  //public
 }
 export interface RegisPart {
   pees: ShowMember[];
   petos: ShowMember[];
   part: InterPartFront;
+  //public
 }
 export interface InterTimeOffset {
   userId: Id;
@@ -771,15 +806,18 @@ export interface InterTimeOffset {
   hour: number;
   minute: number;
   _id: Id;
+  //private
 }
 export interface UpdateTimeOffsetRaw {
   day: number;
   hour: number;
   minute: number;
+  //private
 }
 export interface UpdateTimeOffset {
   display: UpdateTimeOffsetRaw;
   select: UpdateTimeOffsetRaw;
+  //private
 }
 export interface AddLostAndFound {
   campId: Id | null;
@@ -787,6 +825,7 @@ export interface AddLostAndFound {
   name: string;
   detail: string;
   placeId: Id | null;
+  //public
 }
 export interface ShowLostAndFound extends InterLostAndFound {
   userName: string;
@@ -797,16 +836,19 @@ export interface ShowLostAndFound extends InterLostAndFound {
   floor: string;
   tel: string;
   campName: string;
+  //public
 }
 export interface ShowPlace {
   buildingName: string;
   floor: string;
   room: string;
   _id: Id;
+  //public
 }
 export interface mapObjectIdToLocalId {
   key: string;
   value: string;
+  //utility
 }
 export interface ShowNong {
   name: string; //
@@ -814,11 +856,13 @@ export interface ShowNong {
   nickname: string; //
   gender: "Male" | "Female"; //           เพศ
   id: number;
+  //private
 }
 export interface ShowRegisterNong {
   link: string;
   localId: string;
   user: InterUser;
+  //private
 }
 export interface AllNongRegister {
   pendings: ShowRegisterNong[];
@@ -826,6 +870,7 @@ export interface AllNongRegister {
   passs: ShowRegisterNong[];
   paids: ShowRegisterNong[];
   sures: ShowRegisterNong[];
+  //public
 }
 export interface InterChat {
   message: string;
@@ -836,28 +881,34 @@ export interface InterChat {
   refId: Id; //'น้องคุยส่วนตัวกับพี่','คุยกันในบ้าน' baan,'คุยกันในฝ่าย' part,'พี่คุยกันในบ้าน' baan,'พี่บ้านคุยกัน' part
   campMemberCardIds: Id[];
   date: Date;
+  //public
 }
 export interface ShowChat extends InterChat {
   nickname: string;
   baanName: string;
   partName: string;
   roomName: string;
+  //public
 }
 export interface CreatePeeChat {
   message: string;
   partId: Id;
+  //public
 }
 export interface EditChat {
   message: string;
   id: Id;
+  //public
 }
 export interface CreateBaanChat {
   message: string;
   baanId: Id;
+  //public
 }
 export interface CreateNongChat {
   message: string;
   CampMemberCard: Id;
+  //public
 }
 export const departures = [
   "วิศวกรรมเคมี (Chemical Engineering)",
@@ -901,6 +952,7 @@ export type GetChat =
 export interface AllPlaceData {
   allPlace: Map<string, InterPlace[]>;
   allBuildings: Map<Id, InterBuilding>;
+  //public
 }
 export interface ChatReady {
   chats: ShowChat[];
@@ -913,6 +965,7 @@ export interface ChatReady {
   } | null;
   success: boolean;
   roomName: string;
+  //private
 }
 export const foodLimits = [
   "อิสลาม",
@@ -925,6 +978,7 @@ export interface HeathIssuePack {
   heathIssue: HeathIssueBody;
   user: InterUser;
   campMemberCardId: Id;
+  //private
 }
 export interface CampWelfarePack {
   baanWelfares: WelfarePack[];
@@ -947,8 +1001,12 @@ export interface CampWelfarePack {
   baanVegans: CampNumberData[];
   partVegans: CampNumberData[];
   campVeganNumber: CampNumberData;
+  baanIsWearings: CampNumberData[];
+  partIsWearings: CampNumberData[];
+  campWearingNumber: CampNumberData;
   meals: InterMeal[];
   _id: Id;
+  //public
 }
 export interface WelfarePack {
   nongHealths: HeathIssuePack[];
@@ -958,6 +1016,7 @@ export interface WelfarePack {
   nongSize: InterSize;
   peeSize: InterSize;
   petoSize: InterSize;
+  //public
 }
 export interface GetBaansForPlan {
   name: string;
@@ -966,11 +1025,13 @@ export interface GetBaansForPlan {
   girl: InterPlace | null;
   normal: InterPlace | null;
   _id: Id;
+  //public
 }
 export interface GetPartsForPlan {
   name: string;
   place: InterPlace | null;
   _id: Id;
+  //public
 }
 export interface GetAllPlanData {
   name: string;
@@ -988,27 +1049,32 @@ export interface GetAllPlanData {
   isHavePeto: boolean;
   baanSleepDatas: CampSleepDataContainer[];
   partSleepDatas: CampSleepDataContainer[];
+  //public
 }
 export interface UpdateBaansForPlan {
   boyId: Id | null;
   girlId: Id | null;
   normalId: Id | null;
   _id: Id;
+  //public
 }
 export interface UpdatePartsForPlan {
   placeId: Id | null;
   _id: Id;
+  //public
 }
 export interface UpdateAllPlanData {
   baanDatas: UpdateBaansForPlan[];
   partDatas: UpdatePartsForPlan[];
   _id: Id;
+  //public
 }
 export interface CampNumberData {
   name: string;
   nongNumber: number;
   peeNumber: number;
   petoNumber: number;
+  //utility
 }
 export interface CampSleepDataContainer {
   name: string;
@@ -1018,6 +1084,7 @@ export interface CampSleepDataContainer {
   peeGirls: InterUser[];
   petoBoys: InterUser[];
   petoGirls: InterUser[];
+  //public
 }
 export interface InterChoiceAnswer {
   userId: Id;
@@ -1027,6 +1094,7 @@ export interface InterChoiceAnswer {
   answer: Choice | "-";
   score: number;
   containerId: Id;
+  //private
 }
 
 export const choices = ["A", "B", "C", "D", "E"] as const;
@@ -1058,6 +1126,7 @@ export interface InterChoiceQuestion {
   correct: Choice | "-";
   order: number;
   answerIds: Id[];
+  //public
 }
 export interface EditChoiceQuestion {
   _id: Id | null;
@@ -1074,6 +1143,7 @@ export interface EditChoiceQuestion {
   scoreE: number;
   correct: Choice | "-";
   order: number;
+  //public
 }
 export interface InterTextQuestion {
   question: string;
@@ -1082,12 +1152,14 @@ export interface InterTextQuestion {
   answerIds: Id[];
   score: number;
   order: number;
+  //public
 }
 export interface EditTextQuestion {
   question: string;
   _id: Id | null;
   score: number;
   order: number;
+  //public
 }
 export interface InterAnswerContainer {
   choiceAnswerIds: Id[];
@@ -1096,6 +1168,7 @@ export interface InterAnswerContainer {
   userId: Id;
   _id: Id;
   role: RoleCamp;
+  //private
 }
 export interface InterTextAnswer {
   _id: Id;
@@ -1104,44 +1177,53 @@ export interface InterTextAnswer {
   questionId: Id;
   score: number;
   containerId: Id;
+  //private
 }
 export interface ChoiceAnswerPack {
   answer: Choice | "-";
   questionId: Id;
   answerId: Id | null;
+  //private
 }
 export interface TextAnswerPack {
   answer: string;
   questionId: Id;
   answerId: Id | null;
+  //private
 }
 export interface AnswerPack {
   campId: Id;
   textAnswers: TextAnswerPack[];
   choiceAnswers: ChoiceAnswerPack[];
+  //private
 }
 export interface EditQuestionPack {
   campId: Id;
   texts: EditTextQuestion[];
   choices: EditChoiceQuestion[];
+  //public
 }
 export interface GetChoiceQuestion extends InterChoiceQuestion {
   answer: Choice | "-";
   answerId: Id | null;
+  //private
 }
 export interface GetTextQuestion extends InterTextQuestion {
   answer: string;
   answerId: Id | null;
   answerScore: number;
+  //private
 }
 export interface GetAllQuestion {
   choices: GetChoiceQuestion[];
   texts: GetTextQuestion[];
   canAnswerTheQuestion: boolean;
+  //private
 }
 export interface UserAndAllQuestionPack {
   user: InterUser;
   questions: GetAllQuestion;
+  //private
 }
 export interface GetAllAnswerAndQuestion {
   nongsAnswers: UserAndAllQuestionPack[];
@@ -1154,14 +1236,18 @@ export interface GetAllAnswerAndQuestion {
   nongPaidAnswers: UserAndAllQuestionPack[];
   nongInterviewAnswers: UserAndAllQuestionPack[];
   success: boolean;
+  groupName: string;
+  //public
 }
 export interface ScoreTextQuestion {
   id: Id | null;
   score: number;
+  //private
 }
 export interface ScoreTextQuestions {
   scores: ScoreTextQuestion[][];
   campId: Id;
+  //public
 }
 export interface InterFood {
   campId: Id;
@@ -1181,6 +1267,7 @@ export interface InterFood {
   _id: Id;
   isSpicy: boolean;
   listPriority: boolean;
+  //public
 }
 export interface InterMeal {
   time: Date;
@@ -1188,6 +1275,7 @@ export interface InterMeal {
   foodIds: Id[];
   roles: RoleCamp[];
   _id: Id;
+  //public
 }
 export interface CreateFood {
   campId: Id;
@@ -1197,11 +1285,13 @@ export interface CreateFood {
   lists: FoodLimit[];
   isSpicy: boolean;
   listPriority: boolean;
+  //public
 }
 export interface CreateMeal {
   time: Date;
   campId: Id;
   roles: RoleCamp[];
+  //public
 }
 export interface UpdateFood {
   isWhiteList: boolean;
@@ -1213,6 +1303,7 @@ export interface UpdateFood {
   _id: Id;
   isSpicy: boolean;
   listPriority: boolean;
+  //public
 }
 export interface GetFoodForUpdate {
   isWhiteList: boolean;
@@ -1229,11 +1320,13 @@ export interface GetFoodForUpdate {
   camp: InterCampFront;
   time: Date;
   listPriority: boolean;
+  //public
 }
 export interface GetMeals {
   time: Date;
   whiteLists: InterFood[];
   blackLists: InterFood[];
+  //private
 }
 export interface ReceiveAirQuality {
   id: string;
@@ -1247,6 +1340,7 @@ export interface ReceiveAirQuality {
       };
     }[];
   };
+  //public
 }
 export interface CampHealthIssuePack {
   baanHealthIssuePacks: ShowHealthIssuePack[];
@@ -1254,12 +1348,14 @@ export interface CampHealthIssuePack {
   isHavePeto: boolean;
   groupName: string;
   campHealthIssuePack: ShowHealthIssuePack;
+  //public
 }
 export interface ShowHealthIssuePack {
   nongHealths: HeathIssuePack[];
   peeHealths: HeathIssuePack[];
   petoHealths: HeathIssuePack[];
   name: string;
+  //public
 }
 export interface GetCoopData {
   baan: InterBaanFront;
@@ -1269,13 +1365,125 @@ export interface GetCoopData {
   normal: InterPlace | null;
   nongHealths: HeathIssuePack[];
   peeHealths: HeathIssuePack[];
+  //public
 }
 export interface UpdateMeal {
   mealId: Id;
   time: Date;
   roles: RoleCamp[];
+  //public
 }
 export interface SuccessBase<T> {
   success: boolean;
   data: T;
+  //utility
+}
+export interface UpdateActionPlan {
+  action: string;
+  placeIds: Id[];
+  start: Date;
+  end: Date;
+  headId: Id;
+  body: string;
+  //public
+}
+export interface GetNongData {
+  user: InterUser;
+  camp: InterCampFront;
+  campMemberCard: InterCampMemberCard;
+  baan: InterBaanFront;
+  normal: ShowPlace | null;
+  boy: ShowPlace | null;
+  girl: ShowPlace | null;
+  pees: ShowMember[];
+  nongs: ShowMember[];
+  meals: GetMeals[];
+  healthIssue: HeathIssueBody;
+  displayOffset: UpdateTimeOffsetRaw;
+  //private
+}
+export interface GetPeeData {
+  user: InterUser;
+  camp: InterCampFront;
+  campMemberCard: InterCampMemberCard;
+  baan: InterBaanFront;
+  normal: ShowPlace | null;
+  boy: ShowPlace | null;
+  girl: ShowPlace | null;
+  peeBaans: ShowMember[];
+  nongBaans: ShowMember[];
+  meals: GetMeals[];
+  healthIssue: HeathIssueBody;
+  displayOffset: UpdateTimeOffsetRaw;
+  selectOffset: UpdateTimeOffsetRaw;
+  partPlace: ShowPlace | null;
+  part: InterPartFront;
+  petoParts: ShowMember[];
+  peeParts: ShowMember[];
+  //private
+}
+export interface GetPetoData {
+  user: InterUser;
+  camp: InterCampFront;
+  campMemberCard: InterCampMemberCard;
+  meals: GetMeals[];
+  healthIssue: HeathIssueBody;
+  displayOffset: UpdateTimeOffsetRaw;
+  selectOffset: UpdateTimeOffsetRaw;
+  partPlace: ShowPlace | null;
+  part: InterPartFront;
+  petos: ShowMember[];
+  pees: ShowMember[];
+  //private
+}
+export interface GetMenuSongs {
+  songs: ShowSong[];
+  likeSongIds: Id[];
+  authBaans: {
+    data: InterBaanFront;
+    showName: string;
+  }[];
+  authCamps: InterCampFront[];
+  //private
+}
+export interface ShowSong {
+  name: string;
+  campNames: string[];
+  baanNames: string[];
+  author: string;
+  time: number;
+  link: string;
+  like: number;
+  _id: Id;
+  baanRelates: string[];
+  campRelates: string[];
+  //private
+}
+export interface CreateSong {
+  name: string;
+  author: string;
+  time: number;
+  link: string;
+  //public
+}
+export interface ShowSongPage {
+  song: ShowSong;
+  authBaans: {
+    data: InterBaanFront;
+    showName: string;
+  }[];
+  authCamps: InterCampFront[];
+  likeSongIds: Id[];
+  //private
+}
+export interface UpdateSongs {
+  _id: Id;
+  songIds: Id[];
+  //public
+}
+export interface UpdateSongPage {
+  userLikeSongIds: Id[];
+  baans: UpdateSongs[];
+  camps: UpdateSongs[];
+  //private
 }

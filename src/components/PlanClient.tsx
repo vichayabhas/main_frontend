@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   AllPlaceData,
   GetAllPlanData,
@@ -12,6 +12,7 @@ import PlaceSelect from "./PlaceSelect";
 import FinishButton from "./FinishButton";
 import planUpdateCamp from "@/libs/camp/planUpdateCamp";
 import {
+  downloadText,
   getId,
   modifyElementInUseStateArray,
   peeLookupNong,
@@ -22,6 +23,7 @@ import CampNumberTable from "./CampNumberTable";
 import React from "react";
 import Waiting from "./Waiting";
 import getAllPlanData from "@/libs/camp/getAllPlanData";
+import { useDownloadExcel } from "react-export-table-to-excel";
 interface BundleRoleAndUser {
   role: "พี่" | "น้อง" | "ปีโต";
   user: InterUser;
@@ -57,6 +59,16 @@ export default function PlanClient({
     return { user, role: "ปีโต" };
   }
   const [timeOut, setTimeOut] = useState<boolean>(false);
+  const baanRef = useRef(null);
+  const partRef = useRef(null);
+  const baanDownload = useDownloadExcel({
+    currentTableRef: baanRef.current,
+    filename: `สถานที่ใช้เป็นห้อง${data.groupName}ทั้งหมด`,
+  });
+  const partDownload = useDownloadExcel({
+    currentTableRef: partRef.current,
+    filename: "สถานที่ใช้เป็นห้องฝ่ายทั้งหมด",
+  });
   return (
     <div
       style={{
@@ -72,7 +84,7 @@ export default function PlanClient({
         <Waiting />
       ) : (
         <>
-          <table>
+          <table ref={baanRef}>
             <tr>
               <th>{data.groupName}ทั้งหมด</th>
               <th>ห้อง{data.groupName}ปกติ</th>
@@ -129,7 +141,8 @@ export default function PlanClient({
               </tr>
             ))}
           </table>
-          <table>
+          <FinishButton text={downloadText} onClick={baanDownload.onDownload} />
+          <table ref={partRef}>
             <tr>
               <th>ฝ่ายทั้งหมด</th>
               <th>ห้องฝ่าย</th>
@@ -152,6 +165,7 @@ export default function PlanClient({
               </tr>
             ))}
           </table>
+          <FinishButton text={downloadText} onClick={partDownload.onDownload} />
           <FinishButton
             text="update สถานที่"
             onClick={async () => {
@@ -190,6 +204,7 @@ export default function PlanClient({
           baanNumbers={data.baanBoySleeps}
           partNumbers={data.partBoySleeps}
           groupName={data.groupName}
+          filename="สมาชิกชายที่ค้างคืน"
         />
         จำนวนสมาชิกหญิงที่ค้างคืน
         <CampNumberTable
@@ -198,67 +213,34 @@ export default function PlanClient({
           baanNumbers={data.baanGirlSleeps}
           partNumbers={data.partGirlSleeps}
           groupName={data.groupName}
+          filename="สมาชิกหญิงที่ค้างคืน"
         />
-        {data.baanSleepDatas.map((baan, i) => (
-          <div key={i}>
-            รายชื่อ{data.groupName}
-            {baan.name}ผู้ชายที่นอนค้างคืน
-            <table>
-              <tr>
-                <th>ชือเล่น</th>
-                <th>ชื่อจริง</th>
-                <th>นามสกุล</th>
-                <th>พี่หรือน้อง</th>
-              </tr>
-              {peeLookupNong(
-                baan.peeBoys.map(peeToBundle),
-                baan.nongBoys.map(nongToBundle)
-              ).map((user, i) => (
-                <tr key={i}>
-                  <td>{user.user.nickname}</td>
-                  <td>{user.user.name}</td>
-                  <td>{user.user.lastname}</td>
-                  <td>{user.role}</td>
+        {data.baanSleepDatas.map((baan, i) => {
+          const boyRef = useRef(null);
+          const girlRef = useRef(null);
+          const boyDownload = useDownloadExcel({
+            currentTableRef: boyRef.current,
+            filename: `รายชื่อ${data.groupName}${baan.name}ผู้ชายที่นอนค้างคืน`,
+          });
+          const girlDownload = useDownloadExcel({
+            currentTableRef: girlRef.current,
+            filename: `รายชื่อ${data.groupName}${baan.name}ผู้หญิงที่นอนค้างคืน`,
+          });
+          return (
+            <div key={i}>
+              รายชื่อ{data.groupName}
+              {baan.name}ผู้ชายที่นอนค้างคืน
+              <table ref={boyRef}>
+                <tr>
+                  <th>ชือเล่น</th>
+                  <th>ชื่อจริง</th>
+                  <th>นามสกุล</th>
+                  <th>พี่หรือน้อง</th>
                 </tr>
-              ))}
-            </table>
-            รายชื่อ{data.groupName}
-            {baan.name}ผู้หญิงที่นอนค้างคืน
-            <table>
-              <tr>
-                <th>ชือเล่น</th>
-                <th>ชื่อจริง</th>
-                <th>นามสกุล</th>
-                <th>พี่หรือน้อง</th>
-              </tr>
-              {peeLookupNong(
-                baan.peeGirls.map(peeToBundle),
-                baan.nongGirls.map(nongToBundle)
-              ).map((user, i) => (
-                <tr key={i}>
-                  <td>{user.user.nickname}</td>
-                  <td>{user.user.name}</td>
-                  <td>{user.user.lastname}</td>
-                  <td>{user.role}</td>
-                </tr>
-              ))}
-            </table>
-          </div>
-        ))}
-        {data.partSleepDatas.map((part, i) => (
-          <div key={i}>
-            รายชื่อฝ่าย{part.name}ผู้ชายที่นอนค้างคืน
-            <table>
-              <tr>
-                <th>ชือเล่น</th>
-                <th>ชื่อจริง</th>
-                <th>นามสกุล</th>
-                <th>พี่หรือน้อง</th>
-              </tr>
-              {part.peeBoys
-                .map(peeToBundle)
-                .concat(part.petoBoys.map(petoToBundle))
-                .map((user, i) => (
+                {peeLookupNong(
+                  baan.peeBoys.map(peeToBundle),
+                  baan.nongBoys.map(nongToBundle)
+                ).map((user, i) => (
                   <tr key={i}>
                     <td>{user.user.nickname}</td>
                     <td>{user.user.name}</td>
@@ -266,19 +248,24 @@ export default function PlanClient({
                     <td>{user.role}</td>
                   </tr>
                 ))}
-            </table>
-            รายชื่อฝ่าย{part.name}ผู้หญิงที่นอนค้างคืน
-            <table>
-              <tr>
-                <th>ชือเล่น</th>
-                <th>ชื่อจริง</th>
-                <th>นามสกุล</th>
-                <th>พี่หรือน้อง</th>
-              </tr>
-              {part.peeGirls
-                .map(peeToBundle)
-                .concat(part.petoGirls.map(petoToBundle))
-                .map((user, i) => (
+              </table>
+              <FinishButton
+                text={downloadText}
+                onClick={boyDownload.onDownload}
+              />
+              รายชื่อ{data.groupName}
+              {baan.name}ผู้หญิงที่นอนค้างคืน
+              <table ref={girlRef}>
+                <tr>
+                  <th>ชือเล่น</th>
+                  <th>ชื่อจริง</th>
+                  <th>นามสกุล</th>
+                  <th>พี่หรือน้อง</th>
+                </tr>
+                {peeLookupNong(
+                  baan.peeGirls.map(peeToBundle),
+                  baan.nongGirls.map(nongToBundle)
+                ).map((user, i) => (
                   <tr key={i}>
                     <td>{user.user.nickname}</td>
                     <td>{user.user.name}</td>
@@ -286,9 +273,78 @@ export default function PlanClient({
                     <td>{user.role}</td>
                   </tr>
                 ))}
-            </table>
-          </div>
-        ))}
+              </table>
+              <FinishButton
+                text={downloadText}
+                onClick={girlDownload.onDownload}
+              />
+            </div>
+          );
+        })}
+        {data.partSleepDatas.map((part, i) => {
+          const boyRef = useRef(null);
+          const girlRef = useRef(null);
+          const boyDownload = useDownloadExcel({
+            currentTableRef: boyRef.current,
+            filename: `รายชื่อฝ่าย${part.name}ผู้ชายที่นอนค้างคืน`,
+          });
+          const girlDownload = useDownloadExcel({
+            currentTableRef: girlRef.current,
+            filename: `รายชื่อฝ่าย${part.name}ผู้หญิงที่นอนค้างคืน`,
+          });
+          return (
+            <div key={i}>
+              รายชื่อฝ่าย{part.name}ผู้ชายที่นอนค้างคืน
+              <table ref={boyRef}>
+                <tr>
+                  <th>ชือเล่น</th>
+                  <th>ชื่อจริง</th>
+                  <th>นามสกุล</th>
+                  <th>พี่หรือน้อง</th>
+                </tr>
+                {part.peeBoys
+                  .map(peeToBundle)
+                  .concat(part.petoBoys.map(petoToBundle))
+                  .map((user, i) => (
+                    <tr key={i}>
+                      <td>{user.user.nickname}</td>
+                      <td>{user.user.name}</td>
+                      <td>{user.user.lastname}</td>
+                      <td>{user.role}</td>
+                    </tr>
+                  ))}
+              </table>
+              <FinishButton
+                text={downloadText}
+                onClick={boyDownload.onDownload}
+              />
+              รายชื่อฝ่าย{part.name}ผู้หญิงที่นอนค้างคืน
+              <table ref={girlRef}>
+                <tr>
+                  <th>ชือเล่น</th>
+                  <th>ชื่อจริง</th>
+                  <th>นามสกุล</th>
+                  <th>พี่หรือน้อง</th>
+                </tr>
+                {part.peeGirls
+                  .map(peeToBundle)
+                  .concat(part.petoGirls.map(petoToBundle))
+                  .map((user, i) => (
+                    <tr key={i}>
+                      <td>{user.user.nickname}</td>
+                      <td>{user.user.name}</td>
+                      <td>{user.user.lastname}</td>
+                      <td>{user.role}</td>
+                    </tr>
+                  ))}
+              </table>
+              <FinishButton
+                text={downloadText}
+                onClick={girlDownload.onDownload}
+              />
+            </div>
+          );
+        })}
       </AllInOneLock>
     </div>
   );

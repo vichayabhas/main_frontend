@@ -8,7 +8,7 @@ import {
   InterCampFront,
   InterUser,
 } from "../../interface";
-import { getValue, modifyElementInUseStateArray, setMap, setTextToString } from "./setup";
+import { modifyElementInUseStateArray, setMap, setTextToString } from "./setup";
 import Link from "next/link";
 import React from "react";
 
@@ -179,7 +179,8 @@ export default function NongRegisterPage({
               }}
               className="w-3/5 bg-white rounded-2xl shadow-inner"
               onChange={setTextToString(
-                setMap(setTextAnswers, modifyElementInUseStateArray(i)),true
+                setMap(setTextAnswers, modifyElementInUseStateArray(i)),
+                true
               )}
               defaultValue={textAnswers[i]}
             />
@@ -194,11 +195,6 @@ export default function NongRegisterPage({
       <div className="text-4xl font-medium">Register</div>
       {camp.registerSheetLink ? (
         <Link href={`${camp.registerSheetLink}${user._id}`}>ใบรับสมัคร</Link>
-      ) : null}
-      {camp.registerSheetLink ? (
-        <Link href={`${getValue(camp.nongPendingIds, user._id)}${user._id}`}>
-          ใบรับสมัคร
-        </Link>
       ) : null}
       {camp.open ? (
         <form className="w-[30%] items-center bg-slate-600 p-10 rounded-3xl shadow-[25px_25px_40px_-10px_rgba(0,0,0,0.7)]">

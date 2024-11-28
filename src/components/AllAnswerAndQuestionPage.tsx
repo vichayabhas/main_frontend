@@ -11,9 +11,17 @@ import {
   UserAndAllQuestionPack,
 } from "../../interface";
 import AllAnswerAndQuestionPageBreakDown from "./AllAnswerAndQuestionPageBreakDown";
-import { copy, setBoolean, setTextToString, stringToId } from "./setup";
-import React, { useState } from "react";
+import {
+  copy,
+  downloadText,
+  setBoolean,
+  setTextToString,
+  stringToId,
+} from "./setup";
+import React, { useRef, useState } from "react";
 import { Checkbox, TextField } from "@mui/material";
+import { useDownloadExcel } from "react-export-table-to-excel";
+import FinishButton from "./FinishButton";
 interface AnswerReady {
   element: React.ReactNode;
   order: number;
@@ -210,6 +218,46 @@ export default function AllAnswerAndQuestionPage({
       </tr>
     ));
   }
+  const pendingRef = useRef(null);
+  const interviewRef = useRef(null);
+  const passRef = useRef(null);
+  const paidRef = useRef(null);
+  const sureRef = useRef(null);
+  const nongRef = useRef(null);
+  const peeRef = useRef(null);
+  const choiceRef = useRef(null);
+  const pendingDownload = useDownloadExcel({
+    currentTableRef: pendingRef.current,
+    filename: "น้องที่สมัครเข้ามา",
+  });
+  const interviewDownload = useDownloadExcel({
+    currentTableRef: interviewRef.current,
+    filename: "น้องที่ผ่านสัมภาษณ์",
+  });
+  const passDownload = useDownloadExcel({
+    currentTableRef: passRef.current,
+    filename: "น้องที่ผ่านเข้าค่าย",
+  });
+  const paidDownload = useDownloadExcel({
+    currentTableRef: paidRef.current,
+    filename: "น้องที่จ่ายตังแล้ว",
+  });
+  const sureDownload = useDownloadExcel({
+    currentTableRef: sureRef.current,
+    filename: "น้องที่ยืนยันแล้ว",
+  });
+  const nongDownload = useDownloadExcel({
+    currentTableRef: nongRef.current,
+    filename: "น้องค่าย",
+  });
+  const peeDownload = useDownloadExcel({
+    currentTableRef: peeRef.current,
+    filename: `พี่${data.groupName}`,
+  });
+  const choiceDownload = useDownloadExcel({
+    currentTableRef: choiceRef.current,
+    filename: "ตัวเลือก",
+  });
   return (
     <div>
       <Checkbox onChange={setBoolean(setShowAll)} defaultChecked />
@@ -294,7 +342,7 @@ export default function AllAnswerAndQuestionPage({
       </div>
       {showAll ? (
         <>
-          <table>
+          <table ref={choiceRef}>
             <tr>
               <th>คำถาม/ตัวเลือก</th>
               <th>A</th>
@@ -339,78 +387,99 @@ export default function AllAnswerAndQuestionPage({
               </tr>
             ))}
           </table>
+          <FinishButton
+            text={downloadText}
+            onClick={choiceDownload.onDownload}
+          />
           น้องที่สมัครเข้ามา
           <AllAnswerAndQuestionPageBreakDown
             setMode={(dataInput2) => dataInput2.nongPendingAnswers}
             dataReady={getDataReady()}
+            types="น้องที่สมัครเข้ามา"
           />
           น้องที่ผ่านสัมภาษณ์
           <AllAnswerAndQuestionPageBreakDown
             setMode={(dataInput2) => dataInput2.nongInterviewAnswers}
             dataReady={getDataReady()}
+            types="น้องที่ผ่านสัมภาษณ์"
           />
           น้องที่ผ่านเข้าค่าย
           <AllAnswerAndQuestionPageBreakDown
             setMode={(dataInput2) => dataInput2.nongPassAnswers}
             dataReady={getDataReady()}
+            types="น้องที่ผ่านเข้าค่าย"
           />
           น้องที่จ่ายตังแล้ว
           <AllAnswerAndQuestionPageBreakDown
             setMode={(dataInput2) => dataInput2.nongPaidAnswers}
             dataReady={getDataReady()}
+            types="น้องที่จ่ายตังแล้ว"
           />
           น้องที่ยืนยันแล้ว
           <AllAnswerAndQuestionPageBreakDown
             setMode={(dataInput2) => dataInput2.nongSureAnswers}
             dataReady={getDataReady()}
+            types="น้องที่ยืนยันแล้ว"
           />
           น้องค่าย
           <AllAnswerAndQuestionPageBreakDown
             setMode={(dataInput2) => dataInput2.nongsAnswers}
             dataReady={getDataReady()}
+            types="น้องค่าย"
           />
           พี่พี่
           <AllAnswerAndQuestionPageBreakDown
             setMode={(dataInput2) => dataInput2.peeAnswers}
             dataReady={getDataReady()}
+            types="พี่พี่"
           />
         </>
       ) : null}
       น้องที่สมัครเข้ามา
-      <table>
+      <table ref={pendingRef}>
         {headTable}
         {getAllAnswerAndQuestionReady(data.nongPendingAnswers)}
       </table>
+      <FinishButton text={downloadText} onClick={pendingDownload.onDownload} />
       น้องที่ผ่านสัมภาษณ์
-      <table>
+      <table ref={interviewRef}>
         {headTable}
         {getAllAnswerAndQuestionReady(data.nongInterviewAnswers)}
       </table>
+      <FinishButton
+        text={downloadText}
+        onClick={interviewDownload.onDownload}
+      />
       น้องที่ผ่านเข้าค่าย
-      <table>
+      <table ref={passRef}>
         {headTable}
         {getAllAnswerAndQuestionReady(data.nongPassAnswers)}
       </table>
+      <FinishButton text={downloadText} onClick={passDownload.onDownload} />
       น้องที่จ่ายตังแล้ว
-      <table>
+      <table ref={paidRef}>
         {headTable}
         {getAllAnswerAndQuestionReady(data.nongPaidAnswers)}
       </table>
+      <FinishButton text={downloadText} onClick={paidDownload.onDownload} />
       น้องที่ยืนยันแล้ว
-      <table>
+      <table ref={sureRef}>
         {headTable}
         {getAllAnswerAndQuestionReady(data.nongSureAnswers)}
       </table>
+      <FinishButton text={downloadText} onClick={sureDownload.onDownload} />
       น้องค่าย
-      <table>
+      <table ref={nongRef}>
         {headTable}
         {getAllAnswerAndQuestionReady(data.nongsAnswers)}
       </table>
+      <FinishButton text={downloadText} onClick={nongDownload.onDownload} />
       พี่พี่
-      <table>
+      <table ref={peeRef}>
         {headTable}
         {getAllAnswerAndQuestionReady(data.peeAnswers)}
       </table>
+      <FinishButton text={downloadText} onClick={peeDownload.onDownload} />
     </div>
   );
 }

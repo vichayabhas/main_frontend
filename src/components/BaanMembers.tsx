@@ -7,8 +7,9 @@ import {
 } from "../../interface";
 import { useRouter } from "next/navigation";
 import FinishButton from "./FinishButton";
-import { downToShowNong, generateExcelData } from "./setup";
-import React from "react";
+import React, { useRef } from "react";
+import { useDownloadExcel } from "react-export-table-to-excel";
+import { downloadText } from "./setup";
 
 export default function BaanMembers({
   baan,
@@ -24,6 +25,16 @@ export default function BaanMembers({
   pees: ShowMember[];
 }) {
   const router = useRouter();
+  const nongRef = useRef(null);
+  const peeRef = useRef(null);
+  const nongDownload = useDownloadExcel({
+    currentTableRef: nongRef.current,
+    filename: `รายชื่อน้อง${camp.groupName} ${baan.name} จากค่าย ${camp.campName}`,
+  });
+  const peeDownload = useDownloadExcel({
+    currentTableRef: peeRef.current,
+    filename: `รายชื่อพี่${camp.groupName} ${baan.name} จากค่าย ${camp.campName}`,
+  });
   return (
     <main
       className="text-center p-5 text-white rounded-3xl"
@@ -45,28 +56,13 @@ export default function BaanMembers({
         >
           รายชื่อน้อง{camp.groupName} {baan.fullName}
         </div>
-        <FinishButton
-          text="download"
-          onClick={() => {
-            if (campRole === "pee") {
-              generateExcelData(
-                nongs,
-                `รายชื่อน้อง${camp.groupName} ${baan.name} จากค่าย ${camp.campName}`
-              );
-            } else {
-              generateExcelData(
-                nongs.map(downToShowNong),
-                `รายชื่อน้อง${camp.groupName} ${baan.name} จากค่าย ${camp.campName}`
-              );
-            }
-          }}
-        />
         <table
           style={{
             marginTop: "10px",
             marginBottom: "10px",
             width: "100%",
           }}
+          ref={nongRef}
         >
           <tr style={{ border: "solid", borderColor: "white" }}>
             <th>ชือเล่น</th>
@@ -87,7 +83,7 @@ export default function BaanMembers({
               </>
             ) : null}
           </tr>
-          {nongs.map((user: ShowMember,i) => {
+          {nongs.map((user: ShowMember, i) => {
             return (
               <tr style={{ border: "solid", borderColor: "white" }} key={i}>
                 <td>{user.nickname}</td>
@@ -124,6 +120,7 @@ export default function BaanMembers({
           })}
         </table>
       </div>
+      <FinishButton text={downloadText} onClick={nongDownload.onDownload} />
       <div>
         <div
           className="text-4xl font-bold"
@@ -135,28 +132,13 @@ export default function BaanMembers({
         >
           รายชื่อพี่{camp.groupName} {baan.fullName}
         </div>
-        <FinishButton
-          text="download"
-          onClick={() => {
-            if (campRole === "pee") {
-              generateExcelData(
-                pees,
-                `รายชื่อพี่${camp.groupName} ${baan.name} จากค่าย ${camp.campName}`
-              );
-            } else {
-              generateExcelData(
-                pees.map(downToShowNong),
-                `รายชื่อพี่${camp.groupName} ${baan.name} จากค่าย ${camp.campName}`
-              );
-            }
-          }}
-        />
         <table
           style={{
             marginTop: "10px",
             marginBottom: "10px",
             width: "100%",
           }}
+          ref={peeRef}
         >
           <tr style={{ border: "solid", borderColor: "white" }}>
             <th>ชือเล่น</th>
@@ -177,7 +159,7 @@ export default function BaanMembers({
               </>
             ) : null}
           </tr>
-          {pees.map((user: ShowMember,i) => (
+          {pees.map((user: ShowMember, i) => (
             <tr style={{ border: "solid", borderColor: "white" }} key={i}>
               <td>{user.nickname}</td>
               <td>{user.name}</td>
@@ -212,6 +194,7 @@ export default function BaanMembers({
           ))}
         </table>
       </div>
+      <FinishButton text={downloadText} onClick={peeDownload.onDownload} />
     </main>
   );
 }

@@ -1,12 +1,9 @@
 import mongoose from "mongoose";
-import { utils, writeFile } from "xlsx";
 import {
   InterSize,
   InterActionPlan,
   MapObjectId,
   MyMap,
-  ShowMember,
-  ShowNong,
   HeathIssueBody,
   Id,
   UpdateTimeOffsetRaw,
@@ -207,26 +204,6 @@ export function addTime(
     .add(-add.minute, "minutes")
     .toDate();
 }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function generateExcelData(data: any, fileName: string) {
-  const worksheet = utils.json_to_sheet(data);
-  const workbook = utils.book_new();
-  utils.book_append_sheet(workbook, worksheet, "Sheet1");
-  const excelData = writeFile(workbook, `${fileName}.xlsx`, {
-    compression: true,
-  });
-  return excelData;
-}
-export function downToShowNong({
-  name,
-  nickname,
-  lastname,
-  gender,
-  id,
-}: ShowMember): ShowNong {
-  return { name, nickname, lastname, gender, id };
-}
-////////////////////////////////////////////////////////////////////////////////////
 export function peeLookupNong<P, N>(pees: P[], nongs: N[]): (P | N)[] {
   if (pees.length == 0) {
     return nongs;
@@ -479,3 +456,4 @@ export function selectTimeToSystem(
 export function cleanString(input: string) {
   return input.replace(/\s/g, "");
 }
+export const downloadText = "download";

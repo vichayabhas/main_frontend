@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   GetAllAnswerAndQuestion,
   Id,
@@ -13,10 +13,12 @@ import {
   setMap,
   setTextToFloat,
   waiting,
+  downloadText,
 } from "./setup";
 import FinishButton from "./FinishButton";
 import scoreTextQuestions from "@/libs/camp/scoreTextQuestions";
 import Waiting from "./Waiting";
+import { useDownloadExcel } from "react-export-table-to-excel";
 interface DataReady {
   data: GetAllAnswerAndQuestion;
   textQuestions: InterTextQuestion[];
@@ -37,9 +39,11 @@ function setDefaultScore(input: UserAndAllQuestionPack[]): number[][] {
 export default function AllAnswerAndQuestionPageBreakDown({
   dataReady: { data, campId, update, textQuestions, token, readOnly },
   setMode,
+  types,
 }: {
   dataReady: DataReady;
   setMode: (dataIn: GetAllAnswerAndQuestion) => UserAndAllQuestionPack[];
+  types: string;
 }) {
   const [textScores, setTextScores] = useState(setDefaultScore(setMode(data)));
   const [isTimeout, setTimeOut] = useState(false);
@@ -61,13 +65,18 @@ export default function AllAnswerAndQuestionPageBreakDown({
       setTextScores(setDefaultScore(setMode(buffer)));
     }, setTimeOut);
   }
+  const ref = useRef(null);
+  const download = useDownloadExcel({
+    currentTableRef: ref.current,
+    filename: `คะแนน ${types}`,
+  });
   return (
     <div>
       {isTimeout ? (
         <Waiting />
       ) : (
         <div>
-          <table>
+          <table ref={ref}>
             <tr>
               <th>ชือเล่น</th>
               <th>ชื่อจริง</th>
@@ -111,6 +120,7 @@ export default function AllAnswerAndQuestionPageBreakDown({
               </tr>
             ))}
           </table>
+          <FinishButton text={downloadText} onClick={download.onDownload} />
           <FinishButton
             text="clear"
             onClick={() => setTextScores(setDefaultScore(setMode(data)))}

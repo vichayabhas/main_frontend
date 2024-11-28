@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { InterPartFront, InterWorkingItem, MyMap } from "../../interface";
 import { MenuItem, Select, TextField } from "@mui/material";
 import { useState } from "react";
@@ -11,6 +10,7 @@ import updateWorkingItem from "@/libs/camp/updateWorkingItem";
 import deleteWorkingItem from "@/libs/camp/deleteWorkingItem";
 import React from "react";
 import { setTextToString } from "./setup";
+import StringToHtml from "./StringToHtml";
 export default function EditWorkingItem({
   workingItem,
   parts,
@@ -55,7 +55,7 @@ export default function EditWorkingItem({
           <td>{workingItem.status}</td>
           <td>
             {workingItem.link ? (
-              <Link href={workingItem.link}>{workingItem.link}</Link>
+              <StringToHtml input={workingItem.link}/>
             ) : null}
           </td>
           <td>{workingItem.partName}</td>

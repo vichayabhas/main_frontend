@@ -1,3 +1,4 @@
+"use client";
 import {
   GetMeals,
   HeathIssueBody,
@@ -6,10 +7,12 @@ import {
   UpdateTimeOffsetRaw,
 } from "../../interface";
 import AllInOneLock from "./AllInOneLock";
-import React from "react";
-import { copy } from "./setup";
+import React, { useRef } from "react";
+import { copy, downloadText } from "./setup";
 import dayjs from "dayjs";
 import GetTimeHtml from "./GetTimeHtml";
+import { useDownloadExcel } from "react-export-table-to-excel";
+import FinishButton from "./FinishButton";
 
 export default function ShowOwnCampData({
   token,
@@ -26,9 +29,19 @@ export default function ShowOwnCampData({
   meals: GetMeals[];
   displayOffset: UpdateTimeOffsetRaw;
 }) {
+  const ownDataRef = useRef(null);
+  const mealRef = useRef(null);
+  const ownDataDownload = useDownloadExcel({
+    currentTableRef: ownDataRef.current,
+    filename: `ข้อมูลส่วนตัวของ${user.name}`,
+  });
+  const mealDownload = useDownloadExcel({
+    currentTableRef: mealRef.current,
+    filename: `ข้อมูลอาหารของ${user.name}`,
+  });
   return (
     <AllInOneLock token={token}>
-      <table>
+      <table ref={ownDataRef}>
         <tr>
           <th>ชื่อเล่น</th>
           <th>ชื่อจริง</th>
@@ -62,7 +75,8 @@ export default function ShowOwnCampData({
           {healthIssue.isWearing ? <td> ใส่ </td> : null}
         </tr>
       </table>
-      <table>
+      <FinishButton text={downloadText} onClick={ownDataDownload.onDownload} />
+      <table ref={mealRef}>
         <tr>
           <th>วันเวลา</th>
           <th>อาหารอะไรที่คุณกินได้</th>
@@ -84,6 +98,7 @@ export default function ShowOwnCampData({
             </tr>
           ))}
       </table>
+      <FinishButton text={downloadText} onClick={mealDownload.onDownload} />
     </AllInOneLock>
   );
 }

@@ -6,12 +6,12 @@ import {
   InterCampFront,
   InterPartFront,
   InterPlace,
-  InterTimeOffset,
   InterUser,
   MyMap,
   ShowMember,
+  UpdateTimeOffsetRaw,
 } from "../../interface";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import PlaceSelect from "./PlaceSelect";
 import FinishButton from "./FinishButton";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
@@ -22,6 +22,7 @@ import createActionPlan from "@/libs/camp/createActionPlan";
 import { useSession } from "next-auth/react";
 import {
   addTime,
+  downloadText,
   modifyElementInUseStateArray,
   notEmpty,
   removeElementInUseStateArray,
@@ -32,6 +33,7 @@ import {
 import createWorkingItem from "@/libs/camp/createWorkingItem";
 import plusActionPlan from "@/libs/camp/plusActionPlan";
 import React from "react";
+import { useDownloadExcel } from "react-export-table-to-excel";
 export default function PartClient({
   user,
   part,
@@ -45,7 +47,7 @@ export default function PartClient({
   user: InterUser;
   pees: ShowMember[];
   petos: ShowMember[];
-  selectOffset: InterTimeOffset;
+  selectOffset: UpdateTimeOffsetRaw;
   camp: InterCampFront;
   allPlaceData: AllPlaceData;
 }) {
@@ -74,6 +76,16 @@ export default function PartClient({
     const { _id, nickname, name, lastname } = petos[i++];
     maps.push({ key: _id, value: `${nickname} ${name} ${lastname}` });
   }
+  const peeRef = useRef(null);
+  const petoRef = useRef(null);
+  const peeDownload = useDownloadExcel({
+    currentTableRef: peeRef.current,
+    filename: `รายชื่อพี่${camp.groupName}ฝ่าย${part.partName}`,
+  });
+  const petoDownload = useDownloadExcel({
+    currentTableRef: petoRef.current,
+    filename: `รายชื่อพี่ปีโตฝ่าย${part.partName}`,
+  });
   return (
     <main
       className="text-center p-5  rounded-3xl"
@@ -98,13 +110,12 @@ export default function PartClient({
         >
           รายชื่อพี่บ้านฝ่าย{part.partName}
         </div>
-        <table>
+        <table ref={peeRef}>
           <tr style={{ border: "solid", borderColor: "#373737" }}>
             <th>ชือเล่น</th>
             <th>ชื่อจริง</th>
             <th>นามสกุล</th>
             <th>เพศ</th>
-
             <th>ค้างคืนหรือไม่</th>
             <th>id</th>
             <th>รหัสประจำตัวนิสิต</th>
@@ -115,7 +126,7 @@ export default function PartClient({
             <th>กรุปของนิสิต</th>
             <th>ปัญหาสุขภาพ</th>
           </tr>
-          {pees.map((user: ShowMember,i) => (
+          {pees.map((user: ShowMember, i) => (
             <tr style={{ border: "solid", borderColor: "#373737" }} key={i}>
               <td>{user.nickname}</td>
               <td>{user.name}</td>
@@ -146,6 +157,7 @@ export default function PartClient({
           ))}
         </table>
       </div>
+      <FinishButton text={downloadText} onClick={peeDownload.onDownload} />
       <div>
         <div
           className="text-4xl font-bold"
@@ -157,7 +169,7 @@ export default function PartClient({
         >
           รายชื่อปีโตฝ่าย{part.partName}
         </div>
-        <table>
+        <table ref={petoRef}>
           <tr style={{ border: "solid", borderColor: "#373737" }}>
             <th>ชือเล่น</th>
             <th>ชื่อจริง</th>
@@ -173,7 +185,7 @@ export default function PartClient({
             <th>กรุปของนิสิต</th>
             <th>ปัญหาสุขภาพ</th>
           </tr>
-          {petos.map((user: ShowMember,i) => (
+          {petos.map((user: ShowMember, i) => (
             <tr style={{ border: "solid", borderColor: "#373737" }} key={i}>
               <td>{user.nickname}</td>
               <td>{user.name}</td>
@@ -204,6 +216,7 @@ export default function PartClient({
           ))}
         </table>
       </div>
+      <FinishButton text={downloadText} onClick={petoDownload.onDownload} />
       <div
         className="w-[80%] items-center] p-10 rounded-3xl "
         style={{
@@ -283,13 +296,16 @@ export default function PartClient({
         <FinishButton
           text={"remove"}
           onClick={() => {
-            setPlaces((previous) => previous.filter(removeElementInUseStateArray));
+            setPlaces((previous) =>
+              previous.filter(removeElementInUseStateArray)
+            );
           }}
         />
         {places.map((v, i) => (
-          <PlaceSelect key={i}
+          <PlaceSelect
+            key={i}
             place={v}
-            onClick={setMap(setPlaces,modifyElementInUseStateArray(i))}
+            onClick={setMap(setPlaces, modifyElementInUseStateArray(i))}
             buildingText={`ตึกที่${i + 1}`}
             placeText={`ชั้นและห้องที่${i + 1}`}
             allPlaceData={allPlaceData}
@@ -479,7 +495,7 @@ export default function PartClient({
                 },
               },
             }}
-            onChange={setTextToString(setPassword,true)}
+            onChange={setTextToString(setPassword, true)}
             value={password}
           />
         </div>

@@ -30,7 +30,7 @@ import BackToHome from "./BackToHome";
 import dayjs, { Dayjs } from "dayjs";
 import deleteActionPlan from "@/libs/camp/deleteActionPlan";
 
-export default function EditActionPland({
+export default function EditActionPlan({
   pees,
   petos,
   actionPlan,
@@ -143,7 +143,7 @@ export default function EditActionPland({
             name="Tel"
             id="Tel"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-            onChange={setTextToString(setAction,true)}
+            onChange={setTextToString(setAction, true)}
             value={action}
           />
         </div>
@@ -153,7 +153,7 @@ export default function EditActionPland({
             name="Email"
             id="Email"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-            onChange={setTextToString(setBody,true)}
+            onChange={setTextToString(setBody, true)}
             value={body}
           />
         </div>

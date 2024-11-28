@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useRef } from "react";
 import { useState } from "react";
 import { AllPlaceData, GetCoopData, InterPlace } from "../../interface";
 import { useSession } from "next-auth/react";
@@ -7,7 +7,14 @@ import { Checkbox, TextField } from "@mui/material";
 import updateBaan from "@/libs/admin/updateBaan";
 import BackToHome from "./BackToHome";
 import PlaceSelect from "./PlaceSelect";
-import { peeLookupNong, setBoolean, setTextToString } from "./setup";
+import {
+  downloadText,
+  peeLookupNong,
+  setBoolean,
+  setTextToString,
+} from "./setup";
+import { useDownloadExcel } from "react-export-table-to-excel";
+import FinishButton from "./FinishButton";
 export default function UpdateBaanClient({
   coopData,
   allPlaceData,
@@ -33,6 +40,11 @@ export default function UpdateBaanClient({
   if (!session) {
     return <BackToHome />;
   }
+  const ref = useRef(null);
+  const download = useDownloadExcel({
+    currentTableRef: ref.current,
+    filename: `รายชื่อ${coopData.camp.groupName}${coopData.baan.name}`,
+  });
   return (
     <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
       <div className="text-4xl font-medium">Update บ้าน </div>
@@ -53,7 +65,7 @@ export default function UpdateBaanClient({
             name="Tel"
             id="Tel"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-            onChange={setTextToString(setFullName,true)}
+            onChange={setTextToString(setFullName, true)}
             value={fullName}
           />
         </div>
@@ -145,13 +157,14 @@ export default function UpdateBaanClient({
           defaultChecked={nongSendMessage}
         />
       </div>
-      <table>
+      <table ref={ref}>
         <tr>
           <th>ชื่อเล่น</th>
           <th>ชื่อจริง</th>
           <th>นามสกุล</th>
           <th>บทบาท</th>
           <th>เน้นย้ำเรื่องอาหารอะไรบ้าง</th>
+          <th>มีโรคประจำตัวอะไรบ้าง</th>
           {highMode ? <th>ใส่แพมเพิสหรือไม่</th> : null}
         </tr>
         {peeLookupNong(
@@ -162,6 +175,7 @@ export default function UpdateBaanClient({
               <td>{health.user.lastname}</td>
               <td>พี่{coopData.camp.groupName}</td>
               <td>{health.heathIssue.extra}</td>
+              <td>{health.heathIssue.chronicDisease}</td>
               {highMode ? (
                 <td>{health.heathIssue.isWearing ? "ใส่" : "ไม่ใส่"}</td>
               ) : null}
@@ -174,6 +188,7 @@ export default function UpdateBaanClient({
               <td>{health.user.lastname}</td>
               <td>น้องค่าย</td>
               <td>{health.heathIssue.extra}</td>
+              <td>{health.heathIssue.chronicDisease}</td>
               {highMode ? (
                 <td>{health.heathIssue.isWearing ? "ใส่" : "ไม่ใส่"}</td>
               ) : null}
@@ -181,6 +196,7 @@ export default function UpdateBaanClient({
           ))
         )}
       </table>
+      <FinishButton text={downloadText} onClick={download.onDownload} />
     </div>
   );
 }

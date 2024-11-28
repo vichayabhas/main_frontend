@@ -7,21 +7,21 @@ import FinishButton from "./FinishButton";
 import { getValue } from "./setup";
 import React from "react";
 export default function NongSureClient({
-  campDetail,
+  camp,
   token,
   user,
 }: {
-  campDetail: InterCampFront;
+  camp: InterCampFront;
   token: string;
   user: InterUser;
 }) {
-  switch (campDetail.registerModel) {
+  switch (camp.registerModel) {
     case "noPaid": {
       return (
         <FinishButton
           text="ยืนยันที่จะเข้าค่าย"
           onClick={() => {
-            paid(campDetail._id, token);
+            paid(camp._id, token);
           }}
         />
       );
@@ -29,11 +29,11 @@ export default function NongSureClient({
     case "noInterview": {
       return (
         <div>
-          <Link href={getValue(campDetail.nongPassIds, user._id)}>Link</Link>
+          <Link href={getValue(camp.nongPassIds, user._id)}>Link</Link>
           <FinishButton
             text="ยืนยันที่จะเข้าค่าย+จ่ายตัง"
             onClick={() => {
-              paid(campDetail._id, token);
+              paid(camp._id, token);
             }}
           />
         </div>
@@ -42,11 +42,11 @@ export default function NongSureClient({
     case "all": {
       return (
         <div>
-          <Link href={getValue(campDetail.nongPassIds, user._id)}>Link</Link>
+          <Link href={getValue(camp.nongPassIds, user._id)}>Link</Link>
           <FinishButton
             text="ยืนยันที่จะเข้าค่าย+จ่ายตัง"
             onClick={() => {
-              paid(campDetail._id, token);
+              paid(camp._id, token);
             }}
           />
         </div>

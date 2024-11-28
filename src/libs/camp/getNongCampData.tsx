@@ -1,9 +1,12 @@
 import { getBackendUrl } from "@/components/setup";
-import { Id } from "../../../interface";
+import { GetNongData, Id } from "../../../interface";
 
-export default async function getMealsByUser(campId: Id, token: string) {
+export default async function getNongCampData(
+  campId: Id,
+  token: string
+): Promise<GetNongData> {
   const response = await fetch(
-    `${getBackendUrl()}/randomthing/getMealsByUser/params/${campId}`,
+    `${getBackendUrl()}/camp/getNongCampData/params/${campId}`,
     {
       cache: "no-store",
       headers: {

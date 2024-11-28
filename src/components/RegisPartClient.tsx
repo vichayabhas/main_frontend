@@ -12,9 +12,9 @@ import {
   ShowRegister,
   ShowRegisterNong,
 } from "../../interface";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Checkbox, TextField } from "@mui/material";
-import { setSwop, setTextToString } from "./setup";
+import { downloadText, setSwop, setTextToString } from "./setup";
 import SelectTemplate from "./SelectTemplate";
 import FinishButton from "./FinishButton";
 import admission from "@/libs/camp/admission";
@@ -25,6 +25,7 @@ import React from "react";
 import getCamp from "@/libs/camp/getCamp";
 import Waiting from "./Waiting";
 import StringToHtml from "./StringToHtml";
+import { useDownloadExcel } from "react-export-table-to-excel";
 
 export default function RegisterPartClient({
   regisBaans,
@@ -88,6 +89,36 @@ export default function RegisterPartClient({
       input.lastname.search(lastname) == 0
     );
   }
+  const pendingRef = useRef(null);
+  const interviewRef = useRef(null);
+  const passRef = useRef(null);
+  const paidRef = useRef(null);
+  const sureRef = useRef(null);
+  const peePassRef = useRef(null);
+  const pendingDownload = useDownloadExcel({
+    currentTableRef: pendingRef.current,
+    filename: "น้องที่สมัครเข้ามา",
+  });
+  const interviewDownload = useDownloadExcel({
+    currentTableRef: interviewRef.current,
+    filename: "น้องที่ผ่านสัมภาษณ์",
+  });
+  const passDownload = useDownloadExcel({
+    currentTableRef: passRef.current,
+    filename: "น้องที่ผ่านเข้าค่าย",
+  });
+  const paidDownload = useDownloadExcel({
+    currentTableRef: paidRef.current,
+    filename: "น้องที่จ่ายตังแล้ว",
+  });
+  const sureDownload = useDownloadExcel({
+    currentTableRef: sureRef.current,
+    filename: "น้องที่ยืนยันแล้ว",
+  });
+  const peePassDownload = useDownloadExcel({
+    currentTableRef: peePassRef.current,
+    filename: "พี่ที่สมัครเข้ามา",
+  });
   return (
     <div
       style={{
@@ -116,7 +147,7 @@ export default function RegisterPartClient({
               },
             },
           }}
-          onChange={setTextToString(setName,true)}
+          onChange={setTextToString(setName, true)}
           value={name}
         />
       </div>
@@ -142,7 +173,7 @@ export default function RegisterPartClient({
               },
             },
           }}
-          onChange={setTextToString(setLastname,true)}
+          onChange={setTextToString(setLastname, true)}
           value={lastname}
         />
       </div>
@@ -185,7 +216,10 @@ export default function RegisterPartClient({
           >
             น้องที่สมัครเข้ามา
           </div>
-          <table className="table-auto border border-x-black border-separate">
+          <table
+            ref={pendingRef}
+            className="table-auto border border-x-black border-separate"
+          >
             <th className=" border border-x-black">รหัส</th>
             <th className=" border border-x-black">ชือเล่น</th>
             <th className=" border border-x-black">ชื่อจริง</th>
@@ -216,6 +250,10 @@ export default function RegisterPartClient({
               </tr>
             ))}
           </table>
+          <FinishButton
+            text={downloadText}
+            onClick={pendingDownload.onDownload}
+          />
           {camp.registerModel === "all" ? (
             <>
               <div
@@ -263,7 +301,10 @@ export default function RegisterPartClient({
               >
                 ผ่านการสัมภาษณ์
               </div>
-              <table className="table-auto border border-x-black border-separate">
+              <table
+                ref={interviewRef}
+                className="table-auto border border-x-black border-separate"
+              >
                 <th className=" border border-x-black">รหัส</th>
                 <th className=" border border-x-black">ชือเล่น</th>
                 <th className=" border border-x-black">ชื่อจริง</th>
@@ -296,6 +337,10 @@ export default function RegisterPartClient({
                   </tr>
                 ))}
               </table>
+              <FinishButton
+                text={downloadText}
+                onClick={interviewDownload.onDownload}
+              />
               <div
                 style={{
                   backgroundColor: "#961A1D",
@@ -386,7 +431,10 @@ export default function RegisterPartClient({
               <>น้องที่ผ่านการคัดเลือก</>
             )}
           </div>
-          <table className="table-auto border border-x-black border-separate">
+          <table
+            ref={passRef}
+            className="table-auto border border-x-black border-separate"
+          >
             <th className=" border border-x-black">รหัส</th>
             <th className=" border border-x-black">ชือเล่น</th>
             <th className=" border border-x-black">ชื่อจริง</th>
@@ -413,6 +461,7 @@ export default function RegisterPartClient({
               </tr>
             ))}
           </table>
+          <FinishButton text={downloadText} onClick={passDownload.onDownload} />
           {camp.registerModel !== "noPaid" ? (
             <>
               <div
@@ -424,7 +473,10 @@ export default function RegisterPartClient({
               >
                 น้องที่จ่ายเงินแล้ว
               </div>
-              <table className="table-auto border border-x-black border-separate">
+              <table
+                ref={paidRef}
+                className="table-auto border border-x-black border-separate"
+              >
                 <th className=" border border-x-black">รหัส</th>
                 <th className=" border border-x-black">ชือเล่น</th>
                 <th className=" border border-x-black">ชื่อจริง</th>
@@ -457,6 +509,10 @@ export default function RegisterPartClient({
                   </tr>
                 ))}
               </table>
+              <FinishButton
+                text={downloadText}
+                onClick={paidDownload.onDownload}
+              />
               <div
                 style={{
                   backgroundColor: "#961A1D",
@@ -504,7 +560,10 @@ export default function RegisterPartClient({
           >
             น้องที่มั่นใจว่าเข้าค่ายแน่นอน
           </div>
-          <table className="table-auto border border-x-black border-separate">
+          <table
+            ref={sureRef}
+            className="table-auto border border-x-black border-separate"
+          >
             <th className=" border border-x-black">รหัส</th>
             <th className=" border border-x-black">ชือเล่น</th>
             <th className=" border border-x-black">ชื่อจริง</th>
@@ -535,6 +594,7 @@ export default function RegisterPartClient({
               </tr>
             ))}
           </table>
+          <FinishButton text={downloadText} onClick={sureDownload.onDownload} />
           <div
             style={{
               color: "#961A1D",
@@ -544,7 +604,10 @@ export default function RegisterPartClient({
           >
             พี่ที่สมัครเข้ามา
           </div>
-          <table className="table-auto border border-x-black border-separate">
+          <table
+            ref={peePassRef}
+            className="table-auto border border-x-black border-separate"
+          >
             <th className=" border border-x-black">รหัส</th>
             <th className=" border border-x-black">ชือเล่น</th>
             <th className=" border border-x-black">ชื่อจริง</th>
@@ -571,6 +634,10 @@ export default function RegisterPartClient({
               </tr>
             ))}
           </table>
+          <FinishButton
+            text={downloadText}
+            onClick={peePassDownload.onDownload}
+          />
         </>
       )}
       <SelectTemplate
@@ -597,161 +664,219 @@ export default function RegisterPartClient({
         }}
         buttonText={"จัดบ้าน"}
       />
-      {regisBaans.map((regisBaan) => (
-        <>
-          <div>
-            <div
-              style={{
-                color: "#961A1D",
-                fontWeight: "bold",
-                marginTop: "30px",
-              }}
-            >
-              รายชื่อน้องบ้าน{regisBaan.baan.fullName}
-            </div>
-            <table className="table-auto border border-x-black border-separate">
-              <tr>
-                <th className=" border border-x-black">ชือเล่น</th>
-                <th className=" border border-x-black">ชื่อจริง</th>
-                <th className=" border border-x-black">นามสกุล</th>
-                <th className=" border border-x-black">เพศ</th>
-                <th className=" border border-x-black">ค้างคืนหรือไม่</th>
-                <th className=" border border-x-black">id</th>
-                <th className=" border border-x-black">รหัสประจำตัวนิสิต</th>
-                <th className=" border border-x-black">เบอร์โทรศัพท์</th>
-                <th className=" border border-x-black">email</th>
-                <th className=" border border-x-black">มีกระติกน้ำหรือไม่</th>
-                <th className=" border border-x-black">ขนาดเสื้อ</th>
-                <th className=" border border-x-black">กรุปของนิสิต</th>
-                <th className=" border border-x-black">ปัญหาสุขภาพ</th>
-                <th className=" border border-x-black">select</th>
-              </tr>
-              {regisBaan.nongs.filter(filterUser).map((user: ShowMember, i) => (
-                <tr key={i}>
-                  <td className=" border border-x-black">{user.nickname}</td>
-                  <td className=" border border-x-black">{user.name}</td>
-                  <td className=" border border-x-black">{user.lastname}</td>
-                  <td className=" border border-x-black">{user.gender}</td>
-                  <td className=" border border-x-black">
-                    {user.sleep ? <>ค้างคืน</> : <>ไม่ค้างคืน</>}
-                  </td>
-                  <td
-                    className=" border border-x-black"
-                    onClick={() => {
-                      alert(user._id);
-                    }}
-                  >
-                    {user.id}
-                  </td>
-                  <td className=" border border-x-black">{user.studentId}</td>
-                  <td className=" border border-x-black">{user.tel}</td>
-                  <td className=" border border-x-black">{user.email}</td>
-                  <td className=" border border-x-black">
-                    {user.haveBottle.toString()}
-                  </td>
-                  <td className=" border border-x-black">{user.shirtSize}</td>
-                  <td className=" border border-x-black">{user.group}</td>
-                  {user.healthIssueId ? (
-                    <td
-                      className=" border border-x-black"
-                      onClick={() => {
-                        router.push(
-                          `/healthIssue/${user.healthIssueId?.toString()}`
-                        );
-                      }}
-                    >
-                      {user.healthIssueId.toString()}
-                    </td>
-                  ) : (
-                    <td className=" border border-x-black">-</td>
-                  )}
-                  <td>
-                    <Checkbox onChange={setSwop(user._id, setMembers)} />
-                  </td>
+      {regisBaans.map((regisBaan) => {
+        const nongRef = useRef(null);
+        const peeRef = useRef(null);
+        const nongDownload = useDownloadExcel({
+          currentTableRef: nongRef.current,
+          filename: `รายชื่อน้อง${camp.groupName}${regisBaan.baan.fullName}`,
+        });
+        const peeDownload = useDownloadExcel({
+          currentTableRef: peeRef.current,
+          filename: `รายชื่อพี่$${camp.groupName}${regisBaan.baan.fullName}`,
+        });
+        return (
+          <>
+            <div>
+              <div
+                style={{
+                  color: "#961A1D",
+                  fontWeight: "bold",
+                  marginTop: "30px",
+                }}
+              >
+                รายชื่อน้อง{camp.groupName}
+                {regisBaan.baan.fullName}
+              </div>
+              <table
+                ref={nongRef}
+                className="table-auto border border-x-black border-separate"
+              >
+                <tr>
+                  <th className=" border border-x-black">ชือเล่น</th>
+                  <th className=" border border-x-black">ชื่อจริง</th>
+                  <th className=" border border-x-black">นามสกุล</th>
+                  <th className=" border border-x-black">เพศ</th>
+                  <th className=" border border-x-black">ค้างคืนหรือไม่</th>
+                  <th className=" border border-x-black">id</th>
+                  <th className=" border border-x-black">รหัสประจำตัวนิสิต</th>
+                  <th className=" border border-x-black">เบอร์โทรศัพท์</th>
+                  <th className=" border border-x-black">email</th>
+                  <th className=" border border-x-black">มีกระติกน้ำหรือไม่</th>
+                  <th className=" border border-x-black">ขนาดเสื้อ</th>
+                  <th className=" border border-x-black">กรุปของนิสิต</th>
+                  <th className=" border border-x-black">ปัญหาสุขภาพ</th>
+                  <th className=" border border-x-black">select</th>
                 </tr>
-              ))}
-            </table>
-          </div>
-          <div>
-            <div
-              style={{
-                color: "#961A1D",
-                fontWeight: "bold",
-                marginTop: "30px",
-              }}
-            >
-              รายชื่อพี่บ้าน{regisBaan.baan.fullName}
+                {regisBaan.nongs
+                  .filter(filterUser)
+                  .map((user: ShowMember, i) => (
+                    <tr key={i}>
+                      <td className=" border border-x-black">
+                        {user.nickname}
+                      </td>
+                      <td className=" border border-x-black">{user.name}</td>
+                      <td className=" border border-x-black">
+                        {user.lastname}
+                      </td>
+                      <td className=" border border-x-black">{user.gender}</td>
+                      <td className=" border border-x-black">
+                        {user.sleep ? <>ค้างคืน</> : <>ไม่ค้างคืน</>}
+                      </td>
+                      <td
+                        className=" border border-x-black"
+                        onClick={() => {
+                          alert(user._id);
+                        }}
+                      >
+                        {user.id}
+                      </td>
+                      <td className=" border border-x-black">
+                        {user.studentId}
+                      </td>
+                      <td className=" border border-x-black">{user.tel}</td>
+                      <td className=" border border-x-black">{user.email}</td>
+                      <td className=" border border-x-black">
+                        {user.haveBottle.toString()}
+                      </td>
+                      <td className=" border border-x-black">
+                        {user.shirtSize}
+                      </td>
+                      <td className=" border border-x-black">{user.group}</td>
+                      {user.healthIssueId ? (
+                        <td
+                          className=" border border-x-black"
+                          onClick={() => {
+                            router.push(
+                              `/healthIssue/${user.healthIssueId?.toString()}`
+                            );
+                          }}
+                        >
+                          {user.healthIssueId.toString()}
+                        </td>
+                      ) : (
+                        <td className=" border border-x-black">-</td>
+                      )}
+                      <td>
+                        <Checkbox onChange={setSwop(user._id, setMembers)} />
+                      </td>
+                    </tr>
+                  ))}
+              </table>
+              <FinishButton
+                text={downloadText}
+                onClick={nongDownload.onDownload}
+              />
             </div>
-            <table className="table-auto border border-x-black border-separate">
-              <tr>
-                <th className=" border border-x-black">ชือเล่น</th>
-                <th className=" border border-x-black">ชื่อจริง</th>
-                <th className=" border border-x-black">นามสกุล</th>
-                <th className=" border border-x-black">เพศ</th>
-                <th className=" border border-x-black">ค้างคืนหรือไม่</th>
-                <th className=" border border-x-black">id</th>
-                <th className=" border border-x-black">รหัสประจำตัวนิสิต</th>
-                <th className=" border border-x-black">เบอร์โทรศัพท์</th>
-                <th className=" border border-x-black">email</th>
-                <th className=" border border-x-black">มีกระติกน้ำหรือไม่</th>
-                <th className=" border border-x-black">ขนาดเสื้อ</th>
-                <th className=" border border-x-black">กรุ๊ปของนิสิต</th>
-                <th className=" border border-x-black">ปัญหาสุขภาพ</th>
-                <th className=" border border-x-black">select</th>
-              </tr>
-              {regisBaan.pees.filter(filterUser).map((user: ShowMember, i) => (
-                <tr key={i}>
-                  <td className=" border border-x-black">{user.nickname}</td>
-                  <td className=" border border-x-black">{user.name}</td>
-                  <td className=" border border-x-black">{user.lastname}</td>
-                  <td className=" border border-x-black">{user.gender}</td>
-                  <td className=" border border-x-black">
-                    {user.sleep ? <>ค้างคืน</> : <>ไม่ค้างคืน</>}
-                  </td>
-                  <td
-                    className=" border border-x-black"
-                    onClick={() => {
-                      alert(user._id);
-                    }}
-                  >
-                    {user.id}
-                  </td>
-                  <td className=" border border-x-black">{user.studentId}</td>
-                  <td className=" border border-x-black">{user.tel}</td>
-                  <td className=" border border-x-black">{user.email}</td>
-                  <td className=" border border-x-black">
-                    {user.haveBottle.toString()}
-                  </td>
-                  <td className=" border border-x-black">{user.shirtSize}</td>
-                  <td className=" border border-x-black">{user.group}</td>
-                  {user.healthIssueId ? (
-                    <td
-                      className=" border border-x-black"
-                      onClick={() => {
-                        router.push(
-                          `/healthIssue/${user.healthIssueId?.toString()}`
-                        );
-                      }}
-                    >
-                      {user.healthIssueId.toString()}
-                    </td>
-                  ) : (
-                    <td className=" border border-x-black">-</td>
-                  )}
-                  <td className=" border border-x-black">
-                    <Checkbox onChange={setSwop(user._id, setMembers)} />
-                  </td>
+            <div>
+              <div
+                style={{
+                  color: "#961A1D",
+                  fontWeight: "bold",
+                  marginTop: "30px",
+                }}
+              >
+                รายชื่อพี่{camp.groupName}
+                {regisBaan.baan.fullName}
+              </div>
+              <table
+                ref={peeRef}
+                className="table-auto border border-x-black border-separate"
+              >
+                <tr>
+                  <th className=" border border-x-black">ชือเล่น</th>
+                  <th className=" border border-x-black">ชื่อจริง</th>
+                  <th className=" border border-x-black">นามสกุล</th>
+                  <th className=" border border-x-black">เพศ</th>
+                  <th className=" border border-x-black">ค้างคืนหรือไม่</th>
+                  <th className=" border border-x-black">id</th>
+                  <th className=" border border-x-black">รหัสประจำตัวนิสิต</th>
+                  <th className=" border border-x-black">เบอร์โทรศัพท์</th>
+                  <th className=" border border-x-black">email</th>
+                  <th className=" border border-x-black">มีกระติกน้ำหรือไม่</th>
+                  <th className=" border border-x-black">ขนาดเสื้อ</th>
+                  <th className=" border border-x-black">กรุ๊ปของนิสิต</th>
+                  <th className=" border border-x-black">ปัญหาสุขภาพ</th>
+                  <th className=" border border-x-black">select</th>
                 </tr>
-              ))}
-            </table>
-          </div>
-        </>
-      ))}
+                {regisBaan.pees
+                  .filter(filterUser)
+                  .map((user: ShowMember, i) => (
+                    <tr key={i}>
+                      <td className=" border border-x-black">
+                        {user.nickname}
+                      </td>
+                      <td className=" border border-x-black">{user.name}</td>
+                      <td className=" border border-x-black">
+                        {user.lastname}
+                      </td>
+                      <td className=" border border-x-black">{user.gender}</td>
+                      <td className=" border border-x-black">
+                        {user.sleep ? <>ค้างคืน</> : <>ไม่ค้างคืน</>}
+                      </td>
+                      <td
+                        className=" border border-x-black"
+                        onClick={() => {
+                          alert(user._id);
+                        }}
+                      >
+                        {user.id}
+                      </td>
+                      <td className=" border border-x-black">
+                        {user.studentId}
+                      </td>
+                      <td className=" border border-x-black">{user.tel}</td>
+                      <td className=" border border-x-black">{user.email}</td>
+                      <td className=" border border-x-black">
+                        {user.haveBottle.toString()}
+                      </td>
+                      <td className=" border border-x-black">
+                        {user.shirtSize}
+                      </td>
+                      <td className=" border border-x-black">{user.group}</td>
+                      {user.healthIssueId ? (
+                        <td
+                          className=" border border-x-black"
+                          onClick={() => {
+                            router.push(
+                              `/healthIssue/${user.healthIssueId?.toString()}`
+                            );
+                          }}
+                        >
+                          {user.healthIssueId.toString()}
+                        </td>
+                      ) : (
+                        <td className=" border border-x-black">-</td>
+                      )}
+                      <td className=" border border-x-black">
+                        <Checkbox onChange={setSwop(user._id, setMembers)} />
+                      </td>
+                    </tr>
+                  ))}
+              </table>
+              <FinishButton
+                text={downloadText}
+                onClick={peeDownload.onDownload}
+              />
+            </div>
+          </>
+        );
+      })}
       {regisParts.map((regisPart) => {
         const have =
           isBoard ||
           (regisPart.part._id.toString() !== camp.partBoardId.toString() &&
             regisPart.part._id.toString() != camp.partRegisterId.toString());
+        const peeRef = useRef(null);
+        const petoRef = useRef(null);
+        const peeDownload = useDownloadExcel({
+          currentTableRef: peeRef.current,
+          filename: `รายชื่อพี่${camp.groupName}${regisPart.part.partName}`,
+        });
+        const petoDownload = useDownloadExcel({
+          currentTableRef: petoRef.current,
+          filename: `รายชื่อปีโตฝ่าย${regisPart.part.partName}`,
+        });
         return (
           <>
             <div>
@@ -764,7 +889,10 @@ export default function RegisterPartClient({
               >
                 รายชื่อปีโตฝ่าย{regisPart.part.partName}
               </div>
-              <table className="table-auto border border-x-black border-separate">
+              <table
+                ref={petoRef}
+                className="table-auto border border-x-black border-separate"
+              >
                 <tr>
                   <th className=" border border-x-black">ชือเล่น</th>
                   <th className=" border border-x-black">ชื่อจริง</th>
@@ -836,6 +964,10 @@ export default function RegisterPartClient({
                     </tr>
                   ))}
               </table>
+              <FinishButton
+                text={downloadText}
+                onClick={petoDownload.onDownload}
+              />
             </div>
             <div>
               <div
@@ -845,9 +977,13 @@ export default function RegisterPartClient({
                   marginTop: "30px",
                 }}
               >
-                รายชื่อพี่บ้าน{regisPart.part.partName}
+                รายชื่อพี่{camp.groupName}
+                {regisPart.part.partName}
               </div>
-              <table className="table-auto border border-x-black border-separate">
+              <table
+                ref={peeRef}
+                className="table-auto border border-x-black border-separate"
+              >
                 <tr>
                   <th className=" border border-x-black">ชือเล่น</th>
                   <th className=" border border-x-black">ชื่อจริง</th>
@@ -919,6 +1055,10 @@ export default function RegisterPartClient({
                     </tr>
                   ))}
               </table>
+              <FinishButton
+                text={downloadText}
+                onClick={peeDownload.onDownload}
+              />
             </div>
           </>
         );

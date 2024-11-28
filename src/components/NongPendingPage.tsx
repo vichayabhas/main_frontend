@@ -184,7 +184,8 @@ export default function NongPendingPage({
               }}
               className="w-3/5 bg-white rounded-2xl shadow-inner"
               onChange={setTextToString(
-                setMap(setTextAnswers, modifyElementInUseStateArray(i)),true
+                setMap(setTextAnswers, modifyElementInUseStateArray(i)),
+                true
               )}
               value={textAnswers[i]}
             />
@@ -201,7 +202,7 @@ export default function NongPendingPage({
         <Link href={`${camp.registerSheetLink}${user._id}`}>ใบรับสมัคร</Link>
       ) : null}
       {camp.registerSheetLink ? (
-        <Link href={`${getValue(camp.nongPendingIds, user._id)}${user._id}`}>
+        <Link href={`${getValue(camp.nongPendingIds, user._id)}`}>
           ใบรับสมัคร
         </Link>
       ) : null}

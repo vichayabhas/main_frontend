@@ -1,8 +1,11 @@
 "use client";
-import React from "react";
-import Link from "next/link";
+import React, { useRef } from "react";
 import { InterWorkingItem } from "../../interface";
 import { useRouter } from "next/navigation";
+import { useDownloadExcel } from "react-export-table-to-excel";
+import FinishButton from "./FinishButton";
+import { downloadText } from "./setup";
+import StringToHtml from "./StringToHtml";
 
 export default function WorkingItemClient({
   workingItems,
@@ -12,9 +15,14 @@ export default function WorkingItemClient({
   baseUrl: string;
 }) {
   const router = useRouter();
+  const ref = useRef(null);
+  const download = useDownloadExcel({
+    currentTableRef: ref.current,
+    filename: "tracking sheet",
+  });
   return (
     <div>
-      <table>
+      <table ref={ref}>
         <tr>
           <th>id</th>
           <th>งาน</th>
@@ -33,7 +41,7 @@ export default function WorkingItemClient({
             <td>{workingItem.status}</td>
             <td>
               {workingItem.link ? (
-                <Link href={workingItem.link}>{workingItem.link}</Link>
+                <StringToHtml input={workingItem.link} />
               ) : null}
             </td>
             <td
@@ -50,6 +58,7 @@ export default function WorkingItemClient({
           </tr>
         ))}
       </table>
+      <FinishButton text={downloadText} onClick={download.onDownload} />
     </div>
   );
 }

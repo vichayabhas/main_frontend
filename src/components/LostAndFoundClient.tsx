@@ -1,30 +1,67 @@
 "use client";
 
-import { AllPlaceData, Id, MyMap } from "../../interface";
+import { AllPlaceData, Id, MyMap, ShowLostAndFound } from "../../interface";
 import { useRef, useState } from "react";
 import { MenuItem, Select, TextField } from "@mui/material";
 import PlaceSelect from "./PlaceSelect";
 import addLostAndFound from "@/libs/randomthing/addLostAndFound";
-import { getId, setTextToString } from "./setup";
+import { downloadText, getId, setTextToString } from "./setup";
 import React from "react";
+import { useDownloadExcel } from "react-export-table-to-excel";
+import FinishButton from "./FinishButton";
 export default function LostAndFoundClient({
   mapIn,
   token,
   allPlaceData,
+  lostAndFounds,
 }: {
   mapIn: MyMap[];
   token: string;
   allPlaceData: AllPlaceData;
+  lostAndFounds: ShowLostAndFound[];
 }) {
-  const userRef = useRef("");
+  const ref = useRef(null);
 
   const [chose, setChose] = useState<Id | null>(null);
   const [placeId, setPlaceId] = useState<Id | null>(null);
   const [detail, setDetail] = useState<string | null>(null);
   const [name, setName] = useState<string | null>(null);
   const [type, setType] = useState<"lost" | "found" | null>(null);
+  const download = useDownloadExcel({
+    currentTableRef: ref.current,
+    filename: "lost and found",
+  });
   return (
     <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
+      <table ref={ref}>
+        <tr>
+          <th>id</th>
+          <th>สิ่งของอะไร</th>
+          <th>รายละเอียด</th>
+          <th>ชื่อเล่นของคนพบหรือหา</th>
+          <th>เบอร์ติดต่อ</th>
+          <th>ประเภท</th>
+          <th>ตึก</th>
+          <th>ชั้น</th>
+          <th>ห้อง</th>
+          <th>ค่าย</th>
+        </tr>
+        {lostAndFounds.map((lostAndFound, i) => (
+          <tr key={i}>
+            <td>{lostAndFound._id.toString()}</td>
+            <td>{lostAndFound.name}</td>
+            <td>{lostAndFound.detail}</td>
+            <td>{lostAndFound.userNickname}</td>
+            <td>{lostAndFound.tel}</td>
+            <td>{lostAndFound.type}</td>
+            <td>{lostAndFound.buildingName.toString()}</td>
+            <td>{lostAndFound.floor.toString()}</td>
+            <td>{lostAndFound.room.toString()}</td>
+            <td>{lostAndFound.campName}</td>
+          </tr>
+        ))}
+      </table>
+      <FinishButton text={downloadText} onClick={download.onDownload} />
       <div
         className="text-4xl font-bold"
         style={{
@@ -156,8 +193,6 @@ export default function LostAndFoundClient({
               color: "#961A1D",
             }}
             onClick={async () => {
-              console.log(userRef);
-
               if (type && detail && name)
                 addLostAndFound(
                   {

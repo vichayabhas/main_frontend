@@ -1,17 +1,24 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   FoodLimit,
   GetFoodForUpdate,
   UpdateTimeOffsetRaw,
 } from "../../interface";
 import { Checkbox, TextField } from "@mui/material";
-import { peeLookupNong, setBoolean, setSwop, setTextToString } from "./setup";
+import {
+  downloadText,
+  peeLookupNong,
+  setBoolean,
+  setSwop,
+  setTextToString,
+} from "./setup";
 import GetTimeHtml from "./GetTimeHtml";
 import FinishButton from "./FinishButton";
 import updateFood from "@/libs/randomthing/updateFood";
 import AllInOneLock from "./AllInOneLock";
 import deleteFood from "@/libs/randomthing/deleteFood";
+import { useDownloadExcel } from "react-export-table-to-excel";
 export default function FoodClient({
   timeOffset,
   food,
@@ -39,6 +46,11 @@ export default function FoodClient({
   const [petoCampMemberCardIds, setPetoCampMemberCardIds] = useState(
     food.petoCampMemberCardIds
   );
+  const ref = useRef(null);
+  const download = useDownloadExcel({
+    currentTableRef: ref.current,
+    filename: `ข้อมูลแพ้อาหาร${food.camp.campName}`,
+  });
   return (
     <div>
       <div>
@@ -113,7 +125,6 @@ export default function FoodClient({
             checked={isWhiteList}
           />
         </div>
-
         <div className="flex flex-row items-center my-5">
           <label className="w-2/5 text-2xl text-white">
             อาหารนี้เฉพาะเจาะจงหรือไม่
@@ -135,7 +146,6 @@ export default function FoodClient({
             checked={listPriority}
           />
         </div>
-
         <div className="flex flex-row items-center my-5">
           <label className="w-2/5 text-2xl text-white">อิสลาม</label>
           <Checkbox
@@ -160,7 +170,6 @@ export default function FoodClient({
             checked={มังสวิรัติ}
           />
         </div>
-
         <div className="flex flex-row items-center my-5">
           <label className="w-2/5 text-2xl text-white">เจ</label>
           <Checkbox
@@ -174,12 +183,11 @@ export default function FoodClient({
           />
         </div>
       </form>
-      <table>
+      <table ref={ref}>
         <tr>
           <th>ชื่อเล่น</th>
           <th>ชื่อจริง</th>
           <th>นามสกุล</th>
-
           <th>บทบาท</th>
           <th>แพ้อาหารอะไรบ้าง</th>
           <th>เน้นย้ำเรื่องอาหารอะไรบ้าง</th>
@@ -260,8 +268,9 @@ export default function FoodClient({
           ))
         )}
       </table>
+      <FinishButton text={downloadText} onClick={download.onDownload} />
       <FinishButton
-        text="bypass"
+        text="update"
         onClick={() => {
           const lists: FoodLimit[] = [];
           if (อิสลาม) {

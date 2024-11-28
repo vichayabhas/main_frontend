@@ -1,15 +1,14 @@
 import { getBackendUrl } from "@/components/setup";
-import { Id, UpdateActionPlan } from "../../../interface";
+import { UpdateSongPage } from "../../../interface";
 
-export default async function updateActionPlan(
-  input: UpdateActionPlan,
-  id: Id,
+export default async function updateSongPage(
+  input: UpdateSongPage,
   token: string
 ) {
   const response = await fetch(
-    `${getBackendUrl()}/camp/updateActionPlan/params/${id}`,
+    `${getBackendUrl()}/randomthing/updateSongPage/`,
     {
-      method: "PUT",
+      method: "POST",
       cache: "no-store",
       headers: {
         "Content-Type": "application/json",

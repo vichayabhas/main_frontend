@@ -3,8 +3,10 @@
 import { useRouter } from "next/navigation";
 import { InterTimeOffset, showActionPlan } from "../../interface";
 import GetTimeHtml from "./GetTimeHtml";
-import { getDifferentMinute } from "./setup";
-import React from "react";
+import { downloadText, getDifferentMinute } from "./setup";
+import React, { useRef } from "react";
+import { useDownloadExcel } from "react-export-table-to-excel";
+import FinishButton from "./FinishButton";
 export default function ActionPlanClient({
   actionPlans,
   timeOffset,
@@ -15,6 +17,11 @@ export default function ActionPlanClient({
   baseUrl: string;
 }) {
   const router = useRouter();
+  const ref = useRef(null);
+  const download = useDownloadExcel({
+    currentTableRef: ref.current,
+    filename: "action plan",
+  });
   return (
     <div
       className="text-center p-5 text-white rounded-3xl"
@@ -29,6 +36,7 @@ export default function ActionPlanClient({
         style={{
           width: "100%",
         }}
+        ref={ref}
       >
         <tr style={{ border: "solid", borderColor: "white" }}>
           <th>id</th>
@@ -75,6 +83,7 @@ export default function ActionPlanClient({
           );
         })}
       </table>
+      <FinishButton text={downloadText} onClick={download.onDownload} />
     </div>
   );
 }

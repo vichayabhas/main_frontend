@@ -22,15 +22,15 @@ export default function PlaceClient({
   //alert (places.length)
   return (
     <>
-      {places.map((place,i) => (
-        <div key={i}
+      {places.map((place, i) => (
+        <div
+          key={i}
           className="flex flex-row h-auto"
           onClick={() => {
             router.push(`/place/${place.buildingId}/${place._id}`);
           }}
         >
           <div className="w-1/5 h-auto relative rounded-t-lg"></div>
-
           <div className="w-3/5 h-auto p-[10px]">
             <div className="text-left pl-5">
               <div className="text-3xl">
@@ -61,7 +61,7 @@ export default function PlaceClient({
           name="Name"
           id="Name"
           className="w-3/5 bg-slate-100 rounded-2xl shadow-inner"
-          onChange={setTextToString(setFloor,true)}
+          onChange={setTextToString(setFloor, true)}
         />
       </div>
       <div className="flex flex-row items-center">
@@ -70,7 +70,7 @@ export default function PlaceClient({
           name="Name"
           id="Name"
           className="w-3/5 bg-slate-100 rounded-2xl shadow-inner"
-          onChange={setTextToString(setRoom,true)}
+          onChange={setTextToString(setRoom, true)}
         />
       </div>
       <button
@@ -78,12 +78,7 @@ export default function PlaceClient({
         onClick={() => {
           if (floor && room) {
             try {
-              createPlace(
-                floor,
-                room,
-                stringToId(buildingId),
-                token
-              );
+              createPlace(floor, room, stringToId(buildingId), token);
             } catch (error) {
               console.log(error);
             }
