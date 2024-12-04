@@ -3,7 +3,7 @@ import { Id } from "../../../interface";
 
 export default async function updatePart(
   partId: Id,
-  placeId: Id,
+  placeId: Id|null,
   token: string
 ) {
   const response = await fetch(`${getBackendUrl()}/admin/updatePart`, {

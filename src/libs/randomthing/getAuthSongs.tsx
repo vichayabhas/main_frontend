@@ -1,12 +1,12 @@
 import { getBackendUrl } from "@/components/setup";
-import { Id, BasicPart } from "../../../interface";
+import { AuthSongsCamp, Id } from "../../../interface";
 
-export default async function getParts(
+export default async function getAuthSongs(
   campId: Id,
   token: string
-): Promise<BasicPart[]> {
+): Promise<AuthSongsCamp> {
   const response = await fetch(
-    `${getBackendUrl()}/camp/getParts/params/${campId}`,
+    `${getBackendUrl()}/randomthing/getAuthSongs/params/${campId}`,
     {
       cache: "no-store",
       headers: {

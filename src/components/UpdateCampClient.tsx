@@ -6,10 +6,10 @@ import {
   GetAllQuestion,
   Id,
   InterCampFront,
-  InterPartFront,
+  BasicPart,
   MyMap,
 } from "../../interface";
-import { InterBaanFront } from "../../interface";
+import { BasicBaan } from "../../interface";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { TextField, Checkbox, Select, MenuItem } from "@mui/material";
@@ -75,9 +75,9 @@ export default function UpdateCampClient({
   remainPartName,
   questions,
 }: {
-  baans: InterBaanFront[];
+  baans: BasicBaan[];
   camp: InterCampFront;
-  parts: InterPartFront[];
+  parts: BasicPart[];
   remainPartName: MyMap[];
   questions: GetAllQuestion;
 }) {

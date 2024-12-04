@@ -27,7 +27,7 @@ export default async function HospitalDetailPage({
     stringToId(params.wid),
     session.user.token
   );
-  const part = await getPart(workingItem.partId);
+  const part = await getPart(workingItem.partId,session.user.token);
   const parts=await getParts(part.campId,session.user.token)
   const auth = await bcrypt.compare(user.linkHash, workingItem.password);
   if (!(await bcrypt.compare(user.linkHash, workingItem.password))) {

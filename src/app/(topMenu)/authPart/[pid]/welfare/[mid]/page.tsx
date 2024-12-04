@@ -27,7 +27,7 @@ export default async function page({
   const foods = await getFoods(mealId);
   const meal = await getMeal(mealId);
   const partId = stringToId(params.pid);
-  const part = await getPart(partId);
+  const part = await getPart(partId, token);
   const camp = await getCamp(part.campId);
   return (
     <MealClient

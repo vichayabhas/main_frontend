@@ -7,7 +7,7 @@ import {
   GetTextQuestion,
   Id,
   InterTextQuestion,
-  InterUser,
+  BasicUser,
   UserAndAllQuestionPack,
 } from "../../interface";
 import AllAnswerAndQuestionPageBreakDown from "./AllAnswerAndQuestionPageBreakDown";
@@ -28,7 +28,7 @@ interface AnswerReady {
   id: Id;
 }
 interface UserAndAllQuestionReady {
-  user: InterUser;
+  user: BasicUser;
   answer: AnswerReady[];
 }
 interface DataReady {

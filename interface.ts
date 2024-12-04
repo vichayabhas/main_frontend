@@ -338,13 +338,13 @@ export interface InterUser {
   studentId: string;
   gender: "Male" | "Female";
   shirtSize: Size;
-  healthIssueId: Id;
+  healthIssueId: Id | null;
   haveBottle: boolean;
   mode: Mode;
   nongCampIds: Id[];
   peeCampIds: Id[];
   petoCampIds: Id[];
-  group: Group | "null";
+  group: Group | null;
   role: Role;
   filterIds: Id[];
   registerIds: Id[];
@@ -791,13 +791,13 @@ export interface ShowRegister {
 export interface RegisBaan {
   pees: ShowMember[];
   nongs: ShowMember[];
-  baan: InterBaanFront;
+  baan: BasicBaan;
   //public
 }
 export interface RegisPart {
   pees: ShowMember[];
   petos: ShowMember[];
-  part: InterPartFront;
+  part: BasicPart;
   //public
 }
 export interface InterTimeOffset {
@@ -861,7 +861,7 @@ export interface ShowNong {
 export interface ShowRegisterNong {
   link: string;
   localId: string;
-  user: InterUser;
+  user: BasicUser;
   //private
 }
 export interface AllNongRegister {
@@ -881,6 +881,7 @@ export interface InterChat {
   refId: Id; //'น้องคุยส่วนตัวกับพี่','คุยกันในบ้าน' baan,'คุยกันในฝ่าย' part,'พี่คุยกันในบ้าน' baan,'พี่บ้านคุยกัน' part
   campMemberCardIds: Id[];
   date: Date;
+  _id: Id;
   //public
 }
 export interface ShowChat extends InterChat {
@@ -965,6 +966,9 @@ export interface ChatReady {
   } | null;
   success: boolean;
   roomName: string;
+  userId: Id;
+  subscribe: string;
+  pusher: [string, { cluster: string }];
   //private
 }
 export const foodLimits = [
@@ -976,7 +980,7 @@ export const foodLimits = [
 export type FoodLimit = (typeof foodLimits)[number];
 export interface HeathIssuePack {
   heathIssue: HeathIssueBody;
-  user: InterUser;
+  user: BasicUser;
   campMemberCardId: Id;
   //private
 }
@@ -1027,7 +1031,7 @@ export interface GetBaansForPlan {
   _id: Id;
   //public
 }
-export interface GetPartsForPlan {
+export interface GetPartForPlan {
   name: string;
   place: InterPlace | null;
   _id: Id;
@@ -1036,7 +1040,7 @@ export interface GetPartsForPlan {
 export interface GetAllPlanData {
   name: string;
   baanDatas: GetBaansForPlan[];
-  partDatas: GetPartsForPlan[];
+  partDatas: GetPartForPlan[];
   _id: Id;
   groupName: string;
   isOverNightCamp: boolean;
@@ -1078,12 +1082,12 @@ export interface CampNumberData {
 }
 export interface CampSleepDataContainer {
   name: string;
-  nongBoys: InterUser[];
-  nongGirls: InterUser[];
-  peeBoys: InterUser[];
-  peeGirls: InterUser[];
-  petoBoys: InterUser[];
-  petoGirls: InterUser[];
+  nongBoys: BasicUser[];
+  nongGirls: BasicUser[];
+  peeBoys: BasicUser[];
+  peeGirls: BasicUser[];
+  petoBoys: BasicUser[];
+  petoGirls: BasicUser[];
   //public
 }
 export interface InterChoiceAnswer {
@@ -1221,10 +1225,11 @@ export interface GetAllQuestion {
   //private
 }
 export interface UserAndAllQuestionPack {
-  user: InterUser;
+  user: BasicUser;
   questions: GetAllQuestion;
   //private
 }
+
 export interface GetAllAnswerAndQuestion {
   nongsAnswers: UserAndAllQuestionPack[];
   peeAnswers: UserAndAllQuestionPack[];
@@ -1317,7 +1322,7 @@ export interface GetFoodForUpdate {
   lists: FoodLimit[];
   _id: Id;
   isSpicy: boolean;
-  camp: InterCampFront;
+  camp: BasicCamp;
   time: Date;
   listPriority: boolean;
   //public
@@ -1358,8 +1363,8 @@ export interface ShowHealthIssuePack {
   //public
 }
 export interface GetCoopData {
-  baan: InterBaanFront;
-  camp: InterCampFront;
+  baan: BasicBaan;
+  camp: BasicCamp;
   boy: InterPlace | null;
   girl: InterPlace | null;
   normal: InterPlace | null;
@@ -1388,10 +1393,10 @@ export interface UpdateActionPlan {
   //public
 }
 export interface GetNongData {
-  user: InterUser;
-  camp: InterCampFront;
+  user: BasicUser;
+  camp: BasicCamp;
   campMemberCard: InterCampMemberCard;
-  baan: InterBaanFront;
+  baan: BasicBaan;
   normal: ShowPlace | null;
   boy: ShowPlace | null;
   girl: ShowPlace | null;
@@ -1403,10 +1408,10 @@ export interface GetNongData {
   //private
 }
 export interface GetPeeData {
-  user: InterUser;
-  camp: InterCampFront;
+  user: BasicUser;
+  camp: BasicCamp;
   campMemberCard: InterCampMemberCard;
-  baan: InterBaanFront;
+  baan: BasicBaan;
   normal: ShowPlace | null;
   boy: ShowPlace | null;
   girl: ShowPlace | null;
@@ -1417,21 +1422,21 @@ export interface GetPeeData {
   displayOffset: UpdateTimeOffsetRaw;
   selectOffset: UpdateTimeOffsetRaw;
   partPlace: ShowPlace | null;
-  part: InterPartFront;
+  part: BasicPart;
   petoParts: ShowMember[];
   peeParts: ShowMember[];
   //private
 }
 export interface GetPetoData {
-  user: InterUser;
-  camp: InterCampFront;
+  user: BasicUser;
+  camp: BasicCamp;
   campMemberCard: InterCampMemberCard;
   meals: GetMeals[];
   healthIssue: HeathIssueBody;
   displayOffset: UpdateTimeOffsetRaw;
   selectOffset: UpdateTimeOffsetRaw;
   partPlace: ShowPlace | null;
-  part: InterPartFront;
+  part: BasicPart;
   petos: ShowMember[];
   pees: ShowMember[];
   //private
@@ -1440,10 +1445,10 @@ export interface GetMenuSongs {
   songs: ShowSong[];
   likeSongIds: Id[];
   authBaans: {
-    data: InterBaanFront;
+    data: BasicBaan;
     showName: string;
   }[];
-  authCamps: InterCampFront[];
+  authCamps: BasicCamp[];
   //private
 }
 export interface ShowSong {
@@ -1469,10 +1474,10 @@ export interface CreateSong {
 export interface ShowSongPage {
   song: ShowSong;
   authBaans: {
-    data: InterBaanFront;
+    data: BasicBaan;
     showName: string;
   }[];
-  authCamps: InterCampFront[];
+  authCamps: BasicCamp[];
   likeSongIds: Id[];
   //private
 }
@@ -1486,4 +1491,121 @@ export interface UpdateSongPage {
   baans: UpdateSongs[];
   camps: UpdateSongs[];
   //private
+}
+export interface SongCount {
+  song: InterSong;
+  count: number;
+}
+export interface ShowCampSong {
+  nongLike: number;
+  peeLike: number;
+  petoLike: number;
+  name: string;
+  campNames: string[];
+  baanNames: string[];
+  author: string;
+  time: number;
+  link: string;
+  like: number;
+  _id: Id;
+  //public
+}
+export interface AuthSongsCamp {
+  camp: BasicCamp;
+  baans: BasicBaan[];
+  authCamp: boolean;
+  songs: ShowCampSong[];
+  userLikeSongIds: Id[];
+}
+export interface ShowCampSongReady {
+  _id: Id;
+  baanName: string;
+  songIds: Id[];
+  groupName: string;
+  userLikeSongIds: Id[];
+  showCampSongs: ShowCampSong[];
+  //private
+}
+export interface BasicUser {
+  _id: Id;
+  name: string;
+  lastname: string;
+  nickname: string;
+  gender: "Male" | "Female";
+  shirtSize: Size;
+  haveBottle: boolean;
+  mode: Mode;
+  group: Group | null;
+  role: Role;
+  fridayActEn: boolean;
+  fridayAuth: boolean;
+  likeToSleepAtCamp: boolean;
+  //private
+}
+export interface BasicBaan {
+  name: string;
+  fullName: string | null;
+  campId: Id;
+  link: string | null;
+  _id: Id;
+  mdTime: Date;
+  nongSendMessage: boolean;
+  songIds: Id[];
+  //public
+}
+export interface BasicCamp {
+  nameId: Id;
+  round: number;
+  dateStart: Date;
+  dateEnd: Date;
+  nongDataLock: boolean;
+  open: boolean;
+  songIds: Id[];
+  link: string | null;
+  allDone: boolean;
+  lockChangePickup: boolean;
+  pictureUrls: string[];
+  registerModel: "noPaid" | "noInterview" | "all";
+  memberStructure:
+    | "nong->highSchool,pee->1year,peto->2upYear"
+    | "nong->highSchool,pee->2upYear"
+    | "nong->1year,pee->2upYear"
+    | "nong->highSchool,pee->allYear"
+    | "allYearMix";
+  logoUrl: string | null;
+  registerSheetLink: string | null;
+  peeLock: boolean;
+  _id: Id;
+  campName: string;
+  nongSleepModel:
+    | "นอนทุกคน"
+    | "เลือกได้ว่าจะค้างคืนหรือไม่"
+    | "ไม่มีการค้างคืน";
+  peeSleepModel: "นอนทุกคน" | "เลือกได้ว่าจะค้างคืนหรือไม่" | "ไม่มีการค้างคืน";
+  groupName: string;
+  peeDataLock: boolean;
+  petoDataLock: boolean;
+  haveCloth: boolean;
+  actionPlanOffset: number;
+  mdTime: Date;
+  showCorrectAnswerAndScore: boolean;
+  canAnswerTheQuestion: boolean;
+  mealIds: Id[];
+  foodIds: Id[];
+  canNongSeeAllAnswer: boolean;
+  canNongSeeAllActionPlan: boolean;
+  canNongSeeAllTrackingSheet: boolean;
+  canNongAccessDataWithRoleNong: boolean;
+  //public
+}
+export interface BasicPart {
+  nameId: Id;
+  campId: Id;
+  peeIds: Id[];
+  petoIds: Id[];
+  _id: Id;
+  partName: string;
+  peeSleepIds: Id[];
+  isAuth: boolean;
+  //public
 }

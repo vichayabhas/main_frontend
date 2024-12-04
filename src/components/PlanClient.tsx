@@ -3,9 +3,9 @@
 import { useRef, useState } from "react";
 import {
   AllPlaceData,
+  BasicUser,
   GetAllPlanData,
   InterPlace,
-  InterUser,
 } from "../../interface";
 import AllInOneLock from "./AllInOneLock";
 import PlaceSelect from "./PlaceSelect";
@@ -26,7 +26,7 @@ import getAllPlanData from "@/libs/camp/getAllPlanData";
 import { useDownloadExcel } from "react-export-table-to-excel";
 interface BundleRoleAndUser {
   role: "พี่" | "น้อง" | "ปีโต";
-  user: InterUser;
+  user: BasicUser;
 }
 export default function PlanClient({
   data,
@@ -49,13 +49,13 @@ export default function PlanClient({
   const [partPlaces, setPartPlaces] = useState<(InterPlace | null)[]>(
     data.partDatas.map((part) => part.place)
   );
-  function peeToBundle(user: InterUser): BundleRoleAndUser {
+  function peeToBundle(user: BasicUser): BundleRoleAndUser {
     return { user, role: "พี่" };
   }
-  function nongToBundle(user: InterUser): BundleRoleAndUser {
+  function nongToBundle(user: BasicUser): BundleRoleAndUser {
     return { user, role: "น้อง" };
   }
-  function petoToBundle(user: InterUser): BundleRoleAndUser {
+  function petoToBundle(user: BasicUser): BundleRoleAndUser {
     return { user, role: "ปีโต" };
   }
   const [timeOut, setTimeOut] = useState<boolean>(false);

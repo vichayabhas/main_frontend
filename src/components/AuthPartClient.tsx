@@ -1,9 +1,9 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { InterPartFront } from "../../interface";
+import { BasicPart } from "../../interface";
 import FinishButton from "./FinishButton";
 import React from "react";
-export default function AuthPartClient({ parts }: { parts: InterPartFront[] }) {
+export default function AuthPartClient({ parts }: { parts: BasicPart[] }) {
   const router = useRouter();
   return (
     <div

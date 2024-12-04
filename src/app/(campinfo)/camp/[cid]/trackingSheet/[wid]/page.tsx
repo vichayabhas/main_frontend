@@ -29,7 +29,7 @@ export default async function HospitalDetailPage({
   if (camp.nongIds.includes(user._id)) {
     return <BackToHome />;
   }
-  const part = await getPart(workingItem.partId);
+  const part = await getPart(workingItem.partId,session.user.token);
   const parts = await getParts(part.campId, session.user.token);
   const auth = await bcrypt.compare(user.linkHash, workingItem.password);
   if (!(await bcrypt.compare(user.linkHash, workingItem.password))) {

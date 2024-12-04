@@ -2,7 +2,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import BackToHome from "@/components/BackToHome";
 import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";
-import { InterPartFront } from "../../../../interface";
+import { BasicPart } from "../../../../interface";
 import getPart from "@/libs/camp/getPart";
 import AuthPartClient from "@/components/AuthPartClient";
 import PasswordLock from "@/components/PasswordLock";
@@ -16,10 +16,10 @@ export default async function page() {
   if (user.role === "nong" || !user.authPartIds.length) {
     return <BackToHome />;
   }
-  const parts: InterPartFront[] = [];
+  const parts: BasicPart[] = [];
   let i = 0;
   while (i < user.authPartIds.length) {
-    const part = await getPart(user.authPartIds[i++]);
+    const part = await getPart(user.authPartIds[i++],session.user.token);
     parts.push(part);
   }
   return (

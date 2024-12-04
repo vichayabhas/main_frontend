@@ -3,7 +3,7 @@ import {
   GetMeals,
   HeathIssueBody,
   InterCampMemberCard,
-  InterUser,
+  BasicUser,
   UpdateTimeOffsetRaw,
 } from "../../interface";
 import AllInOneLock from "./AllInOneLock";
@@ -25,7 +25,7 @@ export default function ShowOwnCampData({
   token: string;
   healthIssue: HeathIssueBody;
   campMemberCard: InterCampMemberCard;
-  user: InterUser;
+  user: BasicUser;
   meals: GetMeals[];
   displayOffset: UpdateTimeOffsetRaw;
 }) {

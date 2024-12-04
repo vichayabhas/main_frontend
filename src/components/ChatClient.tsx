@@ -1,6 +1,5 @@
 "use client";
-import { ChatReady } from "../../interface";
-import { useState } from "react";
+import { ChatReady, ShowChat } from "../../interface";
 import GetTimeHtml from "./GetTimeHtml";
 import { TextField } from "@mui/material";
 import createNongBaanChat from "@/libs/randomthing/createNongBaanChat";
@@ -8,8 +7,9 @@ import createPartChat from "@/libs/randomthing/createPartChat";
 import createNongChat from "@/libs/randomthing/createNongChat";
 import createPeeBaanChat from "@/libs/randomthing/createPeeBaanChat";
 import StringToHtml from "./StringToHtml";
-import React from "react";
-import { setTextToString } from "./setup";
+import { newChatText, setTextToString, updateChatText } from "./setup";
+import React, { useEffect, useState } from "react";
+import Pusher from "pusher-js";
 export default function ChatClient({
   data,
   token,
@@ -17,8 +17,33 @@ export default function ChatClient({
   data: ChatReady;
   token: string;
 }) {
+  const pusherClient = new Pusher(data.pusher[0], data.pusher[1]);
   const [message, setMessage] = useState<string | null>(null);
+  const [messages, setMessages] = useState(data.chats);
   const sendType = data.sendType;
+  useEffect(() => {
+    const channel = pusherClient.subscribe(data.subscribe);
+    const handleChatUpdate = (updatedChat: ShowChat) => {
+      setMessages((allChats) =>
+        allChats.map((chat) => {
+          if (chat._id.toString() === updatedChat._id.toString()) {
+            return updatedChat;
+          } else {
+            return chat;
+          }
+        })
+      );
+    };
+    const handleNewChat = (newChat: ShowChat) => {
+      setMessages((allChats) => [...allChats, newChat]);
+    };
+    channel.bind(updateChatText, handleChatUpdate);
+    channel.bind(newChatText, handleNewChat);
+    return () => {
+      pusherClient.unsubscribe(data.subscribe);
+      channel.unbind_all();
+    };
+  });
   return (
     <div>
       <div
@@ -51,7 +76,7 @@ export default function ChatClient({
             marginLeft: "-35%",
           }}
         >
-          {data.chats.map((chat,i) => (
+          {messages.map((chat, i) => (
             <tr key={i}>
               <tr>
                 <StringToHtml input={chat.message} />
@@ -128,7 +153,7 @@ export default function ChatClient({
         </table>
       </div>
       {sendType ? (
-        <form
+        <div
           style={{
             backgroundColor: "#961A1D",
             left: "20%",
@@ -166,7 +191,7 @@ export default function ChatClient({
                   },
                 },
               }}
-              onChange={setTextToString(setMessage,true)}
+              onChange={setTextToString(setMessage, true)}
               value={message}
             />
           </div>
@@ -227,7 +252,7 @@ export default function ChatClient({
               send message
             </button>
           </div>
-        </form>
+        </div>
       ) : null}
     </div>
   );

@@ -1,9 +1,9 @@
 import { getBackendUrl } from "@/components/setup";
-import { Id, InterBaanFront } from "../../../interface";
+import { Id, BasicBaan } from "../../../interface";
 
 export default async function getBaan(
   id: Id
-): Promise<InterBaanFront> {
+): Promise<BasicBaan> {
   const response = await fetch(`${getBackendUrl()}/camp/Baan/params/${id}`, {
     cache: "no-store",
   });

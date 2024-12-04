@@ -1,6 +1,6 @@
 "use client";
 
-import { InterPartFront, InterWorkingItem, MyMap } from "../../interface";
+import { BasicPart, InterWorkingItem, MyMap } from "../../interface";
 import { MenuItem, Select, TextField } from "@mui/material";
 import { useState } from "react";
 import FinishButton from "./FinishButton";
@@ -19,7 +19,7 @@ export default function EditWorkingItem({
 }: {
   token: string;
   workingItem: InterWorkingItem;
-  parts: InterPartFront[];
+  parts: BasicPart[];
   auth: boolean;
 }) {
   const partMap: MyMap[] = [];

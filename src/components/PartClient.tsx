@@ -3,10 +3,10 @@
 import { useRouter } from "next/navigation";
 import {
   AllPlaceData,
-  InterCampFront,
-  InterPartFront,
+  BasicCamp,
+  BasicPart,
   InterPlace,
-  InterUser,
+  BasicUser,
   MyMap,
   ShowMember,
   UpdateTimeOffsetRaw,
@@ -43,12 +43,12 @@ export default function PartClient({
   camp,
   allPlaceData,
 }: {
-  part: InterPartFront;
-  user: InterUser;
+  part: BasicPart;
+  user: BasicUser;
   pees: ShowMember[];
   petos: ShowMember[];
   selectOffset: UpdateTimeOffsetRaw;
-  camp: InterCampFront;
+  camp: BasicCamp;
   allPlaceData: AllPlaceData;
 }) {
   const { data: session } = useSession();

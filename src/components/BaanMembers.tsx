@@ -1,7 +1,7 @@
 "use client";
 import {
-  InterBaanFront,
-  InterCampFront,
+  BasicBaan,
+  BasicCamp,
   Mode,
   ShowMember,
 } from "../../interface";
@@ -18,8 +18,8 @@ export default function BaanMembers({
   nongs,
   camp,
 }: {
-  camp: InterCampFront;
-  baan: InterBaanFront;
+  camp: BasicCamp;
+  baan: BasicBaan;
   campRole: Mode;
   nongs: ShowMember[];
   pees: ShowMember[];

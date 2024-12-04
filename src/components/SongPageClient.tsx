@@ -2,7 +2,10 @@
 
 import { Id, ShowSongPage } from "../../interface";
 import React, { useState } from "react";
-import { modifyElementInUseStateArray, setSwop } from "./setup";
+import {
+  setSwop,
+  setSwop2DimensionArray,
+} from "./setup";
 import StringToHtml from "./StringToHtml";
 import { Checkbox } from "@mui/material";
 import FinishButton from "./FinishButton";
@@ -62,13 +65,12 @@ export default function SongPageClient({ show }: { show: ShowSongPage }) {
               <td>{baan.showName}</td>
               <td>
                 <Checkbox
-                  onChange={setSwop(show.song._id, (c) => {
-                    setArrayOfBaanSongLists((input) =>
-                      modifyElementInUseStateArray<Id[]>(i)(c(input[i]), input)
-                    );
-                  })}
+                  onChange={setSwop2DimensionArray(
+                    show.song._id,
+                    i,
+                    setArrayOfBaanSongLists
+                  )}
                   checked={arrayOfBaanSongLists[i].includes(show.song._id)}
-                  //   onClick={()=>alert('gggg')}
                 />
               </td>
             </tr>
@@ -80,11 +82,11 @@ export default function SongPageClient({ show }: { show: ShowSongPage }) {
               <td>{camp.campName}</td>
               <td>
                 <Checkbox
-                  onChange={setSwop(show.song._id, (c) => {
-                    setArrayOfCampSongLists((input) =>
-                      modifyElementInUseStateArray<Id[]>(i)(c(input[i]), input)
-                    );
-                  })}
+                  onChange={setSwop2DimensionArray(
+                    show.song._id,
+                    i,
+                    setArrayOfCampSongLists
+                  )}
                   checked={arrayOfCampSongLists[i].includes(show.song._id)}
                 />
               </td>

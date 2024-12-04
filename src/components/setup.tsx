@@ -182,18 +182,18 @@ export function notEmpty<TValue>(
   if (value === null || value === undefined) return false;
   return true;
 }
-export const sendNotification = () => {
+export function sendNotification(body: string) {
   if (!("Notification" in window)) {
     throw new Error("Your browser does not support push notification");
   }
   Notification.requestPermission().then(() => {
     const notificationOptions = {
-      body: "Welcome to Javascript Push Notification",
+      body,
       //icon:"./image.png"
     };
     new Notification("Push Notification", notificationOptions);
   });
-};
+}
 export function addTime(
   input: dayjs.ConfigType,
   add: UpdateTimeOffsetRaw
@@ -457,3 +457,16 @@ export function cleanString(input: string) {
   return input.replace(/\s/g, "");
 }
 export const downloadText = "download";
+export function setSwop2DimensionArray(
+  id: Id,
+  index: number,
+  set: (setter: (input: Id[][]) => Id[][]) => void
+): (event: React.ChangeEvent<HTMLInputElement>) => void {
+  return setSwop(id, (c) => {
+    set((previous) =>
+      modifyElementInUseStateArray<Id[]>(index)(c(previous[index]), previous)
+    );
+  });
+}
+export const updateChatText = "update-chat";
+export const newChatText = "new-chat";

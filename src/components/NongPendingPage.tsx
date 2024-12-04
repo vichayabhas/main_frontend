@@ -6,7 +6,7 @@ import {
   Choice,
   GetAllQuestion,
   InterCampFront,
-  InterUser,
+  BasicUser,
 } from "../../interface";
 import {
   getValue,
@@ -29,7 +29,7 @@ export default function NongPendingPage({
 }: {
   camp: InterCampFront;
   token: string;
-  user: InterUser;
+  user: BasicUser;
   questions: GetAllQuestion;
 }) {
   const userRef = useRef("");

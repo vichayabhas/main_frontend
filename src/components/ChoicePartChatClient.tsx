@@ -1,13 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { InterPartFront } from "../../interface";
+import { BasicPart } from "../../interface";
 import FinishButton from "./FinishButton";
 import React from "react";
 export default function ChoicePartChatClient({
   parts,
 }: {
-  parts: InterPartFront[];
+  parts: BasicPart[];
 }) {
   const router = useRouter();
   return parts.map((part,i) => (

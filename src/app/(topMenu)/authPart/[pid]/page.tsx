@@ -3,6 +3,7 @@ import AllAnswerAndQuestionPage from "@/components/AllAnswerAndQuestionPage";
 import AllInOneLock from "@/components/AllInOneLock";
 import BackToHome from "@/components/BackToHome";
 import PlanServer from "@/components/PlanServer";
+import PrStudioServer from "@/components/PrStudioServer";
 import RegisterPartServer from "@/components/RegisterPartServer";
 import { stringToId } from "@/components/setup";
 import UpdateBaanServer from "@/components/UpdateBaanServer";
@@ -25,7 +26,7 @@ export default async function Baan({ params }: { params: { pid: string } }) {
   const token = session.user.token;
   const partId = stringToId(params.pid);
   const user = await getUserProfile(session.user.token);
-  const part = await getPart(partId);
+  const part = await getPart(partId, token);
   const camp = await getCamp(part.campId);
   const selectOffset = await getTimeOffset(user.selectOffsetId);
   const campMemberCard = await getCampMemberCardByCampId(part.campId, token);
@@ -55,6 +56,11 @@ export default async function Baan({ params }: { params: { pid: string } }) {
                 dataInput={dataInput}
                 campIdInput={camp._id.toString()}
               />
+              <PrStudioServer
+                campId={camp._id}
+                token={token}
+                partIdString={params.pid}
+              />
             </AllInOneLock>
           );
         }
@@ -69,6 +75,11 @@ export default async function Baan({ params }: { params: { pid: string } }) {
                 dataInput={dataInput}
                 campIdInput={camp._id.toString()}
               />
+              <PrStudioServer
+                campId={camp._id}
+                token={token}
+                partIdString={params.pid}
+              />
             </AllInOneLock>
           );
         }
@@ -81,7 +92,6 @@ export default async function Baan({ params }: { params: { pid: string } }) {
           token={token}
           lock={user.mode == "nong"}
           pushToHome
-          bypass
         >
           <UpdateCampServer campId={camp._id} token={token} />
           <RegisterPartServer campId={camp._id} token={token} isBoard={true} />
@@ -96,6 +106,11 @@ export default async function Baan({ params }: { params: { pid: string } }) {
             token={token}
             dataInput={dataInput}
             campIdInput={camp._id.toString()}
+          />
+          <PrStudioServer
+            campId={camp._id}
+            token={token}
+            partIdString={params.pid}
           />
         </AllInOneLock>
       );
@@ -128,6 +143,17 @@ export default async function Baan({ params }: { params: { pid: string } }) {
       return (
         <AllInOneLock token={token} lock={user.mode == "nong"} pushToHome>
           <PlanServer campId={camp._id} token={token} />
+        </AllInOneLock>
+      );
+    }
+    case camp.partPrStudioId.toString(): {
+      return (
+        <AllInOneLock token={token} lock={user.mode == "nong"} pushToHome>
+          <PrStudioServer
+            campId={camp._id}
+            token={token}
+            partIdString={params.pid}
+          />
         </AllInOneLock>
       );
     }

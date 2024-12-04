@@ -2,7 +2,7 @@
 
 import paid from "@/libs/camp/paid";
 import Link from "next/link";
-import { InterCampFront, InterUser } from "../../interface";
+import { InterCampFront, BasicUser } from "../../interface";
 import FinishButton from "./FinishButton";
 import { getValue } from "./setup";
 import React from "react";
@@ -13,7 +13,7 @@ export default function NongSureClient({
 }: {
   camp: InterCampFront;
   token: string;
-  user: InterUser;
+  user: BasicUser;
 }) {
   switch (camp.registerModel) {
     case "noPaid": {

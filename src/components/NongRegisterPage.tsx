@@ -6,7 +6,7 @@ import {
   Choice,
   GetAllQuestion,
   InterCampFront,
-  InterUser,
+  BasicUser,
 } from "../../interface";
 import { modifyElementInUseStateArray, setMap, setTextToString } from "./setup";
 import Link from "next/link";
@@ -24,7 +24,7 @@ export default function NongRegisterPage({
 }: {
   camp: InterCampFront;
   token: string;
-  user: InterUser;
+  user: BasicUser;
   questions: GetAllQuestion;
 }) {
   const userRef = useRef("");

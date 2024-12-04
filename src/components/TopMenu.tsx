@@ -55,7 +55,9 @@ export default async function TopMenu() {
             />
             <div>{systemMode}</div>
             <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
-              <TopMenuItem title="Lost & Found" pageRef="lostAndFound" />
+              <TopMenuItem title="ปรับตั้งเวลา" pageRef="/testTime" />
+              <TopMenuItem title="เพลง" pageRef="/song" />
+              <TopMenuItem title="Lost & Found" pageRef="/lostAndFound" />
               {!endEmail.split(",").includes(user.email.split("@")[1]) ||
               user.fridayActEn ? null : (
                 <TopMenuItem title="verify" pageRef="/verify" />
@@ -82,6 +84,8 @@ export default async function TopMenu() {
             />
             <div>{systemMode}</div>
             <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
+              <TopMenuItem title="ปรับตั้งเวลา" pageRef="/testTime" />
+              <TopMenuItem title="เพลง" pageRef="/song" />
               <TopMenuItem title="Lost & Found" pageRef="/lostAndFound" />
               <TopMenuItem title="ปัญหาสุขภาพ" pageRef="/healthIssue" />
               <TopMenuItem title="checkTel" pageRef="/tel" />
@@ -108,6 +112,9 @@ export default async function TopMenu() {
             />
             <div>{systemMode}</div>
             <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
+              <TopMenuItem title="weather" pageRef="/weather"/>
+              <TopMenuItem title="ปรับตั้งเวลา" pageRef="/testTime" />
+              <TopMenuItem title="เพลง" pageRef="/song" />
               <TopMenuItem title="Lost & Found" pageRef="/lostAndFound" />
               <TopMenuItem title="เมนูพี่" pageRef="/menuPee" />
               <TopMenuItem title="ปัญหาสุขภาพ" pageRef="/healthIssue" />
@@ -133,6 +140,8 @@ export default async function TopMenu() {
             />
             <div>{systemMode}</div>
             <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
+              <TopMenuItem title="ปรับตั้งเวลา" pageRef="/testTime" />
+              <TopMenuItem title="เพลง" pageRef="/song" />
               <TopMenuItem title="Lost & Found" pageRef="/lostAndFound" />
               <TopMenuItem title="เมนูพี่" pageRef="/menuPee" />
               <TopMenuItem title="ปัญหาสุขภาพ" pageRef="/healthIssue" />
@@ -165,6 +174,7 @@ export default async function TopMenu() {
         />
         <div>{systemMode}</div>
         <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
+          <TopMenuItem title="เพลง" pageRef="/song" />
           <TopMenuItem title="Sign In" pageRef="/api/auth/signin" />
           <TopMenuItem title="Register" pageRef="/signup" />
           <TopMenuItem title="Home" pageRef="/" />

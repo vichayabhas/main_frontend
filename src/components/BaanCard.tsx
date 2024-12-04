@@ -1,9 +1,9 @@
 "use client";
 
-import { InterBaanFront } from "../../interface";
+import { BasicBaan } from "../../interface";
 import { useRouter } from "next/navigation";
 import React from "react";
-export default function BaanCard(baan: InterBaanFront) {
+export default function BaanCard(baan: BasicBaan) {
   const router = useRouter();
   return (
     <div
