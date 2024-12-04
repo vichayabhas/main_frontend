@@ -1,6 +1,5 @@
 import React from "react";
 import TMDClient from "./TMDClient";
-import PusherClient from "pusher-js";
 interface Choice {
   display: string;
   select: string;
@@ -13,7 +12,6 @@ export default async function TMD({
   path: string;
   params: { select: string };
 }) {
-  const pusher = new PusherClient("a1e9e5afda34e932e6d8", { cluster: "ap1" });
   const res = await fetch(
     `https://www.tmd.go.th/forecast/daily/${params.select}`,
     {
@@ -39,9 +37,6 @@ export default async function TMD({
       select: input.split(`<option value='/forecast/daily/`)[1].split(`'`)[0],
     };
   }
-
-  pusher.connect();
-  pusher.subscribe("my-channel");
   return (
     <div>
       <TMDClient choices={op.map(getChoice)} path={path} />

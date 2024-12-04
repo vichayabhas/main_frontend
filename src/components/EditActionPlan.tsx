@@ -120,9 +120,7 @@ export default function EditActionPlan({
         <FinishButton
           text={"remove"}
           onClick={() =>
-            setPlaces((previous) =>
-              previous.filter(removeElementInUseStateArray)
-            )
+            setPlaces(removeElementInUseStateArray)
           }
         />
         {places.map((v, i) => (

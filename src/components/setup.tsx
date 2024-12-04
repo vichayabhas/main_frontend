@@ -320,12 +320,8 @@ export function getDifferentMinute(start: Date, end: Date) {
 export function stringToId(input: string) {
   return new mongoose.Types.ObjectId(input);
 }
-export function removeElementInUseStateArray(
-  e: unknown,
-  i: number,
-  a: unknown[]
-) {
-  return i < a.length - 1;
+export function removeElementInUseStateArray<T>(input: T[]) {
+  return input.filter((e, i, a) => i < a.length - 1);
 }
 export function modifyElementInUseStateArray<T>(
   i: number

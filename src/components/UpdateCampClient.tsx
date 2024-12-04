@@ -278,33 +278,29 @@ export default function UpdateCampClient({
     if (textIds[0][textIds[0].length - 1]) {
       return;
     }
-    textQuestions[1]((previous) =>
-      previous.filter(removeElementInUseStateArray)
-    );
-    textIds[1]((previous) => previous.filter(removeElementInUseStateArray));
-    scores[1]((previous) => previous.filter(removeElementInUseStateArray));
-    textOrder[1]((previous) => previous.filter(removeElementInUseStateArray));
+    textQuestions[1](removeElementInUseStateArray);
+    textIds[1](removeElementInUseStateArray);
+    scores[1](removeElementInUseStateArray);
+    textOrder[1](removeElementInUseStateArray);
   }
   function safeToDeleteChoiceQuestion() {
     if (choiceIds[choiceIds.length - 1]) {
       return;
     }
-    setChoiceIds((previous) => previous.filter(removeElementInUseStateArray));
-    setChoiceQuestions((previous) =>
-      previous.filter(removeElementInUseStateArray)
-    );
-    setAs((previous) => previous.filter(removeElementInUseStateArray));
-    setBs((previous) => previous.filter(removeElementInUseStateArray));
-    setCs((previous) => previous.filter(removeElementInUseStateArray));
-    setDs((previous) => previous.filter(removeElementInUseStateArray));
-    setEs((previous) => previous.filter(removeElementInUseStateArray));
-    scoreAs[1]((previous) => previous.filter(removeElementInUseStateArray));
-    scoreBs[1]((previous) => previous.filter(removeElementInUseStateArray));
-    scoreCs[1]((previous) => previous.filter(removeElementInUseStateArray));
-    scoreDs[1]((previous) => previous.filter(removeElementInUseStateArray));
-    scoreEs[1]((previous) => previous.filter(removeElementInUseStateArray));
-    setCorrect(corrects.filter(removeElementInUseStateArray));
-    setChoiceOrder((previous) => previous.filter(removeElementInUseStateArray));
+    setChoiceIds(removeElementInUseStateArray);
+    setChoiceQuestions(removeElementInUseStateArray);
+    setAs(removeElementInUseStateArray);
+    setBs(removeElementInUseStateArray);
+    setCs(removeElementInUseStateArray);
+    setDs(removeElementInUseStateArray);
+    setEs(removeElementInUseStateArray);
+    scoreAs[1](removeElementInUseStateArray);
+    scoreBs[1](removeElementInUseStateArray);
+    scoreCs[1](removeElementInUseStateArray);
+    scoreDs[1](removeElementInUseStateArray);
+    scoreEs[1](removeElementInUseStateArray);
+    setCorrect(removeElementInUseStateArray);
+    setChoiceOrder(removeElementInUseStateArray);
   }
   function addTextQuestion() {
     textIds[1]((previous) => [...previous, null]);
@@ -722,9 +718,7 @@ export default function UpdateCampClient({
             <FinishButton
               text="remove photo"
               onClick={() => {
-                pictureUrls[1](
-                  pictureUrls[0].filter(removeElementInUseStateArray)
-                );
+                pictureUrls[1](removeElementInUseStateArray);
               }}
             />
             <div className="flex flex-row items-center my-5">
@@ -1201,7 +1195,8 @@ export default function UpdateCampClient({
                       },
                     }}
                     onChange={setTextToString(
-                      setMap(setAs, modifyElementInUseStateArray(i)),true
+                      setMap(setAs, modifyElementInUseStateArray(i)),
+                      true
                     )}
                     value={as[i]}
                   />
@@ -1228,7 +1223,8 @@ export default function UpdateCampClient({
                       },
                     }}
                     onChange={setTextToString(
-                      setMap(setBs, modifyElementInUseStateArray(i)),true
+                      setMap(setBs, modifyElementInUseStateArray(i)),
+                      true
                     )}
                     value={bs[i]}
                   />
@@ -1255,7 +1251,8 @@ export default function UpdateCampClient({
                       },
                     }}
                     onChange={setTextToString(
-                      setMap(setCs, modifyElementInUseStateArray(i)),true
+                      setMap(setCs, modifyElementInUseStateArray(i)),
+                      true
                     )}
                     value={cs[i]}
                   />
@@ -1282,7 +1279,8 @@ export default function UpdateCampClient({
                       },
                     }}
                     onChange={setTextToString(
-                      setMap(setDs, modifyElementInUseStateArray(i)),true
+                      setMap(setDs, modifyElementInUseStateArray(i)),
+                      true
                     )}
                     value={ds[i]}
                   />
@@ -1309,7 +1307,8 @@ export default function UpdateCampClient({
                       },
                     }}
                     onChange={setTextToString(
-                      setMap(setEs, modifyElementInUseStateArray(i)),true
+                      setMap(setEs, modifyElementInUseStateArray(i)),
+                      true
                     )}
                     value={es[i]}
                   />
@@ -1579,7 +1578,8 @@ export default function UpdateCampClient({
                     },
                   }}
                   onChange={setTextToString(
-                    setMap(textQuestions[1], modifyElementInUseStateArray(i)),true
+                    setMap(textQuestions[1], modifyElementInUseStateArray(i)),
+                    true
                   )}
                   value={textQuestions[0][i]}
                 />
