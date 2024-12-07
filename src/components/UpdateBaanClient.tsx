@@ -115,7 +115,7 @@ export default function UpdateBaanClient({
                 color: "#FFFFFF", // Custom color when checked
               },
             }}
-            defaultChecked={nongSendMessage}
+            checked={nongSendMessage}
           />
         </div>
         <div className="flex flex-row justify-end">
@@ -154,7 +154,7 @@ export default function UpdateBaanClient({
               color: "#FFFFFF", // Custom color when checked
             },
           }}
-          defaultChecked={nongSendMessage}
+          checked={nongSendMessage}
         />
       </div>
       <table ref={ref}>

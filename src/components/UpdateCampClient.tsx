@@ -8,6 +8,9 @@ import {
   InterCampFront,
   BasicPart,
   MyMap,
+  SystemInfo,
+  TriggerChoiceQuestion,
+  TriggerTextQuestion,
 } from "../../interface";
 import { BasicBaan } from "../../interface";
 import { useState } from "react";
@@ -26,6 +29,7 @@ import createBaanByGroup from "@/libs/admin/createBaanByGroup";
 import saveDeleteCamp from "@/libs/admin/saveDeleteCamp";
 import TypingImageSource from "./TypingImageSource";
 import {
+  addItemInUseStateArray,
   modifyElementInUseStateArray,
   notEmpty,
   removeElementInUseStateArray,
@@ -35,6 +39,8 @@ import {
   setTextToFloat,
   setTextToInt,
   setTextToString,
+  SetUpMiddleDownPack,
+  UpMiddleDownPack,
 } from "./setup";
 import editQuestion from "@/libs/camp/editQuestion";
 import getAllQuestion from "@/libs/camp/getAllQuestion";
@@ -43,6 +49,7 @@ import React from "react";
 import deleteChoiceQuestion from "@/libs/camp/deleteChoiceQuestion";
 import deleteTextQuestion from "@/libs/camp/deleteTextQuestion";
 import AllInOneLock from "./AllInOneLock";
+import Pusher from "pusher-js";
 interface QuestionReady {
   element: React.ReactNode;
   order: number;
@@ -74,12 +81,14 @@ export default function UpdateCampClient({
   parts,
   remainPartName,
   questions,
+  systemInfo,
 }: {
   baans: BasicBaan[];
   camp: InterCampFront;
   parts: BasicPart[];
   remainPartName: MyMap[];
   questions: GetAllQuestion;
+  systemInfo: SystemInfo;
 }) {
   const { data: session } = useSession();
   if (!session) {
@@ -96,7 +105,6 @@ export default function UpdateCampClient({
   const pictureUrls = useState<(string | null)[]>(camp.pictureUrls);
   const [logoUrl, setLogoUrl] = useState<string | null>(camp.logoUrl);
   const [nongDataLock, setDataLock] = useState<boolean>(camp.nongDataLock);
-  const [open, setOpen] = useState<boolean>(camp.open);
   const [peeLock, setPeeLock] = useState<boolean>(!camp.peeLock);
   const [lockChangePickup, setLockChangePickup] = useState<boolean>(
     camp.lockChangePickup
@@ -113,9 +121,15 @@ export default function UpdateCampClient({
   const [showCorrectAnswerAndScore, setShowCorrectAnswerAndScore] = useState(
     camp.showCorrectAnswerAndScore
   );
-  const [canAnswerTheQuestion, setCanAnswerTheQuestion] = useState(
-    camp.canAnswerTheQuestion
-  );
+  const [
+    { up: lockChangeQuestion, middle: canAnswerTheQuestion, down: open },
+    set,
+  ] = useState<UpMiddleDownPack>({
+    up: camp.lockChangeQuestion,
+    middle: camp.canAnswerTheQuestion,
+    down: camp.open,
+  });
+  const setLockChangeQuestionCanAnswerTheQuestionOpenPack=new SetUpMiddleDownPack(set)
   const [canNongSeeAllAnswer, setCanNongSeeAllAnswer] = useState(
     camp.canNongSeeAllAnswer
   );
@@ -303,26 +317,26 @@ export default function UpdateCampClient({
     setChoiceOrder(removeElementInUseStateArray);
   }
   function addTextQuestion() {
-    textIds[1]((previous) => [...previous, null]);
-    textQuestions[1]((previous) => [...previous, "-"]);
-    scores[1]((previous) => [...previous, 0]);
-    textOrder[1]((previous) => [...previous, 0]);
+    textIds[1](addItemInUseStateArray<Id | null>(null));
+    textQuestions[1](addItemInUseStateArray("-"));
+    scores[1](addItemInUseStateArray(0));
+    textOrder[1](addItemInUseStateArray(0));
   }
   function addChoiceQuestion() {
-    setChoiceIds((previous) => [...previous, null]);
-    setChoiceQuestions([...choiceQuestions, "-"]);
-    setAs((previous) => [...previous, "-"]);
-    setBs((previous) => [...previous, "-"]);
-    setCs((previous) => [...previous, "-"]);
-    setDs((previous) => [...previous, "-"]);
-    setEs((previous) => [...previous, "-"]);
-    scoreAs[1]((previous) => [...previous, 0]);
-    scoreBs[1]((previous) => [...previous, 0]);
-    scoreCs[1]((previous) => [...previous, 0]);
-    scoreDs[1]((previous) => [...previous, 0]);
-    scoreEs[1]((previous) => [...previous, 0]);
-    setCorrect((previous) => [...previous, "-"]);
-    setChoiceOrder((previous) => [...previous, 0]);
+    setChoiceIds(addItemInUseStateArray<Id | null>(null));
+    setChoiceQuestions(addItemInUseStateArray("-"));
+    setAs(addItemInUseStateArray("-"));
+    setBs(addItemInUseStateArray("-"));
+    setCs(addItemInUseStateArray("-"));
+    setDs(addItemInUseStateArray("-"));
+    setEs(addItemInUseStateArray("-"));
+    scoreAs[1](addItemInUseStateArray(0));
+    scoreBs[1](addItemInUseStateArray(0));
+    scoreCs[1](addItemInUseStateArray(0));
+    scoreDs[1](addItemInUseStateArray(0));
+    scoreEs[1](addItemInUseStateArray(0));
+    setCorrect(addItemInUseStateArray<Choice | "-">("-"));
+    setChoiceOrder(addItemInUseStateArray(0));
   }
   function clearAllCache() {
     setChoiceIds(questions.choices.map((choice) => choice._id));
@@ -478,74 +492,133 @@ export default function UpdateCampClient({
     scores[1](newQuestions.texts.map((text) => text.score));
     textOrder[1](newQuestions.texts.map((text) => text.order));
     setPreview(
-      questionReady(
-        false,
-        {
-          choiceIds: newQuestions.choices.map((choice) => choice._id),
-          choiceQuestions: newQuestions.choices.map(
-            (choice) => choice.question
-          ),
-          as: newQuestions.choices.map((choice) => choice.a),
-          bs: newQuestions.choices.map((choice) => choice.b),
-          cs: newQuestions.choices.map((choice) => choice.c),
-          ds: newQuestions.choices.map((choice) => choice.d),
-          es: newQuestions.choices.map((choice) => choice.e),
-          scoreAs: [newQuestions.choices.map((choice) => choice.scoreA)],
-          scoreBs: [newQuestions.choices.map((choice) => choice.scoreB)],
-          scoreCs: [newQuestions.choices.map((choice) => choice.scoreC)],
-          scoreDs: [newQuestions.choices.map((choice) => choice.scoreD)],
-          scoreEs: [newQuestions.choices.map((choice) => choice.scoreE)],
-          corrects: newQuestions.choices.map((choice) => choice.correct),
-          choiceOrder: newQuestions.choices.map((choice) => choice.order),
-          textQuestions: [newQuestions.texts.map((text) => text.question)],
-          textIds: [newQuestions.texts.map((text) => text._id)],
-          scores: [newQuestions.texts.map((text) => text.score)],
-          textOrder: [newQuestions.texts.map((text) => text.order)],
-        }
-        // {
-        //   deleteTextIds,
-        //   setDeleteTextIds,
-        //   deleteChoiceIds,
-        //   setDeleteChoiceIds,
-        // }
-      ).map((v) => v.element)
+      questionReady(false, {
+        choiceIds: newQuestions.choices.map((choice) => choice._id),
+        choiceQuestions: newQuestions.choices.map((choice) => choice.question),
+        as: newQuestions.choices.map((choice) => choice.a),
+        bs: newQuestions.choices.map((choice) => choice.b),
+        cs: newQuestions.choices.map((choice) => choice.c),
+        ds: newQuestions.choices.map((choice) => choice.d),
+        es: newQuestions.choices.map((choice) => choice.e),
+        scoreAs: [newQuestions.choices.map((choice) => choice.scoreA)],
+        scoreBs: [newQuestions.choices.map((choice) => choice.scoreB)],
+        scoreCs: [newQuestions.choices.map((choice) => choice.scoreC)],
+        scoreDs: [newQuestions.choices.map((choice) => choice.scoreD)],
+        scoreEs: [newQuestions.choices.map((choice) => choice.scoreE)],
+        corrects: newQuestions.choices.map((choice) => choice.correct),
+        choiceOrder: newQuestions.choices.map((choice) => choice.order),
+        textQuestions: [newQuestions.texts.map((text) => text.question)],
+        textIds: [newQuestions.texts.map((text) => text._id)],
+        scores: [newQuestions.texts.map((text) => text.score)],
+        textOrder: [newQuestions.texts.map((text) => text.order)],
+      }).map((v) => v.element)
     );
     setDeletePreview(
-      questionReady(
-        true,
-        {
-          choiceIds: newQuestions.choices.map((choice) => choice._id),
-          choiceQuestions: newQuestions.choices.map(
-            (choice) => choice.question
-          ),
-          as: newQuestions.choices.map((choice) => choice.a),
-          bs: newQuestions.choices.map((choice) => choice.b),
-          cs: newQuestions.choices.map((choice) => choice.c),
-          ds: newQuestions.choices.map((choice) => choice.d),
-          es: newQuestions.choices.map((choice) => choice.e),
-          scoreAs: [newQuestions.choices.map((choice) => choice.scoreA)],
-          scoreBs: [newQuestions.choices.map((choice) => choice.scoreB)],
-          scoreCs: [newQuestions.choices.map((choice) => choice.scoreC)],
-          scoreDs: [newQuestions.choices.map((choice) => choice.scoreD)],
-          scoreEs: [newQuestions.choices.map((choice) => choice.scoreE)],
-          corrects: newQuestions.choices.map((choice) => choice.correct),
-          choiceOrder: newQuestions.choices.map((choice) => choice.order),
-          textQuestions: [newQuestions.texts.map((text) => text.question)],
-          textIds: [newQuestions.texts.map((text) => text._id)],
-          scores: [newQuestions.texts.map((text) => text.score)],
-          textOrder: [newQuestions.texts.map((text) => text.order)],
-        }
-        // {
-        //   deleteTextIds,
-        //   setDeleteTextIds,
-        //   deleteChoiceIds,
-        //   setDeleteChoiceIds,
-        // }
-      ).map((v) => v.element)
+      questionReady(true, {
+        choiceIds: newQuestions.choices.map((choice) => choice._id),
+        choiceQuestions: newQuestions.choices.map((choice) => choice.question),
+        as: newQuestions.choices.map((choice) => choice.a),
+        bs: newQuestions.choices.map((choice) => choice.b),
+        cs: newQuestions.choices.map((choice) => choice.c),
+        ds: newQuestions.choices.map((choice) => choice.d),
+        es: newQuestions.choices.map((choice) => choice.e),
+        scoreAs: [newQuestions.choices.map((choice) => choice.scoreA)],
+        scoreBs: [newQuestions.choices.map((choice) => choice.scoreB)],
+        scoreCs: [newQuestions.choices.map((choice) => choice.scoreC)],
+        scoreDs: [newQuestions.choices.map((choice) => choice.scoreD)],
+        scoreEs: [newQuestions.choices.map((choice) => choice.scoreE)],
+        corrects: newQuestions.choices.map((choice) => choice.correct),
+        choiceOrder: newQuestions.choices.map((choice) => choice.order),
+        textQuestions: [newQuestions.texts.map((text) => text.question)],
+        textIds: [newQuestions.texts.map((text) => text._id)],
+        scores: [newQuestions.texts.map((text) => text.score)],
+        textOrder: [newQuestions.texts.map((text) => text.order)],
+      }).map((v) => v.element)
     );
     setEditMode("normal");
   }
 
+  React.useEffect(() => {
+    const pusherData = questions.pusherData;
+    if (!pusherData) {
+      return;
+    }
+    const pusher = new Pusher(pusherData.first, pusherData.second);
+    const textChanel = pusher.subscribe(
+      `${systemInfo.textQuestionText}${camp._id}`
+    );
+    const choiceChanel = pusher.subscribe(
+      `${systemInfo.choiceQuestionText}${camp._id}`
+    );
+    textChanel.bind(systemInfo.newText, (event: TriggerTextQuestion) => {
+      textIds[1](addItemInUseStateArray<Id | null>(event._id));
+      textQuestions[1](addItemInUseStateArray(event.question));
+      scores[1](addItemInUseStateArray(event.score));
+      textOrder[1](addItemInUseStateArray(event.order));
+    });
+    textChanel.bind(systemInfo.updateText, (event: TriggerTextQuestion) => {
+      textIds[0].forEach((id, i) => {
+        if (!id) {
+          return;
+        }
+        if (event._id.toString() == id.toString()) {
+          setMap(
+            textQuestions[1],
+            modifyElementInUseStateArray(i)
+          )(event.question);
+          setMap(scores[1], modifyElementInUseStateArray(i))(event.score);
+          setMap(textOrder[1], modifyElementInUseStateArray(i))(event.order);
+        }
+      });
+    });
+    choiceChanel.bind(systemInfo.newText, (event: TriggerChoiceQuestion) => {
+      setChoiceIds(addItemInUseStateArray<Id | null>(event._id));
+      setChoiceQuestions(addItemInUseStateArray(event.question));
+      setAs(addItemInUseStateArray(event.a));
+      setBs(addItemInUseStateArray(event.b));
+      setCs(addItemInUseStateArray(event.c));
+      setDs(addItemInUseStateArray(event.d));
+      setEs(addItemInUseStateArray(event.e));
+      scoreAs[1](addItemInUseStateArray(event.scoreA));
+      scoreBs[1](addItemInUseStateArray(event.scoreB));
+      scoreCs[1](addItemInUseStateArray(event.scoreC));
+      scoreDs[1](addItemInUseStateArray(event.scoreD));
+      scoreEs[1](addItemInUseStateArray(event.scoreE));
+      setCorrect(addItemInUseStateArray(event.correct));
+      setChoiceOrder(addItemInUseStateArray(event.order));
+    });
+    choiceChanel.bind(systemInfo.updateText, (event: TriggerChoiceQuestion) => {
+      choiceIds.forEach((id, i) => {
+        if (!id) {
+          return;
+        }
+        if (id.toString() == event._id.toString()) {
+          setMap(
+            setChoiceQuestions,
+            modifyElementInUseStateArray(i)
+          )(event.question);
+          setMap(setAs, modifyElementInUseStateArray(i))(event.a);
+          setMap(setBs, modifyElementInUseStateArray(i))(event.b);
+          setMap(setCs, modifyElementInUseStateArray(i))(event.c);
+          setMap(setDs, modifyElementInUseStateArray(i))(event.d);
+          setMap(setEs, modifyElementInUseStateArray(i))(event.e);
+          setMap(scoreAs[1], modifyElementInUseStateArray(i))(event.scoreA);
+          setMap(scoreBs[1], modifyElementInUseStateArray(i))(event.scoreB);
+          setMap(scoreCs[1], modifyElementInUseStateArray(i))(event.scoreC);
+          setMap(scoreDs[1], modifyElementInUseStateArray(i))(event.scoreD);
+          setMap(scoreEs[1], modifyElementInUseStateArray(i))(event.scoreE);
+          setMap(setCorrect, modifyElementInUseStateArray(i))(event.correct);
+          setMap(setChoiceOrder, modifyElementInUseStateArray(i))(event.order);
+        }
+      });
+    });
+    return () => {
+      textChanel.unbind_all();
+      choiceChanel.unbind_all();
+      textChanel.unsubscribe();
+      choiceChanel.unsubscribe();
+    };
+  });
   switch (editMode) {
     case "normal": {
       return (
@@ -763,7 +836,7 @@ export default function UpdateCampClient({
                   },
                 }}
                 onChange={setBoolean(setDataLock)}
-                defaultChecked={nongDataLock}
+                checked={nongDataLock}
               />
             </div>
             <div className="flex flex-row items-center my-5">
@@ -777,7 +850,7 @@ export default function UpdateCampClient({
                   },
                 }}
                 onChange={setBoolean(setPeeDataLock)}
-                defaultChecked={peeDataLock}
+                checked={peeDataLock}
               />
             </div>
             {camp.memberStructure ===
@@ -793,7 +866,7 @@ export default function UpdateCampClient({
                     },
                   }}
                   onChange={setBoolean(setPetoDataLock)}
-                  defaultChecked={petoDataLock}
+                  checked={petoDataLock}
                 />
               </div>
             ) : null}
@@ -807,13 +880,13 @@ export default function UpdateCampClient({
                     color: "#FFFFFF", // Custom color when checked
                   },
                 }}
-                onChange={setBoolean(setOpen)}
-                defaultChecked={open}
+                onChange={setLockChangeQuestionCanAnswerTheQuestionOpenPack.setDown()}
+                checked={open}
               />
             </div>
             <div className="flex flex-row items-center my-5">
               <label className="w-2/5 text-2xl text-white">
-                เปิดให้น้องค่ายลงทะเบียนหรือไม่
+                เปิดให้พี่{groupName}ลงทะเบียนหรือไม่
               </label>
               <Checkbox
                 sx={{
@@ -822,7 +895,7 @@ export default function UpdateCampClient({
                   },
                 }}
                 onChange={setBoolean(setPeeLock)}
-                defaultChecked={peeLock}
+                checked={peeLock}
               />
             </div>
             <div className="flex flex-row items-center my-5">
@@ -836,7 +909,7 @@ export default function UpdateCampClient({
                   },
                 }}
                 onChange={setBoolean(setHaveCloth)}
-                defaultChecked={haveCloth}
+                checked={haveCloth}
               />
             </div>
             <div className="flex flex-row items-center my-5">
@@ -850,7 +923,7 @@ export default function UpdateCampClient({
                   },
                 }}
                 onChange={setBoolean(setShowCorrectAnswerAndScore)}
-                defaultChecked={showCorrectAnswerAndScore}
+                checked={showCorrectAnswerAndScore}
               />
             </div>
             <div className="flex flex-row justify-end"></div>
@@ -867,7 +940,7 @@ export default function UpdateCampClient({
                 onChange={(e, state) => {
                   setLockChangePickup(state);
                 }}
-                defaultChecked={lockChangePickup}
+                checked={lockChangePickup}
               />
             </div>
             <div className="flex flex-row items-center my-5">
@@ -880,8 +953,22 @@ export default function UpdateCampClient({
                     color: "#FFFFFF", // Custom color when checked
                   },
                 }}
-                onChange={setBoolean(setCanAnswerTheQuestion)}
-                defaultChecked={canAnswerTheQuestion}
+                onChange={setLockChangeQuestionCanAnswerTheQuestionOpenPack.setMiddle()}
+                checked={canAnswerTheQuestion}
+              />
+            </div>
+            <div className="flex flex-row items-center my-5">
+              <label className="w-2/5 text-2xl text-white">
+                ล็อกการเปลี่ยนโจทย์หรือไม่
+              </label>
+              <Checkbox
+                sx={{
+                  "&.Mui-checked": {
+                    color: "#FFFFFF", // Custom color when checked
+                  },
+                }}
+                onChange={setLockChangeQuestionCanAnswerTheQuestionOpenPack.setUp()}
+                checked={lockChangeQuestion}
               />
             </div>
             <div className="flex flex-row items-center my-5">
@@ -895,7 +982,7 @@ export default function UpdateCampClient({
                   },
                 }}
                 onChange={setBoolean(setAllDone)}
-                defaultChecked={allDone}
+                checked={allDone}
               />
             </div>
             <AllInOneLock
@@ -913,7 +1000,7 @@ export default function UpdateCampClient({
                     },
                   }}
                   onChange={setBoolean(setCanNongSeeAllAnswer)}
-                  defaultChecked={allDone}
+                  checked={allDone}
                 />
               </div>
               <div className="flex flex-row items-center my-5">
@@ -927,7 +1014,7 @@ export default function UpdateCampClient({
                     },
                   }}
                   onChange={setBoolean(setCanNongSeeAllActionPlan)}
-                  defaultChecked={allDone}
+                  checked={allDone}
                 />
               </div>
               <div className="flex flex-row items-center my-5">
@@ -941,7 +1028,7 @@ export default function UpdateCampClient({
                     },
                   }}
                   onChange={setBoolean(setCanNongSeeAllTrackingSheet)}
-                  defaultChecked={allDone}
+                  checked={allDone}
                 />
               </div>
               {isHaveNongInGeneralRoleNong ? (
@@ -962,7 +1049,7 @@ export default function UpdateCampClient({
                             canNongSeeAllTrackingSheet)
                       );
                     })}
-                    defaultChecked={allDone}
+                    checked={allDone}
                   />
                 </div>
               ) : null}
@@ -1033,16 +1120,20 @@ export default function UpdateCampClient({
             </div>
             {preview}
             <div className="flex flex-row justify-end">
-              <FinishButton
-                text="edit question"
-                onClick={() => {
-                  setEditMode("edit");
-                }}
-              />
-              <FinishButton
-                text="delete question"
-                onClick={() => setEditMode("delete")}
-              />
+              {camp.lockChangeQuestion ? null : (
+                <>
+                  <FinishButton
+                    text="edit question"
+                    onClick={() => {
+                      setEditMode("edit");
+                    }}
+                  />
+                  <FinishButton
+                    text="delete question"
+                    onClick={() => setEditMode("delete")}
+                  />
+                </>
+              )}
               <button
                 className="bg-white p-3 font-bold rounded-lg shadow-[10px_10px_10px_-10px_rgba(0,0,0,0.5)] hover:bg-rose-700 hover:text-pink-50"
                 style={{
@@ -1074,6 +1165,7 @@ export default function UpdateCampClient({
                           canNongSeeAllActionPlan,
                           canNongSeeAllTrackingSheet,
                           canNongAccessDataWithRoleNong,
+                          lockChangeQuestion,
                         },
                         camp._id,
                         session.user.token

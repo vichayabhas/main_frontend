@@ -2,14 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import {
-  AllNongRegister,
   Id,
-  InterCampFront,
   MyMap,
-  RegisBaan,
-  RegisPart,
+  RegisterData,
   ShowMember,
-  ShowRegister,
   ShowRegisterNong,
 } from "../../interface";
 import { useRef, useState } from "react";
@@ -22,29 +18,22 @@ import addMemberToBaan from "@/libs/camp/addMamberToBaan";
 import changeBaan from "@/libs/camp/changeBaan";
 import changePart from "@/libs/camp/changePart";
 import React from "react";
-import getCamp from "@/libs/camp/getCamp";
 import Waiting from "./Waiting";
 import StringToHtml from "./StringToHtml";
 import { useDownloadExcel } from "react-export-table-to-excel";
-
+import Pusher from "pusher-js";
+function filterOut(inputs: ShowRegisterNong[]): (previous: Id[]) => Id[] {
+  const ids = inputs.map((e) => e.user._id);
+  return (previous) => previous.filter((o) => ids.includes(o));
+}
 export default function RegisterPartClient({
-  regisBaans,
-  regisParts,
-  peeRegisters,
-  campInput,
+  data,
   token,
   isBoard,
-  partMap,
-  nongRegister,
 }: {
-  regisParts: RegisPart[];
-  regisBaans: RegisBaan[];
-  peeRegisters: ShowRegister[];
-  campInput: InterCampFront;
+  data: RegisterData;
   token: string;
   isBoard: boolean;
-  partMap: MyMap[];
-  nongRegister: AllNongRegister;
 }) {
   const router = useRouter();
   const [nongPendingIds, setNongPendingIds] = useState<Id[]>([]);
@@ -55,24 +44,35 @@ export default function RegisterPartClient({
   const [members, setMembers] = useState<Id[]>([]);
   const [userIds, setUserIds] = useState<Id[]>([]);
   const [timeOut, setTimeOut] = useState<boolean>(false);
-  const [camp, setCamp] = useState<InterCampFront>(campInput);
   const [name, setName] = useState<string>("");
   const [nickname, setNickname] = useState<string>("");
   const [lastname, setLastname] = useState<string>("");
+  const [
+    {
+      regisBaans,
+      regisParts,
+      peeRegisters,
+      camp,
+      partMap,
+      nongRegister,
+      partBoardIdString,
+      partRegisterIdString,
+    },
+    setData,
+  ] = useState(data);
   const mapIn: MyMap[] = regisBaans.map((regisBaan) => ({
     key: regisBaan.baan._id,
     value: regisBaan.baan.name,
   }));
   const regis = partMap.filter(
     (e) =>
-      e.key.toString() !== camp.partBoardId.toString() &&
-      e.key.toString() !== camp.partRegisterId.toString()
+      e.key.toString() !== partBoardIdString &&
+      e.key.toString() !== partRegisterIdString
   );
+
   async function waiting(update: () => Promise<void>) {
     setTimeOut(true);
     await update();
-    const buffer = await getCamp(camp._id);
-    setCamp(buffer);
     setTimeOut(false);
   }
   function filterNong(input: ShowRegisterNong): boolean {
@@ -118,6 +118,27 @@ export default function RegisterPartClient({
   const peePassDownload = useDownloadExcel({
     currentTableRef: peePassRef.current,
     filename: "พี่ที่สมัครเข้ามา",
+  });
+  React.useEffect(() => {
+    const pusherData = data.pusher;
+    if (!pusherData) {
+      return;
+    }
+    const pusherClient = new Pusher(pusherData.first, pusherData.second);
+    const channel = pusherClient.subscribe(`register${camp._id}`);
+    channel.bind(data.systemInfo.manageText, (data2: RegisterData) => {
+      setData(data2);
+      setNongPendingIds(filterOut(data2.nongRegister.pendings));
+      setNongInterviewIds(filterOut(data2.nongRegister.interviews));
+      setNongPaidIds(filterOut(data2.nongRegister.paids));
+      setNongSureIds(filterOut(data2.nongRegister.sures));
+      const ids = data2.peeRegisters.map((e) => e.userId);
+      setPeePassIds((previous) => previous.filter((o) => ids.includes(o)));
+    });
+    return () => {
+      channel.unbind_all();
+      channel.unsubscribe();
+    };
   });
   return (
     <div
@@ -245,7 +266,10 @@ export default function RegisterPartClient({
                   <StringToHtml input={v.link} />
                 </td>
                 <td className=" border border-x-black">
-                  <Checkbox onChange={setSwop(v.user._id, setNongPendingIds)} />
+                  <Checkbox
+                    onChange={setSwop(v.user._id, setNongPendingIds)}
+                    checked={nongPendingIds.includes(v.user._id)}
+                  />
                 </td>
               </tr>
             ))}
@@ -332,6 +356,7 @@ export default function RegisterPartClient({
                     <td className=" border border-x-black">
                       <Checkbox
                         onChange={setSwop(v.user._id, setNongInterviewIds)}
+                        checked={nongInterviewIds.includes(v.user._id)}
                       />
                     </td>
                   </tr>
@@ -441,7 +466,7 @@ export default function RegisterPartClient({
             <th className=" border border-x-black">นามสกุล</th>
             <th className=" border border-x-black">เพศ</th>
             <th className=" border border-x-black">link</th>
-            {nongRegister.pendings.filter(filterNong).map((v, i) => (
+            {nongRegister.passs.filter(filterNong).map((v, i) => (
               <tr key={i}>
                 <td
                   className=" border border-x-black"
@@ -629,7 +654,10 @@ export default function RegisterPartClient({
                 <td>{v.lastname}</td>
                 <td className=" border border-x-black">{v.partName}</td>
                 <td className=" border border-x-black">
-                  <Checkbox onChange={setSwop(v.userId, setPeePassIds)} />
+                  <Checkbox
+                    onChange={setSwop(v.userId, setPeePassIds)}
+                    checked={peePassIds.includes(v.userId)}
+                  />
                 </td>
               </tr>
             ))}
@@ -758,7 +786,10 @@ export default function RegisterPartClient({
                         <td className=" border border-x-black">-</td>
                       )}
                       <td>
-                        <Checkbox onChange={setSwop(user._id, setMembers)} />
+                        <Checkbox
+                          onChange={setSwop(user._id, setMembers)}
+                          checked={members.includes(user._id)}
+                        />
                       </td>
                     </tr>
                   ))}
@@ -849,7 +880,10 @@ export default function RegisterPartClient({
                         <td className=" border border-x-black">-</td>
                       )}
                       <td className=" border border-x-black">
-                        <Checkbox onChange={setSwop(user._id, setMembers)} />
+                        <Checkbox
+                          onChange={setSwop(user._id, setMembers)}
+                          checked={members.includes(user._id)}
+                        />
                       </td>
                     </tr>
                   ))}
@@ -865,8 +899,8 @@ export default function RegisterPartClient({
       {regisParts.map((regisPart) => {
         const have =
           isBoard ||
-          (regisPart.part._id.toString() !== camp.partBoardId.toString() &&
-            regisPart.part._id.toString() != camp.partRegisterId.toString());
+          (regisPart.part._id.toString() !== partBoardIdString &&
+            regisPart.part._id.toString() != partRegisterIdString);
         const peeRef = useRef(null);
         const petoRef = useRef(null);
         const peeDownload = useDownloadExcel({
@@ -959,7 +993,10 @@ export default function RegisterPartClient({
                         <td className=" border border-x-black">-</td>
                       )}
                       {have ? (
-                        <Checkbox onChange={setSwop(user._id, setUserIds)} />
+                        <Checkbox
+                          onChange={setSwop(user._id, setUserIds)}
+                          checked={userIds.includes(user._id)}
+                        />
                       ) : null}
                     </tr>
                   ))}
@@ -1050,7 +1087,10 @@ export default function RegisterPartClient({
                         <td className=" border border-x-black">-</td>
                       )}
                       {have ? (
-                        <Checkbox onChange={setSwop(user._id, setUserIds)} />
+                        <Checkbox
+                          onChange={setSwop(user._id, setUserIds)}
+                          checked={userIds.includes(user._id)}
+                        />
                       ) : null}
                     </tr>
                   ))}

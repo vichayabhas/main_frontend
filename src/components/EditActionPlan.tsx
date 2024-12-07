@@ -16,6 +16,7 @@ import FinishButton from "./FinishButton";
 import PlaceSelect from "./PlaceSelect";
 import SelectTemplate from "./SelectTemplate";
 import {
+  addItemInUseStateArray,
   addTime,
   modifyElementInUseStateArray,
   notEmpty,
@@ -114,14 +115,12 @@ export default function EditActionPlan({
         <FinishButton
           text={"add"}
           onClick={() => {
-            setPlaces([...places, null]);
+            setPlaces(addItemInUseStateArray<InterPlace | null>(null));
           }}
         />
         <FinishButton
           text={"remove"}
-          onClick={() =>
-            setPlaces(removeElementInUseStateArray)
-          }
+          onClick={() => setPlaces(removeElementInUseStateArray)}
         />
         {places.map((v, i) => (
           <PlaceSelect

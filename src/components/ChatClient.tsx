@@ -7,7 +7,7 @@ import createPartChat from "@/libs/randomthing/createPartChat";
 import createNongChat from "@/libs/randomthing/createNongChat";
 import createPeeBaanChat from "@/libs/randomthing/createPeeBaanChat";
 import StringToHtml from "./StringToHtml";
-import { newChatText, setTextToString, updateChatText } from "./setup";
+import { addItemInUseStateArray, setTextToString } from "./setup";
 import React, { useEffect, useState } from "react";
 import Pusher from "pusher-js";
 export default function ChatClient({
@@ -17,11 +17,15 @@ export default function ChatClient({
   data: ChatReady;
   token: string;
 }) {
-  const pusherClient = new Pusher(data.pusher[0], data.pusher[1]);
   const [message, setMessage] = useState<string | null>(null);
   const [messages, setMessages] = useState(data.chats);
   const sendType = data.sendType;
   useEffect(() => {
+    const pusherData=data.pusher
+    if(!pusherData){
+      return
+    }
+    const pusherClient = new Pusher(pusherData.first, pusherData.second);
     const channel = pusherClient.subscribe(data.subscribe);
     const handleChatUpdate = (updatedChat: ShowChat) => {
       setMessages((allChats) =>
@@ -35,10 +39,10 @@ export default function ChatClient({
       );
     };
     const handleNewChat = (newChat: ShowChat) => {
-      setMessages((allChats) => [...allChats, newChat]);
+      setMessages(addItemInUseStateArray(newChat));
     };
-    channel.bind(updateChatText, handleChatUpdate);
-    channel.bind(newChatText, handleNewChat);
+    channel.bind(data.systemInfo.updateText, handleChatUpdate);
+    channel.bind(data.systemInfo.newText, handleNewChat);
     return () => {
       pusherClient.unsubscribe(data.subscribe);
       channel.unbind_all();

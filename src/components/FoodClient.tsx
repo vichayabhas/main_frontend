@@ -12,6 +12,8 @@ import {
   setBoolean,
   setSwop,
   setTextToString,
+  SetUpDownPack,
+  UpDownPack,
 } from "./setup";
 import GetTimeHtml from "./GetTimeHtml";
 import FinishButton from "./FinishButton";
@@ -28,10 +30,14 @@ export default function FoodClient({
   food: GetFoodForUpdate;
   token: string;
 }) {
-  const [isWhiteList, setIsWhiteList] = useState(food.isWhiteList);
   const [name, setName] = useState(food.name);
   const [isSpicy, setIsSpicy] = useState(food.isSpicy);
-  const [listPriority, setListPriority] = useState(food.listPriority);
+  const [{ up: isWhiteList, down: listPriority }, set] = useState<UpDownPack>({
+    up: food.isWhiteList,
+    down: food.listPriority,
+  });
+  const setIsWhiteListListPriorityPack = new SetUpDownPack(set);
+
   const [มังสวิรัติ, setมังสวิรัติ] = useState(
     food.lists.includes("มังสวิรัติ")
   );
@@ -101,7 +107,7 @@ export default function FoodClient({
                 color: "#FFFFFF", // Custom color when checked
               },
             }}
-            defaultChecked={isSpicy}
+            checked={isSpicy}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -109,14 +115,7 @@ export default function FoodClient({
             อาหารนี้สำหรับคนที่แพ้อาหารหรือไม่
           </label>
           <Checkbox
-            onChange={setBoolean((c) => {
-              if (c) {
-                setIsWhiteList(true);
-              } else {
-                setListPriority(false);
-                setIsWhiteList(false);
-              }
-            })}
+            onChange={setIsWhiteListListPriorityPack.setUp()}
             sx={{
               "&.Mui-checked": {
                 color: "#FFFFFF", // Custom color when checked
@@ -130,14 +129,7 @@ export default function FoodClient({
             อาหารนี้เฉพาะเจาะจงหรือไม่
           </label>
           <Checkbox
-            onChange={setBoolean((c) => {
-              if (c) {
-                setListPriority(true);
-                setIsWhiteList(true);
-              } else {
-                setListPriority(false);
-              }
-            })}
+            onChange={setIsWhiteListListPriorityPack.setDown()}
             sx={{
               "&.Mui-checked": {
                 color: "#FFFFFF", // Custom color when checked

@@ -413,7 +413,7 @@ export function setSwop(
       return;
     }
     if (event.target.checked) {
-      set((previous) => [...previous, input]);
+      set(addItemInUseStateArray(input));
     } else {
       set((previous: Id[]) =>
         previous.filter((e) => e.toString() != input.toString())
@@ -464,5 +464,72 @@ export function setSwop2DimensionArray(
     );
   });
 }
-export const updateChatText = "update-chat";
-export const newChatText = "new-chat";
+export function addItemInUseStateArray<T>(add: T): (previous: T[]) => T[] {
+  return (previous) => [...previous, add];
+}
+export interface UpDownPack {
+  up: boolean;
+  down: boolean;
+}
+export interface UpMiddleDownPack {
+  up: boolean;
+  middle: boolean;
+  down: boolean;
+}
+export class SetUpDownPack {
+  private set: React.Dispatch<React.SetStateAction<UpDownPack>>;
+  constructor(set: React.Dispatch<React.SetStateAction<UpDownPack>>) {
+    this.set = set;
+  }
+  public setUp(): (event: React.ChangeEvent<HTMLInputElement>) => void {
+    return setBoolean((input) => {
+      if (input) {
+        this.set(({ down }) => ({ up: true, down }));
+      } else {
+        this.set({ up: false, down: false });
+      }
+    });
+  }
+  public setDown(): (event: React.ChangeEvent<HTMLInputElement>) => void {
+    return setBoolean((input) => {
+      if (input) {
+        this.set({ up: true, down: true });
+      } else {
+        this.set(({ up }) => ({ up, down: false }));
+      }
+    });
+  }
+}
+export class SetUpMiddleDownPack {
+  private set: React.Dispatch<React.SetStateAction<UpMiddleDownPack>>;
+  constructor(set: React.Dispatch<React.SetStateAction<UpMiddleDownPack>>) {
+    this.set = set;
+  }
+  public setUp(): (event: React.ChangeEvent<HTMLInputElement>) => void {
+    return setBoolean((input) => {
+      if (input) {
+        this.set(({ down, middle }) => ({ up: true, middle, down }));
+      } else {
+        this.set({ up: false, middle: false, down: false });
+      }
+    });
+  }
+  public setMiddle(): (event: React.ChangeEvent<HTMLInputElement>) => void {
+    return setBoolean((input) => {
+      if (input) {
+        this.set(({ down }) => ({ up: true, middle: true, down }));
+      } else {
+        this.set(({ up }) => ({ up, middle: false, down: false }));
+      }
+    });
+  }
+  public setDown(): (event: React.ChangeEvent<HTMLInputElement>) => void {
+    return setBoolean((input) => {
+      if (input) {
+        this.set({ up: true, middle: true, down: true });
+      } else {
+        this.set(({ up, middle }) => ({ up, middle, down: false }));
+      }
+    });
+  }
+}

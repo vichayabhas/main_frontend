@@ -92,6 +92,7 @@ export default async function Baan({ params }: { params: { pid: string } }) {
           token={token}
           lock={user.mode == "nong"}
           pushToHome
+          bypass
         >
           <UpdateCampServer campId={camp._id} token={token} />
           <RegisterPartServer campId={camp._id} token={token} isBoard={true} />

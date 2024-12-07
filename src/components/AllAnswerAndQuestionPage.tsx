@@ -119,6 +119,9 @@ export default function AllAnswerAndQuestionPage({
   campIdInput: string;
   readOnly?: boolean;
 }) {
+  if (!dataInput.canScoring) {
+    readOnly = true;
+  }
   const campId = stringToId(campIdInput);
   const [data, setData] = useState(dataInput);
   const [showAll, setShowAll] = useState(true);

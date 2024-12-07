@@ -187,6 +187,8 @@ export interface InterCampBack {
   canNongSeeAllActionPlan: boolean;
   canNongSeeAllTrackingSheet: boolean;
   canNongAccessDataWithRoleNong: boolean;
+  pusherId: Id | null;
+  lockChangeQuestion: boolean;
   //public
 }
 export interface InterCampStyle {
@@ -549,6 +551,7 @@ export interface InterCampFront {
   canNongSeeAllActionPlan: boolean;
   canNongSeeAllTrackingSheet: boolean;
   canNongAccessDataWithRoleNong: boolean;
+  lockChangeQuestion: boolean;
   //public
 }
 export interface InterPartFront {
@@ -632,6 +635,7 @@ export interface UpdateCamp {
   canNongSeeAllActionPlan: boolean;
   canNongSeeAllTrackingSheet: boolean;
   canNongAccessDataWithRoleNong: boolean;
+  lockChangeQuestion: boolean;
   //public
 }
 export interface CreateCamp {
@@ -968,7 +972,8 @@ export interface ChatReady {
   roomName: string;
   userId: Id;
   subscribe: string;
-  pusher: [string, { cluster: string }];
+  pusher: PusherClientData | null;
+  systemInfo: SystemInfo;
   //private
 }
 export const foodLimits = [
@@ -1222,6 +1227,7 @@ export interface GetAllQuestion {
   choices: GetChoiceQuestion[];
   texts: GetTextQuestion[];
   canAnswerTheQuestion: boolean;
+  pusherData: PusherClientData | null;
   //private
 }
 export interface UserAndAllQuestionPack {
@@ -1242,6 +1248,9 @@ export interface GetAllAnswerAndQuestion {
   nongInterviewAnswers: UserAndAllQuestionPack[];
   success: boolean;
   groupName: string;
+  pusherData: PusherClientData | null;
+  systemInfo: SystemInfo;
+  canScoring: boolean;
   //public
 }
 export interface ScoreTextQuestion {
@@ -1596,6 +1605,7 @@ export interface BasicCamp {
   canNongSeeAllActionPlan: boolean;
   canNongSeeAllTrackingSheet: boolean;
   canNongAccessDataWithRoleNong: boolean;
+  lockChangeQuestion: boolean;
   //public
 }
 export interface BasicPart {
@@ -1607,5 +1617,85 @@ export interface BasicPart {
   partName: string;
   peeSleepIds: Id[];
   isAuth: boolean;
+  //public
+}
+export interface SystemInfo {
+  systemMode: string;
+  endEmail: string;
+  studentIdLength: number;
+  studentIdLastTwoDigit: string;
+  nongText: string;
+  peeText: string;
+  newText: string;
+  updateText: string;
+  manageText: string;
+  questionText: string;
+  textQuestionText: string;
+  choiceQuestionText: string;
+  chatText: string;
+}
+export interface RegisterData {
+  regisParts: RegisPart[];
+  regisBaans: RegisBaan[];
+  peeRegisters: ShowRegister[];
+  camp: BasicCamp;
+  partMap: MyMap[];
+  nongRegister: AllNongRegister;
+  partBoardIdString: string;
+  partRegisterIdString: string;
+  pusher: PusherClientData | null;
+  systemInfo: SystemInfo;
+}
+export interface PusherClientData {
+  first: string;
+  second: { cluster: string };
+}
+export type QuestionCategory =
+  | "พี่พี่"
+  | "น้องค่าย"
+  | "น้องที่ยืนยันแล้ว"
+  | "น้องที่ยืนยันแล้ว"
+  | "น้องที่จ่ายตังแล้ว"
+  | "น้องที่ผ่านเข้าค่าย"
+  | "น้องที่ผ่านสัมภาษณ์"
+  | "น้องที่สมัครเข้ามา";
+export interface InterPusherData {
+  campId: Id;
+  appId: string;
+  key: string;
+  secret: string;
+  cluster: string;
+  useTLS: boolean;
+  _id: Id;
+}
+export interface CreatePusherData {
+  campId: Id;
+  appId: string;
+  key: string;
+  secret: string;
+  cluster: string;
+}
+export interface TriggerChoiceQuestion {
+  _id: Id;
+  question: string;
+  a: string;
+  b: string;
+  c: string;
+  d: string;
+  e: string;
+  scoreA: number;
+  scoreB: number;
+  scoreC: number;
+  scoreD: number;
+  scoreE: number;
+  correct: Choice | "-";
+  order: number;
+  //public
+}
+export interface TriggerTextQuestion {
+  question: string;
+  _id: Id;
+  score: number;
+  order: number;
   //public
 }

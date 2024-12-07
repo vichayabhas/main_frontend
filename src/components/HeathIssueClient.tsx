@@ -186,7 +186,7 @@ export default function HeathIssueClient({
                 color: "#FFFFFF", // Custom color when checked
               },
             }}
-            defaultChecked={spicy}
+            checked={spicy}
           />
         </div>
 
@@ -230,7 +230,7 @@ export default function HeathIssueClient({
                     color: "#FFFFFF", // Custom color when checked
                   },
                 }}
-                defaultChecked={isWearing}
+                checked={isWearing}
               />
             </div>
           </>

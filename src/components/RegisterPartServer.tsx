@@ -1,12 +1,7 @@
-import getBaans from "@/libs/camp/getBaans";
-import getCamp from "@/libs/camp/getCamp";
-import getShowRegisters from "@/libs/camp/getShowRegisters";
-import { Id, MyMap, RegisBaan, RegisPart } from "../../interface";
-import getUserFromCamp from "@/libs/camp/getUserFromCamp";
+import { Id } from "../../interface";
 import RegisterPartClient from "./RegisPartClient";
 import React from "react";
-import getAllNongRegister from "@/libs/camp/getAllNongRegister";
-import getParts from "@/libs/camp/getParts";
+import getRegisterData from "@/libs/camp/getRegisterData";
 export default async function RegisterPartServer({
   campId,
   token,
@@ -16,43 +11,12 @@ export default async function RegisterPartServer({
   token: string;
   isBoard: boolean;
 }) {
-  const camp = await getCamp(campId);
-  const baans = await getBaans(campId);
-  const peeRegister = await getShowRegisters(campId, token);
-  const nongRegister = await getAllNongRegister(campId, token);
-  let i = 0;
-  const regisParts: RegisPart[] = [];
-  const regisBaans: RegisBaan[] = [];
-  while (i < baans.length) {
-    const baan = baans[i++];
-    regisBaans.push({
-      baan,
-      pees: await getUserFromCamp("getPeesFromBaanId", baan._id),
-      nongs: await getUserFromCamp("getNongsFromBaanId", baan._id),
-    });
-  }
-  i = 0;
-  const partMap: MyMap[] = [];
-  const parts = await getParts(camp._id, token);
-  while (i < parts.length) {
-    const part = parts[i++];
-    regisParts.push({
-      part,
-      pees: await getUserFromCamp("getPeesFromPartId", part._id),
-      petos: await getUserFromCamp("getPetosFromPartId", part._id),
-    });
-    partMap.push({ key: part._id, value: part.partName });
-  }
+  const data=await getRegisterData(campId)
   return (
     <RegisterPartClient
-      regisParts={regisParts}
-      regisBaans={regisBaans}
-      peeRegisters={peeRegister}
-      campInput={camp}
-      token={token}
-      isBoard={isBoard}
-      partMap={partMap}
-      nongRegister={nongRegister}
+     isBoard={isBoard}
+     data={data}
+     token={token}
     />
   );
 }

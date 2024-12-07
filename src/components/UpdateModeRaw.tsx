@@ -109,7 +109,7 @@ export default function UpdateModeRaw({
                   },
                 }}
                 onChange={setSwop(camp._id,setFilterIds)}
-                defaultChecked={filterIds.includes(camp._id)}
+                checked={filterIds.includes(camp._id)}
               />
               {camp.campName}
             </div>

@@ -39,7 +39,7 @@ export default function LocationDateReserve({
         </label>
         <Checkbox
           onChange={setBoolean(setHaveBottle)}
-          defaultChecked={user.haveBottle}
+          checked={user.haveBottle}
         />
       </div>
 
@@ -50,7 +50,7 @@ export default function LocationDateReserve({
         </label>
         <Checkbox
           onChange={setBoolean(setLikeToSleepAtCamp)}
-          defaultChecked={user.likeToSleepAtCamp}
+          checked={user.likeToSleepAtCamp}
         />
       </div>
       <SelectTemplate

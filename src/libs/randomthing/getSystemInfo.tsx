@@ -1,9 +1,7 @@
 import { getBackendUrl } from "@/components/setup";
+import { SystemInfo } from "../../../interface";
 
-export default async function getSystemInfo(): Promise<{
-  systemMode: string;
-  endEmail: string;
-}> {
+export default async function getSystemInfo(): Promise<SystemInfo> {
   const res = await fetch(`${getBackendUrl()}/randomthing/getSystemInfo`, {
     cache: "no-store",
   });

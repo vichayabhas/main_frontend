@@ -6,6 +6,7 @@ import UpdateCampClient from "./UpdateCampClient";
 import getAllQuestion from "@/libs/camp/getAllQuestion";
 import React from "react";
 import getParts from "@/libs/camp/getParts";
+import getSystemInfo from "@/libs/randomthing/getSystemInfo";
 
 export default async function UpdateCampServer({
   campId,
@@ -19,6 +20,7 @@ export default async function UpdateCampServer({
   const remainPartName = await getAllRemainPartName(campId, token);
   const questions = await getAllQuestion(token, campId);
   const parts = await getParts(campId, token);
+  const systemInfo=await getSystemInfo()
   return (
     <>
       <UpdateCampClient
@@ -27,6 +29,7 @@ export default async function UpdateCampServer({
         parts={parts}
         remainPartName={remainPartName}
         questions={questions}
+        systemInfo={systemInfo}
       />
     </>
   );

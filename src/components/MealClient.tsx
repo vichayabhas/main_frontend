@@ -20,7 +20,9 @@ import {
   selectTimeToSystem,
   setBoolean,
   setTextToString,
+  SetUpDownPack,
   stringToId,
+  UpDownPack,
 } from "./setup";
 import createFood from "@/libs/randomthing/createFood";
 import updateMeal from "@/libs/randomthing/updateMeal";
@@ -54,10 +56,13 @@ export default function MealClient({
   const [time, setTime] = useState<dayjs.Dayjs | null>(
     dayjs(addTime(meal.time.toString(), selectOffset))
   );
-  const [isWhiteList, setIsWhiteList] = useState(false);
   const [name, setName] = useState("");
   const [isSpicy, setIsSpicy] = useState(true);
-  const [listPriority, setListPriority] = useState(false);
+  const [{ up: isWhiteList, down: listPriority }, set] = useState<UpDownPack>({
+    up: false,
+    down: false,
+  });
+  const setIsWhiteListListPriorityPack = new SetUpDownPack(set);
   const [มังสวิรัติ, setมังสวิรัติ] = useState(false);
   const [เจ, setเจ] = useState(false);
   const [อิสลาม, setอิสลาม] = useState(false);
@@ -216,14 +221,7 @@ export default function MealClient({
             อาหารนี้สำหรับคนที่แพ้อาหารหรือไม่
           </label>
           <Checkbox
-            onChange={setBoolean((c) => {
-              if (c) {
-                setIsWhiteList(true);
-              } else {
-                setListPriority(false);
-                setIsWhiteList(false);
-              }
-            })}
+            onChange={setIsWhiteListListPriorityPack.setUp()}
             sx={{
               "&.Mui-checked": {
                 color: "#FFFFFF", // Custom color when checked
@@ -238,14 +236,7 @@ export default function MealClient({
             อาหารนี้เฉพาะเจาะจงหรือไม่
           </label>
           <Checkbox
-            onChange={setBoolean((c) => {
-              if (c) {
-                setListPriority(true);
-                setIsWhiteList(true);
-              } else {
-                setListPriority(false);
-              }
-            })}
+            onChange={setIsWhiteListListPriorityPack.setDown()}
             sx={{
               "&.Mui-checked": {
                 color: "#FFFFFF", // Custom color when checked

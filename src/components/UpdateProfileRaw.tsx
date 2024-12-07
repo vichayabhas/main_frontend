@@ -81,7 +81,7 @@ export default function UpdateProfileRaw({
                 },
               },
             }}
-            onChange={setTextToString(setName,true)}
+            onChange={setTextToString(setName, true)}
             value={name}
             required
           />
@@ -108,7 +108,7 @@ export default function UpdateProfileRaw({
                 },
               },
             }}
-            onChange={setTextToString(setLastname,true)}
+            onChange={setTextToString(setLastname, true)}
             value={lastname}
             required
           />
@@ -223,15 +223,12 @@ export default function UpdateProfileRaw({
             }}
             onChange={setTextToString(setCitizenId)}
             value={citizenId}
-            
           />
         </div>
         <div className="flex flex-row items-center my-5">
           <label className="w-2/5 text-2xl text-white">เลือกขนาดเสื้อ</label>
-
           <SelectSize select={setShirtSize} def={user.shirtSize} />
         </div>
-
         <div className="flex flex-row items-center my-5">
           <label className="w-2/5 text-2xl text-white">
             มีกระติกน้ำหรือไม่
@@ -243,10 +240,9 @@ export default function UpdateProfileRaw({
                 color: "#FFFFFF", // Custom color when checked
               },
             }}
-            defaultChecked={user.haveBottle}
+            checked={user.haveBottle}
           />
         </div>
-
         <div className="flex flex-row justify-end"></div>
         <div className="flex flex-row items-center my-5">
           <label className="w-2/5 text-2xl text-white">
@@ -259,7 +255,7 @@ export default function UpdateProfileRaw({
                 color: "#FFFFFF", // Custom color when checked
               },
             }}
-            defaultChecked={user.likeToSleepAtCamp}
+            checked={user.likeToSleepAtCamp}
           />
         </div>
         <div className="flex flex-row justify-end">
@@ -280,9 +276,6 @@ export default function UpdateProfileRaw({
               color: "#961A1D",
             }}
             onClick={() => {
-              console.log(tel);
-              console.log(email);
-
               try {
                 updateProfile(
                   email,
