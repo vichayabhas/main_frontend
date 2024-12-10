@@ -551,6 +551,7 @@ export interface InterCampFront {
   canNongSeeAllActionPlan: boolean;
   canNongSeeAllTrackingSheet: boolean;
   canNongAccessDataWithRoleNong: boolean;
+  pusherId: Id | null;
   lockChangeQuestion: boolean;
   //public
 }
@@ -1248,9 +1249,9 @@ export interface GetAllAnswerAndQuestion {
   nongInterviewAnswers: UserAndAllQuestionPack[];
   success: boolean;
   groupName: string;
-  pusherData: PusherClientData | null;
   systemInfo: SystemInfo;
   canScoring: boolean;
+  pusherData: InterPusherData | null;
   //public
 }
 export interface ScoreTextQuestion {
@@ -1606,6 +1607,7 @@ export interface BasicCamp {
   canNongSeeAllTrackingSheet: boolean;
   canNongAccessDataWithRoleNong: boolean;
   lockChangeQuestion: boolean;
+  pusherId: Id | null;
   //public
 }
 export interface BasicPart {
@@ -1698,4 +1700,32 @@ export interface TriggerTextQuestion {
   score: number;
   order: number;
   //public
+}
+export interface ScoreEvent {
+  score: number;
+  i: number;
+  j: number;
+}
+export interface SendData<T> {
+  chanel: string;
+  event: string;
+  data: T;
+  pusherData: InterPusherData;
+}
+export interface CampState {
+  camp: BasicCamp;
+  state:
+    | "notRegister"
+    | "pending"
+    | "interview"
+    | "pass"
+    | "paid"
+    | "sure"
+    | "peePass"
+    | "nong"
+    | "pee"
+    | "peto";
+  questions: GetAllQuestion;
+  link: string;
+  user: BasicUser;
 }

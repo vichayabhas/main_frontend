@@ -2,38 +2,25 @@
 import nongRegisterCamp from "@/libs/camp/nongRegisterCamp";
 import { MenuItem, Select, TextField } from "@mui/material";
 import { useRef, useState } from "react";
-import {
-  Choice,
-  GetAllQuestion,
-  InterCampFront,
-  BasicUser,
-} from "../../interface";
-import {
-  getValue,
-  modifyElementInUseStateArray,
-  setMap,
-  setTextToString,
-} from "./setup";
+import { Choice, CampState } from "../../interface";
+import { modifyElementInUseStateArray, setMap, setTextToString } from "./setup";
 import Link from "next/link";
 import React from "react";
+import ImagesFromUrl from "./ImagesFromUrl";
 
 interface QuestionReady {
   element: React.ReactNode;
   order: number;
 }
 export default function NongPendingPage({
-  camp,
   token,
-  user,
-  questions,
+  campState: { camp, user, questions, link: oldLink },
 }: {
-  camp: InterCampFront;
   token: string;
-  user: BasicUser;
-  questions: GetAllQuestion;
+  campState: CampState;
 }) {
   const userRef = useRef("");
-  const [link, setLink] = useState<string | null>("");
+  const [link, setLink] = useState<string | null>(oldLink);
   const [choiceAnswers, setChoiceAnswers] = useState<(Choice | "-")[]>(
     questions.choices.map((choice) => choice.answer)
   );
@@ -197,15 +184,13 @@ export default function NongPendingPage({
     .sort((a, b) => a.order - b.order);
   return (
     <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
+      <ImagesFromUrl urls={camp.pictureUrls} />
+
       <div className="text-4xl font-medium">Register</div>
       {camp.registerSheetLink ? (
         <Link href={`${camp.registerSheetLink}${user._id}`}>ใบรับสมัคร</Link>
       ) : null}
-      {camp.registerSheetLink ? (
-        <Link href={`${getValue(camp.nongPendingIds, user._id)}`}>
-          ใบรับสมัคร
-        </Link>
-      ) : null}
+      {camp.registerSheetLink ? <Link href={oldLink}>ใบรับสมัคร</Link> : null}
       {camp.open ? (
         <form className="w-[30%] items-center bg-slate-600 p-10 rounded-3xl shadow-[25px_25px_40px_-10px_rgba(0,0,0,0.7)]">
           <div className="flex flex-row items-center">

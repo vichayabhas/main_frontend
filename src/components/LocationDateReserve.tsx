@@ -3,7 +3,7 @@
 import { useState } from "react";
 import staffRegisterCamp from "@/libs/camp/staffRegister";
 import SelectTemplate from "./SelectTemplate";
-import { Id, InterUser, MyMap, Size } from "../../interface";
+import { BasicUser, Id, MyMap, Size } from "../../interface";
 import { Checkbox } from "@mui/material";
 import SelectSize from "./SelectSize";
 import { updateBottle } from "@/libs/user/updateBottle";
@@ -15,10 +15,12 @@ export default function LocationDateReserve({
   partMap,
   token,
   user,
+  defaultSelect,
 }: {
   partMap: MyMap[];
   token: string;
-  user: InterUser;
+  user: BasicUser;
+  defaultSelect?: MyMap;
 }) {
   const [shirtSize, setShirtSize] = useState<Size>(user.shirtSize);
   const [haveBottle, setHaveBottle] = useState<boolean>(user.haveBottle);
@@ -62,6 +64,7 @@ export default function LocationDateReserve({
           updateSize(shirtSize, token);
         }}
         buttonText="Register"
+        defaultSelect={defaultSelect}
       />
     </>
   );

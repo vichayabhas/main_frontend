@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React from "react";
 import chatStyle from "@/components/chat.module.css";
 import { AllPlaceData, GetPetoData } from "../../interface";
 import AllInOneLock from "./AllInOneLock";
@@ -32,7 +32,7 @@ export default function PetoCampClient({
   token: string;
   allPlaceData: AllPlaceData;
 }) {
-  const ref = useRef(null);
+  const ref = React.useRef(null);
   const download = useDownloadExcel({
     currentTableRef: ref.current,
     filename: "ห้องฝ่าย",

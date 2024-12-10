@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef } from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
 import { AllPlaceData, GetPeeData } from "../../interface";
 import AllInOneLock from "./AllInOneLock";
@@ -42,7 +41,7 @@ export default function PeeCampClient({
   token: string;
   allPlaceData: AllPlaceData;
 }) {
-  const ref = useRef(null);
+  const ref = React.useRef(null);
   const download = useDownloadExcel({
     currentTableRef: ref.current,
     filename: `ห้อง${camp.groupName} ${

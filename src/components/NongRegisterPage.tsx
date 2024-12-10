@@ -2,30 +2,22 @@
 import nongRegisterCamp from "@/libs/camp/nongRegisterCamp";
 import { MenuItem, Select, TextField } from "@mui/material";
 import { useRef, useState } from "react";
-import {
-  Choice,
-  GetAllQuestion,
-  InterCampFront,
-  BasicUser,
-} from "../../interface";
+import { Choice, CampState } from "../../interface";
 import { modifyElementInUseStateArray, setMap, setTextToString } from "./setup";
 import Link from "next/link";
 import React from "react";
+import ImagesFromUrl from "./ImagesFromUrl";
 
 interface QuestionReady {
   element: React.ReactNode;
   order: number;
 }
 export default function NongRegisterPage({
-  camp,
   token,
-  user,
-  questions,
+  campState: { camp, user, questions },
 }: {
-  camp: InterCampFront;
   token: string;
-  user: BasicUser;
-  questions: GetAllQuestion;
+  campState: CampState;
 }) {
   const userRef = useRef("");
   const [link, setLink] = useState<string | null>("");
@@ -192,6 +184,7 @@ export default function NongRegisterPage({
     .sort((a, b) => a.order - b.order);
   return (
     <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
+      <ImagesFromUrl urls={camp.pictureUrls} />
       <div className="text-4xl font-medium">Register</div>
       {camp.registerSheetLink ? (
         <Link href={`${camp.registerSheetLink}${user._id}`}>ใบรับสมัคร</Link>

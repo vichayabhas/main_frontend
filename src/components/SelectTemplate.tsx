@@ -6,14 +6,16 @@ export default function SelectTemplate<T>({
   mapIn,
   select,
   buttonText,
+  defaultSelect,
 }: {
   mapIn: { key: T; value: string }[];
   select: (output: T) => void;
   buttonText: string;
+  defaultSelect?: { key: T; value: string };
 }) {
   const userRef = useRef("");
 
-  const [chose, setChose] = useState<T | null>(null);
+  const [chose, setChose] = useState<T | null>(defaultSelect?.key || null);
   return (
     <div className=" rounded-lg ">
       <Select
@@ -21,6 +23,7 @@ export default function SelectTemplate<T>({
         name="location"
         id="location"
         className="h-[2em] w-[200px]"
+        defaultValue={defaultSelect?.value}
       >
         {mapIn.map((choice: { key: T; value: string }, i) => {
           return (

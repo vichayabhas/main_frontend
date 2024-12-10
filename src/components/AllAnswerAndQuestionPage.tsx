@@ -14,6 +14,7 @@ import AllAnswerAndQuestionPageBreakDown from "./AllAnswerAndQuestionPageBreakDo
 import {
   copy,
   downloadText,
+  // getPusherClient,
   setBoolean,
   setTextToString,
   stringToId,
@@ -22,6 +23,8 @@ import React, { useRef, useState } from "react";
 import { Checkbox, TextField } from "@mui/material";
 import { useDownloadExcel } from "react-export-table-to-excel";
 import FinishButton from "./FinishButton";
+// import Pusher from "pusher-js";
+// import PusherServer from "pusher";
 interface AnswerReady {
   element: React.ReactNode;
   order: number;
@@ -122,6 +125,17 @@ export default function AllAnswerAndQuestionPage({
   if (!dataInput.canScoring) {
     readOnly = true;
   }
+  // let pusherServer: PusherServer | null;
+  // let pusherClient: Pusher | null;
+  // const pusherServerData = dataInput.pusherData;
+  // if (!pusherServerData) {
+  //   pusherServer = null;
+  //   pusherClient=null
+  // } else {
+  //   pusherServer = new PusherServer(pusherServerData);
+  //   const pusherData=getPusherClient(pusherServerData)
+  //   pusherClient=new Pusher(pusherData.first,pusherData.second)
+  // }
   const campId = stringToId(campIdInput);
   const [data, setData] = useState(dataInput);
   const [showAll, setShowAll] = useState(true);
@@ -141,7 +155,6 @@ export default function AllAnswerAndQuestionPage({
     .map(copy)
     .sort((a, b) => a._id.toString().localeCompare(b._id.toString()))
     .sort((a, b) => a.order - b.order);
-  //const userAndAllQuestionReady:UserAndAllQuestionReady[]=
   const headTableRaw: AnswerReady[] = choiceQuestions
     .map((v) => ({
       id: v._id,

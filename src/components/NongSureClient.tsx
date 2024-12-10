@@ -2,34 +2,36 @@
 
 import paid from "@/libs/camp/paid";
 import Link from "next/link";
-import { InterCampFront, BasicUser } from "../../interface";
+import { CampState } from "../../interface";
 import FinishButton from "./FinishButton";
-import { getValue } from "./setup";
 import React from "react";
+import ImagesFromUrl from "./ImagesFromUrl";
 export default function NongSureClient({
-  camp,
   token,
-  user,
+  campState: { camp, link },
 }: {
-  camp: InterCampFront;
   token: string;
-  user: BasicUser;
+  campState: CampState;
 }) {
   switch (camp.registerModel) {
     case "noPaid": {
       return (
-        <FinishButton
-          text="ยืนยันที่จะเข้าค่าย"
-          onClick={() => {
-            paid(camp._id, token);
-          }}
-        />
+        <>
+          <ImagesFromUrl urls={camp.pictureUrls} />
+          <FinishButton
+            text="ยืนยันที่จะเข้าค่าย"
+            onClick={() => {
+              paid(camp._id, token);
+            }}
+          />
+        </>
       );
     }
     case "noInterview": {
       return (
         <div>
-          <Link href={getValue(camp.nongPassIds, user._id)}>Link</Link>
+          <ImagesFromUrl urls={camp.pictureUrls} />
+          <Link href={link}>Link</Link>
           <FinishButton
             text="ยืนยันที่จะเข้าค่าย+จ่ายตัง"
             onClick={() => {
@@ -42,7 +44,8 @@ export default function NongSureClient({
     case "all": {
       return (
         <div>
-          <Link href={getValue(camp.nongPassIds, user._id)}>Link</Link>
+          <ImagesFromUrl urls={camp.pictureUrls} />
+          <Link href={link}>Link</Link>
           <FinishButton
             text="ยืนยันที่จะเข้าค่าย+จ่ายตัง"
             onClick={() => {

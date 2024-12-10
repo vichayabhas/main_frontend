@@ -14,7 +14,7 @@ import { downloadText, setSwop, setTextToString } from "./setup";
 import SelectTemplate from "./SelectTemplate";
 import FinishButton from "./FinishButton";
 import admission from "@/libs/camp/admission";
-import addMemberToBaan from "@/libs/camp/addMamberToBaan";
+import addMemberToBaan from "@/libs/camp/addMemberToBaan";
 import changeBaan from "@/libs/camp/changeBaan";
 import changePart from "@/libs/camp/changePart";
 import React from "react";

@@ -1,12 +1,13 @@
 import getAllRemainPartName from "@/libs/admin/getAllRemainPartName";
 import getBaans from "@/libs/camp/getBaans";
 import getCamp from "@/libs/camp/getCamp";
-import { Id } from "../../interface";
+import { Id, InterPusherData } from "../../interface";
 import UpdateCampClient from "./UpdateCampClient";
 import getAllQuestion from "@/libs/camp/getAllQuestion";
 import React from "react";
 import getParts from "@/libs/camp/getParts";
 import getSystemInfo from "@/libs/randomthing/getSystemInfo";
+import getPusherData from "@/libs/camp/getPusherData";
 
 export default async function UpdateCampServer({
   campId,
@@ -21,6 +22,12 @@ export default async function UpdateCampServer({
   const questions = await getAllQuestion(token, campId);
   const parts = await getParts(campId, token);
   const systemInfo=await getSystemInfo()
+  let pusherData:InterPusherData|null
+  if(!camp.pusherId){
+    pusherData=null
+  }else{
+    pusherData=await getPusherData(camp.pusherId)
+  }
   return (
     <>
       <UpdateCampClient
@@ -30,6 +37,8 @@ export default async function UpdateCampServer({
         remainPartName={remainPartName}
         questions={questions}
         systemInfo={systemInfo}
+        pusherData={pusherData}
+        token={token}
       />
     </>
   );

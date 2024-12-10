@@ -7,7 +7,7 @@ import FinishButton from "./FinishButton";
 import ImagesFromUrl from "./ImagesFromUrl";
 import ShowOwnCampData from "./ShowOwnCampData";
 import chatStyle from "@/components/chat.module.css";
-import React, { useRef } from "react";
+import React from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
 import { downloadText } from "./setup";
 import TopMenuItem from "./TopMenuItem";
@@ -33,7 +33,7 @@ export default function NongCampClient({
   token: string;
   data: GetNongData;
 }) {
-  const ref = useRef(null);
+  const ref = React.useRef(null);
   const download = useDownloadExcel({
     currentTableRef: ref.current,
     filename: `ห้อง${camp.groupName} ${

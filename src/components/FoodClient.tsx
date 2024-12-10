@@ -13,7 +13,6 @@ import {
   setSwop,
   setTextToString,
   SetUpDownPack,
-  UpDownPack,
 } from "./setup";
 import GetTimeHtml from "./GetTimeHtml";
 import FinishButton from "./FinishButton";
@@ -32,11 +31,14 @@ export default function FoodClient({
 }) {
   const [name, setName] = useState(food.name);
   const [isSpicy, setIsSpicy] = useState(food.isSpicy);
-  const [{ up: isWhiteList, down: listPriority }, set] = useState<UpDownPack>({
-    up: food.isWhiteList,
-    down: food.listPriority,
-  });
-  const setIsWhiteListListPriorityPack = new SetUpDownPack(set);
+  const {
+    up: isWhiteList,
+    down: listPriority,
+    setDown: setListPriority,
+    setUp: setIsWhiteList,
+  } = new SetUpDownPack(
+    useState(SetUpDownPack.init(food.isWhiteList, food.listPriority))
+  );
 
   const [มังสวิรัติ, setมังสวิรัติ] = useState(
     food.lists.includes("มังสวิรัติ")
@@ -115,7 +117,7 @@ export default function FoodClient({
             อาหารนี้สำหรับคนที่แพ้อาหารหรือไม่
           </label>
           <Checkbox
-            onChange={setIsWhiteListListPriorityPack.setUp()}
+            onChange={setIsWhiteList}
             sx={{
               "&.Mui-checked": {
                 color: "#FFFFFF", // Custom color when checked
@@ -129,7 +131,7 @@ export default function FoodClient({
             อาหารนี้เฉพาะเจาะจงหรือไม่
           </label>
           <Checkbox
-            onChange={setIsWhiteListListPriorityPack.setDown()}
+            onChange={setListPriority}
             sx={{
               "&.Mui-checked": {
                 color: "#FFFFFF", // Custom color when checked

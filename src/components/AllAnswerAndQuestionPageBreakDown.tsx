@@ -47,6 +47,27 @@ export default function AllAnswerAndQuestionPageBreakDown({
 }) {
   const [textScores, setTextScores] = useState(setDefaultScore(setMode(data)));
   const [isTimeout, setTimeOut] = useState(false);
+  // React.useEffect(() => {
+  //   if (!pusherClient) {
+  //     return;
+  //   }
+  //   const channel = pusherClient.subscribe(
+  //     `${data.systemInfo.questionText}${code}${campId}`
+  //   );
+  //   channel.bind(data.systemInfo.manageText, (input:string) => {
+  //   const  { i, j, score }: ScoreEvent=JSON.parse(input)
+  //     setMap(
+  //       setTextScores,
+  //       modifyElementInUseStateArray2Dimension(i, j)
+  //     )(score);
+  //     console.log({i,score,j})
+  //   });
+  //   setTimeOut(false)
+  //   return () => {
+  //     channel.unbind_all();
+  //     channel.unsubscribe();
+  //   };
+  // });
   function scoring() {
     waiting(async () => {
       await scoreTextQuestions(
@@ -125,7 +146,9 @@ export default function AllAnswerAndQuestionPageBreakDown({
             text="clear"
             onClick={() => setTextScores(setDefaultScore(setMode(data)))}
           />
-          <FinishButton text="score" onClick={scoring} />
+          {data.canScoring ? (
+            <FinishButton text="score" onClick={scoring} />
+          ) : null}
         </div>
       )}
     </div>

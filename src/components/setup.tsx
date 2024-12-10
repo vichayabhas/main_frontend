@@ -7,6 +7,8 @@ import {
   HeathIssueBody,
   Id,
   UpdateTimeOffsetRaw,
+  InterPusherData,
+  PusherClientData,
 } from "../../interface";
 import dayjs from "dayjs";
 import React from "react";
@@ -478,20 +480,22 @@ export interface UpMiddleDownPack {
 }
 export class SetUpDownPack {
   private set: React.Dispatch<React.SetStateAction<UpDownPack>>;
-  constructor(set: React.Dispatch<React.SetStateAction<UpDownPack>>) {
-    this.set = set;
-  }
-  public setUp(): (event: React.ChangeEvent<HTMLInputElement>) => void {
-    return setBoolean((input) => {
+  public readonly up: boolean;
+  public readonly down: boolean;
+  constructor(
+    input: [UpDownPack, React.Dispatch<React.SetStateAction<UpDownPack>>]
+  ) {
+    this.set = input[1];
+    this.up = input[0].up;
+    this.down = input[0].down;
+    this.setUp = setBoolean((input) => {
       if (input) {
         this.set(({ down }) => ({ up: true, down }));
       } else {
         this.set({ up: false, down: false });
       }
     });
-  }
-  public setDown(): (event: React.ChangeEvent<HTMLInputElement>) => void {
-    return setBoolean((input) => {
+    this.setDown = setBoolean((input) => {
       if (input) {
         this.set({ up: true, down: true });
       } else {
@@ -499,32 +503,42 @@ export class SetUpDownPack {
       }
     });
   }
+  public readonly setUp: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  public readonly setDown: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  public static init(up: boolean, down: boolean): UpDownPack {
+    return { up, down };
+  }
 }
 export class SetUpMiddleDownPack {
   private set: React.Dispatch<React.SetStateAction<UpMiddleDownPack>>;
-  constructor(set: React.Dispatch<React.SetStateAction<UpMiddleDownPack>>) {
-    this.set = set;
-  }
-  public setUp(): (event: React.ChangeEvent<HTMLInputElement>) => void {
-    return setBoolean((input) => {
+  public readonly up: boolean;
+  public readonly middle: boolean;
+  public readonly down: boolean;
+  constructor(
+    input: [
+      UpMiddleDownPack,
+      React.Dispatch<React.SetStateAction<UpMiddleDownPack>>
+    ]
+  ) {
+    this.set = input[1];
+    this.up = input[0].up;
+    this.middle = input[0].middle;
+    this.down = input[0].down;
+    this.setUp = setBoolean((input) => {
       if (input) {
         this.set(({ down, middle }) => ({ up: true, middle, down }));
       } else {
         this.set({ up: false, middle: false, down: false });
       }
     });
-  }
-  public setMiddle(): (event: React.ChangeEvent<HTMLInputElement>) => void {
-    return setBoolean((input) => {
+    this.setMiddle = setBoolean((input) => {
       if (input) {
         this.set(({ down }) => ({ up: true, middle: true, down }));
       } else {
         this.set(({ up }) => ({ up, middle: false, down: false }));
       }
     });
-  }
-  public setDown(): (event: React.ChangeEvent<HTMLInputElement>) => void {
-    return setBoolean((input) => {
+    this.setDown = setBoolean((input) => {
       if (input) {
         this.set({ up: true, middle: true, down: true });
       } else {
@@ -532,4 +546,19 @@ export class SetUpMiddleDownPack {
       }
     });
   }
+  public readonly setUp: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  public readonly setMiddle: (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => void;
+  public readonly setDown: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  public static init(
+    up: boolean,
+    middle: boolean,
+    down: boolean
+  ): UpMiddleDownPack {
+    return { up, middle, down };
+  }
+}
+export function getPusherClient(data: InterPusherData): PusherClientData {
+  return { first: data.key, second: data };
 }
