@@ -91,7 +91,7 @@ export default function EditWorkingItem({
           name="location"
           id="location"
           className="h-[2em] w-[200px]"
-          defaultValue={status}
+          value={status}
         >
           <MenuItem onClick={() => setStatus("not start")} value="ยังไม่เริ่ม">
             ยังไม่เริ่ม
@@ -144,7 +144,7 @@ export default function EditWorkingItem({
             id="Email"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
             onChange={setTextToString(setPassword,true)}
-            defaultValue={password}
+            value={password}
           />
         </div>
         <SelectTemplate

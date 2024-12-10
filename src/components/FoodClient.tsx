@@ -94,7 +94,6 @@ export default function FoodClient({
                 },
               },
             }}
-            defaultValue={name}
             onChange={setTextToString(setName)}
             value={name}
             required

@@ -124,7 +124,6 @@ export default function AllAnswerAndQuestionPageBreakDown({
                       <div>{textQuestion.answer}</div>
                       <div>
                         <TextField
-                          defaultValue={textScores[i][j].toString()}
                           onChange={setTextToFloat(
                             setMap(
                               setTextScores,

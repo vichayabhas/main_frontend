@@ -61,7 +61,7 @@ export default function NongPendingPage({
           <>
             <div>{choice.question}</div>
             <Select
-              defaultValue={chooseChoice}
+              value={chooseChoice}
               variant="standard"
               name="location"
               id="location"

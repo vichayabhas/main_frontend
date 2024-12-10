@@ -62,7 +62,7 @@ export default function HeathIssueClient({
               },
             }}
             onChange={setTextToString(set1,true)}
-            defaultValue={food}
+            value={food}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -87,7 +87,7 @@ export default function HeathIssueClient({
               },
             }}
             onChange={setTextToString(set2,true)}
-            defaultValue={medicine}
+            value={medicine}
           />
         </div>
         <div className="flex flex-row items-center">
@@ -114,7 +114,7 @@ export default function HeathIssueClient({
               },
             }}
             onChange={setTextToString(set3,true)}
-            defaultValue={chronicDisease}
+            value={chronicDisease}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -141,7 +141,7 @@ export default function HeathIssueClient({
               },
             }}
             onChange={setTextToString(set7,true)}
-            defaultValue={foodConcern}
+            value={foodConcern}
           />
         </div>
         <label
@@ -157,7 +157,7 @@ export default function HeathIssueClient({
           name="location"
           id="location"
           className="h-[2em] w-[200px] mb-5 mx-3 text-white"
-          defaultValue={foodLimit}
+          value={foodLimit}
           sx={{
             color: "white",
           }}
@@ -216,7 +216,7 @@ export default function HeathIssueClient({
                   },
                 }}
                 onChange={setTextToString(set5,true)}
-                defaultValue={extra}
+                value={extra}
               />
             </div>
             <div>

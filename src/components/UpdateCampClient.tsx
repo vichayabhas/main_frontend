@@ -758,7 +758,7 @@ export default function UpdateCampClient({
                   },
                 }}
                 onChange={setTextToString(setNewBaanName)}
-                value={null}
+                value={newBaanName}
               />
             </div>
             <FinishButton
@@ -1597,7 +1597,7 @@ export default function UpdateCampClient({
                       },
                     }}
                     onChange={setTextToFloat(choices.modScoreA(i))}
-                    value={choices.getScoreA(i)}
+                    value={choices.getScoreA(i).toString()}
                   />
                 </div>
                 <div className="flex flex-row items-center my-5">
@@ -1623,7 +1623,7 @@ export default function UpdateCampClient({
                       },
                     }}
                     onChange={setTextToFloat(choices.modScoreB(i))}
-                    value={choices.getScoreB(i)}
+                    value={choices.getScoreB(i).toString()}
                   />
                 </div>
                 <div className="flex flex-row items-center my-5">
@@ -1649,7 +1649,7 @@ export default function UpdateCampClient({
                       },
                     }}
                     onChange={setTextToFloat(choices.modScoreC(i))}
-                    value={choices.getScoreC(i)}
+                    value={choices.getScoreC(i).toString()}
                   />
                 </div>
                 <div className="flex flex-row items-center my-5">
@@ -1675,7 +1675,7 @@ export default function UpdateCampClient({
                       },
                     }}
                     onChange={setTextToFloat(choices.modScoreD(i))}
-                    value={choices.getScoreD(i)}
+                    value={choices.getScoreD(i).toString()}
                   />
                 </div>
                 <div className="flex flex-row items-center my-5">
@@ -1701,7 +1701,7 @@ export default function UpdateCampClient({
                       },
                     }}
                     onChange={setTextToFloat(choices.modScoreE(i))}
-                    value={choices.getScoreE(i)}
+                    value={choices.getScoreE(i).toString()}
                   />
                 </div>
                 <div>เลือกตัวเลือกที่ถูกต้อง</div>
@@ -1787,7 +1787,7 @@ export default function UpdateCampClient({
                       },
                     }}
                     onChange={setTextToInt(choices.modOrder(i))}
-                    value={choices.getOrder(i)}
+                    value={choices.getOrder(i).toString()}
                   />
                 </div>
               </>
@@ -1853,7 +1853,7 @@ export default function UpdateCampClient({
                     },
                   }}
                   onChange={setTextToFloat(texts.modScore(i))}
-                  value={texts.getScore(i)}
+                  value={texts.getScore(i).toString()}
                 />
               </div>
               <div className="flex flex-row items-center my-5">
@@ -1879,7 +1879,7 @@ export default function UpdateCampClient({
                     },
                   }}
                   onChange={setTextToInt(texts.modOrder(i))}
-                  value={texts.getOrder(i)}
+                  value={texts.getOrder(i).toString()}
                 />
               </div>
             </>

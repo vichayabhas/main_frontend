@@ -95,7 +95,7 @@ export default function TypingImageSource({
         name="location"
         id="location"
         className="h-[2em] w-[200px] mb-5 text-white"
-        defaultValue={provider}
+        value={provider}
       >
         {providers.map((v, i) => (
           <MenuItem

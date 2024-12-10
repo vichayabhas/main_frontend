@@ -50,7 +50,7 @@ export default function UpdateModeRaw({
           <TextField
             name="Name"
             id="Name"
-            defaultValue={linkHash}
+            value={linkHash}
             className="w-3/5 bg-white rounded-2xl shadow-inner"
             sx={{
               backgroundColor: "#f5f5f5",

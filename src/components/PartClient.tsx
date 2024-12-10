@@ -404,6 +404,7 @@ export default function PartClient({
                 },
               },
             }}
+            value={plus.toString()}
             onChange={setTextToInt(setPlus)}
           />
           <FinishButton

@@ -65,7 +65,7 @@ export default function PureQuestion({
           <>
             <div>{choice.question}</div>
             <Select<string>
-              defaultValue={chooseChoice}
+              value={chooseChoice}
               variant="standard"
               name="location"
               id="location"
@@ -160,7 +160,7 @@ export default function PureQuestion({
                 setMap(setTextAnswers, modifyElementInUseStateArray(i)),
                 true
               )}
-              defaultValue={textAnswers[i]}
+              value={textAnswers[i]}
             />
           </div>
         ),

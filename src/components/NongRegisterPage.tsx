@@ -61,7 +61,7 @@ export default function NongRegisterPage({
           <>
             <div>{choice.question}</div>
             <Select
-              defaultValue={chooseChoice}
+              value={chooseChoice}
               variant="standard"
               name="location"
               id="location"
@@ -174,7 +174,7 @@ export default function NongRegisterPage({
                 setMap(setTextAnswers, modifyElementInUseStateArray(i)),
                 true
               )}
-              defaultValue={textAnswers[i]}
+              value={textAnswers[i]}
             />
           </div>
         ),

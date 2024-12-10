@@ -78,7 +78,7 @@ export default function TestDateTime({
           name="Name"
           id="Name"
           type="number"
-          defaultValue={displayDay}
+          value={displayDay.toString()}
           className="w-3/5 bg-slate-100 rounded-2xl shadow-inner"
           onChange={setTextToInt(setDisplayDay)}
         />
@@ -89,7 +89,7 @@ export default function TestDateTime({
           name="LastName"
           id="LastName"
           type="number"
-          defaultValue={displayHour}
+          value={displayHour.toString()}
           className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
           onChange={setTextToInt(setDisplayHour)}
         />
@@ -100,7 +100,7 @@ export default function TestDateTime({
           name="Nickname"
           id="Nickname"
           type="number"
-          defaultValue={displayMinute}
+          value={displayMinute.toString()}
           className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
           onChange={setTextToInt(setDisplayMinute)}
         />
@@ -119,7 +119,7 @@ export default function TestDateTime({
           name="Name"
           id="Name"
           type="number"
-          defaultValue={displayDay}
+          value={displayDay.toString()}
           className="w-3/5 bg-slate-100 rounded-2xl shadow-inner"
           onChange={setTextToInt(setSelectDay)}
         />
@@ -130,7 +130,7 @@ export default function TestDateTime({
           name="LastName"
           id="LastName"
           type="number"
-          defaultValue={displayHour}
+          value={displayHour.toString()}
           className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
           onChange={setTextToInt(setSelectHour)}
         />
@@ -141,7 +141,7 @@ export default function TestDateTime({
           name="Nickname"
           id="Nickname"
           type="number"
-          defaultValue={displayMinute}
+          value={displayMinute.toString()}
           className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
           onChange={setTextToInt(setSelectMinute)}
         />

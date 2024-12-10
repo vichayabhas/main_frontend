@@ -283,7 +283,6 @@ export default function AllAnswerAndQuestionPage({
         <TextField
           name="Name"
           id="Name"
-          defaultValue={name}
           className="w-3/5 bg-white rounded-2xl "
           sx={{
             backgroundColor: "#f5f5f5",
@@ -309,7 +308,6 @@ export default function AllAnswerAndQuestionPage({
         <TextField
           name="LastName"
           id="LastName"
-          defaultValue={lastname}
           className="w-3/5 bg-white rounded-2xl border-gray-200"
           sx={{
             backgroundColor: "#f5f5f5",
@@ -335,7 +333,6 @@ export default function AllAnswerAndQuestionPage({
         <TextField
           name="Nickname"
           id="Nickname"
-          defaultValue={nickname}
           className="w-3/5 bg-white rounded-2xl border-gray-200"
           sx={{
             backgroundColor: "#f5f5f5",

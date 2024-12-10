@@ -64,7 +64,7 @@ export default function UpdateProfileRaw({
           <TextField
             name="Name"
             id="Name"
-            defaultValue={name}
+            value={name}
             className="w-3/5 bg-white rounded-2xl "
             sx={{
               backgroundColor: "#f5f5f5",
@@ -82,7 +82,6 @@ export default function UpdateProfileRaw({
               },
             }}
             onChange={setTextToString(setName, true)}
-            value={name}
             required
           />
         </div>
@@ -91,7 +90,6 @@ export default function UpdateProfileRaw({
           <TextField
             name="LastName"
             id="LastName"
-            defaultValue={lastname}
             className="w-3/5 bg-white rounded-2xl border-gray-200"
             sx={{
               backgroundColor: "#f5f5f5",
@@ -118,7 +116,6 @@ export default function UpdateProfileRaw({
           <TextField
             name="Nickname"
             id="Nickname"
-            defaultValue={nickname}
             className="w-3/5 bg-white rounded-2xl border-gray-200"
             sx={{
               backgroundColor: "#f5f5f5",
@@ -163,7 +160,7 @@ export default function UpdateProfileRaw({
               },
             }}
             onChange={setTextToString(setEmail)}
-            defaultValue={email}
+            value={email}
             required
           />
         </div>
@@ -191,7 +188,7 @@ export default function UpdateProfileRaw({
               },
             }}
             onChange={setTextToString(setTel)}
-            defaultValue={tel}
+            value={tel}
             required
           />
         </div>
@@ -204,7 +201,6 @@ export default function UpdateProfileRaw({
             id="citizenId"
             type="number"
             required
-            defaultValue={citizenId}
             className="w-3/5 bg-white rounded-2xl border-gray-200"
             sx={{
               backgroundColor: "#f5f5f5",
