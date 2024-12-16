@@ -1,10 +1,16 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import BackToHome from "@/components/BackToHome";
 import { stringToId } from "@/components/setup";
-import UpdateCampServer from "@/components/UpdateCampServer";
+import UpdateCampClient from "@/components/UpdateCampClient";
+import getAllRemainPartName from "@/libs/admin/getAllRemainPartName";
+import getBaans from "@/libs/camp/getBaans";
+import getCamp from "@/libs/camp/getCamp";
+import getParts from "@/libs/camp/getParts";
+import getPusherData from "@/libs/camp/getPusherData";
 import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";
 import React from "react";
+import { InterPusherData } from "../../../../../../interface";
 export default async function HospitalDetailPage({
   params,
 }: {
@@ -18,8 +24,29 @@ export default async function HospitalDetailPage({
   if (user.role !== "admin") {
     return <BackToHome />;
   }
-  const campId = stringToId(params.cid);
-  return <UpdateCampServer token={session.user.token} campId={campId} />;
+  const token = session.user.token;
+  const camp = await getCamp(stringToId(params.cid));
+  const baans = await getBaans(camp._id);
+  const remainPartName = await getAllRemainPartName(camp._id, token);
+  const parts = await getParts(camp._id, token);
+  let pusherData: InterPusherData | null;
+  if (!camp.pusherId) {
+    pusherData = null;
+  } else {
+    pusherData = await getPusherData(camp.pusherId);
+  }
+  return (
+    <>
+      <UpdateCampClient
+        camp={camp}
+        baans={baans}
+        parts={parts}
+        remainPartName={remainPartName}
+        pusherData={pusherData}
+        token={token}
+      />
+    </>
+  );
 
   //สร้างบ้าน
   //สร้างฝ่าย

@@ -353,12 +353,12 @@ export function copy<T>(input: T): T {
   return input;
 }
 export function modifyElementInUseStateArray2Dimension<T>(
-  i1: number,
-  i2: number
+  i: number,
+  j: number
 ): (v: T, array: T[][]) => T[][] {
   return (value: T, arrays: T[][]) =>
-    modifyElementInUseStateArray<T[]>(i1)(
-      modifyElementInUseStateArray<T>(i2)(value, arrays[i1]),
+    modifyElementInUseStateArray<T[]>(i)(
+      modifyElementInUseStateArray<T>(j)(value, arrays[i]),
       arrays
     );
 }
@@ -488,23 +488,23 @@ export class SetUpDownPack {
     this.set = input[1];
     this.up = input[0].up;
     this.down = input[0].down;
-    this.setUp = setBoolean((input) => {
+    this.setUp = (input) => {
       if (input) {
         this.set(({ down }) => ({ up: true, down }));
       } else {
         this.set({ up: false, down: false });
       }
-    });
-    this.setDown = setBoolean((input) => {
+    };
+    this.setDown = (input) => {
       if (input) {
         this.set({ up: true, down: true });
       } else {
         this.set(({ up }) => ({ up, down: false }));
       }
-    });
+    };
   }
-  public readonly setUp: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  public readonly setDown: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  public readonly setUp: (event: boolean) => void;
+  public readonly setDown: (event: boolean) => void;
   public static init(up: boolean, down: boolean): UpDownPack {
     return { up, down };
   }
@@ -524,33 +524,31 @@ export class SetUpMiddleDownPack {
     this.up = input[0].up;
     this.middle = input[0].middle;
     this.down = input[0].down;
-    this.setUp = setBoolean((input) => {
+    this.setUp = (input) => {
       if (input) {
         this.set(({ down, middle }) => ({ up: true, middle, down }));
       } else {
         this.set({ up: false, middle: false, down: false });
       }
-    });
-    this.setMiddle = setBoolean((input) => {
+    };
+    this.setMiddle = (input) => {
       if (input) {
         this.set(({ down }) => ({ up: true, middle: true, down }));
       } else {
         this.set(({ up }) => ({ up, middle: false, down: false }));
       }
-    });
-    this.setDown = setBoolean((input) => {
+    };
+    this.setDown = (input) => {
       if (input) {
         this.set({ up: true, middle: true, down: true });
       } else {
         this.set(({ up, middle }) => ({ up, middle, down: false }));
       }
-    });
+    };
   }
-  public readonly setUp: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  public readonly setMiddle: (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => void;
-  public readonly setDown: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  public readonly setUp: (event: boolean) => void;
+  public readonly setMiddle: (event: boolean) => void;
+  public readonly setDown: (event: boolean) => void;
   public static init(
     up: boolean,
     middle: boolean,

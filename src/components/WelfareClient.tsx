@@ -21,13 +21,13 @@ import createMeal from "@/libs/randomthing/createMeal";
 import { useDownloadExcel } from "react-export-table-to-excel";
 export default function WelfareClient({
   welfare,
-  timeOffset,
+  displayOffset,
   partIdString,
   token,
   selectOffset,
 }: {
   welfare: CampWelfarePack;
-  timeOffset: UpdateTimeOffsetRaw;
+  displayOffset: UpdateTimeOffsetRaw;
   partIdString: string;
   token: string;
   selectOffset: InterTimeOffset;
@@ -431,7 +431,7 @@ export default function WelfareClient({
               router.push(`/authPart/${partIdString}/welfare/${v._id}`)
             }
           >
-            <GetTimeHtml offset={timeOffset} input={v.time.toString()} />
+            <GetTimeHtml offset={displayOffset} input={v.time.toString()} />
           </div>
         ))}
     </>

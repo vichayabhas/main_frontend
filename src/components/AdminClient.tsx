@@ -1,25 +1,63 @@
 "use client";
 
 import { Session } from "next-auth";
-import { Select, MenuItem, TextField, Input } from "@mui/material";
+import { Select, MenuItem, TextField, Input, Checkbox } from "@mui/material";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useState } from "react";
 import createCamp from "@/libs/admin/createCamp";
 import addCampName from "@/libs/admin/addCampName";
 import React from "react";
-
 import {
   InterNameContainer,
   CreateCamp,
   InterPartNameContainer,
   Id,
+  CreateAuthCamp,
+  authTypes,
 } from "../../interface";
 import addPartName from "@/libs/admin/addPartName";
 import FinishButton from "./FinishButton";
-import { getBackendUrl, setTextToInt, setTextToString, stringToId } from "./setup";
-//import { InterNameContainer, CreateCamp } from "../../interface";
+import {
+  getBackendUrl,
+  modifyElementInUseStateArray,
+  modifyElementInUseStateArray2Dimension,
+  notEmpty,
+  setBoolean,
+  setMap,
+  setTextToInt,
+  setTextToString,
+  stringToId,
+} from "./setup";
 
+const defaultPartAuths: CreateAuthCamp[] = [
+  {
+    partName: "PR/studio",
+    auths: ["pr/studio"],
+  },
+  {
+    partName: "board",
+    auths: [
+      "pr/studio",
+      "ตรวจคำตอบข้อเขียน",
+      "ทะเบียน",
+      "พยาบาล",
+      "สวัสดิการ",
+      "หัวหน้าพี่เลี้ยง",
+      "แก้ไขคำถาม",
+      "แผน",
+    ],
+  },
+  {
+    partName: "ทะเบียน",
+    auths: ["ตรวจคำตอบข้อเขียน", "ทะเบียน", "แก้ไขคำถาม"],
+  },
+  { partName: "ประสาน", auths: ["หัวหน้าพี่เลี้ยง", "ตรวจคำตอบข้อเขียน"] },
+  { partName: "พยาบาล", auths: ["พยาบาล"] },
+  { partName: "พี่บ้าน", auths: [] },
+  { partName: "สวัสดิการ", auths: ["สวัสดิการ"] },
+  { partName: "แผน", auths: ["แผน"] },
+];
 export default function AdminClient({
   campNameContainers,
   session,
@@ -58,6 +96,16 @@ export default function AdminClient({
     "นอนทุกคน" | "เลือกได้ว่าจะค้างคืนหรือไม่" | "ไม่มีการค้างคืน" | null
   >(null);
   const [newPartName, setNewPartName] = useState<string | null>(null);
+  const [defaultPartNameAndAuths, setDefaultPartNameAndAuths] = useState<
+    boolean[][]
+  >(
+    defaultPartAuths.map((defaultPartAuth) =>
+      authTypes.map((authType) => defaultPartAuth.auths.includes(authType))
+    )
+  );
+  const [checks, setChecks] = useState<boolean[]>(
+    defaultPartAuths.map(() => true)
+  );
   return (
     <form
       className="w-[70%] items-center p-10 rounded-3xl "
@@ -83,9 +131,10 @@ export default function AdminClient({
             textAlign: "left",
           }}
         >
-          {campNameContainers.map((choice: InterNameContainer,i) => {
+          {campNameContainers.map((choice: InterNameContainer, i) => {
             return (
-              <MenuItem key={i}
+              <MenuItem
+                key={i}
                 value={choice.name}
                 onClick={() => {
                   setChose(choice._id);
@@ -303,10 +352,12 @@ export default function AdminClient({
               value:
                 | "นอนทุกคน"
                 | "เลือกได้ว่าจะค้างคืนหรือไม่"
-                | "ไม่มีการค้างคืน",i
+                | "ไม่มีการค้างคืน",
+              i
             ) => {
               return (
-                <MenuItem key={i}
+                <MenuItem
+                  key={i}
                   onClick={() => {
                     setPeeSleepModel(value);
                   }}
@@ -337,10 +388,12 @@ export default function AdminClient({
               value:
                 | "นอนทุกคน"
                 | "เลือกได้ว่าจะค้างคืนหรือไม่"
-                | "ไม่มีการค้างคืน",i
+                | "ไม่มีการค้างคืน",
+              i
             ) => {
               return (
-                <MenuItem key={i}
+                <MenuItem
+                  key={i}
                   onClick={() => {
                     setNongSleepModel(value);
                   }}
@@ -386,6 +439,41 @@ export default function AdminClient({
           value={boardIds}
         />
       </div>
+      <table>
+        <tr>
+          <th>ฝ่าย</th>
+          <th>checked</th>
+          {authTypes.map((authType, i) => (
+            <th key={i}>{authType}</th>
+          ))}
+        </tr>
+        {defaultPartAuths.map((defaultPartAuth, i) => (
+          <tr key={i}>
+            <td>{defaultPartAuth.partName}</td>
+            <td>
+              <Checkbox
+                checked={checks[i]}
+                onChange={setBoolean(
+                  setMap(setChecks, modifyElementInUseStateArray(i))
+                )}
+              />
+            </td>
+            {authTypes.map((_authType, j) => (
+              <th key={j}>
+                <Checkbox
+                  checked={defaultPartNameAndAuths[i][j]}
+                  onChange={setBoolean(
+                    setMap(
+                      setDefaultPartNameAndAuths,
+                      modifyElementInUseStateArray2Dimension(i, j)
+                    )
+                  )}
+                />
+              </th>
+            ))}
+          </tr>
+        ))}
+      </table>
       <div className=" rounded-lg ">
         <button
           className="bg-white p-3 mt-2  mb-4 font-medium rounded-lg shadow-[10px_10px_10px_-10px_rgba(0,0,0,0.5)] hover:bg-rose-700 hover:text-pink-50"
@@ -417,6 +505,20 @@ export default function AdminClient({
                   memberStructure,
                   peeSleepModel,
                   nongSleepModel,
+                  defaultPartNameAndAuths: defaultPartNameAndAuths
+                    .map((defaultPartNameAndAuth, i) =>
+                      checks[i]
+                        ? {
+                            partName: defaultPartAuths[i].partName,
+                            auths: authTypes
+                              .map((authType, j) =>
+                                defaultPartNameAndAuth[j] ? authType : null
+                              )
+                              .filter(notEmpty),
+                          }
+                        : null
+                    )
+                    .filter(notEmpty),
                 };
                 createCamp(reddy, session.user.token);
               } catch (error) {
@@ -440,7 +542,7 @@ export default function AdminClient({
           Create Camp
         </button>
       </div>
-      {campNameContainers.map((nameContainer: InterNameContainer,i) => (
+      {campNameContainers.map((nameContainer: InterNameContainer, i) => (
         <label className="w-2/5 text-2xl text-white" key={i}>
           {nameContainer.name}
         </label>
@@ -497,7 +599,7 @@ export default function AdminClient({
         สร้างชื่อค่าย
       </button>
 
-      {partNameContainers.map((nameContainer: InterPartNameContainer,i) => (
+      {partNameContainers.map((nameContainer: InterPartNameContainer, i) => (
         <div key={i}>
           <label className="text-2xl text-white" style={{ textAlign: "left" }}>
             {nameContainer.name}

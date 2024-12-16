@@ -146,8 +146,6 @@ export interface InterCampBack {
   baanBoardId: Id | null;
   partNameIds: Id[];
   partBoardId: Id;
-  partCoopId: Id;
-  partRegisterId: Id;
   partPeeBaanId: Id;
   groupName: string;
   peeDataLock: boolean;
@@ -161,9 +159,6 @@ export interface InterCampBack {
   currentNong: number;
   currentPee: number;
   mdTime: Date;
-  partWelfareId: Id;
-  partMedId: Id;
-  partPlanId: Id;
   allPetoChatIds: Id[];
   petoSleepIds: Id[];
   nongCampMemberCardHaveHeathIssueIds: Id[];
@@ -172,7 +167,6 @@ export interface InterCampBack {
   nongHaveBottleIds: Id[];
   peeHaveBottleIds: Id[];
   petoHaveBottleIds: Id[];
-  partPrStudioId: Id;
   choiceQuestionIds: Id[];
   textQuestionIds: Id[];
   nongAnswerPackIds: Id[];
@@ -251,12 +245,12 @@ export interface InterPartBack {
   partName: string;
   peeSleepIds: Id[];
   chatIds: Id[];
-  isAuth: boolean;
   petoSleepIds: Id[];
   peeCampMemberCardHaveHeathIssueIds: Id[];
   petoCampMemberCardHaveHeathIssueIds: Id[];
   peeHaveBottleIds: Id[];
   petoHaveBottleIds: Id[];
+  auths: AuthType[];
   //public
 }
 export interface InterPartNameContainer {
@@ -512,8 +506,6 @@ export interface InterCampFront {
   baanBoardId: Id | null;
   partNameIds: Id[];
   partBoardId: Id;
-  partCoopId: Id;
-  partRegisterId: Id;
   partPeeBaanId: Id;
   groupName: string;
   peeDataLock: boolean;
@@ -525,9 +517,6 @@ export interface InterCampFront {
   nongMapIdGtoL: MyMap[];
   peeMapIdGtoL: MyMap[];
   mdTime: Date;
-  partWelfareId: Id;
-  partMedId: Id;
-  partPlanId: Id;
   allPetoChatIds: Id[];
   petoSleepIds: Id[];
   nongCampMemberCardHaveHeathIssueIds: Id[];
@@ -536,7 +525,6 @@ export interface InterCampFront {
   nongHaveBottleIds: Id[];
   peeHaveBottleIds: Id[];
   petoHaveBottleIds: Id[];
-  partPrStudioId: Id;
   choiceQuestionIds: Id[];
   textQuestionIds: Id[];
   nongAnswerPackIds: Id[];
@@ -576,12 +564,12 @@ export interface InterPartFront {
   partName: string;
   peeSleepIds: Id[];
   chatIds: Id[];
-  isAuth: boolean;
   petoSleepIds: Id[];
   peeCampMemberCardHaveHeathIssueIds: Id[];
   petoCampMemberCardHaveHeathIssueIds: Id[];
   peeHaveBottleIds: Id[];
   petoHaveBottleIds: Id[];
+  auths: AuthType[];
   //public
 }
 export interface MyMap {
@@ -637,6 +625,7 @@ export interface UpdateCamp {
   canNongSeeAllTrackingSheet: boolean;
   canNongAccessDataWithRoleNong: boolean;
   lockChangeQuestion: boolean;
+  updatePart: UpdateAuthCamp[];
   //public
 }
 export interface CreateCamp {
@@ -657,6 +646,7 @@ export interface CreateCamp {
     | "เลือกได้ว่าจะค้างคืนหรือไม่"
     | "ไม่มีการค้างคืน";
   peeSleepModel: "นอนทุกคน" | "เลือกได้ว่าจะค้างคืนหรือไม่" | "ไม่มีการค้างคืน";
+  defaultPartNameAndAuths: CreateAuthCamp[];
   //public
 }
 export interface MapObjectId {
@@ -1618,7 +1608,7 @@ export interface BasicPart {
   _id: Id;
   partName: string;
   peeSleepIds: Id[];
-  isAuth: boolean;
+  auths: AuthType[];
   //public
 }
 export interface SystemInfo {
@@ -1644,7 +1634,6 @@ export interface RegisterData {
   partMap: MyMap[];
   nongRegister: AllNongRegister;
   partBoardIdString: string;
-  partRegisterIdString: string;
   pusher: PusherClientData | null;
   systemInfo: SystemInfo;
 }
@@ -1728,4 +1717,35 @@ export interface CampState {
   questions: GetAllQuestion;
   link: string;
   user: BasicUser;
+}
+export const authTypes = [
+  "ทะเบียน",
+  "ตรวจคำตอบข้อเขียน",
+  "สวัสดิการ",
+  "พยาบาล",
+  "แก้ไขคำถาม",
+  "หัวหน้าพี่เลี้ยง",
+  "แผน",
+  "กิจ",
+  "pr/studio",
+] as const;
+export type AuthType = (typeof authTypes)[number];
+export interface CreateAuthCamp {
+  partName: DefaultPartName;
+  auths: AuthType[];
+}
+export const defaultPartNames = [
+  "board",
+  "ประสาน",
+  "ทะเบียน",
+  "พี่บ้าน",
+  "สวัสดิการ",
+  "พยาบาล",
+  "แผน",
+  "PR/studio",
+] as const;
+export type DefaultPartName = (typeof defaultPartNames)[number];
+export interface UpdateAuthCamp {
+  id: Id;
+  auths: AuthType[];
 }

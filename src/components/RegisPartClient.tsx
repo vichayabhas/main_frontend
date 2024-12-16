@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import {
   Id,
   MyMap,
+  RegisPart,
   RegisterData,
   ShowMember,
   ShowRegisterNong,
@@ -56,7 +57,6 @@ export default function RegisterPartClient({
       partMap,
       nongRegister,
       partBoardIdString,
-      partRegisterIdString,
     },
     setData,
   ] = useState(data);
@@ -64,11 +64,16 @@ export default function RegisterPartClient({
     key: regisBaan.baan._id,
     value: regisBaan.baan.name,
   }));
-  const regis = partMap.filter(
+  function partToMyMap(inputs: RegisPart): MyMap {
+    return { key: inputs.part._id, value: inputs.part.partName };
+  }
+
+  const regisRaw = regisParts.filter(
     (e) =>
-      e.key.toString() !== partBoardIdString &&
-      e.key.toString() !== partRegisterIdString
+      e.part._id.toString() !== partBoardIdString &&
+      e.part.auths.includes("ทะเบียน")
   );
+  const regis = regisRaw.map(partToMyMap);
 
   async function waiting(update: () => Promise<void>) {
     setTimeOut(true);
@@ -897,7 +902,7 @@ export default function RegisterPartClient({
         const have =
           isBoard ||
           (regisPart.part._id.toString() !== partBoardIdString &&
-            regisPart.part._id.toString() != partRegisterIdString);
+            regisPart.part.auths.includes("ทะเบียน"));
         const peeRef = useRef(null);
         const petoRef = useRef(null);
         const peeDownload = useDownloadExcel({

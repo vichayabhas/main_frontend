@@ -116,7 +116,7 @@ export default function FoodClient({
             อาหารนี้สำหรับคนที่แพ้อาหารหรือไม่
           </label>
           <Checkbox
-            onChange={setIsWhiteList}
+            onChange={setBoolean(setIsWhiteList)}
             sx={{
               "&.Mui-checked": {
                 color: "#FFFFFF", // Custom color when checked
@@ -130,7 +130,7 @@ export default function FoodClient({
             อาหารนี้เฉพาะเจาะจงหรือไม่
           </label>
           <Checkbox
-            onChange={setListPriority}
+            onChange={setBoolean(setListPriority)}
             sx={{
               "&.Mui-checked": {
                 color: "#FFFFFF", // Custom color when checked

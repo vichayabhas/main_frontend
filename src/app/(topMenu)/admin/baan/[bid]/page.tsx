@@ -4,7 +4,9 @@ import { stringToId } from "@/components/setup";
 import UpdateBaanServer from "@/components/UpdateBaanServer";
 import getBaan from "@/libs/camp/getBaan";
 import getCamp from "@/libs/camp/getCamp";
+import getPart from "@/libs/camp/getPart";
 import getPeeCamp from "@/libs/camp/getPeeCamp";
+import getPetoCamp from "@/libs/camp/getPetoCamp";
 import getCampMemberCardByCampId from "@/libs/user/getCampMemberCardByCampId";
 import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";
@@ -14,43 +16,43 @@ export default async function Baan({ params }: { params: { bid: string } }) {
   if (!session) {
     return <BackToHome />;
   }
-  const token=session.user.token
-
+  const token = session.user.token;
   const user = await getUserProfile(session.user.token);
-  
-const baanId = stringToId(params.bid);
-if(user.role==='admin'){
-  return <UpdateBaanServer baanId={baanId} />;
-}
-const baan=await getBaan(baanId)
-const camp=await getCamp(baan.campId)
-const campMemberCard=await getCampMemberCardByCampId(baan.campId,token)
-switch (campMemberCard.role){
-  case "nong":{
-    return<BackToHome/>
+  const baanId = stringToId(params.bid);
+  if (user.role === "admin") {
+    return <UpdateBaanServer baanId={baanId} />;
   }
-  case "pee":{
-    const peeCamp=await getPeeCamp(campMemberCard.campModelId,token)
-    if(user.authPartIds.includes(camp.partBoardId)){
-      return<UpdateBaanServer baanId={baanId}/>
+  const baan = await getBaan(baanId);
+  const camp = await getCamp(baan.campId);
+  const campMemberCard = await getCampMemberCardByCampId(baan.campId, token);
+  switch (campMemberCard.role) {
+    case "nong": {
+      return <BackToHome />;
     }
-    if(user.authPartIds.includes(camp.partCoopId)&&peeCamp.baanId.toString().localeCompare(params.bid)){
-      return<UpdateBaanServer baanId={baanId}/>
+    case "pee": {
+      const peeCamp = await getPeeCamp(campMemberCard.campModelId, token);
+      const part = await getPart(peeCamp.partId, token);
+      if (user.authPartIds.includes(camp.partBoardId)) {
+        return <UpdateBaanServer baanId={baanId} />;
+      }
+      if (
+        part.auths.includes("หัวหน้าพี่เลี้ยง") &&
+        peeCamp.baanId.toString().localeCompare(params.bid)
+      ) {
+        return <UpdateBaanServer baanId={baanId} />;
+      }
+      return <BackToHome />;
     }
-    return<BackToHome/>
-
+    case "peto": {
+      const petoCamp = await getPetoCamp(campMemberCard.campModelId, token);
+      const part = await getPart(petoCamp.partId, token);
+      if (user.authPartIds.includes(camp.partBoardId)) {
+        return <UpdateBaanServer baanId={baanId} />;
+      }
+      if (part.auths.includes("หัวหน้าพี่เลี้ยง")) {
+        return <UpdateBaanServer baanId={baanId} />;
+      }
+      return <BackToHome />;
+    }
   }
-  case "peto":{
-    if(user.authPartIds.includes(camp.partBoardId)){
-      return<UpdateBaanServer baanId={baanId}/>
-    }
-    if(user.authPartIds.includes(camp.partCoopId)){
-      return<UpdateBaanServer baanId={baanId}/>
-    }
-    return<BackToHome/>
-
-  }
-}
-
-  
 }

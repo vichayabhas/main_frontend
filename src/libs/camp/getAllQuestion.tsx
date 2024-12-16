@@ -3,10 +3,10 @@ import { GetAllQuestion, Id } from "../../../interface";
 
 export default async function getAllQuestion(
   token: string,
-  id: Id
+  campId: Id
 ): Promise<GetAllQuestion> {
   const response = await fetch(
-    `${getBackendUrl()}/camp/getAllQuestion/params/${id}`,
+    `${getBackendUrl()}/camp/getAllQuestion/params/${campId}`,
     {
       cache: "no-store",
       headers: {
