@@ -1,0 +1,12 @@
+สร้างไฟล์ .env.local
+
+
+ภาษาไทยให้อ่านแล้วทำดามแล้วแก้ให้ครบ
+
+env ตามนี้
+
+
+
+NEXTAUTH_URL= urlของ frontend
+NEXTAUTH_SECRET=อะไรก็ได้ที่เป็นความลับ
+NEXT_PUBLIC_BACKEND_URL=urlของ backend
