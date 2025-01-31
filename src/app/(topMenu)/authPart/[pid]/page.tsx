@@ -31,6 +31,8 @@ import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";
 import { InterPusherData } from "../../../../../interface";
 import React from "react";
+import UpdateImageAndDescryption from "@/components/UpdateImageAndDescryption";
+import getImageAndDescriptions from "@/libs/camp/getImageAndDescriptions";
 export default async function Baan({ params }: { params: { pid: string } }) {
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -150,8 +152,66 @@ export default async function Baan({ params }: { params: { pid: string } }) {
       <RegisterPartClient isBoard={isBoard} data={data} token={token} />
     );
   }
+  if (
+    part.auths.includes("แก้ไขรูปภาพและคำอธิบายได้เฉพาะบ้านตัวเอง") &&
+    !isBoard
+  ) {
+    switch (campMemberCard.role) {
+      case "nong": {
+        return <BackToHome />;
+      }
+      case "pee": {
+        const peeCamp = await getPeeCamp(campMemberCard.campModelId, token);
+        const imageAndDescryptionContainersPack = await getImageAndDescriptions(
+          peeCamp.baanId,
+          token
+        );
+        outputs.push(
+          <UpdateImageAndDescryption
+            imageAndDescryptionContainersPack={
+              imageAndDescryptionContainersPack
+            }
+            token={token}
+          />
+        );
+        break;
+      }
+      case "peto": {
+        let i = 0;
+        while (i < camp.baanIds.length) {
+          const imageAndDescryptionContainersPack =
+            await getImageAndDescriptions(camp.baanIds[i++], token);
+          outputs.push(
+            <UpdateImageAndDescryption
+              imageAndDescryptionContainersPack={
+                imageAndDescryptionContainersPack
+              }
+              token={token}
+            />
+          );
+        }
+        break;
+      }
+    }
+  }
+  if (part.auths.includes("แก้ไขรูปภาพและคำอธิบายได้ทุกบ้าน") || isBoard) {
+    let i = 0;
+    while (i < camp.baanIds.length) {
+      const imageAndDescryptionContainersPack = await getImageAndDescriptions(
+        camp.baanIds[i++],
+        token
+      );
+      console.log(imageAndDescryptionContainersPack)
+      outputs.push(
+        <UpdateImageAndDescryption
+          imageAndDescryptionContainersPack={imageAndDescryptionContainersPack}
+          token={token}
+        />
+      );
+    }
+  }
   return (
-    <AllInOneLock lock={user.mode == "nong"} token={token} pushToHome>
+    <AllInOneLock lock={user.mode == "nong"} token={token} pushToHome bypass>
       {outputs}
     </AllInOneLock>
   );

@@ -66,6 +66,7 @@ export interface InterBaanBack {
   peeCampMemberCardHaveHeathIssueIds: Id[];
   nongHaveBottleIds: Id[];
   peeHaveBottleIds: Id[];
+  imageAndDescriptionContainerIds: Id[];
   //public
 }
 export interface InterBuilding {
@@ -439,6 +440,7 @@ export interface InterBaanFront {
   peeCampMemberCardHaveHeathIssueIds: Id[];
   nongHaveBottleIds: Id[];
   peeHaveBottleIds: Id[];
+  imageAndDescriptionContainerIds: Id[];
   //public
 }
 
@@ -1425,6 +1427,7 @@ export interface GetPeeData {
   part: BasicPart;
   petoParts: ShowMember[];
   peeParts: ShowMember[];
+  imageAndDescriptions: ShowImageAndDescriptions[];
   //private
 }
 export interface GetPetoData {
@@ -1728,6 +1731,8 @@ export const authTypes = [
   "แผน",
   "กิจ",
   "pr/studio",
+  "แก้ไขรูปภาพและคำอธิบายได้ทุกบ้าน",
+  "แก้ไขรูปภาพและคำอธิบายได้เฉพาะบ้านตัวเอง",
 ] as const;
 export type AuthType = (typeof authTypes)[number];
 export interface CreateAuthCamp {
@@ -1748,4 +1753,55 @@ export type DefaultPartName = (typeof defaultPartNames)[number];
 export interface UpdateAuthCamp {
   id: Id;
   auths: AuthType[];
+}
+export const imageAndDescriptionTypes = ["boy", "girl", "normal"] as const;
+export type ImageAndDescriptionType = (typeof imageAndDescriptionTypes)[number];
+export interface InterImageAndDescription {
+  imageUrl: string | null;
+  description: string;
+  order: number;
+  _id: Id;
+}
+export interface InterImageAndDescriptionContainer {
+  baanId: Id;
+  childIds: Id[];
+  types: ImageAndDescriptionType;
+  _id: Id;
+  name: string;
+}
+export interface EditImageAndDescription {
+  imageUrl: string | null;
+  description: string;
+  order: number;
+  _id: Id | null;
+}
+export interface CreateImageAndDescription {
+  imageUrl: string | null;
+  description: string;
+  order: number;
+}
+export interface EditImageAndDescriptionContainer {
+  types: ImageAndDescriptionType;
+  _id: Id;
+  name: string;
+  children: EditImageAndDescription[];
+}
+export interface ShowImageAndDescriptions {
+  types: ImageAndDescriptionType;
+  _id: Id;
+  name: string;
+  children: InterImageAndDescription[];
+  baanId: Id;
+}
+export interface CreateImageAndDescriptionContainer {
+  types: ImageAndDescriptionType;
+  name: string;
+  children: CreateImageAndDescription[];
+  baanId: Id;
+}
+export interface GetImageAndDescriptionsPackForUpdate {
+  imageAndDescryptionContainers: ShowImageAndDescriptions[];
+  baan: BasicBaan;
+  pusherData: PusherClientData | null;
+  isOverNight: boolean;
 }

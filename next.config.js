@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ['drive.google.com', "media.discordapp.net"]
+        domains: ['drive.google.com', "media.discordapp.net", 'drive.usercontent.google.com']
     },
     async headers() {
         return [
