@@ -1788,10 +1788,10 @@ export interface EditImageAndDescriptionContainer {
 }
 export interface ShowImageAndDescriptions {
   types: ImageAndDescriptionType;
-  _id: Id;
+  _id: Id | null;
   name: string;
   children: InterImageAndDescription[];
-  baanId: Id;
+  baanId: Id | null;
 }
 export interface CreateImageAndDescriptionContainer {
   types: ImageAndDescriptionType;

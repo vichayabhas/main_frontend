@@ -13,6 +13,7 @@ import chatStyle from "@/components/chat.module.css";
 import { downloadText } from "./setup";
 import TopMenuItem from "./TopMenuItem";
 import styles from "./topmenu.module.css";
+import ImageAndDescriptions from "./ImageAndDescriptions";
 
 export default function PeeCampClient({
   data: {
@@ -33,6 +34,7 @@ export default function PeeCampClient({
     part,
     petoParts,
     peeParts,
+    imageAndDescriptions,
   },
   token,
   allPlaceData,
@@ -298,6 +300,12 @@ export default function PeeCampClient({
         allPlaceData={allPlaceData}
         selectOffset={selectOffset}
         camp={camp}
+      />
+      <ImageAndDescriptions
+        imageAndDescriptionsContainers={imageAndDescriptions}
+        mode={user.mode}
+        token={token}
+        gender={user.gender}
       />
       <ShowOwnCampData
         token={token}

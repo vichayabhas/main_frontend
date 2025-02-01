@@ -201,7 +201,6 @@ export default async function Baan({ params }: { params: { pid: string } }) {
         camp.baanIds[i++],
         token
       );
-      console.log(imageAndDescryptionContainersPack)
       outputs.push(
         <UpdateImageAndDescryption
           imageAndDescryptionContainersPack={imageAndDescryptionContainersPack}

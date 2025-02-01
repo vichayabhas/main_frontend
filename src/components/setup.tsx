@@ -560,3 +560,10 @@ export class SetUpMiddleDownPack {
 export function getPusherClient(data: InterPusherData): PusherClientData {
   return { first: data.key, second: data };
 }
+export function doIfTrue(input: () => void): (valid: boolean) => void {
+  return (valid) => {
+    if (valid) {
+      input();
+    }
+  };
+}
