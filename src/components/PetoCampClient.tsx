@@ -11,6 +11,7 @@ import FinishButton from "./FinishButton";
 import { downloadText } from "./setup";
 import styles from "./topmenu.module.css";
 import TopMenuItem from "./TopMenuItem";
+import PartJob from "./PartJob";
 export default function PetoCampClient({
   data: {
     user,
@@ -24,6 +25,7 @@ export default function PetoCampClient({
     part,
     petos,
     pees,
+    partJobs,
   },
   token,
   allPlaceData,
@@ -170,6 +172,13 @@ export default function PetoCampClient({
         allPlaceData={allPlaceData}
         selectOffset={selectOffset}
         camp={camp}
+      />
+      <PartJob
+        partJobs={partJobs}
+        part={part}
+        user={user}
+        token={token}
+        campMemberCardId={campMemberCard._id}
       />
       <ShowOwnCampData
         token={token}

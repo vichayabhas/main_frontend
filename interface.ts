@@ -67,6 +67,7 @@ export interface InterBaanBack {
   nongHaveBottleIds: Id[];
   peeHaveBottleIds: Id[];
   imageAndDescriptionContainerIds: Id[];
+  jobIds: Id[];
   //public
 }
 export interface InterBuilding {
@@ -184,6 +185,7 @@ export interface InterCampBack {
   canNongAccessDataWithRoleNong: boolean;
   pusherId: Id | null;
   lockChangeQuestion: boolean;
+  jobIds: Id[];
   //public
 }
 export interface InterCampStyle {
@@ -252,6 +254,7 @@ export interface InterPartBack {
   peeHaveBottleIds: Id[];
   petoHaveBottleIds: Id[];
   auths: AuthType[];
+  jobIds: Id[];
   //public
 }
 export interface InterPartNameContainer {
@@ -309,6 +312,8 @@ export interface InterCampMemberCard {
   healthIssueId: Id | null;
   blackListFoodIds: Id[];
   whiteListFoodIds: Id[];
+  baanJobIds: Id[];
+  partJobIds: Id[];
   //private
 }
 export interface InterSong {
@@ -441,6 +446,7 @@ export interface InterBaanFront {
   nongHaveBottleIds: Id[];
   peeHaveBottleIds: Id[];
   imageAndDescriptionContainerIds: Id[];
+  jobIds: Id[];
   //public
 }
 
@@ -543,6 +549,7 @@ export interface InterCampFront {
   canNongAccessDataWithRoleNong: boolean;
   pusherId: Id | null;
   lockChangeQuestion: boolean;
+  jobIds: Id[];
   //public
 }
 export interface InterPartFront {
@@ -572,6 +579,7 @@ export interface InterPartFront {
   peeHaveBottleIds: Id[];
   petoHaveBottleIds: Id[];
   auths: AuthType[];
+  jobIds: Id[];
   //public
 }
 export interface MyMap {
@@ -1372,6 +1380,7 @@ export interface GetCoopData {
   normal: InterPlace | null;
   nongHealths: HeathIssuePack[];
   peeHealths: HeathIssuePack[];
+  baanJobs: GetJob[];
   //public
 }
 export interface UpdateMeal {
@@ -1428,6 +1437,8 @@ export interface GetPeeData {
   petoParts: ShowMember[];
   peeParts: ShowMember[];
   imageAndDescriptions: ShowImageAndDescriptions[];
+  baanJobs: GetJob[];
+  partJobs: GetJob[];
   //private
 }
 export interface GetPetoData {
@@ -1442,6 +1453,7 @@ export interface GetPetoData {
   part: BasicPart;
   petos: ShowMember[];
   pees: ShowMember[];
+  partJobs: GetJob[];
   //private
 }
 export interface GetMenuSongs {
@@ -1804,4 +1816,72 @@ export interface GetImageAndDescriptionsPackForUpdate {
   baan: BasicBaan;
   pusherData: PusherClientData | null;
   isOverNight: boolean;
+}
+export const jobGenderRequies = [
+  "ไม่กำหนด",
+  "ให้ความสำคัญ",
+  "เท่านั้น",
+] as const;
+export type JobGenderRequie = (typeof jobGenderRequies)[number];
+export interface InterJobAssign {
+  types: "baan" | "part";
+  refId: Id;
+  name: string;
+  reqType: JobGenderRequie;
+  memberIds: Id[];
+  _id: Id;
+  male: number;
+  female: number;
+  sum: number;
+  userIds: Id[];
+}
+export interface InterBaanJob {
+  baanId: Id;
+  jobId: Id;
+  memberIds: Id[];
+  _id: Id;
+  userIds: Id[];
+}
+export interface InterTimeRegister {
+  _id: Id;
+  refId: Id;
+  time: Date;
+  campMemberCardId: Id;
+}
+export interface CreateJobAssign {
+  types: "baan" | "part";
+  refId: Id;
+  name: string;
+  reqType: JobGenderRequie;
+  male: number;
+  female: number;
+  sum: number;
+}
+export interface UpdateJobAssign {
+  name: string;
+  reqType: JobGenderRequie;
+  _id: Id;
+  male: number;
+  female: number;
+  sum: number;
+  types: "baan" | "part";
+}
+export interface GetJob {
+  name: string;
+  reqType: JobGenderRequie;
+  male: number;
+  female: number;
+  sum: number;
+  _id: Id;
+  passMales: BasicUser[];
+  failMales: BasicUser[];
+  passFemales: BasicUser[];
+  failFemales: BasicUser[];
+  timeRegisterId: Id | null;
+}
+export interface RegisterJob {
+  types: "baan" | "part";
+  addJobIds: Id[];
+  campMemberCardId: Id;
+  removeTimeRegisterIds: Id[];
 }

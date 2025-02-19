@@ -567,3 +567,44 @@ export function doIfTrue(input: () => void): (valid: boolean) => void {
     }
   };
 }
+export class AddRemoveHigh {
+  private addIds: Id[];
+  private setAddIds: React.Dispatch<React.SetStateAction<Id[]>>;
+  private removeIds: Id[];
+  private setRemoveIds: React.Dispatch<React.SetStateAction<Id[]>>;
+  constructor(
+    addIds: Id[],
+    setAddIds: React.Dispatch<React.SetStateAction<Id[]>>,
+    removeIds: Id[],
+    setRemoveIds: React.Dispatch<React.SetStateAction<Id[]>>
+  ) {
+    this.addIds = addIds;
+    this.setAddIds = setAddIds;
+    this.removeIds = removeIds;
+    this.setRemoveIds = setRemoveIds;
+  }
+  public set(addId: Id, removeId: Id | null) {
+    return (event: React.ChangeEvent<HTMLInputElement>) => {
+      setBoolean((input) => {
+        const timeRegisterId = removeId;
+        if (!timeRegisterId) {
+          setSwop(addId, this.setAddIds)(event);
+        } else {
+          if (input) {
+            this.setRemoveIds((previous: Id[]) =>
+              previous.filter((e) => e.toString() != timeRegisterId.toString())
+            );
+          } else {
+            this.setRemoveIds(addItemInUseStateArray(timeRegisterId));
+          }
+        }
+      })(event);
+    };
+  }
+  public get(addId: Id, removeId: Id | null) {
+    return (
+      (!!removeId && !this.removeIds.includes(removeId)) ||
+      this.addIds.includes(addId)
+    );
+  }
+}

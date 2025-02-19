@@ -33,7 +33,7 @@ export default function ImageAndDescriptions({
     });
   const [index, setIndex] = React.useState(0);
   const sorted = children.sort((a, b) => a.order - b.order);
-  const imageUrl= sorted[index].imageUrl
+  const imageUrl = sorted[index]?.imageUrl;
   return (
     <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
       <AllInOneLock token={token} mode={mode}>
@@ -100,7 +100,7 @@ export default function ImageAndDescriptions({
             })
           }
         />
-      </AllInOneLock>{" "}
+      </AllInOneLock>
     </div>
   );
 }

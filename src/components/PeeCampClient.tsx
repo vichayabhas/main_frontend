@@ -1,7 +1,7 @@
 "use client";
 
 import { useDownloadExcel } from "react-export-table-to-excel";
-import { AllPlaceData, GetPeeData } from "../../interface";
+import { AllPlaceData, GetPeeData, Id } from "../../interface";
 import AllInOneLock from "./AllInOneLock";
 import BaanMembers from "./BaanMembers";
 import FinishButton from "./FinishButton";
@@ -10,10 +10,14 @@ import PartClient from "./PartClient";
 import ShowOwnCampData from "./ShowOwnCampData";
 import React from "react";
 import chatStyle from "@/components/chat.module.css";
-import { downloadText } from "./setup";
+import { AddRemoveHigh, downloadText } from "./setup";
 import TopMenuItem from "./TopMenuItem";
 import styles from "./topmenu.module.css";
 import ImageAndDescriptions from "./ImageAndDescriptions";
+import UserNameTable from "./UserNameTable";
+import { Checkbox } from "@mui/material";
+import PartJob from "./PartJob";
+import registerJob from "@/libs/camp/registerJob";
 
 export default function PeeCampClient({
   data: {
@@ -35,6 +39,8 @@ export default function PeeCampClient({
     petoParts,
     peeParts,
     imageAndDescriptions,
+    partJobs,
+    baanJobs,
   },
   token,
   allPlaceData,
@@ -50,6 +56,23 @@ export default function PeeCampClient({
       campMemberCard.sleepAtCamp ? "และห้องนอน" : ""
     }`,
   });
+  const baanRef = React.useRef(null);
+  const baanDownload = useDownloadExcel({
+    currentTableRef: baanRef.current,
+    filename: `หน้าที่ของ${camp.groupName}${baan.name}`,
+  });
+  const [removeTimeRegisterIds, setRemoveTimeRegisterIds] = React.useState<
+    Id[]
+  >([]);
+  const [addJobIds, setaddJobIds] = React.useState<Id[]>([]);
+
+  const manageJobId = new AddRemoveHigh(
+    addJobIds,
+    setaddJobIds,
+    removeTimeRegisterIds,
+    setRemoveTimeRegisterIds
+  );
+
   return (
     <>
       {user.mode == "nong" ? (
@@ -306,6 +329,88 @@ export default function PeeCampClient({
         mode={user.mode}
         token={token}
         gender={user.gender}
+      />
+      <AllInOneLock mode={user.mode}>
+        <div
+          className="w-[100%] items-center p-10 rounded-3xl "
+          style={{
+            backgroundColor: "#961A1D",
+            width: "70%",
+            marginTop: "20px",
+          }}
+        >
+          <table ref={baanRef}>
+            <tr>
+              <th>ชื่องาน</th>
+              <th>จำนวนผู้ชาย</th>
+              <th>จำนวนผู้หญิง</th>
+              <th>จำนวนรวม</th>
+              <th>รูปแบบการรับ</th>
+              <th>select</th>
+              <th>ผู้ชายที่ผ่าน</th>
+              <th>ผู้หญิงที่ผ่าน</th>
+              <th>ผู้ชายไม่ที่ผ่าน</th>
+              <th>ผู้หญิงไม่ที่ผ่าน</th>
+            </tr>
+            {baanJobs.map((baanJob, i) => {
+              return (
+                <tr key={i}>
+                  <td>{baanJob.name}</td>
+                  <td>{baanJob.male}</td>
+                  <td>{baanJob.female}</td>
+                  <td>{baanJob.sum}</td>
+                  <td>{baanJob.reqType}</td>
+                  <td>
+                    <Checkbox
+                      onChange={manageJobId.set(
+                        baanJob._id,
+                        baanJob.timeRegisterId
+                      )}
+                      checked={manageJobId.get(
+                        baanJob._id,
+                        baanJob.timeRegisterId
+                      )}
+                    />
+                  </td>
+                  <td>
+                    <UserNameTable inputs={baanJob.passMales} />
+                  </td>
+                  <td>
+                    <UserNameTable inputs={baanJob.passFemales} />
+                  </td>
+                  <td>
+                    <UserNameTable inputs={baanJob.failMales} />
+                  </td>
+                  <td>
+                    <UserNameTable inputs={baanJob.failFemales} />
+                  </td>
+                </tr>
+              );
+            })}
+          </table>
+          <FinishButton text={downloadText} onClick={baanDownload.onDownload} />
+          <FinishButton
+            text="register"
+            onClick={() =>
+              registerJob(
+                {
+                  addJobIds,
+                  removeTimeRegisterIds,
+                  campMemberCardId: campMemberCard._id,
+                  types: 'baan',
+                },
+                token
+              )
+            }
+          />
+        </div>
+      </AllInOneLock>
+      <PartJob
+        user={user}
+        part={part}
+        partJobs={partJobs}
+        token={token}
+        campMemberCardId={campMemberCard._id}
       />
       <ShowOwnCampData
         token={token}
