@@ -1,4 +1,4 @@
-import { getBackendUrl, userPath } from "@/components/setup";
+import { getBackendUrl, userPath } from "@/components/utility/setup";
 
 export default async function checkTel(
   tel: string,

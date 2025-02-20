@@ -1,10 +1,9 @@
 "use client";
 
 import VideoPlayer from "./VideoPlayer";
-import { useState } from "react";
 import React from "react";
 export default function PromoteCard() {
-  const [playing, setPlaying] = useState(true);
+  const [playing, setPlaying] = React.useState(true);
 
   return (
     <div

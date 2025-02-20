@@ -1,6 +1,6 @@
 "use client";
 import { useWindowListener } from "@/hooks/useWindowListener";
-import { useRef, useEffect } from "react";
+import { useEffect } from "react";
 import React from "react";
 export default function VideoPlayer({
   vdoSrc,
@@ -9,7 +9,7 @@ export default function VideoPlayer({
   vdoSrc: string;
   isPlaying: boolean;
 }) {
-  const vdoRef = useRef<HTMLVideoElement>(null);
+  const vdoRef = React.useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     if (isPlaying) {

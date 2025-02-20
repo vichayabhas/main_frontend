@@ -1,4 +1,4 @@
-import { getBackendUrl, userPath } from "@/components/setup";
+import { getBackendUrl, userPath } from "@/components/utility/setup";
 import { Id, InterCampMemberCard } from "../../../interface";
 export default async function getCampMemberCardByCampId(
   id: Id,

@@ -1,7 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import BackToHome from "@/components/BackToHome";
-import FoodClient from "@/components/FoodClient";
-import { getTimeOffsetByToken, stringToId } from "@/components/setup";
+import BackToHome from "@/components/utility/BackToHome";
+import FoodClient from "@/components/camp/meal/FoodClient";
+import { getTimeOffsetByToken, stringToId } from "@/components/utility/setup";
 import getFoodForUpdate from "@/libs/randomthing/getFoodForUpdate";
 import { getServerSession } from "next-auth";
 import React from "react";

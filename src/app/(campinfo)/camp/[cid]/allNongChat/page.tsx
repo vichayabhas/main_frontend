@@ -1,13 +1,13 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import BackToHome from "@/components/BackToHome";
-import ChatClient from "@/components/ChatClient";
+import BackToHome from "@/components/utility/BackToHome";
+import ChatClient from "@/components/chat/ChatClient";
 import getPeeCamp from "@/libs/camp/getPeeCamp";
 import getUserFromCamp from "@/libs/camp/getUserFromCamp";
 import getChat from "@/libs/randomthing/getChat";
 import getCampMemberCardByCampId from "@/libs/user/getCampMemberCardByCampId";
 import { getServerSession } from "next-auth";
-import ChatChoiseClient from "@/components/ChatChoiseClient";
-import { stringToId } from "@/components/setup";
+import ChatChoiseClient from "@/components/chat/ChatChoiseClient";
+import { stringToId } from "@/components/utility/setup";
 import React from "react";
 export default async function NongChatChoise({
   params,

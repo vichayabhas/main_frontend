@@ -1,25 +1,24 @@
 "use client";
-import SelectSize from "@/components/SelectSize";
-import { setBoolean, setTextToString } from "@/components/setup";
+import SelectSize from "@/components/utility/SelectSize";
+import { setBoolean, setTextToString } from "@/components/utility/setup";
 import userSignup from "@/libs/user/userSignup";
 import { Checkbox, Input, TextField } from "@mui/material";
 import Link from "next/link";
-import { useState } from "react";
 import React from "react";
 export default function signupPage() {
-  const [name, setName] = useState<string>("");
-  const [tel, setTel] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [nickname, setNickname] = useState<string>("");
-  const [lastname, setLastname] = useState<string>("");
-  const [shirtSize, setShirtSize] = useState<
+  const [name, setName] = React.useState<string>("");
+  const [tel, setTel] = React.useState<string>("");
+  const [email, setEmail] = React.useState<string>("");
+  const [password, setPassword] = React.useState<string>("");
+  const [nickname, setNickname] = React.useState<string>("");
+  const [lastname, setLastname] = React.useState<string>("");
+  const [shirtSize, setShirtSize] = React.useState<
     "S" | "M" | "L" | "XL" | "XXL" | "3XL" | null
   >(null);
-  const [gender, setGender] = useState<"Male" | "Female" | null>(null);
-  const [haveBottle, setHaveBottle] = useState<boolean >(false);
-  const [citizenId, setCitizenId] = useState<string | null>(null);
-  const [likeToSleepAtCamp, setLikeToSleepAtCamp] = useState<boolean>(false);
+  const [gender, setGender] = React.useState<"Male" | "Female" | null>(null);
+  const [haveBottle, setHaveBottle] = React.useState<boolean >(false);
+  const [citizenId, setCitizenId] = React.useState<string | null>(null);
+  const [likeToSleepAtCamp, setLikeToSleepAtCamp] = React.useState<boolean>(false);
   return (
     <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
       <div className="text-4xl font-bold"

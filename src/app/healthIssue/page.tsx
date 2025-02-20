@@ -1,10 +1,10 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import getUserProfile from "@/libs/user/getUserProfile";
-import BackToHome from "@/components/BackToHome";
+import BackToHome from "@/components/utility/BackToHome";
 import { HeathIssueBody } from "../../../interface";
 import getHeathIssue from "@/libs/user/getHeathIssue";
-import HeathIssueClient from "@/components/HeathIssueClient";
+import HeathIssueClient from "@/components/user/HeathIssueClient";
 import React from "react";
 export default async function name() {
   const session = await getServerSession(authOptions);

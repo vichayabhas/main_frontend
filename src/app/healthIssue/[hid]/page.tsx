@@ -1,4 +1,4 @@
-import { stringToId } from "@/components/setup";
+import { stringToId } from "@/components/utility/setup";
 import getHeathIssue from "@/libs/user/getHeathIssue";
 import getUser from "@/libs/user/getUser";
 import React from "react";

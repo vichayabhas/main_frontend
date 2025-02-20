@@ -1,6 +1,6 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import ActionPlanClient from "@/components/ActionPlanClient";
-import BackToHome from "@/components/BackToHome";
+import ActionPlanClient from "@/components/camp/ActionPlanClient";
+import BackToHome from "@/components/utility/BackToHome";
 import getActionPlans from "@/libs/camp/getActionPlans";
 import getTimeOffset from "@/libs/user/getTimeOffset";
 import getUserProfile from "@/libs/user/getUserProfile";
@@ -15,7 +15,13 @@ export default async function HospitalDetailPage() {
   if (user.role === "nong") {
     return <BackToHome />;
   }
-  const timeOffset=await getTimeOffset(user.displayOffsetId)
+  const timeOffset = await getTimeOffset(user.displayOffsetId);
   const actionPlans = await getActionPlans(session.user.token);
-  return <ActionPlanClient actionPlans={actionPlans.data} timeOffset={timeOffset} baseUrl="actionPlan"/>;
+  return (
+    <ActionPlanClient
+      actionPlans={actionPlans.data}
+      timeOffset={timeOffset}
+      baseUrl="actionPlan"
+    />
+  );
 }

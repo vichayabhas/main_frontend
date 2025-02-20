@@ -1,7 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import BackToHome from "@/components/BackToHome";
-import MealClient from "@/components/MealClient";
-import { stringToId } from "@/components/setup";
+import BackToHome from "@/components/utility/BackToHome";
+import MealClient from "@/components/camp/meal/MealClient";
+import { stringToId } from "@/components/utility/setup";
 import getCamp from "@/libs/camp/getCamp";
 import getPart from "@/libs/camp/getPart";
 import getFoods from "@/libs/randomthing/getFoods";

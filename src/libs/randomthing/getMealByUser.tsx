@@ -1,4 +1,4 @@
-import { getBackendUrl } from "@/components/setup";
+import { getBackendUrl } from "@/components/utility/setup";
 import { GetMeals, Id } from "../../../interface";
 
 export default async function getMealByUser(mealId: Id, token: string):Promise<GetMeals> {

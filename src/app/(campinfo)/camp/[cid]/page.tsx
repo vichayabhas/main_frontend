@@ -1,15 +1,14 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import ImagesFromUrl from "@/components/ImagesFromUrl";
-import LocationDateReserve from "@/components/LocationDateReserve";
-import NongCampClient from "@/components/NongCampClient";
-import NongPendingPage from "@/components/NongPendingPage";
-import NongRegisterPage from "@/components/NongRegisterPage";
-import NongSureClient from "@/components/NongSureClient";
-import PeeCampClient from "@/components/PeeCampClient";
-import PetoCampClient from "@/components/PetoCampClient";
-import { getAllPlaceData } from "@/components/placeSetUp";
-import PushToCamps from "@/components/PushToCamps";
-import { stringToId } from "@/components/setup";
+import ImagesFromUrl from "@/components/utility/ImagesFromUrl";
+import LocationDateReserve from "@/components/camp/member/LocationDateReserve";
+import NongCampClient from "@/components/camp/member/NongCampClient";
+import NongPendingPage from "@/components/camp/member/NongPendingPage";
+import NongRegisterPage from "@/components/camp/member/NongRegisterPage";
+import NongSureClient from "@/components/camp/member/NongSureClient";
+import PeeCampClient from "@/components/camp/member/PeeCampClient";
+import PetoCampClient from "@/components/camp/member/PetoCampClient";
+import PushToCamps from "@/components/utility/PushToCamps";
+import { stringToId } from "@/components/utility/setup";
 import getCampState from "@/libs/camp/getCampState";
 import getNongCampData from "@/libs/camp/getNongCampData";
 import getPart from "@/libs/camp/getPart";
@@ -19,6 +18,7 @@ import getPetoCampData from "@/libs/camp/getPetoCampData";
 import { getServerSession } from "next-auth";
 import React from "react";
 import { CampState, MyMap } from "../../../../../interface";
+import { getAllPlaceData } from "@/components/randomthing/placeSetUp";
 
 export default async function HospitalDetailPage({
   params,

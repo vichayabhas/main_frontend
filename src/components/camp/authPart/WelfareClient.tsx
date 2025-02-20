@@ -1,0 +1,438 @@
+"use client";
+
+import {
+  CampWelfarePack,
+  InterTimeOffset,
+  RoleCamp,
+  UpdateTimeOffsetRaw,
+} from "../../../../interface";
+import { Checkbox, MenuItem, Select } from "@mui/material";
+import CampNumberTable from "../../utility/CampNumberTable";
+import React from "react";
+import { copy, downloadText, selectTimeToSystem, setBoolean } from "../../utility/setup";
+import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import createMeal from "@/libs/randomthing/createMeal";
+import { useDownloadExcel } from "react-export-table-to-excel";
+import FinishButton from "@/components/utility/FinishButton";
+import GetTimeHtml from "@/components/utility/GetTimeHtml";
+export default function WelfareClient({
+  welfare,
+  displayOffset,
+  partIdString,
+  token,
+  selectOffset,
+}: {
+  welfare: CampWelfarePack;
+  displayOffset: UpdateTimeOffsetRaw;
+  partIdString: string;
+  token: string;
+  selectOffset: InterTimeOffset;
+}) {
+  const welfareModes = [
+    "ดูเฉพาะขนาดเสื้อ",
+    "ดูทั้งหมด",
+    "ซ่อนปัญหาสุขภาพพี่บ้านในฝ่าย",
+    "ขั้นสูง",
+  ] as const;
+  type WelfareMode = (typeof welfareModes)[number];
+  const [welfareMode, setWelfareMode] = React.useState<WelfareMode>("ดูทั้งหมด");
+  const [nong, setNong] = React.useState(true);
+  const [pee, setPee] = React.useState(true);
+  const [peto, setPeto] = React.useState(welfare.isHavePeto);
+  const [time, setTime] = React.useState<Date | null>(null);
+  const showPart =
+    welfare.isHavePeto || welfareMode != "ซ่อนปัญหาสุขภาพพี่บ้านในฝ่าย";
+  const router = useRouter();
+  const sizeRef = React.useRef(null);
+  const foodRef = React.useRef(null);
+  const sizeDownload = useDownloadExcel({
+    currentTableRef: sizeRef.current,
+    filename: `ตารางขนาดเสื้อของค่าย${welfare.campWelfare.name}`,
+  });
+  const foodDownload = useDownloadExcel({
+    currentTableRef: foodRef.current,
+    filename: `ข้อมูลแพ้อาหารของค่าย${welfare.campWelfare.name}`,
+  });
+  return (
+    <>
+      <Select value={welfareMode}>
+        {welfareModes.map((e, i) => (
+          <MenuItem
+            key={i}
+            onClick={() => {
+              setWelfareMode(e);
+            }}
+            value={e}
+          >
+            {e}
+          </MenuItem>
+        ))}
+      </Select>
+      <table
+        style={{
+          width: "80%",
+          marginLeft: "10%",
+        }}
+        ref={sizeRef}
+      >
+        <tr>
+          <th>กลุ่ม</th>
+          <th>น้อง S</th>
+          <th>น้อง M</th>
+          <th>น้อง L</th>
+          <th>น้อง XL</th>
+          <th>น้อง XXL</th>
+          <th>น้อง 3XL</th>
+          <th>พี่{welfare.groupName} S</th>
+          <th>พี่{welfare.groupName} M</th>
+          <th>พี่{welfare.groupName} L</th>
+          <th>พี่{welfare.groupName} XL</th>
+          <th>พี่{welfare.groupName} XXL</th>
+          <th>พี่{welfare.groupName} 3XL</th>
+          {welfare.isHavePeto ? (
+            <>
+              <th>ปีโต S</th>
+              <th>ปีโต M</th>
+              <th>ปีโต L</th>
+              <th>ปีโต XL</th>
+              <th>ปีโต XXL</th>
+              <th>ปีโต 3XL</th>
+            </>
+          ) : null}
+        </tr>
+        <tr>
+          <td>{welfare.campWelfare.name}</td>
+          <td>{welfare.campWelfare.nongSize.sizeS}</td>
+          <td>{welfare.campWelfare.nongSize.sizeM}</td>
+          <td>{welfare.campWelfare.nongSize.sizeL}</td>
+          <td>{welfare.campWelfare.nongSize.sizeXL}</td>
+          <td>{welfare.campWelfare.nongSize.sizeXXL}</td>
+          <td>{welfare.campWelfare.nongSize.size3XL}</td>
+          <td>{welfare.campWelfare.peeSize.sizeS}</td>
+          <td>{welfare.campWelfare.peeSize.sizeM}</td>
+          <td>{welfare.campWelfare.peeSize.sizeL}</td>
+          <td>{welfare.campWelfare.peeSize.sizeXL}</td>
+          <td>{welfare.campWelfare.peeSize.sizeXXL}</td>
+          <td>{welfare.campWelfare.peeSize.size3XL}</td>
+          {welfare.isHavePeto ? (
+            <>
+              <td>{welfare.campWelfare.petoSize.sizeS}</td>
+              <td>{welfare.campWelfare.petoSize.sizeM}</td>
+              <td>{welfare.campWelfare.petoSize.sizeL}</td>
+              <td>{welfare.campWelfare.petoSize.sizeXL}</td>
+              <td>{welfare.campWelfare.petoSize.sizeXXL}</td>
+              <td>{welfare.campWelfare.petoSize.size3XL}</td>
+            </>
+          ) : null}
+        </tr>
+        {welfare.baanWelfares.map((data, i) => (
+          <tr key={i}>
+            <td>{data.name}</td>
+            <td>{data.nongSize.sizeS}</td>
+            <td>{data.nongSize.sizeM}</td>
+            <td>{data.nongSize.sizeL}</td>
+            <td>{data.nongSize.sizeXL}</td>
+            <td>{data.nongSize.sizeXXL}</td>
+            <td>{data.nongSize.size3XL}</td>
+            <td>{data.peeSize.sizeS}</td>
+            <td>{data.peeSize.sizeM}</td>
+            <td>{data.peeSize.sizeL}</td>
+            <td>{data.peeSize.sizeXL}</td>
+            <td>{data.peeSize.sizeXXL}</td>
+            <td>{data.peeSize.size3XL}</td>
+            {welfare.isHavePeto ? (
+              <>
+                <td>{data.petoSize.sizeS}</td>
+                <td>{data.petoSize.sizeM}</td>
+                <td>{data.petoSize.sizeL}</td>
+                <td>{data.petoSize.sizeXL}</td>
+                <td>{data.petoSize.sizeXXL}</td>
+                <td>{data.petoSize.size3XL}</td>
+              </>
+            ) : null}
+          </tr>
+        ))}
+        {welfare.partWelfares.map((data, i) => (
+          <tr key={i}>
+            <td>{data.name}</td>
+            <td>{data.nongSize.sizeS}</td>
+            <td>{data.nongSize.sizeM}</td>
+            <td>{data.nongSize.sizeL}</td>
+            <td>{data.nongSize.sizeXL}</td>
+            <td>{data.nongSize.sizeXXL}</td>
+            <td>{data.nongSize.size3XL}</td>
+            <td>{data.peeSize.sizeS}</td>
+            <td>{data.peeSize.sizeM}</td>
+            <td>{data.peeSize.sizeL}</td>
+            <td>{data.peeSize.sizeXL}</td>
+            <td>{data.peeSize.sizeXXL}</td>
+            <td>{data.peeSize.size3XL}</td>
+            {welfare.isHavePeto ? (
+              <>
+                <td>{data.petoSize.sizeS}</td>
+                <td>{data.petoSize.sizeM}</td>
+                <td>{data.petoSize.sizeL}</td>
+                <td>{data.petoSize.sizeXL}</td>
+                <td>{data.petoSize.sizeXXL}</td>
+                <td>{data.petoSize.size3XL}</td>
+              </>
+            ) : null}
+          </tr>
+        ))}
+      </table>
+      <FinishButton text={downloadText} onClick={sizeDownload.onDownload} />
+      {welfareMode == "ดูเฉพาะขนาดเสื้อ" ? null : (
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        <>
+          <table ref={foodRef}>
+            <tr>
+              <th>ชื่อเล่น</th>
+              <th>ชื่อจริง</th>
+              <th>นามสกุล</th>
+              <th>จาก</th>
+              <th>บทบาท</th>
+              <th>แพ้อาหารอะไรบ้าง</th>
+              <th>เน้นย้ำเรื่องอาหารอะไรบ้าง</th>
+              <th>กินเผ็ดได้หรือไม่</th>
+              {welfareMode == "ขั้นสูง" ? <th>ใส่แพมเพิสหรือไม่</th> : null}
+            </tr>
+            {welfare.baanWelfares.map((baan) => (
+              <>
+                {baan.nongHealths.map((nong, i) => (
+                  <tr key={i}>
+                    <td>{nong.user.nickname}</td>
+                    <td>{nong.user.name}</td>
+                    <td>{nong.user.lastname}</td>
+                    <td>{baan.name}</td>
+                    <td>น้องค่าย</td>
+                    <td>{nong.heathIssue.food}</td>
+                    <td>{nong.heathIssue.foodConcern}</td>
+                    <td>{nong.heathIssue.spicy ? "ไม่ได้" : "ได้"}</td>
+                    {welfareMode == "ขั้นสูง" ? (
+                      <td>{nong.heathIssue.isWearing ? "ใส่" : "ไม่ใส่"}</td>
+                    ) : null}
+                  </tr>
+                ))}
+                {baan.peeHealths.map((pee, i) => (
+                  <tr key={i}>
+                    <td>{pee.user.nickname}</td>
+                    <td>{pee.user.name}</td>
+                    <td>{pee.user.lastname}</td>
+                    <td>{baan.name}</td>
+                    <td>พี่{welfare.groupName}</td>
+                    <td>{pee.heathIssue.food}</td>
+                    <td>{pee.heathIssue.foodConcern}</td>
+                    <td>{pee.heathIssue.spicy ? "ไม่ได้" : "ได้"}</td>
+                    {welfareMode == "ขั้นสูง" ? (
+                      <td>{pee.heathIssue.isWearing ? "ใส่" : "ไม่ใส่"}</td>
+                    ) : null}
+                  </tr>
+                ))}
+              </>
+            ))}
+            {showPart
+              ? welfare.partWelfares.map((part) => (
+                  <>
+                    {welfare.isHavePeto
+                      ? part.petoHealths.map((peto, i) => (
+                          <tr key={i}>
+                            <td>{peto.user.nickname}</td>
+                            <td>{peto.user.name}</td>
+                            <td>{peto.user.lastname}</td>
+                            <td>{part.name}</td>
+                            <td>ปีโต</td>
+                            <td>{peto.heathIssue.food}</td>
+                            <td>{peto.heathIssue.foodConcern}</td>
+                            <td>{peto.heathIssue.spicy ? "ไม่ได้" : "ได้"}</td>
+                            {welfareMode == "ขั้นสูง" ? (
+                              <td>
+                                {peto.heathIssue.isWearing ? "ใส่" : "ไม่ใส่"}
+                              </td>
+                            ) : null}
+                          </tr>
+                        ))
+                      : null}
+                    {welfareMode != "ซ่อนปัญหาสุขภาพพี่บ้านในฝ่าย"
+                      ? part.peeHealths.map((pee, i) => (
+                          <tr key={i}>
+                            <td>{pee.user.nickname}</td>
+                            <td>{pee.user.name}</td>
+                            <td>{pee.user.lastname}</td>
+                            <td>{part.name}</td>
+                            <td>พี่{welfare.groupName}</td>
+                            <td>{pee.heathIssue.food}</td>
+                            <td>{pee.heathIssue.foodConcern}</td>
+                            <td>{pee.heathIssue.spicy ? "ไม่ได้" : "ได้"}</td>
+                            {welfareMode == "ขั้นสูง" ? (
+                              <td>
+                                {pee.heathIssue.isWearing ? "ใส่" : "ไม่ใส่"}
+                              </td>
+                            ) : null}
+                          </tr>
+                        ))
+                      : null}
+                  </>
+                ))
+              : null}
+          </table>
+          <FinishButton text={downloadText} onClick={foodDownload.onDownload} />
+        </>
+      )}
+      จำนวนสมาชิกที่มีกระติกน้ำ
+      <CampNumberTable
+        isHavePeto={welfare.isHavePeto}
+        main={welfare.campBottleNumber}
+        baanNumbers={welfare.baanHaveBottles}
+        partNumbers={welfare.partHaveBottles}
+        groupName={welfare.groupName}
+        filename="จำนวนสมาชิกที่มีกระติกน้ำ"
+      />
+      จำนวนสมาชิกที่มีกินเผ็ดไม่ได้
+      <CampNumberTable
+        isHavePeto={welfare.isHavePeto}
+        main={welfare.campSpicyNumber}
+        baanNumbers={welfare.baanSpicyS}
+        partNumbers={welfare.partSpicyS}
+        groupName={welfare.groupName}
+        filename="จำนวนสมาชิกที่มีกินเผ็ดไม่ได้"
+      />
+      จำนวนสมาชิกที่ halal
+      <CampNumberTable
+        isHavePeto={welfare.isHavePeto}
+        main={welfare.campHalalNumber}
+        baanNumbers={welfare.baanHalalS}
+        partNumbers={welfare.partHalalS}
+        groupName={welfare.groupName}
+        filename="จำนวนสมาชิกที่ halal"
+      />
+      จำนวนสมาชิกที่มีมังสวิรัติ
+      <CampNumberTable
+        isHavePeto={welfare.isHavePeto}
+        main={welfare.campVegetarianNumber}
+        baanNumbers={welfare.baanVegetarians}
+        partNumbers={welfare.partVegetarians}
+        groupName={welfare.groupName}
+        filename="จำนวนสมาชิกที่มีมังสวิรัติ"
+      />
+      จำนวนสมาชิกที่กินเจ
+      <CampNumberTable
+        isHavePeto={welfare.isHavePeto}
+        main={welfare.campVeganNumber}
+        baanNumbers={welfare.baanVegans}
+        partNumbers={welfare.partVegans}
+        groupName={welfare.groupName}
+        filename="จำนวนสมาชิกที่กินเจ"
+      />
+      <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
+        <form
+          className="w-[70%] items-center p-10 rounded-3xl"
+          style={{
+            backgroundColor: "#961A1D",
+          }}
+        >
+          <div className="flex flex-row items-center my-5">
+            <label className="w-2/5 text-2xl text-white">
+              ข้าวมื้อนี้ให้น้องค่ายหรือไม่
+            </label>
+            <Checkbox
+              onChange={setBoolean(setNong)}
+              sx={{
+                "&.Mui-checked": {
+                  color: "#FFFFFF", // Custom color when checked
+                },
+              }}
+              defaultChecked
+            />
+          </div>
+          <div className="flex flex-row items-center my-5">
+            <label className="w-2/5 text-2xl text-white">
+              ข้าวมื้อนี้ให้พี่{welfare.groupName}หรือไม่
+            </label>
+            <Checkbox
+              onChange={setBoolean(setPee)}
+              sx={{
+                "&.Mui-checked": {
+                  color: "#FFFFFF", // Custom color when checked
+                },
+              }}
+              defaultChecked
+            />
+          </div>
+          {welfare.isHavePeto ? (
+            <div className="flex flex-row items-center my-5">
+              <label className="w-2/5 text-2xl text-white">
+                ข้าวมื้อนี้ให้ปีโตหรือไม่
+              </label>
+              <Checkbox
+                onChange={setBoolean(setPeto)}
+                sx={{
+                  "&.Mui-checked": {
+                    color: "#FFFFFF", // Custom color when checked
+                  },
+                }}
+                defaultChecked
+              />
+            </div>
+          ) : null}
+          <div className="flex flex-row items-center my-5">
+            <label className="w-2/5 text-2xl text-white">
+              ข้าวมื้อนี้กินเวลาไหน
+            </label>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateTimePicker
+                className="bg-white m-10"
+                value={time}
+                onChange={setTime}
+              />
+            </LocalizationProvider>
+          </div>
+          <div className="flex flex-row justify-end">
+            <FinishButton
+              text="สร้างมื้ออาหาร"
+              onClick={() => {
+                if (!time) {
+                  alert("please select time");
+                } else {
+                  const roles: RoleCamp[] = [];
+                  if (nong) {
+                    roles.push("nong");
+                  }
+                  if (pee) {
+                    roles.push("pee");
+                  }
+                  if (peto) {
+                    roles.push("peto");
+                  }
+                  createMeal(
+                    {
+                      campId: welfare._id,
+                      roles,
+                      time: selectTimeToSystem(time, selectOffset),
+                    },
+                    token
+                  );
+                }
+              }}
+            />
+          </div>
+        </form>
+      </div>
+      {welfare.meals
+        .map(copy)
+        .sort((a, b) => dayjs(a.time.toString()).diff(b.time.toString()))
+        .map((v, i) => (
+          <div
+            key={i}
+            onClick={() =>
+              router.push(`/authPart/${partIdString}/welfare/${v._id}`)
+            }
+          >
+            <GetTimeHtml offset={displayOffset} input={v.time.toString()} />
+          </div>
+        ))}
+    </>
+  );
+}

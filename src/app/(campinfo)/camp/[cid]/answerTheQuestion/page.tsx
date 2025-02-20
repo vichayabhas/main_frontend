@@ -1,7 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import BackToHome from "@/components/BackToHome";
-import PureQuestion from "@/components/PureQuestion";
-import { stringToId } from "@/components/setup";
+import BackToHome from "@/components/utility/BackToHome";
+import PureQuestion from "@/components/camp/question/PureQuestion";
+import { stringToId } from "@/components/utility/setup";
 import getAllQuestion from "@/libs/camp/getAllQuestion";
 import { getServerSession } from "next-auth";
 import React from "react";

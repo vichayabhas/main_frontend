@@ -1,7 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import BackToHome from "@/components/BackToHome";
-import ChatClient from "@/components/ChatClient";
-import { stringToId } from "@/components/setup";
+import BackToHome from "@/components/utility/BackToHome";
+import ChatClient from "@/components/chat/ChatClient";
+import { stringToId } from "@/components/utility/setup";
 import getChat from "@/libs/randomthing/getChat";
 import getCampMemberCardByCampId from "@/libs/user/getCampMemberCardByCampId";
 import { getServerSession } from "next-auth";

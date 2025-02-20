@@ -1,11 +1,11 @@
 import getCamp from "@/libs/camp/getCamp"
-import ChoicePartChatClient from "@/components/ChoicePartChatClient"
-import { stringToId } from "@/components/setup"
+import ChoicePartChatClient from "@/components/chat/ChoicePartChatClient"
+import { stringToId } from "@/components/utility/setup"
 import React from "react";
 import getParts from "@/libs/camp/getParts"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
-import BackToHome from "@/components/BackToHome"
+import BackToHome from "@/components/utility/BackToHome"
 export default async function PartChoice({params}:{params:{cid:string}}){
     const session=await getServerSession(authOptions)
     if(!session){

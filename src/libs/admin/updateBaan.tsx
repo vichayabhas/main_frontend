@@ -1,4 +1,4 @@
-import { getBackendUrl } from "@/components/setup";
+import { getBackendUrl } from "@/components/utility/setup";
 import { UpdateBaan } from "../../../interface";
 
 export default async function updateBaan(input: UpdateBaan, token: string) {

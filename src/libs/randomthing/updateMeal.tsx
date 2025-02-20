@@ -1,4 +1,4 @@
-import { getBackendUrl } from "@/components/setup";
+import { getBackendUrl } from "@/components/utility/setup";
 import { UpdateMeal } from "../../../interface";
 
 export default async function updateMeal(input: UpdateMeal, token: string) {

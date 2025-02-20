@@ -1,7 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import BackToHome from "@/components/BackToHome";
-import PrStudioBaan from "@/components/PrStudioBaan";
-import { stringToId } from "@/components/setup";
+import BackToHome from "@/components/utility/BackToHome";
+import PrStudioBaan from "@/components/camp/authPart/PrStudioBaan";
+import { stringToId } from "@/components/utility/setup";
 import getShowBaanSongs from "@/libs/randomthing/getShowBaanSongs";
 import { getServerSession } from "next-auth";
 import React from "react";

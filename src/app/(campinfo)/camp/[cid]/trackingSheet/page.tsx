@@ -1,12 +1,12 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import BackToHome from "@/components/BackToHome";
+import BackToHome from "@/components/utility/BackToHome";
 import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";
-import WorkingItemClient from "@/components/WorkingItemClient";
-import PasswordLock from "@/components/PasswordLock";
+import WorkingItemClient from "@/components/camp/WorkingItemClient";
+import PasswordLock from "@/components/utility/PasswordLock";
 import React from "react";
 import getWorkingItemByCampId from "@/libs/camp/getWorkingItemByCampId";
-import { stringToId } from "@/components/setup";
+import { stringToId } from "@/components/utility/setup";
 export default async function page({ params }: { params: { cid: string } }) {
   const session = await getServerSession(authOptions);
   if (!session) {

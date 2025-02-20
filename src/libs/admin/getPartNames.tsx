@@ -1,4 +1,4 @@
-import { getBackendUrl } from "@/components/setup";
+import { getBackendUrl } from "@/components/utility/setup";
 import { InterPartNameContainer } from "../../../interface";
 
 export default async function getPartNames(): Promise<

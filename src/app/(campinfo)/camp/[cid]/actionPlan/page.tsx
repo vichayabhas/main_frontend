@@ -1,7 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import ActionPlanClient from "@/components/ActionPlanClient";
-import BackToHome from "@/components/BackToHome";
-import { stringToId } from "@/components/setup";
+import ActionPlanClient from "@/components/camp/ActionPlanClient";
+import BackToHome from "@/components/utility/BackToHome";
+import { stringToId } from "@/components/utility/setup";
 import getActionPlanByCampId from "@/libs/camp/getActionPlanByCampId";
 import getTimeOffset from "@/libs/user/getTimeOffset";
 import getUserProfile from "@/libs/user/getUserProfile";

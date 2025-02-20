@@ -1,4 +1,4 @@
-import { getBackendUrl } from "@/components/setup";
+import { getBackendUrl } from "@/components/utility/setup";
 import { CreateSong } from "../../../interface";
 
 export default async function createSong(input: CreateSong, token: string) {

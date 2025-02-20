@@ -1,20 +1,19 @@
 "use client";
-import { setTextToString } from "@/components/setup";
+import { setTextToString } from "@/components/utility/setup";
 import changeModeToPee from "@/libs/user/changeModeToPee";
 import { TextField } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
 import React from "react";
 export default function peeOnlyPage() {
   const router = useRouter();
-  const userRef = useRef("");
+  const userRef = React.useRef("");
   const { data: session } = useSession();
   if (!session || session.user.role == "nong") {
     router.push("/");
     return <></>;
   }
-  const [password, setPassword] = useState<string>("");
+  const [password, setPassword] = React.useState<string>("");
   return (
     <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
       <div className="text-4xl font-medium">Verifile</div>

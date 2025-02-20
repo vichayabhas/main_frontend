@@ -1,4 +1,4 @@
-import { getBackendUrl, userPath } from "@/components/setup";
+import { getBackendUrl, userPath } from "@/components/utility/setup";
 import { HeathIssueBody } from "../../../interface";
 
 export default async function updateHeath(input: HeathIssueBody, token: string) {

@@ -1,15 +1,14 @@
 "use client";
-import { setTextToString } from "@/components/setup";
+import { setTextToString } from "@/components/utility/setup";
 import { TextField } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { useState } from "react";
 
 export default function HospitalDetailPage() {
   const { data: session } = useSession();
   const router = useRouter();
-  const [tel, setTel] = useState<string | null>(null);
+  const [tel, setTel] = React.useState<string | null>(null);
 
   if (!session) {
     router.push("/");

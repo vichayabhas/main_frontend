@@ -1,16 +1,16 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import BackToHome from "@/components/BackToHome";
+import BackToHome from "@/components/utility/BackToHome";
 import getActionPlan from "@/libs/camp/getActionPlan";
 import { getServerSession } from "next-auth";
 import { InterPlace } from "../../../../../interface";
 import getPlace from "@/libs/randomthing/getPlace";
-import EditActionPlan from "@/components/EditActionPlan";
+import EditActionPlan from "@/components/camp/EditActionPlan";
 import getUserFromCamp from "@/libs/camp/getUserFromCamp";
-import { getAllPlaceData } from "@/components/placeSetUp";
-import { stringToId } from "@/components/setup";
+import { stringToId } from "@/components/utility/setup";
 import React from "react";
 import getTimeOffset from "@/libs/user/getTimeOffset";
 import getUserProfile from "@/libs/user/getUserProfile";
+import { getAllPlaceData } from "@/components/randomthing/placeSetUp";
 export default async function HospitalDetailPage({
   params,
 }: {
@@ -33,8 +33,8 @@ export default async function HospitalDetailPage({
   const allPlaceData = await getAllPlaceData();
   const pees = await getUserFromCamp("getPeesFromPartId", actionPlan.partId);
   const petos = await getUserFromCamp("getPetosFromPartId", actionPlan.partId);
-  const user=await getUserProfile(session.user.token)
-  const timeOffset=await getTimeOffset(user.selectOffsetId)
+  const user = await getUserProfile(session.user.token);
+  const timeOffset = await getTimeOffset(user.selectOffsetId);
   return (
     <>
       <EditActionPlan

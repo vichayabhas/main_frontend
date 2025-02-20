@@ -1,6 +1,6 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import BackToHome from "@/components/BackToHome";
-import MenuPeeClient from "@/components/MenuPeeClient";
+import BackToHome from "@/components/utility/BackToHome";
+import MenuPeeClient from "@/components/randomthing/MenuPeeClient";
 import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";
 import React from "react";

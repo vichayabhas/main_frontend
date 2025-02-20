@@ -1,7 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import BackToHome from "@/components/BackToHome";
-import PlaceClient from "@/components/PlaceClient";
-import { stringToId } from "@/components/setup";
+import PlaceClient from "@/components/randomthing/PlaceClient";
+import BackToHome from "@/components/utility/BackToHome";
+import { stringToId } from "@/components/utility/setup";
 import getPlaces from "@/libs/randomthing/getPlaces";
 import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";

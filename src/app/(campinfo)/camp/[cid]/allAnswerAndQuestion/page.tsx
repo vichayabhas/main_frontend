@@ -1,7 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import AllAnswerAndQuestionPage from "@/components/AllAnswerAndQuestionPage";
-import BackToHome from "@/components/BackToHome";
-import { stringToId } from "@/components/setup";
+import AllAnswerAndQuestionPage from "@/components/camp/question/AllAnswerAndQuestionPage";
+import BackToHome from "@/components/utility/BackToHome";
+import { stringToId } from "@/components/utility/setup";
 import getAllAnswerAndQuestion from "@/libs/camp/getAllAnswerAndQuestion";
 import { getServerSession } from "next-auth";
 import React from "react";

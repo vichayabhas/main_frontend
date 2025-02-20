@@ -1,10 +1,10 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]/route";
-import BackToHome from "@/components/BackToHome";
+import BackToHome from "@/components/utility/BackToHome";
 import getUserProfile from "@/libs/user/getUserProfile";
-import UpdateProfileRaw from "@/components/UpdateProfileRaw";
-import PasswordLock from "@/components/PasswordLock";
+import PasswordLock from "@/components/utility/PasswordLock";
 import React from "react";
+import UpdateProfileRaw from "@/components/user/UpdateProfileRaw";
 export default async function updateProfilePage() {
   const session = await getServerSession(authOptions);
   if (!session) {

@@ -1,7 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import BackToHome from "@/components/BackToHome";
-import { stringToId } from "@/components/setup";
-import UpdateCampClient from "@/components/UpdateCampClient";
+import BackToHome from "@/components/utility/BackToHome";
+import { stringToId } from "@/components/utility/setup";
+import UpdateCampClient from "@/components/camp/authPart/UpdateCampClient";
 import getAllRemainPartName from "@/libs/admin/getAllRemainPartName";
 import getBaans from "@/libs/camp/getBaans";
 import getCamp from "@/libs/camp/getCamp";

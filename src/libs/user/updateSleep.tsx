@@ -1,4 +1,4 @@
-import { getBackendUrl, userPath } from "@/components/setup";
+import { getBackendUrl, userPath } from "@/components/utility/setup";
 import getUserProfile from "./getUserProfile";
 
 export default async function updateSleep(sleep:boolean,token:string){

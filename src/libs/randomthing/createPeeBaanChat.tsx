@@ -1,4 +1,4 @@
-import { getBackendUrl } from "@/components/setup";
+import { getBackendUrl } from "@/components/utility/setup";
 import { CreateBaanChat } from "../../../interface";
 
 export default async function createPeeBaanChat(

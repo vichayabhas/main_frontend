@@ -1,5 +1,5 @@
-import AirQuality from "@/components/AirQuality";
-import TMD from "@/components/TMD";
+import AirQuality from "@/components/randomthing/AirQuality";
+import TMD from "@/components/randomthing/TMD";
 import React from "react";
 
 export default function page() {

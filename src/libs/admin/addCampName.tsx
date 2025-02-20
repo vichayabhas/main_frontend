@@ -1,4 +1,4 @@
-import { getBackendUrl } from "@/components/setup";
+import { getBackendUrl } from "@/components/utility/setup";
 
 export default async function addCampName(name: string, token: string) {
   const res = await fetch(

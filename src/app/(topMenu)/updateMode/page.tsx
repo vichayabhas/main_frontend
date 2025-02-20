@@ -1,8 +1,8 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]/route";
 import getUserProfile from "@/libs/user/getUserProfile";
-import UpdateModeRaw from "@/components/UpdateModeRaw";
-import BackToHome from "@/components/BackToHome";
+import UpdateModeRaw from "@/components/user/UpdateModeRaw";
+import BackToHome from "@/components/utility/BackToHome";
 import getCamp from "@/libs/camp/getCamp";
 import React from "react";
 export default async function updateModePage() {

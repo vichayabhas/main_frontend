@@ -1,6 +1,6 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import BackToHome from "@/components/BackToHome";
-import VerifileClient from "@/components/VerifyClient";
+import BackToHome from "@/components/utility/BackToHome";
+import VerifileClient from "@/components/user/VerifyClient";
 import getSystemInfo from "@/libs/randomthing/getSystemInfo";
 import getUserProfile from "@/libs/user/getUserProfile";
 import signId from "@/libs/user/signId";

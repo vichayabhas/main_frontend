@@ -1,12 +1,12 @@
 //nong visnu
 "use client";
 
-import { useState } from "react";
+
+import BackToHome from "@/components/utility/BackToHome";
+import FinishButton from "@/components/utility/FinishButton";
+import { getBackendUrl, setTextToString } from "@/components/utility/setup";
 import { TextField } from "@mui/material";
 import { useSession } from "next-auth/react";
-import BackToHome from "@/components/BackToHome";
-import FinishButton from "@/components/FinishButton";
-import { getBackendUrl, setTextToString } from "@/components/setup";
 import React from "react";
 export default function page() {
   const { data: session } = useSession();
@@ -17,7 +17,7 @@ export default function page() {
     return <BackToHome />;
   }
   //alert(session.user.user.email);
-  const [studentId, setStudentId] = useState<string | null>(null);
+  const [studentId, setStudentId] = React.useState<string | null>(null);
   return (
     <div>
       <label>รหัสประจำตัวนิสิต</label>

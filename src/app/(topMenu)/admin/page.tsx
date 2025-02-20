@@ -1,16 +1,16 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]/route";
 import getUserProfile from "@/libs/user/getUserProfile";
-import BackToHome from "@/components/BackToHome";
+import BackToHome from "@/components/utility/BackToHome";
 import getCamps from "@/libs/camp/getCamps";
-import HospitalCatalog from "@/components/HospitalCatalog";
+import HospitalCatalog from "@/components/camp/HospitalCatalog";
 import { LinearProgress } from "@mui/material";
 import React from "react";
 import { Suspense } from "react";
 import getCampNames from "@/libs/admin/getCampNames";
-import AdminClient from "@/components/AdminClient";
 import getPartNames from "@/libs/admin/getPartNames";
-import PasswordLock from "@/components/PasswordLock";
+import PasswordLock from "@/components/utility/PasswordLock";
+import AdminClient from "@/components/admin/AdminClient";
 
 export default async function adminPage() {
   //const router=useRouter()

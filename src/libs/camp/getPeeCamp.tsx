@@ -1,4 +1,4 @@
-import { getBackendUrl } from "@/components/setup";
+import { getBackendUrl } from "@/components/utility/setup";
 import { Id, InterPeeCamp } from "../../../interface";
 
 export default async function getPeeCamp(

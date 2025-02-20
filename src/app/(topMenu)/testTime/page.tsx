@@ -1,6 +1,6 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import BackToHome from "@/components/BackToHome";
-import TestDateTime from "@/components/TestDateTime";
+import BackToHome from "@/components/utility/BackToHome";
+import TestDateTime from "@/components/randomthing/TestDateTime";
 import getTimeOffset from "@/libs/user/getTimeOffset";
 import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";

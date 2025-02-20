@@ -1,5 +1,5 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import SongClient from "@/components/SongClient";
+import SongClient from "@/components/randomthing/SongClient";
 import getMenuSongs from "@/libs/randomthing/getMenuSongs";
 import { getServerSession } from "next-auth";
 import React from "react";

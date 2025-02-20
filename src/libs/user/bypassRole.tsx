@@ -1,4 +1,4 @@
-import { getBackendUrl, userPath } from "@/components/setup";
+import { getBackendUrl, userPath } from "@/components/utility/setup";
 
 export default async function bypassRole(key: string, token: string) {
   const response = await fetch(`${getBackendUrl()}/${userPath}/bypassRole`, {

@@ -1,6 +1,6 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import BackToHome from "@/components/BackToHome";
-import BuildingClient from "@/components/BuildingClient";
+import BackToHome from "@/components/utility/BackToHome";
+import BuildingClient from "@/components/randomthing/BuildingClient";
 import getAllBuilding from "@/libs/randomthing/getAllBuilding";
 import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";

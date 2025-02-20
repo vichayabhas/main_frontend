@@ -1,5 +1,5 @@
 import { Id, showActionPlan, SuccessBase } from "../../../interface";
-import { getBackendUrl } from "@/components/setup";
+import { getBackendUrl } from "@/components/utility/setup";
 
 export default async function getActionPlanByPartId(
   partId: Id,

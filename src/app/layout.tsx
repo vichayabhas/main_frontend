@@ -1,7 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import TopMenu from "@/components/TopMenu";
+import TopMenu from "@/components/randomthing/TopMenu";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import NextAuthProvider from "./providers/NextAuthProvider";
@@ -22,12 +22,10 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-     
-          <NextAuthProvider session={session}>
-            <TopMenu />
-            <div style={{ marginTop: 80 }}>{children}</div>
-          </NextAuthProvider>
-    
+        <NextAuthProvider session={session}>
+          <TopMenu />
+          <div style={{ marginTop: 80 }}>{children}</div>
+        </NextAuthProvider>
       </body>
     </html>
   );

@@ -1,14 +1,14 @@
 //peto
 "use client";
 
-import { useState } from "react";
-import { Group } from "../../../../interface";
-import { MenuItem, Select, TextField } from "@mui/material";
+
+import BackToHome from "@/components/utility/BackToHome";
+import FinishButton from "@/components/utility/FinishButton";
+import { getBackendUrl, setTextToString } from "@/components/utility/setup";
+import { Select, MenuItem, TextField } from "@mui/material";
 import { useSession } from "next-auth/react";
-import BackToHome from "@/components/BackToHome";
-import FinishButton from "@/components/FinishButton";
-import { getBackendUrl, setTextToString } from "@/components/setup";
 import React from "react";
+import { Group } from "../../../../interface";
 export default function page() {
   const { data: session } = useSession();
   if (!session) {
@@ -17,8 +17,8 @@ export default function page() {
   if(session.user.user.email.split('@')[1].localeCompare('student.chula.ac.th')){
     return <BackToHome />;
   }
-  const [studentId, setStudentId] = useState<string | null>(null);
-  const [group, setGroup] = useState<Group | null>(null);
+  const [studentId, setStudentId] = React.useState<string | null>(null);
+  const [group, setGroup] = React.useState<Group | null>(null);
   const allGroup: Group[] = [
     "A",
     "B",

@@ -1,5 +1,5 @@
 import { Id, UpdateCamp } from "../../../interface";
-import { getBackendUrl } from "@/components/setup";
+import { getBackendUrl } from "@/components/utility/setup";
 
 export default async function updateCamp(
   update: UpdateCamp,

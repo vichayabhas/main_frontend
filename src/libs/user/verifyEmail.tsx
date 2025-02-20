@@ -1,5 +1,5 @@
 //'use server'
-import { getBackendUrl, userPath } from "@/components/setup";
+import { getBackendUrl, userPath } from "@/components/utility/setup";
 
 export default async function verifyEmail(password: string, token: string) {
   const response = await fetch(

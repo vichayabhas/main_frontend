@@ -1,16 +1,9 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import AllAnswerAndQuestionPage from "@/components/AllAnswerAndQuestionPage";
-import AllInOneLock from "@/components/AllInOneLock";
-import BackToHome from "@/components/BackToHome";
-import { getAllPlaceData } from "@/components/placeSetUp";
-import PlanClient from "@/components/PlanClient";
-import PrStudioClient from "@/components/PrStudioClient";
-import RegisterPartClient from "@/components/RegisPartClient";
-import { stringToId } from "@/components/setup";
-import UpdateBaanServer from "@/components/UpdateBaanServer";
-import UpdateCampClient from "@/components/UpdateCampClient";
-import UpdateQuestionClient from "@/components/UpdateQuestionClient";
-import WelfareClient from "@/components/WelfareClient";
+import { stringToId } from "@/components/utility/setup";
+import UpdateBaanServer from "@/components/camp/authPart/UpdateBaanServer";
+import UpdateCampClient from "@/components/camp/authPart/UpdateCampClient";
+import UpdateQuestionClient from "@/components/camp/question/UpdateQuestionClient";
+import WelfareClient from "@/components/camp/authPart/WelfareClient";
 import getAllRemainPartName from "@/libs/admin/getAllRemainPartName";
 import getAllAnswerAndQuestion from "@/libs/camp/getAllAnswerAndQuestion";
 import getAllPlanData from "@/libs/camp/getAllPlanData";
@@ -31,8 +24,15 @@ import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";
 import { InterPusherData } from "../../../../../interface";
 import React from "react";
-import UpdateImageAndDescryption from "@/components/UpdateImageAndDescryption";
+import UpdateImageAndDescryption from "@/components/camp/authPart/UpdateImageAndDescryption";
 import getImageAndDescriptions from "@/libs/camp/getImageAndDescriptions";
+import PlanClient from "@/components/camp/authPart/PlanClient";
+import PrStudioClient from "@/components/camp/authPart/PrStudioClient";
+import RegisterPartClient from "@/components/camp/authPart/RegisPartClient";
+import AllAnswerAndQuestionPage from "@/components/camp/question/AllAnswerAndQuestionPage";
+import { getAllPlaceData } from "@/components/randomthing/placeSetUp";
+import AllInOneLock from "@/components/utility/AllInOneLock";
+import BackToHome from "@/components/utility/BackToHome";
 export default async function Baan({ params }: { params: { pid: string } }) {
   const session = await getServerSession(authOptions);
   if (!session) {
