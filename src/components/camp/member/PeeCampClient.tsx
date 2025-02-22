@@ -1,12 +1,11 @@
 "use client";
 
-
-import chatStyle from '../../chat/chat.module.css';
+import chatStyle from "../../chat/chat.module.css";
 import React from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
 import { AddRemoveHigh, downloadText } from "../../utility/setup";
 import TopMenuItem from "../../randomthing/TopMenuItem";
-import styles from '../../randomthing/topmenu.module.css';
+import styles from "../../randomthing/topmenu.module.css";
 import ImageAndDescriptions from "../ImageAndDescriptions";
 import UserNameTable from "../../utility/UserNameTable";
 import { Checkbox } from "@mui/material";
@@ -16,9 +15,10 @@ import AllInOneLock from "@/components/utility/AllInOneLock";
 import FinishButton from "@/components/utility/FinishButton";
 import { GetPeeData, AllPlaceData, Id } from "../../../../interface";
 import BaanMembers from "./BaanMembers";
-import ImagesFromUrl from '@/components/utility/ImagesFromUrl';
-import PartClient from '../PartClient';
-import ShowOwnCampData from '../ShowOwnCampData';
+import ImagesFromUrl from "@/components/utility/ImagesFromUrl";
+import PartClient from "../PartClient";
+import ShowOwnCampData from "../ShowOwnCampData";
+import MirrorClient from "./MirrorClient";
 
 export default function PeeCampClient({
   data: {
@@ -42,6 +42,7 @@ export default function PeeCampClient({
     imageAndDescriptions,
     partJobs,
     baanJobs,
+    mirrorData,
   },
   token,
   allPlaceData,
@@ -406,6 +407,17 @@ export default function PeeCampClient({
           />
         </div>
       </AllInOneLock>
+      <MirrorClient
+        user={user}
+        token={token}
+        camp={camp}
+        campMemberCardId={campMemberCard._id}
+        mirrorData={mirrorData}
+        nongs={nongBaans}
+        pees={peeBaans}
+        baan={baan}
+        timeOffset={displayOffset}
+      />
       <PartJob
         user={user}
         part={part}

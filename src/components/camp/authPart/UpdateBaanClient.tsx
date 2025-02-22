@@ -56,6 +56,12 @@ export default function UpdateBaanClient({
   const [female, setFemale] = React.useState(0);
   const [sum, setSum] = React.useState(0);
   const [jobId, setJobId] = React.useState<Id | null>(null);
+  const [canReadMirror, setCanReadMirror] = React.useState(
+    coopData.baan.canReadMirror
+  );
+  const [canWhriteMirror, setCanWhriteMirror] = React.useState(
+    coopData.baan.canWhriteMirror
+  );
   if (!session) {
     return <BackToHome />;
   }
@@ -142,6 +148,34 @@ export default function UpdateBaanClient({
             checked={nongSendMessage}
           />
         </div>
+        <div className="flex flex-row items-center my-5">
+          <label className="w-2/5 text-2xl text-white">
+            อนุญาตให้เขียน mirror หรือไม่
+          </label>
+          <Checkbox
+            onChange={setBoolean(setCanWhriteMirror)}
+            sx={{
+              "&.Mui-checked": {
+                color: "#FFFFFF", // Custom color when checked
+              },
+            }}
+            checked={canWhriteMirror}
+          />
+        </div>
+        <div className="flex flex-row items-center my-5">
+          <label className="w-2/5 text-2xl text-white">
+            อนุญาตให้อ่าน mirror หรือไม่
+          </label>
+          <Checkbox
+            onChange={setBoolean(setCanReadMirror)}
+            sx={{
+              "&.Mui-checked": {
+                color: "#FFFFFF", // Custom color when checked
+              },
+            }}
+            checked={canReadMirror}
+          />
+        </div>
         <div className="flex flex-row justify-end">
           <button
             className="bg-pink-300 p-3 rounded-lg shadow-[10px_10px_10px_-10px_rgba(0,0,0,0.5)] hover:bg-rose-700 hover:text-pink-50"
@@ -157,6 +191,8 @@ export default function UpdateBaanClient({
                     boySleepPlaceId: boy ? boy._id : null,
                     normalPlaceId: normal ? normal._id : null,
                     nongSendMessage,
+                    canReadMirror,
+                    canWhriteMirror,
                   },
                   session.user.token
                 );
@@ -178,7 +214,7 @@ export default function UpdateBaanClient({
               color: "#FFFFFF", // Custom color when checked
             },
           }}
-          checked={nongSendMessage}
+          checked={highMode}
         />
       </div>
       <table ref={memberRef}>

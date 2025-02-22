@@ -132,6 +132,9 @@ export default function UpdateCampClient({
     boolean[][]
   >(parts.map((part) => authTypes.map((auth) => part.auths.includes(auth))));
   const [timeOut, setTimeOut] = React.useState(false);
+  const [canReadTimeOnMirror, setCanReadTimeOnMirror] = React.useState(
+    camp.canReadTimeOnMirror
+  );
   const isHaveNongInGeneralRoleNong =
     camp.memberStructure == "nong->highSchool,pee->1year,peto->2upYear" ||
     camp.memberStructure == "nong->highSchool,pee->2upYear" ||
@@ -175,6 +178,7 @@ export default function UpdateCampClient({
         authTypes.map((auth) => part.auths.includes(auth))
       )
     );
+    setCanReadTimeOnMirror(newCampData.canReadTimeOnMirror);
   }
   if (timeOut) {
     return <Waiting />;
@@ -535,6 +539,20 @@ export default function UpdateCampClient({
             checked={allDone}
           />
         </div>
+        <div className="flex flex-row items-center my-5">
+          <label className="w-2/5 text-2xl text-white">
+            อนุญาติให้ดูเวลาใน mirror
+          </label>
+          <Checkbox
+            sx={{
+              "&.Mui-checked": {
+                color: "#FFFFFF", // Custom color when checked
+              },
+            }}
+            onChange={setBoolean(setCanReadTimeOnMirror)}
+            checked={canReadTimeOnMirror}
+          />
+        </div>
         <AllInOneLock token={token} bypass={camp.canNongAccessDataWithRoleNong}>
           <div className="flex flex-row items-center my-5">
             <label className="w-2/5 text-2xl text-white">
@@ -831,6 +849,7 @@ export default function UpdateCampClient({
                           )
                           .filter(notEmpty),
                       })),
+                      canReadTimeOnMirror,
                     },
                     camp._id,
                     token

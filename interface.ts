@@ -68,6 +68,10 @@ export interface InterBaanBack {
   peeHaveBottleIds: Id[];
   imageAndDescriptionContainerIds: Id[];
   jobIds: Id[];
+  mirrorIds: Id[];
+  canReadMirror: boolean;
+  canWhriteMirror: boolean;
+
   //public
 }
 export interface InterBuilding {
@@ -186,6 +190,7 @@ export interface InterCampBack {
   pusherId: Id | null;
   lockChangeQuestion: boolean;
   jobIds: Id[];
+  canReadTimeOnMirror: boolean;
   //public
 }
 export interface InterCampStyle {
@@ -314,6 +319,9 @@ export interface InterCampMemberCard {
   whiteListFoodIds: Id[];
   baanJobIds: Id[];
   partJobIds: Id[];
+  mirrorSenderIds: Id[];
+  mirrorReciverIds: Id[];
+  mirrorBaanIds: Id[];
   //private
 }
 export interface InterSong {
@@ -447,6 +455,9 @@ export interface InterBaanFront {
   peeHaveBottleIds: Id[];
   imageAndDescriptionContainerIds: Id[];
   jobIds: Id[];
+  mirrorIds: Id[];
+  canReadMirror: boolean;
+  canWhriteMirror: boolean;
   //public
 }
 
@@ -550,6 +561,7 @@ export interface InterCampFront {
   pusherId: Id | null;
   lockChangeQuestion: boolean;
   jobIds: Id[];
+  canReadTimeOnMirror: boolean;
   //public
 }
 export interface InterPartFront {
@@ -636,6 +648,7 @@ export interface UpdateCamp {
   canNongAccessDataWithRoleNong: boolean;
   lockChangeQuestion: boolean;
   updatePart: UpdateAuthCamp[];
+  canReadTimeOnMirror: boolean;
   //public
 }
 export interface CreateCamp {
@@ -714,6 +727,8 @@ export interface UpdateBaan {
   boySleepPlaceId: Id | null;
   normalPlaceId: Id | null;
   nongSendMessage: boolean;
+  canReadMirror: boolean;
+  canWhriteMirror: boolean;
   //public
 }
 export type Group =
@@ -1416,6 +1431,7 @@ export interface GetNongData {
   meals: GetMeals[];
   healthIssue: HeathIssueBody;
   displayOffset: UpdateTimeOffsetRaw;
+  mirrorData: GetMirrorPack;
   //private
 }
 export interface GetPeeData {
@@ -1439,6 +1455,7 @@ export interface GetPeeData {
   imageAndDescriptions: ShowImageAndDescriptions[];
   baanJobs: GetJob[];
   partJobs: GetJob[];
+  mirrorData: GetMirrorPack;
   //private
 }
 export interface GetPetoData {
@@ -1566,6 +1583,9 @@ export interface BasicBaan {
   mdTime: Date;
   nongSendMessage: boolean;
   songIds: Id[];
+  canReadMirror: boolean;
+  canWhriteMirror: boolean;
+  mirrorIds: Id[];
   //public
 }
 export interface BasicCamp {
@@ -1613,6 +1633,7 @@ export interface BasicCamp {
   canNongAccessDataWithRoleNong: boolean;
   lockChangeQuestion: boolean;
   pusherId: Id | null;
+  canReadTimeOnMirror: boolean;
   //public
 }
 export interface BasicPart {
@@ -1884,4 +1905,36 @@ export interface RegisterJob {
   addJobIds: Id[];
   campMemberCardId: Id;
   removeTimeRegisterIds: Id[];
+}
+export interface InterMirror {
+  senderCampMemberCardId: Id;
+  reciverId: Id;
+  message: string;
+  types: "baan" | "user";
+  _id: Id;
+  time: Date;
+}
+export interface CreateMirror {
+  senderCampMemberCardId: Id;
+  reciverId: Id;
+  message: string;
+  types: "baan" | "user";
+}
+export interface UpdateMirror {
+  message: string;
+  _id: Id;
+}
+export interface GetMirrorUser extends InterMirror {
+  sender: BasicUser;
+  reciver: BasicUser;
+}
+export interface GetMirrorBaan extends InterMirror {
+  sender: BasicUser;
+  reciver: BasicBaan;
+}
+export interface GetMirrorPack {
+  userRecivers: GetMirrorUser[];
+  userSenders: GetMirrorUser[];
+  baanRecivers: GetMirrorBaan[];
+  baanSenders: GetMirrorBaan[];
 }

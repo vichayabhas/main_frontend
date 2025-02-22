@@ -4,15 +4,16 @@ import { GetNongData } from "../../../../interface";
 
 import ImagesFromUrl from "../../utility/ImagesFromUrl";
 import ShowOwnCampData from "../ShowOwnCampData";
-import chatStyle from '../../chat/chat.module.css';
+import chatStyle from "../../chat/chat.module.css";
 import React from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
 import { downloadText } from "../../utility/setup";
 import TopMenuItem from "../../randomthing/TopMenuItem";
-import styles from '../../randomthing/topmenu.module.css';
+import styles from "../../randomthing/topmenu.module.css";
 import AllInOneLock from "@/components/utility/AllInOneLock";
 import FinishButton from "@/components/utility/FinishButton";
 import BaanMembers from "./BaanMembers";
+import MirrorClient from "./MirrorClient";
 
 export default function NongCampClient({
   data: {
@@ -28,6 +29,7 @@ export default function NongCampClient({
     meals,
     healthIssue,
     displayOffset,
+    mirrorData,
   },
   token,
 }: {
@@ -212,6 +214,17 @@ export default function NongCampClient({
         pees={pees}
         nongs={nongs}
         camp={camp}
+      />
+      <MirrorClient
+        user={user}
+        token={token}
+        camp={camp}
+        campMemberCardId={campMemberCard._id}
+        mirrorData={mirrorData}
+        nongs={nongs}
+        pees={pees}
+        baan={baan}
+        timeOffset={displayOffset}
       />
       <ShowOwnCampData
         token={token}
