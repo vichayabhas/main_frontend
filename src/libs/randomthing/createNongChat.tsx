@@ -1,9 +1,11 @@
-import { getBackendUrl } from "@/components/utility/setup";
-import { CreateNongChat } from "../../../interface";
+import { getBackendUrl, SocketReady } from "@/components/utility/setup";
+import { CreateNongChat, ShowChat } from "../../../interface";
 
 export default async function createNongChat(
   input: CreateNongChat,
-  token: string
+  token: string,
+  socket: SocketReady<ShowChat>,
+  room: string
 ) {
   const res = await fetch(`${getBackendUrl()}/randomthing/createNongChat`, {
     method: "POST",
@@ -14,5 +16,7 @@ export default async function createNongChat(
     },
     body: JSON.stringify(input),
   });
-  return await res.json()
+  const data: ShowChat = await res.json();
+  socket.trigger(data, room);
+  return data;
 }

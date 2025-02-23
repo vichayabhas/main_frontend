@@ -5,13 +5,20 @@ import createNongChat from "@/libs/randomthing/createNongChat";
 import createPartChat from "@/libs/randomthing/createPartChat";
 import createPeeBaanChat from "@/libs/randomthing/createPeeBaanChat";
 import { TextField } from "@mui/material";
-import Pusher from "pusher-js";
+//import Pusher from "pusher-js";
 import React from "react";
 import { ChatReady, ShowChat } from "../../../interface";
 import GetTimeHtml from "../utility/GetTimeHtml";
-import { addItemInUseStateArray, setTextToString } from "../utility/setup";
+import {
+  addItemInUseStateArray,
+  getBackendUrl,
+  setTextToString,
+  SocketReady,
+} from "../utility/setup";
 import StringToHtml from "../utility/StringToHtml";
-
+import { io } from "socket.io-client";
+const socket = io(getBackendUrl());
+const newChatSocket = new SocketReady<ShowChat>(socket, "newChat");
 export default function ChatClient({
   data,
   token,
@@ -23,31 +30,33 @@ export default function ChatClient({
   const [messages, setMessages] = React.useState(data.chats);
   const sendType = data.sendType;
   React.useEffect(() => {
-    const pusherData=data.pusher
-    if(!pusherData){
-      return
-    }
-    const pusherClient = new Pusher(pusherData.first, pusherData.second);
-    const channel = pusherClient.subscribe(data.subscribe);
-    const handleChatUpdate = (updatedChat: ShowChat) => {
-      setMessages((allChats) =>
-        allChats.map((chat) => {
-          if (chat._id.toString() === updatedChat._id.toString()) {
-            return updatedChat;
-          } else {
-            return chat;
-          }
-        })
-      );
-    };
+    // const pusherData=data.pusher
+    // if(!pusherData){
+    //   return
+    // }
+    // const pusherClient = new Pusher(pusherData.first, pusherData.second);
+    // const channel = pusherClient.subscribe(data.subscribe);
+    // const handleChatUpdate = (updatedChat: ShowChat) => {
+    //   setMessages((allChats) =>
+    //     allChats.map((chat) => {
+    //       if (chat._id.toString() === updatedChat._id.toString()) {
+    //         return updatedChat;
+    //       } else {
+    //         return chat;
+    //       }
+    //     })
+    //   );
+    // };
     const handleNewChat = (newChat: ShowChat) => {
-      setMessages(addItemInUseStateArray(newChat));
+      if (newChat.canReadInModeNong || data.mode == "pee") {
+        setMessages(addItemInUseStateArray(newChat));
+      }
     };
-    channel.bind(data.systemInfo.updateText, handleChatUpdate);
-    channel.bind(data.systemInfo.newText, handleNewChat);
+    newChatSocket.listen(data.subscribe, handleNewChat);
     return () => {
-      pusherClient.unsubscribe(data.subscribe);
-      channel.unbind_all();
+      // pusherClient.unsubscribe(data.subscribe);
+      // channel.unbind_all();
+      newChatSocket.disconect();
     };
   });
   return (
@@ -220,30 +229,46 @@ export default function ChatClient({
                       case "คุยกันในบ้าน": {
                         createNongBaanChat(
                           { baanId: sendType.id, message },
-                          token
+                          token,
+                          newChatSocket,
+                          data.subscribe
                         );
                         break;
                       }
                       case "คุยกันในฝ่าย": {
-                        createPartChat({ partId: sendType.id, message }, token);
+                        createPartChat(
+                          { partId: sendType.id, message },
+                          token,
+                          newChatSocket,
+                          data.subscribe
+                        );
                         break;
                       }
                       case "น้องคุยส่วนตัวกับพี่": {
                         createNongChat(
                           { CampMemberCard: sendType.id, message },
-                          token
+                          token,
+                          newChatSocket,
+                          data.subscribe
                         );
                         break;
                       }
                       case "พี่คุยกันในบ้าน": {
                         createPeeBaanChat(
                           { baanId: sendType.id, message },
-                          token
+                          token,
+                          newChatSocket,
+                          data.subscribe
                         );
                         break;
                       }
                       case "พี่บ้านคุยกัน": {
-                        createPartChat({ partId: sendType.id, message }, token);
+                        createPartChat(
+                          { partId: sendType.id, message },
+                          token,
+                          newChatSocket,
+                          data.subscribe
+                        );
                         break;
                       }
                     }

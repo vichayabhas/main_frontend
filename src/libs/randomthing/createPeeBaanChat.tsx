@@ -1,9 +1,11 @@
-import { getBackendUrl } from "@/components/utility/setup";
-import { CreateBaanChat } from "../../../interface";
+import { getBackendUrl, SocketReady } from "@/components/utility/setup";
+import { CreateBaanChat, ShowChat } from "../../../interface";
 
 export default async function createPeeBaanChat(
   input: CreateBaanChat,
-  token: string
+  token: string,
+  socket: SocketReady<ShowChat>,
+  room: string
 ) {
   const res = await fetch(`${getBackendUrl()}/randomthing/createPeeBaanChat`, {
     method: "POST",
@@ -14,5 +16,7 @@ export default async function createPeeBaanChat(
     },
     body: JSON.stringify(input),
   });
-  return await res.json()
+  const data: ShowChat = await res.json();
+  socket.trigger(data, room);
+  return data;
 }

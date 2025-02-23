@@ -9,12 +9,15 @@ import {
   UpdateTimeOffsetRaw,
   InterPusherData,
   PusherClientData,
+  SocketEvent,
 } from "../../../interface";
 import dayjs from "dayjs";
 import React from "react";
 import getUserProfile from "@/libs/user/getUserProfile";
 import getTimeOffset from "@/libs/user/getTimeOffset";
 import { Session } from "next-auth";
+import { Socket } from "socket.io-client";
+
 export function startSize(): Map<
   "S" | "M" | "L" | "XL" | "XXL" | "3XL",
   number
@@ -606,5 +609,27 @@ export class AddRemoveHigh {
       (!!removeId && !this.removeIds.includes(removeId)) ||
       this.addIds.includes(addId)
     );
+  }
+}
+
+export class SocketReady<T> {
+  private socket: Socket;
+  private eventName: SocketEvent;
+  constructor(socket: Socket, event: SocketEvent) {
+    this.socket = socket;
+    this.eventName = event;
+  }
+  public listen(room: string, event: (arg0: T) => void) {
+    this.socket.on(this.eventName, (data: T, r: string) => {
+      if (r == room) {
+        event(data);
+      }
+    });
+  }
+  public trigger(data: T, room: string) {
+    this.socket.emit(`${this.eventName}Send`, data, room);
+  }
+  public disconect() {
+    this.socket.off(this.eventName);
   }
 }

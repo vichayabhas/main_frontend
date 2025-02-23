@@ -909,6 +909,7 @@ export interface ShowChat extends InterChat {
   baanName: string;
   partName: string;
   roomName: string;
+  canReadInModeNong: boolean;
   //public
 }
 export interface CreatePeeChat {
@@ -1938,3 +1939,5 @@ export interface GetMirrorPack {
   baanRecivers: GetMirrorBaan[];
   baanSenders: GetMirrorBaan[];
 }
+export const socketEvents = ["newChat", "updateChat"] as const;
+export type SocketEvent = (typeof socketEvents)[number];
