@@ -20,10 +20,8 @@ import addPart from "@/libs/admin/addPart";
 import createBaanByGroup from "@/libs/admin/createBaanByGroup";
 import saveDeleteCamp from "@/libs/admin/saveDeleteCamp";
 import updateCamp from "@/libs/admin/updateCamp";
-import updatePusher from "@/libs/admin/updatePusher";
 import getCamp from "@/libs/camp/getCamp";
 import getParts from "@/libs/camp/getParts";
-import getPusherData from "@/libs/camp/getPusherData";
 import { TextField, Checkbox } from "@mui/material";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -35,7 +33,6 @@ import {
   BasicCamp,
   BasicPart,
   MyMap,
-  InterPusherData,
   authTypes,
   Id,
 } from "../../../../interface";
@@ -45,18 +42,15 @@ export default function UpdateCampClient({
   camp: campIn,
   parts: partIns,
   remainPartName,
-  pusherData: pusherDataIn,
   token,
 }: {
   baans: BasicBaan[];
   camp: BasicCamp;
   parts: BasicPart[];
   remainPartName: MyMap[];
-  pusherData: InterPusherData | null;
   token: string;
 }) {
   const [camp, setCamp] = React.useState(campIn);
-  const [pusherData, setPusher] = React.useState(pusherDataIn);
   const [parts, setParts] = React.useState(partIns);
   const router = useRouter();
   const [newBaanName, setNewBaanName] = React.useState<string | null>(null);
@@ -116,18 +110,6 @@ export default function UpdateCampClient({
     React.useState(camp.canNongSeeAllTrackingSheet);
   const [canNongAccessDataWithRoleNong, setCanNongAccessDataWithRoleNong] =
     useState(camp.canNongAccessDataWithRoleNong);
-  const [appId, setAppId] = React.useState<string | null>(
-    pusherData ? pusherData.appId : null
-  );
-  const [key, setKey] = React.useState<string | null>(
-    pusherData ? pusherData.key : null
-  );
-  const [secret, setSecret] = React.useState<string | null>(
-    pusherData ? pusherData.secret : null
-  );
-  const [cluster, setCluster] = React.useState<string | null>(
-    pusherData ? pusherData.cluster : null
-  );
   const [arrayOfAuthPartList, setArrayOfAuthPartList] = React.useState<
     boolean[][]
   >(parts.map((part) => authTypes.map((auth) => part.auths.includes(auth))));
@@ -139,14 +121,9 @@ export default function UpdateCampClient({
     camp.memberStructure == "nong->highSchool,pee->1year,peto->2upYear" ||
     camp.memberStructure == "nong->highSchool,pee->2upYear" ||
     camp.memberStructure == "nong->highSchool,pee->allYear";
-  function reset(
-    newCampData: BasicCamp,
-    newPartsData: BasicPart[],
-    newPusherData: InterPusherData | null
-  ) {
+  function reset(newCampData: BasicCamp, newPartsData: BasicPart[]) {
     setCamp(newCampData);
     setParts(newPartsData);
-    setPusher(newPusherData);
     setRegisterSheetLink(newCampData.registerSheetLink);
     setLink(newCampData.link);
     pictureUrls[1](newCampData.pictureUrls);
@@ -169,10 +146,6 @@ export default function UpdateCampClient({
     setCanNongSeeAllActionPlan(newCampData.canNongSeeAllActionPlan);
     setCanNongSeeAllTrackingSheet(newCampData.canNongSeeAllTrackingSheet);
     setCanNongAccessDataWithRoleNong(newCampData.canNongAccessDataWithRoleNong);
-    setAppId(newPusherData ? newPusherData.appId : null);
-    setKey(newPusherData ? newPusherData.key : null);
-    setSecret(newPusherData ? newPusherData.secret : null);
-    setCluster(newPusherData ? newPusherData.cluster : null);
     setArrayOfAuthPartList(
       newPartsData.map((part) =>
         authTypes.map((auth) => part.auths.includes(auth))
@@ -681,106 +654,6 @@ export default function UpdateCampClient({
             />
           </LocalizationProvider>
         </div>
-        <div className="flex flex-row items-center my-5">
-          <label className="w-2/5 text-2xl text-white">app_id</label>
-          <TextField
-            name="Tel"
-            id="Tel"
-            className="w-3/5 bg-white rounded-2xl "
-            sx={{
-              backgroundColor: "#f5f5f5",
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderRadius: " 1rem",
-                  borderColor: "transparent",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#5479FF",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#5479FF",
-                },
-              },
-            }}
-            onChange={setTextToString(setAppId)}
-            value={appId}
-          />
-        </div>
-        <div className="flex flex-row items-center my-5">
-          <label className="w-2/5 text-2xl text-white">key</label>
-          <TextField
-            name="Tel"
-            id="Tel"
-            className="w-3/5 bg-white rounded-2xl "
-            sx={{
-              backgroundColor: "#f5f5f5",
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderRadius: " 1rem",
-                  borderColor: "transparent",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#5479FF",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#5479FF",
-                },
-              },
-            }}
-            onChange={setTextToString(setKey)}
-            value={key}
-          />
-        </div>
-        <div className="flex flex-row items-center my-5">
-          <label className="w-2/5 text-2xl text-white">secret</label>
-          <TextField
-            name="Tel"
-            id="Tel"
-            className="w-3/5 bg-white rounded-2xl "
-            sx={{
-              backgroundColor: "#f5f5f5",
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderRadius: " 1rem",
-                  borderColor: "transparent",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#5479FF",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#5479FF",
-                },
-              },
-            }}
-            onChange={setTextToString(setSecret)}
-            value={secret}
-          />
-        </div>
-        <div className="flex flex-row items-center my-5">
-          <label className="w-2/5 text-2xl text-white">cluster</label>
-          <TextField
-            name="Tel"
-            id="Tel"
-            className="w-3/5 bg-white rounded-2xl "
-            sx={{
-              backgroundColor: "#f5f5f5",
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderRadius: " 1rem",
-                  borderColor: "transparent",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#5479FF",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#5479FF",
-                },
-              },
-            }}
-            onChange={setTextToString(setCluster)}
-            value={cluster}
-          />
-        </div>
         <table>
           <tr>
             <th>ฝ่าย/ประเภท</th>
@@ -854,21 +727,9 @@ export default function UpdateCampClient({
                     camp._id,
                     token
                   );
-                  if (appId && key && secret && cluster) {
-                    await updatePusher(
-                      { appId, key, secret, cluster, campId: camp._id },
-                      token
-                    );
-                  }
                   const newCampData = await getCamp(campIn._id);
                   const newPartsData = await getParts(campIn._id, token);
-                  let newPusherData: null | InterPusherData;
-                  if (!newCampData.pusherId) {
-                    newPusherData = null;
-                  } else {
-                    newPusherData = await getPusherData(newCampData.pusherId);
-                  }
-                  reset(newCampData, newPartsData, newPusherData);
+                  reset(newCampData, newPartsData);
                   setTimeOut(false);
                 } catch (error) {
                   setTimeOut(false);

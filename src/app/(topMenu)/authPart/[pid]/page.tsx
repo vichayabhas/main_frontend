@@ -14,7 +14,6 @@ import getCamp from "@/libs/camp/getCamp";
 import getPart from "@/libs/camp/getPart";
 import getParts from "@/libs/camp/getParts";
 import getPeeCamp from "@/libs/camp/getPeeCamp";
-import getPusherData from "@/libs/camp/getPusherData";
 import getRegisterData from "@/libs/camp/getRegisterData";
 import getAuthSongs from "@/libs/randomthing/getAuthSongs";
 import getSystemInfo from "@/libs/randomthing/getSystemInfo";
@@ -22,7 +21,6 @@ import getCampMemberCardByCampId from "@/libs/user/getCampMemberCardByCampId";
 import getTimeOffset from "@/libs/user/getTimeOffset";
 import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";
-import { InterPusherData } from "../../../../../interface";
 import React from "react";
 import UpdateImageAndDescryption from "@/components/camp/authPart/UpdateImageAndDescryption";
 import getImageAndDescriptions from "@/libs/camp/getImageAndDescriptions";
@@ -55,12 +53,6 @@ export default async function Baan({ params }: { params: { pid: string } }) {
     const baans = await getBaans(camp._id);
     const remainPartName = await getAllRemainPartName(camp._id, token);
     const parts = await getParts(camp._id, token);
-    let pusherData: InterPusherData | null;
-    if (!camp.pusherId) {
-      pusherData = null;
-    } else {
-      pusherData = await getPusherData(camp.pusherId);
-    }
     outputs.push(
       <>
         <UpdateCampClient
@@ -68,7 +60,6 @@ export default async function Baan({ params }: { params: { pid: string } }) {
           baans={baans}
           parts={parts}
           remainPartName={remainPartName}
-          pusherData={pusherData}
           token={token}
         />
       </>

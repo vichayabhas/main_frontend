@@ -7,8 +7,6 @@ import {
   HeathIssueBody,
   Id,
   UpdateTimeOffsetRaw,
-  InterPusherData,
-  PusherClientData,
   SocketEvent,
 } from "../../../interface";
 import dayjs from "dayjs";
@@ -559,9 +557,6 @@ export class SetUpMiddleDownPack {
   ): UpMiddleDownPack {
     return { up, middle, down };
   }
-}
-export function getPusherClient(data: InterPusherData): PusherClientData {
-  return { first: data.key, second: data };
 }
 export function doIfTrue(input: () => void): (valid: boolean) => void {
   return (valid) => {

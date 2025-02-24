@@ -187,7 +187,6 @@ export interface InterCampBack {
   canNongSeeAllActionPlan: boolean;
   canNongSeeAllTrackingSheet: boolean;
   canNongAccessDataWithRoleNong: boolean;
-  pusherId: Id | null;
   lockChangeQuestion: boolean;
   jobIds: Id[];
   canReadTimeOnMirror: boolean;
@@ -558,7 +557,6 @@ export interface InterCampFront {
   canNongSeeAllActionPlan: boolean;
   canNongSeeAllTrackingSheet: boolean;
   canNongAccessDataWithRoleNong: boolean;
-  pusherId: Id | null;
   lockChangeQuestion: boolean;
   jobIds: Id[];
   canReadTimeOnMirror: boolean;
@@ -989,7 +987,6 @@ export interface ChatReady {
   roomName: string;
   userId: Id;
   subscribe: string;
-  pusher: PusherClientData | null;
   systemInfo: SystemInfo;
   //private
 }
@@ -1244,7 +1241,6 @@ export interface GetAllQuestion {
   choices: GetChoiceQuestion[];
   texts: GetTextQuestion[];
   canAnswerTheQuestion: boolean;
-  pusherData: PusherClientData | null;
   //private
 }
 export interface UserAndAllQuestionPack {
@@ -1267,7 +1263,6 @@ export interface GetAllAnswerAndQuestion {
   groupName: string;
   systemInfo: SystemInfo;
   canScoring: boolean;
-  pusherData: InterPusherData | null;
   //public
 }
 export interface ScoreTextQuestion {
@@ -1633,7 +1628,6 @@ export interface BasicCamp {
   canNongSeeAllTrackingSheet: boolean;
   canNongAccessDataWithRoleNong: boolean;
   lockChangeQuestion: boolean;
-  pusherId: Id | null;
   canReadTimeOnMirror: boolean;
   //public
 }
@@ -1671,12 +1665,7 @@ export interface RegisterData {
   partMap: MyMap[];
   nongRegister: AllNongRegister;
   partBoardIdString: string;
-  pusher: PusherClientData | null;
   systemInfo: SystemInfo;
-}
-export interface PusherClientData {
-  first: string;
-  second: { cluster: string };
 }
 export type QuestionCategory =
   | "พี่พี่"
@@ -1687,22 +1676,6 @@ export type QuestionCategory =
   | "น้องที่ผ่านเข้าค่าย"
   | "น้องที่ผ่านสัมภาษณ์"
   | "น้องที่สมัครเข้ามา";
-export interface InterPusherData {
-  campId: Id;
-  appId: string;
-  key: string;
-  secret: string;
-  cluster: string;
-  useTLS: boolean;
-  _id: Id;
-}
-export interface CreatePusherData {
-  campId: Id;
-  appId: string;
-  key: string;
-  secret: string;
-  cluster: string;
-}
 export interface TriggerChoiceQuestion {
   index: number;
   question: string;
@@ -1731,12 +1704,6 @@ export interface ScoreEvent {
   score: number;
   i: number;
   j: number;
-}
-export interface SendData<T> {
-  chanel: string;
-  event: string;
-  data: T;
-  pusherData: InterPusherData;
 }
 export interface CampState {
   camp: BasicCamp;
@@ -1836,7 +1803,6 @@ export interface CreateImageAndDescriptionContainer {
 export interface GetImageAndDescriptionsPackForUpdate {
   imageAndDescryptionContainers: ShowImageAndDescriptions[];
   baan: BasicBaan;
-  pusherData: PusherClientData | null;
   isOverNight: boolean;
 }
 export const jobGenderRequies = [

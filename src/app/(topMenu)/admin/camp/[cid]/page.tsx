@@ -6,11 +6,9 @@ import getAllRemainPartName from "@/libs/admin/getAllRemainPartName";
 import getBaans from "@/libs/camp/getBaans";
 import getCamp from "@/libs/camp/getCamp";
 import getParts from "@/libs/camp/getParts";
-import getPusherData from "@/libs/camp/getPusherData";
 import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";
 import React from "react";
-import { InterPusherData } from "../../../../../../interface";
 export default async function HospitalDetailPage({
   params,
 }: {
@@ -29,12 +27,6 @@ export default async function HospitalDetailPage({
   const baans = await getBaans(camp._id);
   const remainPartName = await getAllRemainPartName(camp._id, token);
   const parts = await getParts(camp._id, token);
-  let pusherData: InterPusherData | null;
-  if (!camp.pusherId) {
-    pusherData = null;
-  } else {
-    pusherData = await getPusherData(camp.pusherId);
-  }
   return (
     <>
       <UpdateCampClient
@@ -42,7 +34,6 @@ export default async function HospitalDetailPage({
         baans={baans}
         parts={parts}
         remainPartName={remainPartName}
-        pusherData={pusherData}
         token={token}
       />
     </>
