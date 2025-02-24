@@ -2,7 +2,11 @@
 import nongRegisterCamp from "@/libs/camp/nongRegisterCamp";
 import { MenuItem, Select, TextField } from "@mui/material";
 import { Choice, CampState } from "../../../../interface";
-import { modifyElementInUseStateArray, setMap, setTextToString } from "../../utility/setup";
+import {
+  modifyElementInUseStateArray,
+  setMap,
+  setTextToString,
+} from "../../utility/setup";
 import Link from "next/link";
 import React from "react";
 import ImagesFromUrl from "../../utility/ImagesFromUrl";

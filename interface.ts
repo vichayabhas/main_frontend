@@ -1704,7 +1704,7 @@ export interface CreatePusherData {
   cluster: string;
 }
 export interface TriggerChoiceQuestion {
-  _id: Id;
+  index: number;
   question: string;
   a: string;
   b: string;
@@ -1722,7 +1722,7 @@ export interface TriggerChoiceQuestion {
 }
 export interface TriggerTextQuestion {
   question: string;
-  _id: Id;
+  index: number;
   score: number;
   order: number;
   //public
@@ -1939,5 +1939,24 @@ export interface GetMirrorPack {
   baanRecivers: GetMirrorBaan[];
   baanSenders: GetMirrorBaan[];
 }
-export const socketEvents = ["newChat", "updateChat"] as const;
+export const socketEvents = [
+  "newChat",
+  "updateChat",
+  "registerUpdate",
+  "scoreTextAnswer",
+  "questionAction",
+  "trigTextQuestion",
+  "trigChoiceQuestion",
+  "deleteQuestion",
+  "updateQuestion",
+] as const;
 export type SocketEvent = (typeof socketEvents)[number];
+export type QusetionType =
+  | "addText"
+  | "addChoice"
+  | "removeText"
+  | "removeChoice";
+export interface QuestionDeleteAction {
+  deleteChoiceIds: Id[];
+  deleteTextIds: Id[];
+}

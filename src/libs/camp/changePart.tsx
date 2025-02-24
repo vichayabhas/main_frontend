@@ -1,12 +1,14 @@
-import { getBackendUrl } from "@/components/utility/setup";
-import { Id } from "../../../interface";
+import { getBackendUrl, SocketReady } from "@/components/utility/setup";
+import { Id, RegisterData } from "../../../interface";
 
 export default async function changePart(
   input: {
     userIds: Id[];
     partId: Id;
   },
-  token: string
+  token: string,
+  socket: SocketReady<RegisterData>,
+  room: string
 ) {
   const res = await fetch(`${getBackendUrl()}/camp/changePart`, {
     method: "POST",
@@ -17,5 +19,7 @@ export default async function changePart(
     cache: "no-store",
     body: JSON.stringify(input),
   });
-  return await res.json()
+  const data = await res.json();
+  socket.trigger(data, room);
+  return data;
 }

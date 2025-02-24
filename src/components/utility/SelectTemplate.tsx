@@ -12,8 +12,6 @@ export default function SelectTemplate<T>({
   buttonText: string;
   defaultSelect?: { key: T; value: string };
 }) {
-  const userRef = React.useRef("");
-
   const [chose, setChose] = React.useState<T | null>(defaultSelect?.key || null);
   return (
     <div className=" rounded-lg ">
@@ -44,7 +42,6 @@ export default function SelectTemplate<T>({
           color: "#961A1D",
         }}
         onClick={async () => {
-          console.log(userRef);
           if (chose) {
             select(chose);
           } else {

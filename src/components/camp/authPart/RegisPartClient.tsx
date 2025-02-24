@@ -2,13 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import { useDownloadExcel } from "react-export-table-to-excel";
-import Pusher from "pusher-js";
 import FinishButton from "@/components/utility/FinishButton";
 import SelectTemplate from "@/components/utility/SelectTemplate";
 import {
   setTextToString,
   setSwop,
   downloadText,
+  getBackendUrl,
+  SocketReady,
 } from "@/components/utility/setup";
 import StringToHtml from "@/components/utility/StringToHtml";
 import Waiting from "@/components/utility/Waiting";
@@ -26,6 +27,8 @@ import {
   RegisPart,
   ShowMember,
 } from "../../../../interface";
+import { io } from "socket.io-client";
+const socket = io(getBackendUrl());
 function filterOut(inputs: ShowRegisterNong[]): (previous: Id[]) => Id[] {
   const ids = inputs.map((e) => e.user._id);
   return (previous) => previous.filter((o) => ids.includes(o));
@@ -39,6 +42,7 @@ export default function RegisterPartClient({
   token: string;
   isBoard: boolean;
 }) {
+  const updateSocket = new SocketReady<RegisterData>(socket, "registerUpdate");
   const router = useRouter();
   const [nongPendingIds, setNongPendingIds] = React.useState<Id[]>([]);
   const [nongInterviewIds, setNongInterviewIds] = React.useState<Id[]>([]);
@@ -127,14 +131,9 @@ export default function RegisterPartClient({
     currentTableRef: peePassRef.current,
     filename: "พี่ที่สมัครเข้ามา",
   });
+  const room = data.camp._id.toString();
   React.useEffect(() => {
-    const pusherData = data.pusher;
-    if (!pusherData) {
-      return;
-    }
-    const pusherClient = new Pusher(pusherData.first, pusherData.second);
-    const channel = pusherClient.subscribe(`register${camp._id}`);
-    channel.bind(data.systemInfo.manageText, (data2: RegisterData) => {
+    updateSocket.listen(room, (data2: RegisterData) => {
       setData(data2);
       setNongPendingIds(filterOut(data2.nongRegister.pendings));
       setNongInterviewIds(filterOut(data2.nongRegister.interviews));
@@ -144,8 +143,7 @@ export default function RegisterPartClient({
       setPeePassIds((previous) => previous.filter((o) => ids.includes(o)));
     });
     return () => {
-      channel.unbind_all();
-      channel.unsubscribe();
+      updateSocket.disconect();
     };
   });
   return (
@@ -301,7 +299,9 @@ export default function RegisterPartClient({
                       await admission(
                         { members: nongPendingIds, campId: camp._id },
                         "interview",
-                        token
+                        token,
+                        updateSocket,
+                        room
                       );
                       setNongPendingIds([]);
                     });
@@ -314,7 +314,9 @@ export default function RegisterPartClient({
                       await admission(
                         { members: nongPendingIds, campId: camp._id },
                         "kick/nong",
-                        token
+                        token,
+                        updateSocket,
+                        room
                       );
                       setNongPendingIds([]);
                     });
@@ -387,7 +389,9 @@ export default function RegisterPartClient({
                       await admission(
                         { members: nongInterviewIds, campId: camp._id },
                         "pass",
-                        token
+                        token,
+                        updateSocket,
+                        room
                       );
                       setNongInterviewIds([]);
                     });
@@ -400,7 +404,9 @@ export default function RegisterPartClient({
                       await admission(
                         { members: nongInterviewIds, campId: camp._id },
                         "kick/nong",
-                        token
+                        token,
+                        updateSocket,
+                        room
                       );
                       setNongInterviewIds([]);
                     });
@@ -426,7 +432,9 @@ export default function RegisterPartClient({
                       await admission(
                         { members: nongPendingIds, campId: camp._id },
                         "pass",
-                        token
+                        token,
+                        updateSocket,
+                        room
                       );
                       setNongPendingIds([]);
                     });
@@ -439,7 +447,9 @@ export default function RegisterPartClient({
                       await admission(
                         { members: nongPendingIds, campId: camp._id },
                         "kick/nong",
-                        token
+                        token,
+                        updateSocket,
+                        room
                       );
                       setNongPendingIds([]);
                     });
@@ -559,7 +569,9 @@ export default function RegisterPartClient({
                       await admission(
                         { members: nongPaidIds, campId: camp._id },
                         "sure",
-                        token
+                        token,
+                        updateSocket,
+                        room
                       );
                       setNongPaidIds([]);
                     });
@@ -572,7 +584,9 @@ export default function RegisterPartClient({
                       await admission(
                         { members: nongPaidIds, campId: camp._id },
                         "kick/nong",
-                        token
+                        token,
+                        updateSocket,
+                        room
                       );
                       setNongPendingIds([]);
                     });
@@ -689,7 +703,12 @@ export default function RegisterPartClient({
               token,
               "add"
             );
-            await changeBaan({ userIds: members, baanId }, token);
+            await changeBaan(
+              { userIds: members, baanId },
+              token,
+              updateSocket,
+              room
+            );
             setNongSureIds([]);
             setPeePassIds([]);
             setMembers([]);
@@ -1112,7 +1131,7 @@ export default function RegisterPartClient({
         <SelectTemplate
           mapIn={partMap}
           select={(partId) => {
-            changePart({ userIds, partId }, token);
+            changePart({ userIds, partId }, token, updateSocket, room);
           }}
           buttonText={"ย้ายฝ่าย"}
         />
@@ -1120,7 +1139,7 @@ export default function RegisterPartClient({
         <SelectTemplate
           mapIn={regis}
           select={(partId) => {
-            changePart({ userIds, partId }, token);
+            changePart({ userIds, partId }, token, updateSocket, room);
           }}
           buttonText={"ย้ายฝ่าย"}
         />

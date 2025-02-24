@@ -1,13 +1,30 @@
 "use client";
 
-import { copy, waiting, setTextToFloat, setMap, modifyElementInUseStateArray2Dimension, downloadText } from "@/components/utility/setup";
+import {
+  copy,
+  waiting,
+  setTextToFloat,
+  setMap,
+  modifyElementInUseStateArray2Dimension,
+  downloadText,
+  getBackendUrl,
+  SocketReady,
+} from "@/components/utility/setup";
 import FinishButton from "@/components/utility/FinishButton";
 import Waiting from "@/components/utility/Waiting";
 import scoreTextQuestions from "@/libs/camp/scoreTextQuestions";
 import { TextField } from "@mui/material";
 import React from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
-import { GetAllAnswerAndQuestion, InterTextQuestion, Id, UserAndAllQuestionPack } from "../../../../interface";
+import {
+  GetAllAnswerAndQuestion,
+  InterTextQuestion,
+  Id,
+  UserAndAllQuestionPack,
+  ScoreEvent,
+} from "../../../../interface";
+import { io } from "socket.io-client";
+const socket = io(getBackendUrl());
 
 interface DataReady {
   data: GetAllAnswerAndQuestion;
@@ -35,29 +52,21 @@ export default function AllAnswerAndQuestionPageBreakDown({
   setMode: (dataIn: GetAllAnswerAndQuestion) => UserAndAllQuestionPack[];
   types: string;
 }) {
-  const [textScores, setTextScores] = React.useState(setDefaultScore(setMode(data)));
+  const room = `${campId.toString()}${types}`;
+  const socketReady = new SocketReady<ScoreEvent>(socket, "scoreTextAnswer");
+  const [textScores, setTextScores] = React.useState(
+    setDefaultScore(setMode(data))
+  );
   const [isTimeout, setTimeOut] = React.useState(false);
-  // React.useEffect(() => {
-  //   if (!pusherClient) {
-  //     return;
-  //   }
-  //   const channel = pusherClient.subscribe(
-  //     `${data.systemInfo.questionText}${code}${campId}`
-  //   );
-  //   channel.bind(data.systemInfo.manageText, (input:string) => {
-  //   const  { i, j, score }: ScoreEvent=JSON.parse(input)
-  //     setMap(
-  //       setTextScores,
-  //       modifyElementInUseStateArray2Dimension(i, j)
-  //     )(score);
-  //     console.log({i,score,j})
-  //   });
-  //   setTimeOut(false)
-  //   return () => {
-  //     channel.unbind_all();
-  //     channel.unsubscribe();
-  //   };
-  // });
+  React.useEffect(() => {
+    socketReady.listen(room, ({ i, j, score }: ScoreEvent) => {
+      setMap(
+        setTextScores,
+        modifyElementInUseStateArray2Dimension(i, j)
+      )(score);
+      console.log({ i, score, j });
+    });
+  });
   function scoring() {
     waiting(async () => {
       await scoreTextQuestions(
@@ -115,10 +124,13 @@ export default function AllAnswerAndQuestionPageBreakDown({
                       <div>
                         <TextField
                           onChange={setTextToFloat(
-                            setMap(
-                              setTextScores,
-                              modifyElementInUseStateArray2Dimension(i, j)
-                            )
+                            // setMap(
+                            //   setTextScores,
+                            //   modifyElementInUseStateArray2Dimension(i, j)
+                            // )
+                            (score) => {
+                              socketReady.trigger({ i, j, score }, room);
+                            }
                           )}
                           type="number"
                           value={textScores[i][j].toString()}

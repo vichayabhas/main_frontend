@@ -3,7 +3,14 @@
 import AllInOneLock from "@/components/utility/AllInOneLock";
 import FinishButton from "@/components/utility/FinishButton";
 import GetTimeHtml from "@/components/utility/GetTimeHtml";
-import { addTime, SetUpDownPack, setBoolean, selectTimeToSystem, setTextToString, stringToId } from "@/components/utility/setup";
+import {
+  addTime,
+  SetUpDownPack,
+  setBoolean,
+  selectTimeToSystem,
+  setTextToString,
+  stringToId,
+} from "@/components/utility/setup";
 import createFood from "@/libs/randomthing/createFood";
 import deleteMeal from "@/libs/randomthing/deleteMeal";
 import updateMeal from "@/libs/randomthing/updateMeal";
@@ -13,8 +20,14 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { InterFood, InterMeal, InterCampFront, UpdateTimeOffsetRaw, RoleCamp, FoodLimit } from "../../../../interface";
-
+import {
+  InterFood,
+  InterMeal,
+  InterCampFront,
+  UpdateTimeOffsetRaw,
+  RoleCamp,
+  FoodLimit,
+} from "../../../../interface";
 
 export default function MealClient({
   params,
@@ -36,19 +49,19 @@ export default function MealClient({
   displayOffset: UpdateTimeOffsetRaw;
 }) {
   const router = useRouter();
-  const [nong, setNong] =React. useState(meal.roles.includes("nong"));
-  const [pee, setPee] =React. useState(meal.roles.includes("pee"));
-  const [peto, setPeto] =React. useState(meal.roles.includes("peto"));
-  const [time, setTime] =React. useState<dayjs.Dayjs | null>(
+  const [nong, setNong] = React.useState(meal.roles.includes("nong"));
+  const [pee, setPee] = React.useState(meal.roles.includes("pee"));
+  const [peto, setPeto] = React.useState(meal.roles.includes("peto"));
+  const [time, setTime] = React.useState<dayjs.Dayjs | null>(
     dayjs(addTime(meal.time.toString(), selectOffset))
   );
   const [name, setName] = React.useState("");
-  const [isSpicy, setIsSpicy] =React. useState(true);
+  const [isSpicy, setIsSpicy] = React.useState(true);
   const {
     up: isWhiteList,
     down: listPriority,
-    setDown:setListPriority,
-    setUp:setIsWhiteList,
+    setDown: setListPriority,
+    setUp: setIsWhiteList,
   } = new SetUpDownPack(React.useState(SetUpDownPack.init(false, false)));
   const [มังสวิรัติ, setมังสวิรัติ] = React.useState(false);
   const [เจ, setเจ] = React.useState(false);

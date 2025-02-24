@@ -30,23 +30,6 @@ export default function ChatClient({
   const [messages, setMessages] = React.useState(data.chats);
   const sendType = data.sendType;
   React.useEffect(() => {
-    // const pusherData=data.pusher
-    // if(!pusherData){
-    //   return
-    // }
-    // const pusherClient = new Pusher(pusherData.first, pusherData.second);
-    // const channel = pusherClient.subscribe(data.subscribe);
-    // const handleChatUpdate = (updatedChat: ShowChat) => {
-    //   setMessages((allChats) =>
-    //     allChats.map((chat) => {
-    //       if (chat._id.toString() === updatedChat._id.toString()) {
-    //         return updatedChat;
-    //       } else {
-    //         return chat;
-    //       }
-    //     })
-    //   );
-    // };
     const handleNewChat = (newChat: ShowChat) => {
       if (newChat.canReadInModeNong || data.mode == "pee") {
         setMessages(addItemInUseStateArray(newChat));
@@ -54,8 +37,6 @@ export default function ChatClient({
     };
     newChatSocket.listen(data.subscribe, handleNewChat);
     return () => {
-      // pusherClient.unsubscribe(data.subscribe);
-      // channel.unbind_all();
       newChatSocket.disconect();
     };
   });

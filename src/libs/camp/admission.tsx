@@ -1,5 +1,5 @@
-import { getBackendUrl } from "@/components/utility/setup";
-import { Id } from "../../../interface";
+import { getBackendUrl, SocketReady } from "@/components/utility/setup";
+import { Id, RegisterData } from "../../../interface";
 
 export default async function admission(
   input: {
@@ -7,7 +7,9 @@ export default async function admission(
     campId: Id;
   },
   mode: "interview" | "pass" | "sure" | "kick/pee" | "kick/nong",
-  token: string
+  token: string,
+  socket: SocketReady<RegisterData>,
+  room: string
 ) {
   const res = await fetch(`${getBackendUrl()}/camp/${mode}`, {
     method: "POST",
@@ -18,5 +20,7 @@ export default async function admission(
     cache: "no-store",
     body: JSON.stringify(input),
   });
-  return await res.json();
+  const data = await res.json();
+  socket.trigger(data, room);
+  return data;
 }
