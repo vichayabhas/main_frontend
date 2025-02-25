@@ -10,8 +10,7 @@ import { Id, BasicUser, GetAllAnswerAndQuestion, InterTextQuestion, GetChoiceQue
 import AllAnswerAndQuestionPageBreakDown from "./AllAnswerAndQuestionPageBreakDown";
 
 
-// import Pusher from "pusher-js";
-// import PusherServer from "pusher";
+
 interface AnswerReady {
   element: React.ReactNode;
   order: number;
@@ -112,17 +111,7 @@ export default function AllAnswerAndQuestionPage({
   if (!dataInput.canScoring) {
     readOnly = true;
   }
-  // let pusherServer: PusherServer | null;
-  // let pusherClient: Pusher | null;
-  // const pusherServerData = dataInput.pusherData;
-  // if (!pusherServerData) {
-  //   pusherServer = null;
-  //   pusherClient=null
-  // } else {
-  //   pusherServer = new PusherServer(pusherServerData);
-  //   const pusherData=getPusherClient(pusherServerData)
-  //   pusherClient=new Pusher(pusherData.first,pusherData.second)
-  // }
+
   const campId = stringToId(campIdInput);
   const [data, setData] = React.useState(dataInput);
   const [showAll, setShowAll] = React.useState(true);
