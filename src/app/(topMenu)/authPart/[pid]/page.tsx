@@ -31,6 +31,8 @@ import AllAnswerAndQuestionPage from "@/components/camp/question/AllAnswerAndQue
 import { getAllPlaceData } from "@/components/randomthing/placeSetUp";
 import AllInOneLock from "@/components/utility/AllInOneLock";
 import BackToHome from "@/components/utility/BackToHome";
+import getGroupContainerForAdmin from "@/libs/camp/getGroupContainerForAdmin";
+import SubGroupAdminClient from "@/components/camp/authPart/SubGroupAdminClient";
 export default async function Baan({ params }: { params: { pid: string } }) {
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -198,6 +200,36 @@ export default async function Baan({ params }: { params: { pid: string } }) {
           token={token}
         />
       );
+    }
+  }
+  if (part.auths.includes("แก้ไขกลุ่มได้") || isBoard) {
+    switch (campMemberCard.role) {
+      case "nong": {
+        return <BackToHome />;
+      }
+      case "pee": {
+        if (isBoard) {
+          let i = 0;
+          while (i < camp.baanIds.length) {
+            const data = await getGroupContainerForAdmin(camp.baanIds[i++]);
+            outputs.push(<SubGroupAdminClient data={data} token={token} />);
+          }
+          break;
+        } else {
+          const peeCamp = await getPeeCamp(campMemberCard.campModelId, token);
+          const data = await getGroupContainerForAdmin(peeCamp.baanId);
+          outputs.push(<SubGroupAdminClient data={data} token={token} />);
+          break;
+        }
+      }
+      case "peto": {
+        let i = 0;
+        while (i < camp.baanIds.length) {
+          const data = await getGroupContainerForAdmin(camp.baanIds[i++]);
+          outputs.push(<SubGroupAdminClient data={data} token={token} />);
+        }
+        break;
+      }
     }
   }
   return (

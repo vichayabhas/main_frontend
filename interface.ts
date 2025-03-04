@@ -71,6 +71,8 @@ export interface InterBaanBack {
   mirrorIds: Id[];
   canReadMirror: boolean;
   canWhriteMirror: boolean;
+  groupContainerIds: Id[];
+  defaultGroupId: Id | null;
 
   //public
 }
@@ -457,6 +459,8 @@ export interface InterBaanFront {
   mirrorIds: Id[];
   canReadMirror: boolean;
   canWhriteMirror: boolean;
+  groupContainerIds: Id[];
+  defaultGroupId: Id | null;
   //public
 }
 
@@ -1428,6 +1432,8 @@ export interface GetNongData {
   healthIssue: HeathIssueBody;
   displayOffset: UpdateTimeOffsetRaw;
   mirrorData: GetMirrorPack;
+  defaultGroup: GetGroupContainer | null;
+  groups: GetGroupContainer[];
   //private
 }
 export interface GetPeeData {
@@ -1452,6 +1458,8 @@ export interface GetPeeData {
   baanJobs: GetJob[];
   partJobs: GetJob[];
   mirrorData: GetMirrorPack;
+  defaultGroup: GetGroupContainer | null;
+  groups: GetGroupContainer[];
   //private
 }
 export interface GetPetoData {
@@ -1734,6 +1742,7 @@ export const authTypes = [
   "pr/studio",
   "แก้ไขรูปภาพและคำอธิบายได้ทุกบ้าน",
   "แก้ไขรูปภาพและคำอธิบายได้เฉพาะบ้านตัวเอง",
+  "แก้ไขกลุ่มได้",
 ] as const;
 export type AuthType = (typeof authTypes)[number];
 export interface CreateAuthCamp {
@@ -1915,6 +1924,8 @@ export const socketEvents = [
   "trigChoiceQuestion",
   "deleteQuestion",
   "updateQuestion",
+  "registerSubGroup",
+  "updateSubGroup",
 ] as const;
 export type SocketEvent = (typeof socketEvents)[number];
 export type QusetionType =
@@ -1925,4 +1936,92 @@ export type QusetionType =
 export interface QuestionDeleteAction {
   deleteChoiceIds: Id[];
   deleteTextIds: Id[];
+}
+export const groupGenderTypes = [
+  "เลือกเพศตามคนแรก",
+  "คละเพศ",
+  "กำหนดตอนสร้างกลุ่มย่อย",
+] as const;
+export type GroupGenderType = (typeof groupGenderTypes)[number];
+export const groupRoleTypes = [
+  "เลือกพี่หรือน้องตามคนแรก",
+  "คละพี่และน้อง",
+  "กำหนดตอนสร้างกลุ่มย่อย",
+] as const;
+export type GroupRoleType = (typeof groupRoleTypes)[number];
+export const subGroupGenderTypes = [
+  "ชายเท่านั้น",
+  "หญิงเท่านั้น",
+  "คละเพศ",
+] as const;
+export type SubGroupGenderType = (typeof subGroupGenderTypes)[number];
+export const subGroupRoleTypes = [
+  "น้องเท่านั้น",
+  "พี่เท่านั้น",
+  "คละพี่และน้อง",
+] as const;
+export type SubGroupRoleType = (typeof subGroupRoleTypes)[number];
+export interface InterSubGroup {
+  genderType: SubGroupGenderType;
+  roleType: SubGroupRoleType;
+  containerId: Id;
+  limit: number;
+  _id: Id;
+  name: string;
+  campMemberCardIds: Id[];
+}
+export interface InterGroupContainer {
+  baanId: Id;
+  subGroupIds: Id[];
+  genderType: GroupGenderType;
+  roleType: GroupRoleType;
+  canAnybodyCreateSubGroup: boolean;
+  isDefault: boolean;
+  _id: Id;
+  name: string;
+  userIds: Id[];
+}
+export interface CreateGroupContainer {
+  baanId: Id;
+  genderType: GroupGenderType;
+  roleType: GroupRoleType;
+  canAnybodyCreateSubGroup: boolean;
+  name: string;
+}
+export interface UpdateGroupContainer {
+  _id: Id;
+  name: string;
+  canAnybodyCreateSubGroup: boolean;
+  isDefault: boolean;
+}
+export interface UpdateSubGroup {
+  limit: number;
+  _id: Id;
+  name: string;
+}
+export interface CreateSubGroup {
+  containerId: Id;
+  limit: number;
+  name: string;
+  isMany: boolean;
+  count: number;
+  start: number;
+  gender: "male" | "female" | null;
+  role: Mode | null;
+}
+export interface GetSubGroup extends InterSubGroup {
+  users: BasicUser[];
+}
+export interface GetGroupContainer extends InterGroupContainer {
+  subGroups: GetSubGroup[];
+}
+export interface RegisterGroup {
+  addIds: Id[];
+  removeIds: Id[];
+  campMemberCard: Id;
+}
+export interface GetGroupContainerForAdmin {
+  groups: GetGroupContainer[];
+  baan: BasicBaan;
+  camp: BasicCamp;
 }
