@@ -22,7 +22,6 @@ export default function NongPendingPage({
   token: string;
   campState: CampState;
 }) {
-  const userRef = React.useRef("");
   const [link, setLink] = React.useState<string | null>(oldLink);
   const [choiceAnswers, setChoiceAnswers] = React.useState<(Choice | "-")[]>(
     questions.choices.map((choice) => choice.answer)
@@ -213,7 +212,6 @@ export default function NongPendingPage({
             <button
               className="bg-pink-300 p-3 rounded-lg shadow-[10px_10px_10px_-10px_rgba(0,0,0,0.5)] hover:bg-rose-700 hover:text-pink-50"
               onClick={async () => {
-                console.log(userRef);
                 if (link) {
                   try {
                     nongRegisterCamp(camp._id, link, token, {

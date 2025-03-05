@@ -31,7 +31,6 @@ export default function HospitalDetailPage() {
           <button
             className="bg-pink-300 p-3 rounded-lg shadow-[10px_10px_10px_-10px_rgba(0,0,0,0.5)] hover:bg-rose-700 hover:text-pink-50"
             onClick={() => {
-              console.log(tel);
               if (tel) {
                 router.push(`/userProfile/${tel}`);
               } else {

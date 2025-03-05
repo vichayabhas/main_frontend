@@ -13,8 +13,6 @@ export default function page() {
   if (!session) {
     return <BackToHome />;
   }
-  console.log(session);
-  console.log(session);
   const [studentId, setStudentId] = React.useState<string | null>(null);
   const [group, setGroup] = React.useState<Group | null>(null);
   const allGroup: Group[] = [

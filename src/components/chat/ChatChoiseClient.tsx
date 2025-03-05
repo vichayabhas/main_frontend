@@ -31,7 +31,6 @@ export default function ChatChoiseClient({
         <th>chat</th>
       </tr>
       {nongs.map((user: ShowMember, i) => {
-        console.log(user);
         return (
           <tr style={{ border: "solid", borderColor: "white" }} key={i}>
             <td className={chatStyle.cell1}>{user.nickname}</td>

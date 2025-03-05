@@ -27,7 +27,6 @@ export default async function name() {
       foodLimit: "ไม่มีข้อจำกัดด้านความเชื่อ",
     };
   }
-  console.log(heathIssue);
   return (
     <HeathIssueClient heathIssue={heathIssue} token={session.user.token} />
   );

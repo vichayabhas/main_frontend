@@ -535,15 +535,6 @@ export default function AdminClient({
               }
             } else {
               alert("Please type in all the details!");
-              console.log({
-                nameId: chose,
-                boardIds,
-                registerModel,
-                round,
-                dateEnd,
-                dateStart,
-                memberStructure,
-              });
             }
           }}
         >

@@ -5,7 +5,6 @@ import { TextField } from "@mui/material";
 import React from "react";
 import { setTextToString } from "../utility/setup";
 export default function VerifileClient({ token }: { token: string }) {
-  const userRef = React.useRef("");
 
   const [password, setPassword] = React.useState<string>("");
   return (
@@ -30,8 +29,6 @@ export default function VerifileClient({ token }: { token: string }) {
           <button
             className="bg-pink-300 p-3 rounded-lg shadow-[10px_10px_10px_-10px_rgba(0,0,0,0.5)] hover:bg-rose-700 hover:text-pink-50"
             onClick={async () => {
-              console.log(password);
-              console.log(userRef);
               if (password) {
                 try {
                   verifyEmail(password, token);

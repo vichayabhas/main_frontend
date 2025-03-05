@@ -177,8 +177,6 @@ export default function UpdateQuestionClient({
               {isDelete ? (
                 <Checkbox
                   onChange={(e) => {
-                    console.log(e.target.checked);
-                    console.log(choices.getId(i));
                     setSwop(choices.getId(i), setDeleteChoiceIds)(e);
                   }}
                 />
@@ -204,8 +202,6 @@ export default function UpdateQuestionClient({
               {isDelete ? (
                 <Checkbox
                   onChange={(e) => {
-                    console.log(texts.getId(i));
-                    console.log(e.target.checked);
                     setSwop(texts.getId(i), setDeleteTextIds)(e);
                   }}
                 />
@@ -254,8 +250,6 @@ export default function UpdateQuestionClient({
     while (i < deleteTextIds.length) {
       await deleteTextQuestion(deleteTextIds[i++], token);
     }
-    console.log(deleteChoiceIds);
-    console.log(deleteTextIds);
     deleteSocket.trigger({ deleteChoiceIds, deleteTextIds }, room);
     setDeleteChoiceIds([]);
     setDeleteTextIds([]);

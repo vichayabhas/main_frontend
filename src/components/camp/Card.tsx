@@ -153,7 +153,6 @@ export default function Card({
   //onCarSelected :Function
 }) {
   //  const session=await getServerSession()
-  console.log(camp.logoUrl);
 
   return (
     <InteractiveCard

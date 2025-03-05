@@ -7,13 +7,15 @@ import ShowOwnCampData from "../ShowOwnCampData";
 import chatStyle from "../../chat/chat.module.css";
 import React from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
-import { downloadText } from "../../utility/setup";
+import { downloadText, setBoolean } from "../../utility/setup";
 import TopMenuItem from "../../randomthing/TopMenuItem";
 import styles from "../../randomthing/topmenu.module.css";
 import AllInOneLock from "@/components/utility/AllInOneLock";
 import FinishButton from "@/components/utility/FinishButton";
 import BaanMembers from "./BaanMembers";
 import MirrorClient from "./MirrorClient";
+import { Checkbox } from "@mui/material";
+//import SubGroupClient from "./SubGroupClient";
 
 export default function NongCampClient({
   data: {
@@ -30,6 +32,8 @@ export default function NongCampClient({
     healthIssue,
     displayOffset,
     mirrorData,
+    // defaultGroup,
+    // groups,
   },
   token,
 }: {
@@ -43,6 +47,7 @@ export default function NongCampClient({
       campMemberCard.sleepAtCamp ? "และห้องนอน" : ""
     }`,
   });
+  const [showAllGroups, setShowAllGroups] = React.useState(false);
   return (
     <>
       <div className={styles.menucontainerCamp}>
@@ -215,6 +220,35 @@ export default function NongCampClient({
         nongs={nongs}
         camp={camp}
       />
+      <div>
+        แสดงกลุ่มทั้งหมดหรือไม่
+        <Checkbox
+          onChange={setBoolean(setShowAllGroups)}
+          checked={showAllGroups}
+        />
+      </div>
+      {/* {showAllGroups ? (
+        groups.map((group, i) => (
+          <SubGroupClient
+            key={i}
+            data={group}
+            baan={baan}
+            camp={camp}
+            campMemberCard={campMemberCard}
+            token={token}
+            user={user}
+          />
+        ))
+      ) : defaultGroup ? (
+        <SubGroupClient
+          data={defaultGroup}
+          baan={baan}
+          camp={camp}
+          campMemberCard={campMemberCard}
+          token={token}
+          user={user}
+        />
+      ) : null} */}
       <MirrorClient
         user={user}
         token={token}

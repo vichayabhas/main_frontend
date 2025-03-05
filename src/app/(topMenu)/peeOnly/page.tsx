@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import React from "react";
 export default function peeOnlyPage() {
   const router = useRouter();
-  const userRef = React.useRef("");
   const { data: session } = useSession();
   if (!session || session.user.role == "nong") {
     router.push("/");
@@ -33,8 +32,6 @@ export default function peeOnlyPage() {
           <button
             className="bg-pink-300 p-3 rounded-lg shadow-[10px_10px_10px_-10px_rgba(0,0,0,0.5)] hover:bg-rose-700 hover:text-pink-50"
             onClick={async () => {
-              console.log(password);
-              console.log(userRef);
               if (password) {
                 try {
                   changeModeToPee(password, session.user.token);

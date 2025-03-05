@@ -3,7 +3,7 @@
 import chatStyle from "../../chat/chat.module.css";
 import React from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
-import { AddRemoveHigh, downloadText } from "../../utility/setup";
+import { AddRemoveHigh, downloadText, setBoolean } from "../../utility/setup";
 import TopMenuItem from "../../randomthing/TopMenuItem";
 import styles from "../../randomthing/topmenu.module.css";
 import ImageAndDescriptions from "../ImageAndDescriptions";
@@ -19,6 +19,7 @@ import ImagesFromUrl from "@/components/utility/ImagesFromUrl";
 import PartClient from "../PartClient";
 import ShowOwnCampData from "../ShowOwnCampData";
 import MirrorClient from "./MirrorClient";
+//import SubGroupClient from "./SubGroupClient";
 
 export default function PeeCampClient({
   data: {
@@ -43,6 +44,8 @@ export default function PeeCampClient({
     partJobs,
     baanJobs,
     mirrorData,
+    // defaultGroup,
+    // groups,
   },
   token,
   allPlaceData,
@@ -74,6 +77,7 @@ export default function PeeCampClient({
     removeTimeRegisterIds,
     setRemoveTimeRegisterIds
   );
+  const [showAllGroups, setShowAllGroups] = React.useState(false);
 
   return (
     <>
@@ -407,6 +411,35 @@ export default function PeeCampClient({
           />
         </div>
       </AllInOneLock>
+      <div>
+        แสดงกลุ่มทั้งหมดหรือไม่
+        <Checkbox
+          onChange={setBoolean(setShowAllGroups)}
+          checked={showAllGroups}
+        />
+      </div>
+      {/* {showAllGroups ? (
+        groups.map((group, i) => (
+          <SubGroupClient
+            key={i}
+            data={group}
+            baan={baan}
+            camp={camp}
+            campMemberCard={campMemberCard}
+            token={token}
+            user={user}
+          />
+        ))
+      ) : defaultGroup ? (
+        <SubGroupClient
+          data={defaultGroup}
+          baan={baan}
+          camp={camp}
+          campMemberCard={campMemberCard}
+          token={token}
+          user={user}
+        />
+      ) : null} */}
       <MirrorClient
         user={user}
         token={token}

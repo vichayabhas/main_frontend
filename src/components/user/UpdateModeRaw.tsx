@@ -26,7 +26,6 @@ export default function UpdateModeRaw({
   const [linkHash, setLinkHash] = React.useState<string>(user.linkHash);
   const [mode, setMode] = React.useState<"pee" | "nong" | null>(null);
   const [filterIds, setFilterIds] = React.useState<Id[]>(user.filterIds);
-  console.log(filterIds);
   //alert(filterIds.length)
 
   return (

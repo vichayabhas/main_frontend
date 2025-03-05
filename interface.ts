@@ -323,6 +323,7 @@ export interface InterCampMemberCard {
   mirrorSenderIds: Id[];
   mirrorReciverIds: Id[];
   mirrorBaanIds: Id[];
+  subGroupIds: Id[];
   //private
 }
 export interface InterSong {
@@ -2016,12 +2017,17 @@ export interface GetGroupContainer extends InterGroupContainer {
   subGroups: GetSubGroup[];
 }
 export interface RegisterGroup {
-  addIds: Id[];
-  removeIds: Id[];
-  campMemberCard: Id;
+  addId: Id | null;
+  removeId: Id | null;
+  campMemberCardId: Id;
+  containerId: Id;
 }
 export interface GetGroupContainerForAdmin {
   groups: GetGroupContainer[];
   baan: BasicBaan;
   camp: BasicCamp;
+}
+export interface GroupContainerPack {
+  group: GetGroupContainer;
+  subGroupIds: Id[];
 }

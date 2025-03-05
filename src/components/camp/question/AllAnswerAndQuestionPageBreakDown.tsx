@@ -64,7 +64,6 @@ export default function AllAnswerAndQuestionPageBreakDown({
         setTextScores,
         modifyElementInUseStateArray2Dimension(i, j)
       )(score);
-      console.log({ i, score, j });
     });
   });
   function scoring() {
