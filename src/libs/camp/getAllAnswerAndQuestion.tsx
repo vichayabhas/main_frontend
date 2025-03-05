@@ -3,7 +3,7 @@ import { GetAllAnswerAndQuestion, Id } from "../../../interface";
 
 export default async function getAllAnswerAndQuestion(
   campId: Id,
-  token: string,
+  token: string
 ): Promise<GetAllAnswerAndQuestion> {
   const response = await fetch(
     `${getBackendUrl()}/camp/getAllAnswerAndQuestion/params/${campId}`,

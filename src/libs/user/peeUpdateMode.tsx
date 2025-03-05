@@ -4,7 +4,7 @@ export default async function peeUpdateMode(
   token: string,
   mode: "pee" | "nong",
   filterIds: Id[],
-  linkHash:string
+  linkHash: string
 ) {
   const response = await fetch(`${getBackendUrl()}/${userPath}/updateMode`, {
     method: "PUT",
@@ -13,10 +13,8 @@ export default async function peeUpdateMode(
 
       authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(
-      { mode, filterIds,linkHash }
-    ),
-    cache:'no-store'
+    body: JSON.stringify({ mode, filterIds, linkHash }),
+    cache: "no-store",
   });
   return await response.json();
 }

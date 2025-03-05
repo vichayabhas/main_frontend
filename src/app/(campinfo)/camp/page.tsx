@@ -16,9 +16,6 @@ export default async function Hospital() {
     const user = await getUserProfile(session.user.token);
     university = user.fridayActEn;
   }
-  //console.log(session)
-  //console.log(camps)
-  //console.log(names);
   return (
     <main className="text-center p-5">
       <Suspense
@@ -28,7 +25,11 @@ export default async function Hospital() {
           </p>
         }
       >
-        <HospitalCatalog hospitalsJson={camps}  university={university} url="camp"/>
+        <HospitalCatalog
+          hospitalsJson={camps}
+          university={university}
+          url="camp"
+        />
       </Suspense>
     </main>
   );

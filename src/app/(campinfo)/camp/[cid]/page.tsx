@@ -139,7 +139,7 @@ export default async function HospitalDetailPage({
               campState.user.fridayActEn &&
               !(campState.user.role == "peto" || campState.user.role == "admin")
             ) {
-              return <NongRegisterPage campState={campState} token={token} />
+              return <NongRegisterPage campState={campState} token={token} />;
             } else if (
               !campState.camp.peeLock &&
               (campState.user.role == "peto" || campState.user.role == "admin")
@@ -159,7 +159,7 @@ export default async function HospitalDetailPage({
           }
           case "nong->highSchool,pee->2upYear": {
             if (campState.camp.open && campState.user.role == "nong") {
-              return <NongRegisterPage campState={campState} token={token} />
+              return <NongRegisterPage campState={campState} token={token} />;
             } else if (
               !campState.camp.peeLock &&
               (campState.user.role == "peto" || campState.user.role == "admin")
@@ -179,8 +179,11 @@ export default async function HospitalDetailPage({
           }
           case "nong->highSchool,pee->allYear": {
             if (campState.camp.open && campState.user.role == "nong") {
-              return <NongRegisterPage campState={campState} token={token} />
-            } else if (!campState.camp.peeLock && campState.user.role != "nong") {
+              return <NongRegisterPage campState={campState} token={token} />;
+            } else if (
+              !campState.camp.peeLock &&
+              campState.user.role != "nong"
+            ) {
               const partMap = await getPartMaps(campState, token);
               return (
                 <LocationDateReserve

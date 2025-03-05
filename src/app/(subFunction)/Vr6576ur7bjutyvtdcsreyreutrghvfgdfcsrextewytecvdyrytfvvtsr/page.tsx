@@ -1,7 +1,6 @@
 //pee
 "use client";
 
-
 import { getBackendUrl, setTextToString } from "@/components/utility/setup";
 import { useSession } from "next-auth/react";
 import BackToHome from "@/components/utility/BackToHome";
@@ -58,10 +57,7 @@ export default function page() {
         ))}
       </Select>
       <label>รหัสประจำตัวนิสิต</label>
-      <TextField
-        onChange={setTextToString(setStudentId)}
-        value={studentId}
-      />
+      <TextField onChange={setTextToString(setStudentId)} value={studentId} />
       <FinishButton
         text="bypass"
         onClick={async () => {

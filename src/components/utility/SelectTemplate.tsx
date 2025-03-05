@@ -12,7 +12,9 @@ export default function SelectTemplate<T>({
   buttonText: string;
   defaultSelect?: { key: T; value: string };
 }) {
-  const [chose, setChose] = React.useState<T | null>(defaultSelect?.key || null);
+  const [chose, setChose] = React.useState<T | null>(
+    defaultSelect?.key || null
+  );
   return (
     <div className=" rounded-lg ">
       <Select

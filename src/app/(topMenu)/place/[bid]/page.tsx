@@ -12,16 +12,14 @@ export default async function PlacePage({
   params: { bid: string };
 }) {
   const places = await getPlaces(stringToId(params.bid));
-  //console.log(places)
-  const session=await getServerSession(authOptions)
-    if(!session){
-        return<BackToHome/>
-
-    }
-    const user=await getUserProfile(session.user.token)
-    if(user.role==='nong'){
-        return <BackToHome/>
-    }
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return <BackToHome />;
+  }
+  const user = await getUserProfile(session.user.token);
+  if (user.role === "nong") {
+    return <BackToHome />;
+  }
   return (
     <PlaceClient
       places={places}

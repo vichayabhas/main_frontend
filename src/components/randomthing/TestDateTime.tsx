@@ -1,6 +1,5 @@
 "use client";
 
-
 import updateTimeOffset from "@/libs/user/updateTimeOffset";
 import React from "react";
 import { setTextToInt } from "../utility/setup";
@@ -20,13 +19,17 @@ export default function TestDateTime({
   selectOffset: InterTimeOffset;
   displayOffset: InterTimeOffset;
 }) {
-  const [selectMinute, setSelectMinute] = React.useState<number>(selectOffset.minute);
+  const [selectMinute, setSelectMinute] = React.useState<number>(
+    selectOffset.minute
+  );
   const [selectHour, setSelectHour] = React.useState<number>(selectOffset.hour);
   const [selectDay, setSelectDay] = React.useState<number>(selectOffset.day);
   const [displayMinute, setDisplayMinute] = React.useState<number>(
     displayOffset.minute
   );
-  const [displayHour, setDisplayHour] = React.useState<number>(displayOffset.hour);
+  const [displayHour, setDisplayHour] = React.useState<number>(
+    displayOffset.hour
+  );
   const [displayDay, setDisplayDay] = React.useState<number>(displayOffset.day);
   const [select, setSelect] = React.useState<dayjs.Dayjs>(dayjs(Date.now()));
   const dateObj = dayjs(new Date(Date.now()))

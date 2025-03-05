@@ -8,10 +8,26 @@ import createCamp from "@/libs/admin/createCamp";
 import addCampName from "@/libs/admin/addCampName";
 import React from "react";
 import addPartName from "@/libs/admin/addPartName";
-import { CreateAuthCamp, InterNameContainer, InterPartNameContainer, Id, authTypes, CreateCamp } from "../../../interface";
+import {
+  CreateAuthCamp,
+  InterNameContainer,
+  InterPartNameContainer,
+  Id,
+  authTypes,
+  CreateCamp,
+} from "../../../interface";
 import FinishButton from "../utility/FinishButton";
-import { setTextToInt, setTextToString, setBoolean, setMap, modifyElementInUseStateArray, modifyElementInUseStateArray2Dimension, stringToId, notEmpty, getBackendUrl } from "../utility/setup";
-
+import {
+  setTextToInt,
+  setTextToString,
+  setBoolean,
+  setMap,
+  modifyElementInUseStateArray,
+  modifyElementInUseStateArray2Dimension,
+  stringToId,
+  notEmpty,
+  getBackendUrl,
+} from "../utility/setup";
 
 const defaultPartAuths: CreateAuthCamp[] = [
   {

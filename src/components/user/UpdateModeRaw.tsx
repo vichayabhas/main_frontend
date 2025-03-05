@@ -108,7 +108,7 @@ export default function UpdateModeRaw({
                     color: "#FFFFFF", // Custom color when checked
                   },
                 }}
-                onChange={setSwop(camp._id,setFilterIds)}
+                onChange={setSwop(camp._id, setFilterIds)}
                 checked={filterIds.includes(camp._id)}
               />
               {camp.campName}

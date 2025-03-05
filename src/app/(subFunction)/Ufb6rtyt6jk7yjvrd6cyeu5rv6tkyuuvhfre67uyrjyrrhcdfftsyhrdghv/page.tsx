@@ -1,7 +1,6 @@
 //admin
 "use client";
 
-
 import { getBackendUrl, setTextToString } from "@/components/utility/setup";
 import { useSession } from "next-auth/react";
 import BackToHome from "@/components/utility/BackToHome";
@@ -15,11 +14,7 @@ export default function page() {
     return <BackToHome />;
   }
   console.log(session);
-  // if(session.user.user.email.split('@')[1].localeCompare('student.chula.ac.th')){
-  //   return <BackToHome />;
-  // }
   console.log(session);
-  //alert(session.user.user.email)
   const [studentId, setStudentId] = React.useState<string | null>(null);
   const [group, setGroup] = React.useState<Group | null>(null);
   const allGroup: Group[] = [
@@ -59,10 +54,7 @@ export default function page() {
         ))}
       </Select>
       <label>รหัสประจำตัวนิสิต</label>
-      <TextField
-        onChange={setTextToString(setStudentId)}
-        value={studentId}
-      />
+      <TextField onChange={setTextToString(setStudentId)} value={studentId} />
       <FinishButton
         text="bypass"
         onClick={async () => {

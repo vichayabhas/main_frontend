@@ -1,11 +1,7 @@
 import { getBackendUrl } from "@/components/utility/setup";
 import { Id } from "../../../interface";
 
-export default async function addBaan(
-  name: string,
-  campId: Id,
-  token: string
-) {
+export default async function addBaan(name: string, campId: Id, token: string) {
   const res = await fetch(`${getBackendUrl()}/admin/addBaan`, {
     method: "POST",
     cache: "no-store",
@@ -18,5 +14,5 @@ export default async function addBaan(
       name,
     }),
   });
-  return await res.json()
+  return await res.json();
 }

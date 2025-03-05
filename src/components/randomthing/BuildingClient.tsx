@@ -17,8 +17,9 @@ export default function BuildingClient({
   const router = useRouter();
   return (
     <>
-      {buildings.map((building,i) => (
-        <div key={i}
+      {buildings.map((building, i) => (
+        <div
+          key={i}
           className="flex flex-row h-auto"
           onClick={() => {
             router.push(`/place/${building._id}`);

@@ -1,7 +1,6 @@
 //peto
 "use client";
 
-
 import BackToHome from "@/components/utility/BackToHome";
 import FinishButton from "@/components/utility/FinishButton";
 import { getBackendUrl, setTextToString } from "@/components/utility/setup";
@@ -14,7 +13,9 @@ export default function page() {
   if (!session) {
     return <BackToHome />;
   }
-  if(session.user.user.email.split('@')[1].localeCompare('student.chula.ac.th')){
+  if (
+    session.user.user.email.split("@")[1].localeCompare("student.chula.ac.th")
+  ) {
     return <BackToHome />;
   }
   const [studentId, setStudentId] = React.useState<string | null>(null);
@@ -43,8 +44,9 @@ export default function page() {
     <div>
       <label>กรุปของนิสิต</label>
       <Select value={group}>
-        {allGroup.map((g,i) => (
-          <MenuItem  key={i}
+        {allGroup.map((g, i) => (
+          <MenuItem
+            key={i}
             onClick={() => {
               setGroup(g);
             }}
@@ -54,10 +56,7 @@ export default function page() {
         ))}
       </Select>
       <label>รหัสประจำตัวนิสิต</label>
-      <TextField
-        onChange={setTextToString(setStudentId)}
-        value={studentId}
-      />
+      <TextField onChange={setTextToString(setStudentId)} value={studentId} />
       <FinishButton
         text="bypass"
         onClick={async () => {

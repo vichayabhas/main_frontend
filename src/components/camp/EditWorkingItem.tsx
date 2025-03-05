@@ -33,9 +33,9 @@ export default function EditWorkingItem({
   const [newLink, setNewLink] = React.useState<string | null>(null);
   const [link, setLink] = React.useState<string | null>(workingItem.link);
   const [name, setName] = React.useState<string>(workingItem.name);
-  const [status, setStatus] = React.useState<"not start" | "in process" | "done">(
-    workingItem.status
-  );
+  const [status, setStatus] = React.useState<
+    "not start" | "in process" | "done"
+  >(workingItem.status);
   return (
     <div>
       <table>
@@ -54,7 +54,7 @@ export default function EditWorkingItem({
           <td>{workingItem.status}</td>
           <td>
             {workingItem.link ? (
-              <StringToHtml input={workingItem.link}/>
+              <StringToHtml input={workingItem.link} />
             ) : null}
           </td>
           <td>{workingItem.partName}</td>
@@ -142,7 +142,7 @@ export default function EditWorkingItem({
             name="Email"
             id="Email"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-            onChange={setTextToString(setPassword,true)}
+            onChange={setTextToString(setPassword, true)}
             value={password}
           />
         </div>

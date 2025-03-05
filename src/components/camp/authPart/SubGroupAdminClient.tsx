@@ -59,10 +59,7 @@ export default function SubGroupAdminClient({
   const [gender, setGender] = React.useState<"male" | "female" | null>(null);
   const [role, setRole] = React.useState<Mode | null>(null);
   React.useEffect(() => {
-    updateSocket.listen(room, (e)=>{
-      console.log(e)
-      setGroups(e)
-    });
+    updateSocket.listen(room, setGroups);
     return () => {
       updateSocket.disconect();
     };

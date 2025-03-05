@@ -5,7 +5,7 @@ import React from "react";
 export default function page() {
   return (
     <div>
-      <TMD params={{select:''}} path="weather"/>
+      <TMD params={{ select: "" }} path="weather" />
       <AirQuality />
     </div>
   );

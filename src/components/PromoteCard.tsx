@@ -21,7 +21,6 @@ export default function PromoteCard() {
         >
           {playing ? "Pause" : "Play"}
         </button>
-        
       </div>
     </div>
   );

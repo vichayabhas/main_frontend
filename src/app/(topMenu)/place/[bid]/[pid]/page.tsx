@@ -10,17 +10,15 @@ export default async function PlacePage({
 }: {
   params: { bid: string; pid: string };
 }) {
-  const session=await getServerSession(authOptions)
-    if(!session){
-        return<BackToHome/>
-
-    }
-    const user=await getUserProfile(session.user.token)
-    if(user.role==='nong'){
-        return <BackToHome/>
-    }
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return <BackToHome />;
+  }
+  const user = await getUserProfile(session.user.token);
+  if (user.role === "nong") {
+    return <BackToHome />;
+  }
   const place = await getPlace(stringToId(params.pid));
-  //const building=await getBuild
   return (
     <div>
       <table>

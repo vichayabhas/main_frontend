@@ -11,5 +11,5 @@ export default async function bypassRole(key: string, token: string) {
       key,
     }),
   });
-  return await response.json()
+  return await response.json();
 }

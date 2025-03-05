@@ -1,9 +1,7 @@
 import { getBackendUrl } from "@/components/utility/setup";
 import { Id, InterCampFront } from "../../../interface";
 
-export default async function getCamp(
-  id: Id
-): Promise<InterCampFront> {
+export default async function getCamp(id: Id): Promise<InterCampFront> {
   const response = await fetch(
     `${getBackendUrl()}/camp/getCamp/params/${id.toString()}`,
     { cache: "no-store" }

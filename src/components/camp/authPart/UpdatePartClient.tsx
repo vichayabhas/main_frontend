@@ -4,7 +4,11 @@ import React from "react";
 import { getId } from "../../utility/setup";
 import PlaceSelect from "@/components/randomthing/PlaceSelect";
 import updatePart from "@/libs/admin/updatePart";
-import { GetPartForPlan, AllPlaceData, InterPlace } from "../../../../interface";
+import {
+  GetPartForPlan,
+  AllPlaceData,
+  InterPlace,
+} from "../../../../interface";
 export default function UpdatePartClient({
   data,
   allPlaceData,
@@ -31,19 +35,16 @@ export default function UpdatePartClient({
           place={data.place}
           onClick={setPlace}
         />
-        
 
         <div className="flex flex-row justify-end">
           <button
             className="bg-pink-300 p-3 rounded-lg shadow-[10px_10px_10px_-10px_rgba(0,0,0,0.5)] hover:bg-rose-700 hover:text-pink-50"
             onClick={() => {
-              
-                try {
-                  updatePart(data._id, getId(place), token);
-                } catch (error) {
-                  console.log(error);
-                }
-              
+              try {
+                updatePart(data._id, getId(place), token);
+              } catch (error) {
+                console.log(error);
+              }
             }}
           >
             update all

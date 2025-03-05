@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useSession } from "next-auth/react";
 import updateSongPage from "@/libs/randomthing/updateSongPage";
 import { Checkbox } from "@mui/material";
@@ -11,12 +10,12 @@ import { setSwop, setSwop2DimensionArray } from "../utility/setup";
 import StringToHtml from "../utility/StringToHtml";
 
 export default function SongPageClient({ show }: { show: ShowSongPage }) {
-  const [arrayOfCampSongLists, setArrayOfCampSongLists] = React.useState<Id[][]>(
-    show.authCamps.map((camp) => camp.songIds)
-  );
-  const [arrayOfBaanSongLists, setArrayOfBaanSongLists] = React.useState<Id[][]>(
-    show.authBaans.map((baan) => baan.data.songIds)
-  );
+  const [arrayOfCampSongLists, setArrayOfCampSongLists] = React.useState<
+    Id[][]
+  >(show.authCamps.map((camp) => camp.songIds));
+  const [arrayOfBaanSongLists, setArrayOfBaanSongLists] = React.useState<
+    Id[][]
+  >(show.authBaans.map((baan) => baan.data.songIds));
   const [likeSong, setLikeSong] = React.useState(show.likeSongIds);
   const { data: session } = useSession();
   return (

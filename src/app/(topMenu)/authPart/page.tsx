@@ -19,11 +19,11 @@ export default async function page() {
   const parts: BasicPart[] = [];
   let i = 0;
   while (i < user.authPartIds.length) {
-    const part = await getPart(user.authPartIds[i++],session.user.token);
+    const part = await getPart(user.authPartIds[i++], session.user.token);
     parts.push(part);
   }
   return (
-    <PasswordLock token={session.user.token} bypass={user.mode=='pee'}>
+    <PasswordLock token={session.user.token} bypass={user.mode == "pee"}>
       <AuthPartClient parts={parts} />
     </PasswordLock>
   );

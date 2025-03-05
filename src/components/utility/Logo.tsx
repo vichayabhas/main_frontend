@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import logoImage from '../../LG_logo.png';
+import logoImage from "../../LG_logo.png";
 
 export default function Logo() {
   return (

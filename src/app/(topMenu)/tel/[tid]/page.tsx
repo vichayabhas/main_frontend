@@ -17,7 +17,7 @@ export default async function HospitalDetailPage({
 
   return (
     <div className="p-8">
-      {tels.relation.map((v,i) => (
+      {tels.relation.map((v, i) => (
         <div key={i}>{v}</div>
       ))}
     </div>

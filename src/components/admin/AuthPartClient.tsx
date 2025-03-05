@@ -15,8 +15,9 @@ export default function AuthPartClient({ parts }: { parts: BasicPart[] }) {
         marginTop: "100px",
       }}
     >
-      {parts.map((part,i) => (
-        <FinishButton key={i}
+      {parts.map((part, i) => (
+        <FinishButton
+          key={i}
           text={part.partName}
           onClick={() => {
             router.push(`/authPart/${part._id}`);

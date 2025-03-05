@@ -1,9 +1,7 @@
 import { getBackendUrl } from "@/components/utility/setup";
 import { GetAllPlanData, Id } from "../../../interface";
 
-export default async function getAllPlanData(
-  id: Id,
-):Promise<GetAllPlanData> {
+export default async function getAllPlanData(id: Id): Promise<GetAllPlanData> {
   const response = await fetch(
     `${getBackendUrl()}/camp/getAllPlanData/params/${id.toString()}`,
     { cache: "no-store" }

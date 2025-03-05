@@ -10,8 +10,9 @@ export default function ChoicePartChatClient({
   parts: BasicPart[];
 }) {
   const router = useRouter();
-  return parts.map((part,i) => (
-    <FinishButton key={i}
+  return parts.map((part, i) => (
+    <FinishButton
+      key={i}
       text={part.partName}
       onClick={() => {
         router.push(`/camp/${part.campId}/part/${part._id}/chat`);

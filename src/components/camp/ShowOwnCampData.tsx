@@ -14,7 +14,6 @@ import FinishButton from "../utility/FinishButton";
 import GetTimeHtml from "../utility/GetTimeHtml";
 import { downloadText, copy } from "../utility/setup";
 
-
 export default function ShowOwnCampData({
   token,
   healthIssue,

@@ -10,16 +10,15 @@ export default async function updateModePage() {
   if (!session) {
     return <BackToHome />;
   }
-
   const user = await getUserProfile(session.user.token as string);
   if (user.mode == "nong" || user.role == "nong") {
     return <BackToHome />;
   }
-  let i=0
-  const camps=[]
-  while(i<user.registerIds.length){
-    const camp=await getCamp(user.registerIds[i++])
-    camps.push(camp)
+  let i = 0;
+  const camps = [];
+  while (i < user.registerIds.length) {
+    const camp = await getCamp(user.registerIds[i++]);
+    camps.push(camp);
   }
-  return <UpdateModeRaw session={session} user={user} camps={camps}/>;
+  return <UpdateModeRaw session={session} user={user} camps={camps} />;
 }

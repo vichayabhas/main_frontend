@@ -10,15 +10,11 @@ export default async function UpdatePartServer({
   partId: Id;
   token: string;
 }) {
-  const data=await getPartForUpdate(partId)
+  const data = await getPartForUpdate(partId);
   const allPlaceData = await getAllPlaceData();
 
   //const camp = await getCamp(part.campId);
   return (
-    <UpdatePartClient
-      data={data}
-      allPlaceData={allPlaceData}
-      token={token}
-    />
+    <UpdatePartClient data={data} allPlaceData={allPlaceData} token={token} />
   );
 }

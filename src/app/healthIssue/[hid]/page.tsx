@@ -13,7 +13,6 @@ export default async function HelthIshuePage({
   return (
     <div className="flex flex-row h-auto">
       <div className="w-1/5 h-auto relative rounded-t-lg"></div>
-
       <div className="w-3/5 h-auto p-[10px]">
         <div className="text-left pl-5">
           <div className="text-3xl"></div>

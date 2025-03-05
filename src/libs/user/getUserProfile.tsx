@@ -7,7 +7,7 @@ export default async function getUserProfile(
     headers: {
       authorization: `Bearer ${token}`,
     },
-    cache:'no-store'
+    cache: "no-store",
   });
   return await response.json();
 }

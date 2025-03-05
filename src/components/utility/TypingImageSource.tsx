@@ -1,6 +1,6 @@
 "use client";
 import { TextField, Select, MenuItem } from "@mui/material";
-import { useRouter } from "next/navigation";;
+import { useRouter } from "next/navigation";
 import React from "react";
 import { setTextToString } from "./setup";
 import Image from "next/image";

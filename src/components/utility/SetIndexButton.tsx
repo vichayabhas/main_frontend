@@ -13,7 +13,7 @@ export default function SetIndexButton<T>({
   setIndex: React.Dispatch<React.SetStateAction<number>>;
 }) {
   return (
-    <div  className="w-[100%] flex flex-col items-center pt-20 space-y-10">
+    <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
       {index > 0 ? (
         <FinishButton
           text="ก่อนหน้า"

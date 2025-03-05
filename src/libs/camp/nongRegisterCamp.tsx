@@ -5,7 +5,7 @@ export default async function nongRegisterCamp(
   campId: Id,
   link: string,
   token: string,
-  answer:AnswerPack
+  answer: AnswerPack
 ) {
   const res = await fetch(`${getBackendUrl()}/camp/nongRegisterCamp`, {
     method: "POST",
@@ -20,5 +20,5 @@ export default async function nongRegisterCamp(
       answer,
     }),
   });
-  return await res.json()
+  return await res.json();
 }

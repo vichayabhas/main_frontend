@@ -1,8 +1,6 @@
 import { Id, InterCampFront } from "../../../interface";
 
-export default function getCampName(
-  camps: InterCampFront[]
-): Map<Id, string> {
+export default function getCampName(camps: InterCampFront[]): Map<Id, string> {
   const out: Map<Id, string> = new Map();
 
   camps.forEach((camp: InterCampFront) => {

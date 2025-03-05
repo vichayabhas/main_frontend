@@ -17,11 +17,10 @@ export default async function Baan({ params }: { params: { pid: string } }) {
   if (user.role === "admin") {
     return <UpdatePartServer partId={partId} token={session.user.token} />;
   }
-  const part=await getPart(partId,session.user.token)
-  const camp=await getCamp(part.campId)
-  if(user.authPartIds.includes(camp.partBoardId)){
+  const part = await getPart(partId, session.user.token);
+  const camp = await getCamp(part.campId);
+  if (user.authPartIds.includes(camp.partBoardId)) {
     return <UpdatePartServer partId={partId} token={session.user.token} />;
   }
-  return<BackToHome/>
-  
+  return <BackToHome />;
 }

@@ -28,7 +28,7 @@ export default function HospitalCatalog({
           alignContent: "space-around",
         }}
       >
-        {hospitalsJsonReady.map((camp: InterCampFront,i) => {
+        {hospitalsJsonReady.map((camp: InterCampFront, i) => {
           if (
             (camp.memberStructure == "nong->1year,pee->2upYear" ||
               camp.memberStructure == "allYearMix") &&

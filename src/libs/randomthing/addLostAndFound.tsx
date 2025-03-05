@@ -14,5 +14,5 @@ export default async function addLostAndFound(
     },
     body: JSON.stringify(input),
   });
-  return await res.json()
+  return await res.json();
 }

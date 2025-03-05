@@ -1,10 +1,7 @@
 import { getBackendUrl } from "@/components/utility/setup";
 import { Id } from "../../../interface";
 
-export default async function staffRegisterCamp(
-  partId: Id,
-  token: string
-) {
+export default async function staffRegisterCamp(partId: Id, token: string) {
   console.log(partId);
   const res = await fetch(
     `${getBackendUrl()}/camp/staffRegisterCamp/params/${partId}`,

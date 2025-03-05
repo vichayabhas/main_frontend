@@ -10,7 +10,8 @@ export default async function getCampMemberCardByCampId(
       method: "GET",
       headers: {
         authorization: `Bearer ${token}`,
-      },cache: "no-store",
+      },
+      cache: "no-store",
     }
   );
   if (!response.ok) {

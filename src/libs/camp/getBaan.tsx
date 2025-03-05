@@ -1,9 +1,7 @@
 import { getBackendUrl } from "@/components/utility/setup";
 import { Id, BasicBaan } from "../../../interface";
 
-export default async function getBaan(
-  id: Id
-): Promise<BasicBaan> {
+export default async function getBaan(id: Id): Promise<BasicBaan> {
   const response = await fetch(`${getBackendUrl()}/camp/Baan/params/${id}`, {
     cache: "no-store",
   });

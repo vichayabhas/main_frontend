@@ -131,7 +131,6 @@ import Image from "next/image";
 import React from "react";
 import InteractiveCard from "./InteractiveCard";
 
-
 import { ClockIcon } from "@mui/x-date-pickers";
 import { Id, InterCampFront } from "../../../interface";
 
@@ -145,7 +144,7 @@ export default function Card({
   camp,
 }: {
   hospitalName: string;
-  onRating: (input:string)=>void;
+  onRating: (input: string) => void;
   value?: number | null;
   link: string;
   imgSrc: string | null;

@@ -1,13 +1,12 @@
 "use client";
 
-import { useRouter } from "next/navigation";;
+import { useRouter } from "next/navigation";
 import React from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
 import { showActionPlan, InterTimeOffset } from "../../../interface";
 import FinishButton from "../utility/FinishButton";
 import GetTimeHtml from "../utility/GetTimeHtml";
 import { getDifferentMinute, downloadText } from "../utility/setup";
-
 
 export default function ActionPlanClient({
   actionPlans,

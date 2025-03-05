@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Size } from "../../../../../interface";
 import getNongCamp from "@/libs/camp/getNongCamp";
@@ -19,7 +18,6 @@ export default async function page({ params }: { params: { uid: string } }) {
     return <BackToHome />;
   }
   const user = await getUser(stringToId(params.uid));
-  //console.log(user)
   interface Out {
     campName: string;
     role: string;
@@ -67,7 +65,6 @@ export default async function page({ params }: { params: { uid: string } }) {
           session.user.token
         );
         const camp = await getCamp(petoCamp.campId);
-
         outs.push({
           campName: camp.campName,
           role: "พี่ปีโตบ้าน",
@@ -78,7 +75,6 @@ export default async function page({ params }: { params: { uid: string } }) {
       }
     }
   }
-
   return (
     <div>
       <div>
@@ -91,7 +87,7 @@ export default async function page({ params }: { params: { uid: string } }) {
           <th>บ้าน</th>
           <th>Size เสื้อ</th>
         </tr>
-        {outs.map((out,i) => (
+        {outs.map((out, i) => (
           <tr key={i}>
             <td>{out.campName}</td>
             <td>{out.role}</td>

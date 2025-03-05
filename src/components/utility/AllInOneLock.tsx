@@ -1,9 +1,7 @@
-import { Mode } from "fs";
 import React from "react";
-import { RoleCamp } from "../../../interface";
+import { Mode, RoleCamp } from "../../../interface";
 import BackToHome from "./BackToHome";
 import PasswordLock from "./PasswordLock";
-
 
 export default function AllInOneLock({
   children,
@@ -57,7 +55,7 @@ export default function AllInOneLock({
           } else {
             return children;
           }
-          break
+          break;
         }
         case "peto": {
           if (mode) {
@@ -120,7 +118,7 @@ export default function AllInOneLock({
           } else {
             return children;
           }
-          break
+          break;
         }
         case "peto": {
           if (mode) {

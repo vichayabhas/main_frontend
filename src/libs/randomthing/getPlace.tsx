@@ -1,9 +1,7 @@
 import { getBackendUrl } from "@/components/utility/setup";
 import { Id, InterPlace } from "../../../interface";
 
-export default async function getPlace(
-  id: Id
-): Promise<InterPlace> {
+export default async function getPlace(id: Id): Promise<InterPlace> {
   const res = await fetch(
     `${getBackendUrl()}/randomthing/getPlace/params/${id}`,
     {

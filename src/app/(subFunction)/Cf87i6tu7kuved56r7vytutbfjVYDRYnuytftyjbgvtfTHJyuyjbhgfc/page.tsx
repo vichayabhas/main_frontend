@@ -1,7 +1,6 @@
 //nong visnu
 "use client";
 
-
 import BackToHome from "@/components/utility/BackToHome";
 import FinishButton from "@/components/utility/FinishButton";
 import { getBackendUrl, setTextToString } from "@/components/utility/setup";
@@ -13,7 +12,9 @@ export default function page() {
   if (!session) {
     return <BackToHome />;
   }
-  if(session.user.user.email.split('@')[1].localeCompare('student.chula.ac.th')){
+  if (
+    session.user.user.email.split("@")[1].localeCompare("student.chula.ac.th")
+  ) {
     return <BackToHome />;
   }
   //alert(session.user.user.email);
@@ -21,10 +22,7 @@ export default function page() {
   return (
     <div>
       <label>รหัสประจำตัวนิสิต</label>
-      <TextField
-        onChange={setTextToString(setStudentId)}
-        value={studentId}
-      />
+      <TextField onChange={setTextToString(setStudentId)} value={studentId} />
       <FinishButton
         text="bypass"
         onClick={async () => {

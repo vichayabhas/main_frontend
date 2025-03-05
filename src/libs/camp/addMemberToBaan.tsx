@@ -19,7 +19,7 @@ export default async function addMemberToBaan(
     cache: "no-store",
     body: JSON.stringify(input),
   });
-  return await res.json()
+  return await res.json();
 }
 
 //addNong

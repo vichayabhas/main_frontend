@@ -14,5 +14,5 @@ export default async function changeModeToPee(password: string, token: string) {
       }),
     }
   );
-  return await response.json()
+  return await response.json();
 }

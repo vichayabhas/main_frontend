@@ -5,12 +5,17 @@ import createSong from "@/libs/randomthing/createSong";
 import { useSession } from "next-auth/react";
 import addSongList from "@/libs/randomthing/addSongList";
 import { Select, MenuItem, Checkbox, TextField } from "@mui/material";
-import { useRouter } from "next/navigation";;
+import { useRouter } from "next/navigation";
 import React from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
 import { GetMenuSongs, Id } from "../../../interface";
 import FinishButton from "../utility/FinishButton";
-import { setSwop, downloadText, setTextToString, setTextToInt } from "../utility/setup";
+import {
+  setSwop,
+  downloadText,
+  setTextToString,
+  setTextToInt,
+} from "../utility/setup";
 
 export default function SongClient({ data }: { data: GetMenuSongs }) {
   const ref = React.useRef(null);

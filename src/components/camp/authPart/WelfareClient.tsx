@@ -9,7 +9,12 @@ import {
 import { Checkbox, MenuItem, Select } from "@mui/material";
 import CampNumberTable from "../../utility/CampNumberTable";
 import React from "react";
-import { copy, downloadText, selectTimeToSystem, setBoolean } from "../../utility/setup";
+import {
+  copy,
+  downloadText,
+  selectTimeToSystem,
+  setBoolean,
+} from "../../utility/setup";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -38,7 +43,8 @@ export default function WelfareClient({
     "ขั้นสูง",
   ] as const;
   type WelfareMode = (typeof welfareModes)[number];
-  const [welfareMode, setWelfareMode] = React.useState<WelfareMode>("ดูทั้งหมด");
+  const [welfareMode, setWelfareMode] =
+    React.useState<WelfareMode>("ดูทั้งหมด");
   const [nong, setNong] = React.useState(true);
   const [pee, setPee] = React.useState(true);
   const [peto, setPeto] = React.useState(welfare.isHavePeto);
