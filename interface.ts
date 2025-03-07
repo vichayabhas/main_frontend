@@ -995,7 +995,7 @@ export interface ChatReady {
   roomName: string;
   userId: Id;
   subscribe: string;
-  nongCall:string
+  nongCall: string;
   //private
 }
 export const foodLimits = [
@@ -1037,7 +1037,7 @@ export interface CampWelfarePack {
   campWearingNumber: CampNumberData;
   meals: InterMeal[];
   _id: Id;
-  nongCall:string
+  nongCall: string;
   //public
 }
 export interface WelfarePack {
@@ -1081,7 +1081,7 @@ export interface GetAllPlanData {
   isHavePeto: boolean;
   baanSleepDatas: CampSleepDataContainer[];
   partSleepDatas: CampSleepDataContainer[];
-  nongCall:string
+  nongCall: string;
   //public
 }
 export interface UpdateBaansForPlan {
@@ -1272,7 +1272,7 @@ export interface GetAllAnswerAndQuestion {
   success: boolean;
   groupName: string;
   canScoring: boolean;
-  nongCall:string
+  nongCall: string;
   //public
 }
 export interface ScoreTextQuestion {
@@ -1923,6 +1923,7 @@ export const socketEvents = [
   "updateQuestion",
   "registerSubGroup",
   "updateSubGroup",
+  "updateGroupByAnyone",
 ] as const;
 export type SocketEvent = (typeof socketEvents)[number];
 export type QusetionType =
@@ -2026,4 +2027,11 @@ export interface GetGroupContainerForAdmin {
 export interface GroupContainerPack {
   group: GetGroupContainer;
   subGroupIds: Id[];
+}
+export interface CreateSubGroupByAnyone {
+  containerId: Id;
+  limit: number;
+  name: string;
+  gender: "male" | "female" | null;
+  role: Mode | null;
 }

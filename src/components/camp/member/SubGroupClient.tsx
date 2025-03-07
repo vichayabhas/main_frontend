@@ -8,6 +8,7 @@ import {
   Id,
   BasicUser,
   InterSubGroup,
+  Mode,
 } from "../../../../interface";
 import React from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
@@ -16,12 +17,16 @@ import {
   downloadText,
   getBackendUrl,
   setBoolean,
+  setTextToInt,
+  setTextToString,
   SocketReady,
 } from "@/components/utility/setup";
 import { io } from "socket.io-client";
-import { Checkbox } from "@mui/material";
+import { Checkbox, MenuItem, Select, TextField } from "@mui/material";
 import UserNameTable from "@/components/utility/UserNameTable";
 import registerGroup from "@/libs/camp/registerGroup";
+import createSubGroupByAnyone from "@/libs/camp/createSubGroupByAnyone";
+import updateSubGroupByAnyone from "@/libs/camp/updateSubGroupByAnyone";
 
 function getSubGroupValid(
   subGroup: InterSubGroup,
@@ -84,6 +89,13 @@ export default function SubGroupClient({
   const room = data._id.toString();
   const [container, setGroup] = React.useState(data);
   const [removeId, setRemoveId] = React.useState(removeIdTem);
+  const [selectIndexAction, setSelectIndexAction] = React.useState<
+    number | null
+  >(null);
+  const [subGroupName, setSubGroupName] = React.useState("");
+  const [limit, setLimit] = React.useState(0);
+  const [gender, setGender] = React.useState<"male" | "female" | null>(null);
+  const [role, setRole] = React.useState<Mode | null>(null);
   React.useEffect(() => {
     groupSocket.listen(room, (e) => {
       setGroup(e);
@@ -125,15 +137,36 @@ export default function SubGroupClient({
           <th>ประเภทการรับบทบาท</th>
           <th>limit</th>
           <th>check</th>
+          {container.canAnybodyCreateSubGroup ? <th>action</th> : null}
           <th>สมาชิก</th>
         </tr>
         {container.subGroups.map((subGroup, i) => {
+          const selectValid =
+            container.canAnybodyCreateSubGroup && selectIndexAction == i;
           return (
             <tr key={i}>
-              <td>{subGroup.name}</td>
+              <td>
+                {selectValid ? (
+                  <TextField
+                    onChange={setTextToString(setSubGroupName, true)}
+                    value={subGroupName}
+                  />
+                ) : (
+                  subGroup.name
+                )}
+              </td>
               <td>{subGroup.genderType}</td>
               <td>{subGroup.roleType}</td>
-              <td>{subGroup.limit}</td>
+              <td>
+                {selectValid ? (
+                  <TextField
+                    onChange={setTextToInt(setLimit)}
+                    value={limit.toString()}
+                  />
+                ) : (
+                  subGroup.limit
+                )}
+              </td>
               <td>
                 {getSubGroupValid(
                   subGroup,
@@ -153,6 +186,32 @@ export default function SubGroupClient({
                   />
                 ) : null}
               </td>
+              {container.canAnybodyCreateSubGroup ? (
+                <td>
+                  {selectValid ? (
+                    <FinishButton
+                      text="update"
+                      onClick={() => {
+                        updateSubGroupByAnyone(
+                          { limit, name: subGroupName, _id: subGroup._id },
+                          token,
+                          groupSocket,
+                          room
+                        );
+                      }}
+                    />
+                  ) : (
+                    <FinishButton
+                      onClick={() => {
+                        setSelectIndexAction(i);
+                        setSubGroupName(subGroup.name);
+                        setLimit(subGroup.limit);
+                      }}
+                      text="select"
+                    />
+                  )}
+                </td>
+              ) : null}
               <td>
                 <UserNameTable inputs={subGroup.users} />
               </td>
@@ -160,6 +219,99 @@ export default function SubGroupClient({
           );
         })}
       </table>
+      {selectIndexAction == null ? null : (
+        <FinishButton
+          text="สร้างใหม่"
+          onClick={() => {
+            setSelectIndexAction(null);
+          }}
+        />
+      )}
+      {container.canAnybodyCreateSubGroup && selectIndexAction == null ? (
+        <>
+          <div>
+            ชื่อกลุ่มย่อย
+            <TextField
+              onChange={setTextToString(setSubGroupName, true)}
+              value={subGroupName}
+            />
+          </div>
+          <div>
+            limit
+            <TextField
+              onChange={setTextToInt(setLimit)}
+              value={limit.toString()}
+            />
+          </div>
+          {container.genderType == "กำหนดตอนสร้างกลุ่มย่อย" ? (
+            <div>
+              เลือกเพศ
+              <Select
+                value={gender}
+                renderValue={() => {
+                  switch (gender) {
+                    case "female":
+                      return "ผู้หญิงเท่านั้น";
+                    case "male":
+                      return "ผู้ชายเท่านั้น";
+                    case null:
+                      return "โปรดเลือกเพศ";
+                  }
+                }}
+              >
+                <MenuItem onClick={() => setGender("male")}>
+                  ผู้ชายเท่านั้น
+                </MenuItem>
+                <MenuItem onClick={() => setGender("female")}>
+                  ผู้หญิงเท่านั้น
+                </MenuItem>
+              </Select>
+            </div>
+          ) : null}
+          {container.roleType == "กำหนดตอนสร้างกลุ่มย่อย" ? (
+            <div>
+              เลือกพี่{camp.groupName}หรือ{camp.nongCall}
+              <Select
+                value={role}
+                renderValue={() => {
+                  switch (role) {
+                    case "nong":
+                      return `${camp.nongCall}เท่านั้น`;
+                    case "pee":
+                      return `พี่${camp.groupName}เท่านั้น`;
+                    case null:
+                      return `โปรดเลือกเลือกพี่${camp.groupName}หรือ${camp.nongCall}`;
+                  }
+                }}
+              >
+                <MenuItem onClick={() => setRole("nong")}>
+                  {camp.nongCall}เท่านั้น
+                </MenuItem>
+                <MenuItem onClick={() => setRole("pee")}>
+                  พี่${camp.groupName}เท่านั้น
+                </MenuItem>
+              </Select>
+            </div>
+          ) : null}
+          <FinishButton
+            text="สร้างกลุ่มย่อย"
+            onClick={() =>
+              createSubGroupByAnyone(
+                {
+                  role,
+                  gender,
+                  name: subGroupName,
+                  containerId: container._id,
+                  limit,
+                },
+                token,
+                groupSocket,
+                room
+              )
+            }
+          />
+        </>
+      ) : null}
       <FinishButton text={downloadText} onClick={download.onDownload} />
       <FinishButton
         text="register"
