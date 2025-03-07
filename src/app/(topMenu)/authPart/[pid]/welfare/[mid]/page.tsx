@@ -35,7 +35,6 @@ export default async function page({
       foods={foods}
       meal={meal}
       camp={camp}
-      groupName={camp.groupName}
       token={token}
       displayOffset={displayOffset}
       selectOffset={selectOffset}

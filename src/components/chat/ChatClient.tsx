@@ -99,10 +99,10 @@ export default function ChatClient({
                         {chat.nickname} {chat.partName}
                       </td> // part
                     ) : chat.role == "nong" ? (
-                      <td>{chat.nickname} น้องค่าย</td> // lable
+                      <td>{chat.nickname} {data.nongCall}</td> // lable
                     ) : (
                       <td>
-                        {chat.nickname} พี่ {data.groupName}
+                        {chat.nickname} พี่{data.groupName}
                       </td> // group
                     )}
                   </tr>

@@ -4,7 +4,6 @@ import {
   Choice,
   GetAllQuestion,
   Id,
-  SystemInfo,
   BasicCamp,
   TriggerTextQuestion,
   QusetionType,
@@ -43,7 +42,6 @@ export default function UpdateQuestionClient({
 }: {
   camp: BasicCamp;
   questions: GetAllQuestion;
-  systemInfo: SystemInfo;
   token: string;
 }) {
   const room = camp._id.toString();
@@ -320,7 +318,7 @@ export default function UpdateQuestionClient({
         <div>
           <div className="flex flex-row items-center my-5">
             <label className="w-2/5 text-2xl text-white">
-              อนุญาติให้น้องค่ายดูคำตอบทั้งหมดหรือไม่
+              อนุญาติให้{camp.nongCall}ดูคำตอบทั้งหมดหรือไม่
             </label>
             <Checkbox
               sx={{

@@ -23,17 +23,16 @@ import React from "react";
 import {
   InterFood,
   InterMeal,
-  InterCampFront,
   UpdateTimeOffsetRaw,
   RoleCamp,
   FoodLimit,
+  BasicCamp,
 } from "../../../../interface";
 
 export default function MealClient({
   params,
   foods,
   meal,
-  groupName,
   camp,
   token,
   displayOffset,
@@ -42,8 +41,7 @@ export default function MealClient({
   params: { pid: string; mid: string };
   foods: InterFood[];
   meal: InterMeal;
-  groupName: string;
-  camp: InterCampFront;
+  camp: BasicCamp;
   token: string;
   selectOffset: UpdateTimeOffsetRaw;
   displayOffset: UpdateTimeOffsetRaw;
@@ -94,7 +92,7 @@ export default function MealClient({
       >
         <div className="flex flex-row items-center my-5">
           <label className="w-2/5 text-2xl text-white">
-            ข้าวมื้อนี้ให้น้องค่ายหรือไม่
+            ข้าวมื้อนี้ให้{camp.nongCall}หรือไม่
           </label>
           <Checkbox
             onChange={setBoolean(setNong)}
@@ -108,7 +106,7 @@ export default function MealClient({
         </div>
         <div className="flex flex-row items-center my-5">
           <label className="w-2/5 text-2xl text-white">
-            ข้าวมื้อนี้ให้พี่{groupName}หรือไม่
+            ข้าวมื้อนี้ให้พี่{camp.groupName}หรือไม่
           </label>
           <Checkbox
             onChange={setBoolean(setPee)}

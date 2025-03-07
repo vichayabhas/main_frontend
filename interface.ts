@@ -192,6 +192,7 @@ export interface InterCampBack {
   lockChangeQuestion: boolean;
   jobIds: Id[];
   canReadTimeOnMirror: boolean;
+  nongCall: string;
   //public
 }
 export interface InterCampStyle {
@@ -565,6 +566,7 @@ export interface InterCampFront {
   lockChangeQuestion: boolean;
   jobIds: Id[];
   canReadTimeOnMirror: boolean;
+  nongCall: string;
   //public
 }
 export interface InterPartFront {
@@ -652,6 +654,7 @@ export interface UpdateCamp {
   lockChangeQuestion: boolean;
   updatePart: UpdateAuthCamp[];
   canReadTimeOnMirror: boolean;
+  nongCall: string;
   //public
 }
 export interface CreateCamp {
@@ -992,7 +995,7 @@ export interface ChatReady {
   roomName: string;
   userId: Id;
   subscribe: string;
-  systemInfo: SystemInfo;
+  nongCall:string
   //private
 }
 export const foodLimits = [
@@ -1034,6 +1037,7 @@ export interface CampWelfarePack {
   campWearingNumber: CampNumberData;
   meals: InterMeal[];
   _id: Id;
+  nongCall:string
   //public
 }
 export interface WelfarePack {
@@ -1077,6 +1081,7 @@ export interface GetAllPlanData {
   isHavePeto: boolean;
   baanSleepDatas: CampSleepDataContainer[];
   partSleepDatas: CampSleepDataContainer[];
+  nongCall:string
   //public
 }
 export interface UpdateBaansForPlan {
@@ -1266,8 +1271,8 @@ export interface GetAllAnswerAndQuestion {
   nongInterviewAnswers: UserAndAllQuestionPack[];
   success: boolean;
   groupName: string;
-  systemInfo: SystemInfo;
   canScoring: boolean;
+  nongCall:string
   //public
 }
 export interface ScoreTextQuestion {
@@ -1638,6 +1643,7 @@ export interface BasicCamp {
   canNongAccessDataWithRoleNong: boolean;
   lockChangeQuestion: boolean;
   canReadTimeOnMirror: boolean;
+  nongCall: string;
   //public
 }
 export interface BasicPart {
@@ -1656,15 +1662,6 @@ export interface SystemInfo {
   endEmail: string;
   studentIdLength: number;
   studentIdLastTwoDigit: string;
-  nongText: string;
-  peeText: string;
-  newText: string;
-  updateText: string;
-  manageText: string;
-  questionText: string;
-  textQuestionText: string;
-  choiceQuestionText: string;
-  chatText: string;
 }
 export interface RegisterData {
   regisParts: RegisPart[];
@@ -1674,7 +1671,6 @@ export interface RegisterData {
   partMap: MyMap[];
   nongRegister: AllNongRegister;
   partBoardIdString: string;
-  systemInfo: SystemInfo;
 }
 export type QuestionCategory =
   | "พี่พี่"

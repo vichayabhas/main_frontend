@@ -243,7 +243,7 @@ export default function FoodClient({
               <td>{nong.user.nickname}</td>
               <td>{nong.user.name}</td>
               <td>{nong.user.lastname}</td>
-              <td>น้องค่าย</td>
+              <td>{food.camp.nongCall}</td>
               <td>{nong.heathIssue.food}</td>
               <td>{nong.heathIssue.foodConcern}</td>
               <td>{nong.heathIssue.spicy ? "ไม่ได้" : "ได้"}</td>

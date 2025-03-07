@@ -115,7 +115,7 @@ export default function SubGroupAdminClient({
             </Select>
           </div>
           <div>
-            รูปแบบการแยกพี่{data.camp.groupName}กับน้องค่าย
+            รูปแบบการแยกพี่{data.camp.groupName}กับ{data.camp.nongCall}
             <Select value={roleType} renderValue={() => roleType}>
               {groupRoleTypes.map((v, i) => (
                 <MenuItem key={i} onClick={() => setRoleType(v)}>
@@ -237,22 +237,22 @@ export default function SubGroupAdminClient({
               ) : null}
               {groups[selectIndex].roleType == "กำหนดตอนสร้างกลุ่มย่อย" ? (
                 <div>
-                  เลือกพี่{data.camp.groupName}หรือน้องค่าย
+                  เลือกพี่{data.camp.groupName}หรือ{data.camp.nongCall}
                   <Select
                     value={role}
                     renderValue={() => {
                       switch (role) {
                         case "nong":
-                          return "น้องค่ายเท่านั้น";
+                          return `${data.camp.nongCall}เท่านั้น`;
                         case "pee":
                           return `พี่${data.camp.groupName}เท่านั้น`;
                         case null:
-                          return `โปรดเลือกเลือกพี่${data.camp.groupName}หรือน้องค่าย`;
+                          return `โปรดเลือกเลือกพี่${data.camp.groupName}หรือ${data.camp.nongCall}`;
                       }
                     }}
                   >
                     <MenuItem onClick={() => setRole("nong")}>
-                      น้องค่ายเท่านั้น
+                    {data.camp.nongCall}เท่านั้น
                     </MenuItem>
                     <MenuItem onClick={() => setRole("pee")}>
                       พี่${data.camp.groupName}เท่านั้น

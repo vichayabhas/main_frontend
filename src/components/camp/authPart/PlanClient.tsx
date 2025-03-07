@@ -204,6 +204,7 @@ export default function PlanClient({
           partNumbers={data.partBoySleeps}
           groupName={data.groupName}
           filename="สมาชิกชายที่ค้างคืน"
+          nongCall={data.nongCall}
         />
         จำนวนสมาชิกหญิงที่ค้างคืน
         <CampNumberTable
@@ -213,6 +214,7 @@ export default function PlanClient({
           partNumbers={data.partGirlSleeps}
           groupName={data.groupName}
           filename="สมาชิกหญิงที่ค้างคืน"
+          nongCall={data.nongCall}
         />
         {data.baanSleepDatas.map((baan, i) => {
           const boyRef = React.useRef(null);

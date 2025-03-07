@@ -121,6 +121,7 @@ export default function UpdateCampClient({
     camp.memberStructure == "nong->highSchool,pee->1year,peto->2upYear" ||
     camp.memberStructure == "nong->highSchool,pee->2upYear" ||
     camp.memberStructure == "nong->highSchool,pee->allYear";
+  const [nongCall, setNongCall] = React.useState(camp.nongCall);
   function reset(newCampData: BasicCamp, newPartsData: BasicPart[]) {
     setCamp(newCampData);
     setParts(newPartsData);
@@ -152,6 +153,7 @@ export default function UpdateCampClient({
       )
     );
     setCanReadTimeOnMirror(newCampData.canReadTimeOnMirror);
+    setNongCall(newCampData.nongCall);
   }
   if (timeOut) {
     return <Waiting />;
@@ -358,6 +360,33 @@ export default function UpdateCampClient({
         </div>
         <div className="flex flex-row items-center my-5">
           <label className="w-2/5 text-2xl text-white">
+            คำเรียกแทนน้องค่าย
+          </label>
+          <TextField
+            name="Tel"
+            id="Tel"
+            className="w-3/5 bg-white rounded-2xl "
+            sx={{
+              backgroundColor: "#f5f5f5",
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderRadius: " 1rem",
+                  borderColor: "transparent",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#5479FF",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#5479FF",
+                },
+              },
+            }}
+            onChange={setTextToString(setNongCall)}
+            value={nongCall}
+          />
+        </div>
+        <div className="flex flex-row items-center my-5">
+          <label className="w-2/5 text-2xl text-white">
             ล็อกข้อมูลน้องหรือไม่
           </label>
           <Checkbox
@@ -403,7 +432,7 @@ export default function UpdateCampClient({
         ) : null}
         <div className="flex flex-row items-center my-5">
           <label className="w-2/5 text-2xl text-white">
-            เปิดให้น้องค่ายลงทะเบียนหรือไม่
+            เปิดให้{nongCall}ลงทะเบียนหรือไม่
           </label>
           <Checkbox
             sx={{
@@ -529,7 +558,7 @@ export default function UpdateCampClient({
         <AllInOneLock token={token} bypass={camp.canNongAccessDataWithRoleNong}>
           <div className="flex flex-row items-center my-5">
             <label className="w-2/5 text-2xl text-white">
-              อนุญาติให้น้องค่ายดูคำตอบทั้งหมดหรือไม่
+              อนุญาติให้{nongCall}ดูคำตอบทั้งหมดหรือไม่
             </label>
             <Checkbox
               sx={{
@@ -543,7 +572,7 @@ export default function UpdateCampClient({
           </div>
           <div className="flex flex-row items-center my-5">
             <label className="w-2/5 text-2xl text-white">
-              อนุญาติให้น้องค่ายดู action plan ทั้งหมดหรือไม่
+              อนุญาติให้{nongCall}ดู action plan ทั้งหมดหรือไม่
             </label>
             <Checkbox
               sx={{
@@ -557,7 +586,7 @@ export default function UpdateCampClient({
           </div>
           <div className="flex flex-row items-center my-5">
             <label className="w-2/5 text-2xl text-white">
-              อนุญาติให้น้องค่ายดู tracking sheet ทั้งหมดหรือไม่
+              อนุญาติให้{nongCall}ดู tracking sheet ทั้งหมดหรือไม่
             </label>
             <Checkbox
               sx={{
@@ -572,7 +601,8 @@ export default function UpdateCampClient({
           {isHaveNongInGeneralRoleNong ? (
             <div className="flex flex-row items-center my-5">
               <label className="w-2/5 text-2xl text-white">
-                อนุญาติให้น้องค่ายดูข้อมูลค่ายเบื้องหลังโดยบทบาททั่วไปยังเป็นน้องหรือไม่
+                อนุญาติให้{nongCall}
+                ดูข้อมูลค่ายเบื้องหลังโดยบทบาททั่วไปยังเป็นน้องหรือไม่
               </label>
               <Checkbox
                 sx={{
@@ -723,6 +753,7 @@ export default function UpdateCampClient({
                           .filter(notEmpty),
                       })),
                       canReadTimeOnMirror,
+                      nongCall,
                     },
                     camp._id,
                     token

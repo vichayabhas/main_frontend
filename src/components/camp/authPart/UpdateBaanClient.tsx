@@ -246,7 +246,7 @@ export default function UpdateBaanClient({
               <td>{health.user.nickname}</td>
               <td>{health.user.name}</td>
               <td>{health.user.lastname}</td>
-              <td>น้องค่าย</td>
+              <td>{coopData.camp.nongCall}</td>
               <td>{health.heathIssue.extra}</td>
               <td>{health.heathIssue.chronicDisease}</td>
               {highMode ? (

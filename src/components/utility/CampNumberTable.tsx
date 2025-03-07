@@ -11,6 +11,7 @@ export default function CampNumberTable({
   partNumbers,
   baanNumbers,
   filename,
+  nongCall
 }: {
   groupName: string;
   isHavePeto: boolean;
@@ -18,6 +19,7 @@ export default function CampNumberTable({
   baanNumbers: CampNumberData[];
   partNumbers: CampNumberData[];
   filename: string;
+  nongCall:string
 }) {
   const ref = React.useRef(null);
   const download = useDownloadExcel({ currentTableRef: ref.current, filename });
@@ -26,7 +28,7 @@ export default function CampNumberTable({
       <table ref={ref}>
         <tr>
           <th>{groupName}/ฝ่าย</th>
-          <th>น้องค่าย</th>
+          <th>{nongCall}</th>
           <th>พี่{groupName}</th>
           {isHavePeto ? <th>ปีโต</th> : null}
         </tr>

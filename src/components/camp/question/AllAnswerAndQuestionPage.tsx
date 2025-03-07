@@ -252,7 +252,7 @@ export default function AllAnswerAndQuestionPage({
   });
   const nongDownload = useDownloadExcel({
     currentTableRef: nongRef.current,
-    filename: "น้องค่าย",
+    filename: data.nongCall,
   });
   const peeDownload = useDownloadExcel({
     currentTableRef: peeRef.current,
@@ -422,11 +422,11 @@ export default function AllAnswerAndQuestionPage({
             dataReady={getDataReady()}
             types="น้องที่ยืนยันแล้ว"
           />
-          น้องค่าย
+          {data.nongCall}
           <AllAnswerAndQuestionPageBreakDown
             setMode={(dataInput2) => dataInput2.nongsAnswers}
             dataReady={getDataReady()}
-            types="น้องค่าย"
+            types={data.nongCall}
           />
           พี่พี่
           <AllAnswerAndQuestionPageBreakDown
@@ -469,7 +469,7 @@ export default function AllAnswerAndQuestionPage({
         {getAllAnswerAndQuestionReady(data.nongSureAnswers)}
       </table>
       <FinishButton text={downloadText} onClick={sureDownload.onDownload} />
-      น้องค่าย
+      {data.nongCall}
       <table ref={nongRef}>
         {headTable}
         {getAllAnswerAndQuestionReady(data.nongsAnswers)}

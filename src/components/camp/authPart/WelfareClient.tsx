@@ -213,7 +213,7 @@ export default function WelfareClient({
                     <td>{nong.user.name}</td>
                     <td>{nong.user.lastname}</td>
                     <td>{baan.name}</td>
-                    <td>น้องค่าย</td>
+                    <td>{welfare.nongCall}</td>
                     <td>{nong.heathIssue.food}</td>
                     <td>{nong.heathIssue.foodConcern}</td>
                     <td>{nong.heathIssue.spicy ? "ไม่ได้" : "ได้"}</td>
@@ -295,6 +295,7 @@ export default function WelfareClient({
         partNumbers={welfare.partHaveBottles}
         groupName={welfare.groupName}
         filename="จำนวนสมาชิกที่มีกระติกน้ำ"
+        nongCall={welfare.nongCall}
       />
       จำนวนสมาชิกที่มีกินเผ็ดไม่ได้
       <CampNumberTable
@@ -304,6 +305,7 @@ export default function WelfareClient({
         partNumbers={welfare.partSpicyS}
         groupName={welfare.groupName}
         filename="จำนวนสมาชิกที่มีกินเผ็ดไม่ได้"
+        nongCall={welfare.nongCall}
       />
       จำนวนสมาชิกที่ halal
       <CampNumberTable
@@ -313,6 +315,7 @@ export default function WelfareClient({
         partNumbers={welfare.partHalalS}
         groupName={welfare.groupName}
         filename="จำนวนสมาชิกที่ halal"
+        nongCall={welfare.nongCall}
       />
       จำนวนสมาชิกที่มีมังสวิรัติ
       <CampNumberTable
@@ -322,6 +325,7 @@ export default function WelfareClient({
         partNumbers={welfare.partVegetarians}
         groupName={welfare.groupName}
         filename="จำนวนสมาชิกที่มีมังสวิรัติ"
+        nongCall={welfare.nongCall}
       />
       จำนวนสมาชิกที่กินเจ
       <CampNumberTable
@@ -331,6 +335,7 @@ export default function WelfareClient({
         partNumbers={welfare.partVegans}
         groupName={welfare.groupName}
         filename="จำนวนสมาชิกที่กินเจ"
+        nongCall={welfare.nongCall}
       />
       <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
         <form
@@ -341,7 +346,7 @@ export default function WelfareClient({
         >
           <div className="flex flex-row items-center my-5">
             <label className="w-2/5 text-2xl text-white">
-              ข้าวมื้อนี้ให้น้องค่ายหรือไม่
+              ข้าวมื้อนี้ให้{welfare.nongCall}หรือไม่
             </label>
             <Checkbox
               onChange={setBoolean(setNong)}

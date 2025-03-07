@@ -19,7 +19,7 @@ import ImagesFromUrl from "@/components/utility/ImagesFromUrl";
 import PartClient from "../PartClient";
 import ShowOwnCampData from "../ShowOwnCampData";
 import MirrorClient from "./MirrorClient";
-//import SubGroupClient from "./SubGroupClient";
+import SubGroupClient from "./SubGroupClient";
 
 export default function PeeCampClient({
   data: {
@@ -44,8 +44,8 @@ export default function PeeCampClient({
     partJobs,
     baanJobs,
     mirrorData,
-    // defaultGroup,
-    // groups,
+    defaultGroup,
+    groups,
   },
   token,
   allPlaceData,
@@ -418,7 +418,7 @@ export default function PeeCampClient({
           checked={showAllGroups}
         />
       </div>
-      {/* {showAllGroups ? (
+      {showAllGroups ? (
         groups.map((group, i) => (
           <SubGroupClient
             key={i}
@@ -439,7 +439,7 @@ export default function PeeCampClient({
           token={token}
           user={user}
         />
-      ) : null} */}
+      ) : null}
       <MirrorClient
         user={user}
         token={token}

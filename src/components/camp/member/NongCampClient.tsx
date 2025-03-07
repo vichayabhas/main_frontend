@@ -15,7 +15,7 @@ import FinishButton from "@/components/utility/FinishButton";
 import BaanMembers from "./BaanMembers";
 import MirrorClient from "./MirrorClient";
 import { Checkbox } from "@mui/material";
-//import SubGroupClient from "./SubGroupClient";
+import SubGroupClient from "./SubGroupClient";
 
 export default function NongCampClient({
   data: {
@@ -32,8 +32,8 @@ export default function NongCampClient({
     healthIssue,
     displayOffset,
     mirrorData,
-    // defaultGroup,
-    // groups,
+    defaultGroup,
+    groups,
   },
   token,
 }: {
@@ -227,7 +227,7 @@ export default function NongCampClient({
           checked={showAllGroups}
         />
       </div>
-      {/* {showAllGroups ? (
+      {showAllGroups ? (
         groups.map((group, i) => (
           <SubGroupClient
             key={i}
@@ -248,7 +248,7 @@ export default function NongCampClient({
           token={token}
           user={user}
         />
-      ) : null} */}
+      ) : null}
       <MirrorClient
         user={user}
         token={token}

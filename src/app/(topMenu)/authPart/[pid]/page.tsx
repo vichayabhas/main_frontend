@@ -16,7 +16,6 @@ import getParts from "@/libs/camp/getParts";
 import getPeeCamp from "@/libs/camp/getPeeCamp";
 import getRegisterData from "@/libs/camp/getRegisterData";
 import getAuthSongs from "@/libs/randomthing/getAuthSongs";
-import getSystemInfo from "@/libs/randomthing/getSystemInfo";
 import getCampMemberCardByCampId from "@/libs/user/getCampMemberCardByCampId";
 import getTimeOffset from "@/libs/user/getTimeOffset";
 import getUserProfile from "@/libs/user/getUserProfile";
@@ -69,13 +68,11 @@ export default async function Baan({ params }: { params: { pid: string } }) {
     isBoard = true;
   }
   if (part.auths.includes("แก้ไขคำถาม")) {
-    const systemInfo = await getSystemInfo();
     const questions = await getAllQuestion(token, camp._id);
     outputs.push(
       <UpdateQuestionClient
         camp={camp}
         token={token}
-        systemInfo={systemInfo}
         questions={questions}
       />
     );
