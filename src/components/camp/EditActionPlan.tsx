@@ -5,11 +5,9 @@ import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import {
   AllPlaceData,
+  GetActionPlanForEdit,
   InterPlace,
   MyMap,
-  ShowMember,
-  UpdateTimeOffsetRaw,
-  showActionPlan,
 } from "../../../interface";
 import SelectTemplate from "../utility/SelectTemplate";
 import {
@@ -22,51 +20,43 @@ import {
   setMap,
   setTextToString,
 } from "../utility/setup";
-import { useSession } from "next-auth/react";
 import updateActionPlan from "@/libs/camp/updateActionPlan";
-import BackToHome from "../utility/BackToHome";
 import dayjs, { Dayjs } from "dayjs";
 import deleteActionPlan from "@/libs/camp/deleteActionPlan";
 import PlaceSelect from "../randomthing/PlaceSelect";
 import FinishButton from "../utility/FinishButton";
 
 export default function EditActionPlan({
-  pees,
-  petos,
-  actionPlan,
-  pls,
+  data,
   allPlaceData,
-  timeOffset,
+  token,
 }: {
-  pees: ShowMember[];
-  petos: ShowMember[];
-  actionPlan: showActionPlan;
-  pls: InterPlace[];
   allPlaceData: AllPlaceData;
-  timeOffset: UpdateTimeOffsetRaw;
+  data: GetActionPlanForEdit;
+  token: string;
 }) {
-  const { data: session } = useSession();
-  if (!session) {
-    return <BackToHome />;
-  }
-  const [action, setAction] = React.useState<string | null>(actionPlan.action);
-  const [places, setPlaces] = React.useState<(InterPlace | null)[]>(pls);
+  const [action, setAction] = React.useState<string | null>(
+    data.actionPlan.action
+  );
+  const [places, setPlaces] = React.useState<(InterPlace | null)[]>(
+    data.places
+  );
   const [start, setStart] = React.useState<Dayjs | null>(
-    dayjs(addTime(actionPlan.start, timeOffset))
+    dayjs(addTime(data.actionPlan.start, data.selectOffset))
   );
   const [end, setEnd] = React.useState<Dayjs | null>(
-    dayjs(addTime(actionPlan.end, timeOffset))
+    dayjs(addTime(data.actionPlan.end, data.selectOffset))
   );
-  const [body, setBody] = React.useState<string | null>(actionPlan.body);
+  const [body, setBody] = React.useState<string | null>(data.actionPlan.body);
   const maps: MyMap[] = [];
   let i = 0;
-  while (i < pees.length) {
-    const { _id, nickname, name, lastname } = pees[i++];
+  while (i < data.pees.length) {
+    const { _id, nickname, name, lastname } = data.pees[i++];
     maps.push({ key: _id, value: `${nickname} ${name} ${lastname}` });
   }
   i = 0;
-  while (i < petos.length) {
-    const { _id, nickname, name, lastname } = petos[i++];
+  while (i < data.petos.length) {
+    const { _id, nickname, name, lastname } = data.petos[i++];
     maps.push({ key: _id, value: `${nickname} ${name} ${lastname}` });
   }
 
@@ -161,20 +151,20 @@ export default function EditActionPlan({
                 {
                   action,
                   placeIds: places.filter(notEmpty).map((e) => e._id),
-                  start: selectTimeToSystem(start, timeOffset),
-                  end: selectTimeToSystem(end, timeOffset),
+                  start: selectTimeToSystem(start, data.selectOffset),
+                  end: selectTimeToSystem(end, data.selectOffset),
                   headId,
                   body,
                 },
-                actionPlan._id,
-                session.user.token
+                data.actionPlan._id,
+                token
               );
             }
           }}
           buttonText={"update"}
         />
         <FinishButton
-          onClick={() => deleteActionPlan(actionPlan._id, session.user.token)}
+          onClick={() => deleteActionPlan(data.actionPlan._id, token)}
           text={"delete"}
         />
       </div>

@@ -1356,6 +1356,7 @@ export interface GetFoodForUpdate {
   camp: BasicCamp;
   time: Date;
   listPriority: boolean;
+  displayOffset: UpdateTimeOffsetRaw;
   //public
 }
 export interface GetMeals {
@@ -1402,6 +1403,8 @@ export interface GetCoopData {
   nongHealths: HeathIssuePack[];
   peeHealths: HeathIssuePack[];
   baanJobs: GetJob[];
+  pees: ShowMember[];
+  nongs: ShowMember[];
   //public
 }
 export interface UpdateMeal {
@@ -2034,4 +2037,30 @@ export interface CreateSubGroupByAnyone {
   name: string;
   gender: "male" | "female" | null;
   role: Mode | null;
+}
+export interface GetActionPlanForEdit {
+  pees: ShowMember[];
+  petos: ShowMember[];
+  actionPlan: showActionPlan;
+  places: InterPlace[];
+  selectOffset: UpdateTimeOffsetRaw;
+}
+export interface GetCampForUpdate {
+  baans: BasicBaan[];
+  camp: BasicCamp;
+  parts: BasicPart[];
+  remainPartName: MyMap[];
+}
+export interface GetMealForUpdate {
+  foods: InterFood[];
+  meal: InterMeal;
+  camp: BasicCamp;
+  selectOffset: UpdateTimeOffsetRaw;
+  displayOffset: UpdateTimeOffsetRaw;
+}
+export interface OwnRegisterCampData {
+  campName: string;
+  role: string;
+  baan: string;
+  size: Size;
 }

@@ -37,5 +37,4 @@ export default async function NongChatChoise({
     case "peto":
       return <BackToHome />;
   }
-  //เอา shirtManage ของน้องมาให้เลือก
 }

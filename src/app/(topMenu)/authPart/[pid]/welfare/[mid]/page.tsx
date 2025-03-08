@@ -2,14 +2,9 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import BackToHome from "@/components/utility/BackToHome";
 import MealClient from "@/components/camp/meal/MealClient";
 import { stringToId } from "@/components/utility/setup";
-import getCamp from "@/libs/camp/getCamp";
-import getPart from "@/libs/camp/getPart";
-import getFoods from "@/libs/randomthing/getFoods";
-import getMeal from "@/libs/randomthing/getMeal";
-import getTimeOffset from "@/libs/user/getTimeOffset";
-import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";
 import React from "react";
+import getMealForUpdate from "@/components/randomthing/getMealForUpdate";
 export default async function page({
   params,
 }: {
@@ -20,24 +15,7 @@ export default async function page({
     return <BackToHome />;
   }
   const token = session.user.token;
-  const user = await getUserProfile(token);
-  const selectOffset = await getTimeOffset(user.selectOffsetId);
-  const displayOffset = await getTimeOffset(user.displayOffsetId);
   const mealId = stringToId(params.mid);
-  const foods = await getFoods(mealId);
-  const meal = await getMeal(mealId);
-  const partId = stringToId(params.pid);
-  const part = await getPart(partId, token);
-  const camp = await getCamp(part.campId);
-  return (
-    <MealClient
-      params={params}
-      foods={foods}
-      meal={meal}
-      camp={camp}
-      token={token}
-      displayOffset={displayOffset}
-      selectOffset={selectOffset}
-    />
-  );
+  const data = await getMealForUpdate(mealId, token);
+  return <MealClient params={params} data={data} token={token} />;
 }

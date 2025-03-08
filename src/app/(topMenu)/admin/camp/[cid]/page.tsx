@@ -2,13 +2,10 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import BackToHome from "@/components/utility/BackToHome";
 import { stringToId } from "@/components/utility/setup";
 import UpdateCampClient from "@/components/camp/authPart/UpdateCampClient";
-import getAllRemainPartName from "@/libs/admin/getAllRemainPartName";
-import getBaans from "@/libs/camp/getBaans";
-import getCamp from "@/libs/camp/getCamp";
-import getParts from "@/libs/camp/getParts";
 import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";
 import React from "react";
+import getCampForUpdate from "@/libs/admin/getCampForUpdate";
 export default async function HospitalDetailPage({
   params,
 }: {
@@ -23,17 +20,11 @@ export default async function HospitalDetailPage({
     return <BackToHome />;
   }
   const token = session.user.token;
-  const camp = await getCamp(stringToId(params.cid));
-  const baans = await getBaans(camp._id);
-  const remainPartName = await getAllRemainPartName(camp._id, token);
-  const parts = await getParts(camp._id, token);
+  const data=await getCampForUpdate(stringToId(params.cid),token)
   return (
     <>
       <UpdateCampClient
-        camp={camp}
-        baans={baans}
-        parts={parts}
-        remainPartName={remainPartName}
+        data={data}
         token={token}
       />
     </>

@@ -4,15 +4,12 @@ import UpdateBaanServer from "@/components/camp/authPart/UpdateBaanServer";
 import UpdateCampClient from "@/components/camp/authPart/UpdateCampClient";
 import UpdateQuestionClient from "@/components/camp/question/UpdateQuestionClient";
 import WelfareClient from "@/components/camp/authPart/WelfareClient";
-import getAllRemainPartName from "@/libs/admin/getAllRemainPartName";
 import getAllAnswerAndQuestion from "@/libs/camp/getAllAnswerAndQuestion";
 import getAllPlanData from "@/libs/camp/getAllPlanData";
 import getAllQuestion from "@/libs/camp/getAllQuestion";
 import getAllWelfare from "@/libs/camp/getAllWelfare";
-import getBaans from "@/libs/camp/getBaans";
 import getCamp from "@/libs/camp/getCamp";
 import getPart from "@/libs/camp/getPart";
-import getParts from "@/libs/camp/getParts";
 import getPeeCamp from "@/libs/camp/getPeeCamp";
 import getRegisterData from "@/libs/camp/getRegisterData";
 import getAuthSongs from "@/libs/randomthing/getAuthSongs";
@@ -32,6 +29,7 @@ import AllInOneLock from "@/components/utility/AllInOneLock";
 import BackToHome from "@/components/utility/BackToHome";
 import getGroupContainerForAdmin from "@/libs/camp/getGroupContainerForAdmin";
 import SubGroupAdminClient from "@/components/camp/authPart/SubGroupAdminClient";
+import getCampForUpdate from "@/libs/admin/getCampForUpdate";
 export default async function Baan({ params }: { params: { pid: string } }) {
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -51,18 +49,10 @@ export default async function Baan({ params }: { params: { pid: string } }) {
   const outputs: React.ReactNode[] = [];
   let isBoard = false;
   if (user.authPartIds.includes(camp.partBoardId)) {
-    const baans = await getBaans(camp._id);
-    const remainPartName = await getAllRemainPartName(camp._id, token);
-    const parts = await getParts(camp._id, token);
+    const data = await getCampForUpdate(camp._id, token);
     outputs.push(
       <>
-        <UpdateCampClient
-          camp={camp}
-          baans={baans}
-          parts={parts}
-          remainPartName={remainPartName}
-          token={token}
-        />
+        <UpdateCampClient data={data} token={token} />
       </>
     );
     isBoard = true;
@@ -70,11 +60,7 @@ export default async function Baan({ params }: { params: { pid: string } }) {
   if (part.auths.includes("แก้ไขคำถาม")) {
     const questions = await getAllQuestion(token, camp._id);
     outputs.push(
-      <UpdateQuestionClient
-        camp={camp}
-        token={token}
-        questions={questions}
-      />
+      <UpdateQuestionClient camp={camp} token={token} questions={questions} />
     );
   }
   if (part.auths.includes("ตรวจคำตอบข้อเขียน") || isBoard) {

@@ -2,7 +2,6 @@
 import {
   FoodLimit,
   GetFoodForUpdate,
-  UpdateTimeOffsetRaw,
 } from "../../../../interface";
 import { Checkbox, TextField } from "@mui/material";
 import {
@@ -22,11 +21,9 @@ import GetTimeHtml from "@/components/utility/GetTimeHtml";
 import updateFood from "@/libs/randomthing/updateFood";
 import React from "react";
 export default function FoodClient({
-  timeOffset,
   food,
   token,
 }: {
-  timeOffset: UpdateTimeOffsetRaw;
   food: GetFoodForUpdate;
   token: string;
 }) {
@@ -65,7 +62,7 @@ export default function FoodClient({
       <div>
         <div>วันเวลา</div>
         <div>
-          <GetTimeHtml input={food.time} offset={timeOffset} />
+          <GetTimeHtml input={food.time} offset={food.displayOffset} />
         </div>
       </div>
       <form

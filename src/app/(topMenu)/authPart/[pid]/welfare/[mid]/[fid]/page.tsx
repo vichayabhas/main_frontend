@@ -1,7 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import BackToHome from "@/components/utility/BackToHome";
 import FoodClient from "@/components/camp/meal/FoodClient";
-import { getTimeOffsetByToken, stringToId } from "@/components/utility/setup";
+import { stringToId } from "@/components/utility/setup";
 import getFoodForUpdate from "@/libs/randomthing/getFoodForUpdate";
 import { getServerSession } from "next-auth";
 import React from "react";
@@ -16,7 +16,6 @@ export default async function page({
     return <BackToHome />;
   }
   const token = session.user.token;
-  const timeOffset = await getTimeOffsetByToken(token);
-  const food = await getFoodForUpdate(stringToId(params.fid));
-  return <FoodClient timeOffset={timeOffset} food={food} token={token} />;
+  const food = await getFoodForUpdate(stringToId(params.fid),token);
+  return <FoodClient food={food} token={token} />;
 }

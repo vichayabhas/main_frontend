@@ -27,12 +27,10 @@ export default async function HospitalDetailPage({
     return <BackToHome />;
   }
   return (
-    <>
-      <ActionPlanClient
-        actionPlans={actionPlans.data}
-        timeOffset={timeOffset}
-        baseUrl={`camp/${params.cid}/actionPlan`}
-      />
-    </>
+    <ActionPlanClient
+      actionPlans={actionPlans.data}
+      timeOffset={timeOffset}
+      baseUrl={`camp/${params.cid}/actionPlan`}
+    />
   );
 }

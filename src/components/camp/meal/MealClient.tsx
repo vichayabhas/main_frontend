@@ -20,31 +20,16 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import React from "react";
-import {
-  InterFood,
-  InterMeal,
-  UpdateTimeOffsetRaw,
-  RoleCamp,
-  FoodLimit,
-  BasicCamp,
-} from "../../../../interface";
+import { RoleCamp, FoodLimit, GetMealForUpdate } from "../../../../interface";
 
 export default function MealClient({
   params,
-  foods,
-  meal,
-  camp,
+  data: { foods, meal, camp, displayOffset, selectOffset },
   token,
-  displayOffset,
-  selectOffset,
 }: {
   params: { pid: string; mid: string };
-  foods: InterFood[];
-  meal: InterMeal;
-  camp: BasicCamp;
   token: string;
-  selectOffset: UpdateTimeOffsetRaw;
-  displayOffset: UpdateTimeOffsetRaw;
+  data: GetMealForUpdate;
 }) {
   const router = useRouter();
   const [nong, setNong] = React.useState(meal.roles.includes("nong"));
@@ -149,7 +134,7 @@ export default function MealClient({
         </div>
         <div className="flex flex-row justify-end">
           <FinishButton
-            text="สร้างมื้ออาหาร"
+            text="update มื้ออาหาร"
             onClick={() => {
               if (!time) {
                 alert("please select time");
@@ -280,7 +265,7 @@ export default function MealClient({
         </div>
 
         <FinishButton
-          text="bypass"
+          text="create food"
           onClick={() => {
             const lists: FoodLimit[] = [];
             if (อิสลาม) {

@@ -29,29 +29,21 @@ import dayjs, { Dayjs } from "dayjs";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import {
-  BasicBaan,
   BasicCamp,
   BasicPart,
-  MyMap,
   authTypes,
   Id,
+  GetCampForUpdate,
 } from "../../../../interface";
 
 export default function UpdateCampClient({
-  baans,
-  camp: campIn,
-  parts: partIns,
-  remainPartName,
-  token,
+  token,data
 }: {
-  baans: BasicBaan[];
-  camp: BasicCamp;
-  parts: BasicPart[];
-  remainPartName: MyMap[];
+  data:GetCampForUpdate
   token: string;
 }) {
-  const [camp, setCamp] = React.useState(campIn);
-  const [parts, setParts] = React.useState(partIns);
+  const [camp, setCamp] = React.useState(data.camp);
+  const [parts, setParts] = React.useState(data.parts);
   const router = useRouter();
   const [newBaanName, setNewBaanName] = React.useState<string | null>(null);
   const [registerSheetLink, setRegisterSheetLink] = React.useState<
@@ -161,7 +153,7 @@ export default function UpdateCampClient({
   return (
     <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
       <div>บ้าน</div>
-      {baans.map((baan, i) => {
+      {data.baans.map((baan, i) => {
         return (
           <div
             key={i}
@@ -242,7 +234,7 @@ export default function UpdateCampClient({
           }}
         />
         <SelectTemplate
-          mapIn={remainPartName}
+          mapIn={data.remainPartName}
           select={(e: Id) => {
             addPart(e, camp._id, token);
           }}
@@ -758,8 +750,8 @@ export default function UpdateCampClient({
                     camp._id,
                     token
                   );
-                  const newCampData = await getCamp(campIn._id);
-                  const newPartsData = await getParts(campIn._id, token);
+                  const newCampData = await getCamp(data.camp._id);
+                  const newPartsData = await getParts(data.camp._id, token);
                   reset(newCampData, newPartsData);
                   setTimeOut(false);
                 } catch (error) {

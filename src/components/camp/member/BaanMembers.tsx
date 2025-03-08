@@ -2,10 +2,9 @@
 
 import FinishButton from "@/components/utility/FinishButton";
 import { downloadText } from "@/components/utility/setup";
-import { Mode } from "fs";
 import React from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
-import { BasicCamp, BasicBaan, ShowMember } from "../../../../interface";
+import { BasicCamp, BasicBaan, ShowMember, Mode } from "../../../../interface";
 import { useRouter } from "next/navigation";
 
 export default function BaanMembers({

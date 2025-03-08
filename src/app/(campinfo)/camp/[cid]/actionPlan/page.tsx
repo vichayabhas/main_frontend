@@ -7,6 +7,7 @@ import getTimeOffset from "@/libs/user/getTimeOffset";
 import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";
 import React from "react";
+
 export default async function HospitalDetailPage({
   params,
 }: {

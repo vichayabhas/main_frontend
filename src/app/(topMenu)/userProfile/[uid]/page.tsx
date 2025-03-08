@@ -38,7 +38,7 @@ export default async function page({ params }: { params: { uid: string } }) {
         const baan = await getBaan(nongCamp.baanId);
         outs.push({
           campName: camp.campName,
-          role: "น้องค่าย",
+          role: camp.nongCall,
           baan: baan.name,
           size: campMemberCard.size,
         });
@@ -53,7 +53,7 @@ export default async function page({ params }: { params: { uid: string } }) {
         const baan = await getBaan(peeCamp.baanId);
         outs.push({
           campName: camp.campName,
-          role: "พี่บ้าน",
+          role: `พี่${camp.groupName}`,
           baan: baan.name,
           size: campMemberCard.size,
         });
@@ -67,7 +67,7 @@ export default async function page({ params }: { params: { uid: string } }) {
         const camp = await getCamp(petoCamp.campId);
         outs.push({
           campName: camp.campName,
-          role: "พี่ปีโตบ้าน",
+          role: "พี่ปีโต",
           baan: "null",
           size: campMemberCard.size,
         });

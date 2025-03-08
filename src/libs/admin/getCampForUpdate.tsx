@@ -1,12 +1,12 @@
 import { getBackendUrl } from "@/components/utility/setup";
-import { GetFoodForUpdate, Id } from "../../../interface";
+import { GetCampForUpdate, Id } from "../../../interface";
 
-export default async function getFoodForUpdate(
-  foodId: Id,
+export default async function getCampForUpdate(
+  campId: Id,
   token: string
-): Promise<GetFoodForUpdate> {
+): Promise<GetCampForUpdate> {
   const response = await fetch(
-    `${getBackendUrl()}/randomthing/getFoodForUpdate/params/${foodId}`,
+    `${getBackendUrl()}/admin/getCampForUpdate/params/${campId}`,
     {
       cache: "no-store",
       headers: {

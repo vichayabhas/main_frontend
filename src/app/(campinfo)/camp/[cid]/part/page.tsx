@@ -1,4 +1,3 @@
-import getCamp from "@/libs/camp/getCamp";
 import ChoicePartChatClient from "@/components/chat/ChoicePartChatClient";
 import { stringToId } from "@/components/utility/setup";
 import React from "react";
@@ -15,8 +14,8 @@ export default async function PartChoice({
   if (!session) {
     return <BackToHome />;
   }
-  const camp = await getCamp(stringToId(params.cid));
-  const parts = await getParts(camp._id, session.user.token);
+  const campId = stringToId(params.cid);
+  const parts = await getParts(campId, session.user.token);
   return <ChoicePartChatClient parts={parts} />;
   //เอาทุกฝ่ายในค่ายมาให้เลือกให้อ่านแชต
 }
