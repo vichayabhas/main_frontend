@@ -9,20 +9,17 @@ import {
   BasicUser,
   UpdateTimeOffsetRaw,
 } from "../../../interface";
-import AllInOneLock from "../utility/AllInOneLock";
 import FinishButton from "../utility/FinishButton";
 import GetTimeHtml from "../utility/GetTimeHtml";
 import { downloadText, copy } from "../utility/setup";
 
 export default function ShowOwnCampData({
-  token,
   healthIssue,
   campMemberCard,
   user,
   meals,
   displayOffset,
 }: {
-  token: string;
   healthIssue: HeathIssueBody;
   campMemberCard: InterCampMemberCard;
   user: BasicUser;
@@ -40,7 +37,7 @@ export default function ShowOwnCampData({
     filename: `ข้อมูลอาหารของ${user.name}`,
   });
   return (
-    <AllInOneLock token={token}>
+    <div>
       <table ref={ownDataRef}>
         <tr>
           <th>ชื่อเล่น</th>
@@ -99,6 +96,6 @@ export default function ShowOwnCampData({
           ))}
       </table>
       <FinishButton text={downloadText} onClick={mealDownload.onDownload} />
-    </AllInOneLock>
+    </div>
   );
 }

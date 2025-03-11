@@ -1970,6 +1970,9 @@ export interface InterSubGroup {
   _id: Id;
   name: string;
   campMemberCardIds: Id[];
+  isWearing: boolean;
+  spicy: boolean;
+  foodLimit: FoodLimit;
 }
 export interface InterGroupContainer {
   baanId: Id;
@@ -2015,6 +2018,8 @@ export interface GetSubGroup extends InterSubGroup {
 }
 export interface GetGroupContainer extends InterGroupContainer {
   subGroups: GetSubGroup[];
+  peesThatNotInGroup: BasicUser[];
+  nongsThatNotInGroup: BasicUser[];
 }
 export interface RegisterGroup {
   addId: Id | null;

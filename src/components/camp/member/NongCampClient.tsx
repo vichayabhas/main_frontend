@@ -260,14 +260,15 @@ export default function NongCampClient({
         baan={baan}
         timeOffset={displayOffset}
       />
-      <ShowOwnCampData
-        token={token}
-        user={user}
-        campMemberCard={campMemberCard}
-        healthIssue={healthIssue}
-        meals={meals}
-        displayOffset={displayOffset}
-      />
+      <AllInOneLock token={token}>
+        <ShowOwnCampData
+          user={user}
+          campMemberCard={campMemberCard}
+          healthIssue={healthIssue}
+          meals={meals}
+          displayOffset={displayOffset}
+        />
+      </AllInOneLock>
     </>
   );
 }

@@ -180,14 +180,15 @@ export default function PetoCampClient({
         token={token}
         campMemberCardId={campMemberCard._id}
       />
-      <ShowOwnCampData
-        token={token}
-        user={user}
-        campMemberCard={campMemberCard}
-        healthIssue={healthIssue}
-        meals={meals}
-        displayOffset={displayOffset}
-      />
+            <AllInOneLock token={token}>
+              <ShowOwnCampData
+                user={user}
+                campMemberCard={campMemberCard}
+                healthIssue={healthIssue}
+                meals={meals}
+                displayOffset={displayOffset}
+              />
+            </AllInOneLock>
     </>
   );
 }

@@ -16,6 +16,7 @@ import FinishButton from "@/components/utility/FinishButton";
 import {
   downloadText,
   getBackendUrl,
+  peeLookupNong,
   setBoolean,
   setTextToInt,
   setTextToString,
@@ -139,6 +140,7 @@ export default function SubGroupClient({
           <th>check</th>
           {container.canAnybodyCreateSubGroup ? <th>action</th> : null}
           <th>สมาชิก</th>
+          <th>เพิ่มเติม</th>
         </tr>
         {container.subGroups.map((subGroup, i) => {
           const selectValid =
@@ -215,10 +217,27 @@ export default function SubGroupClient({
               <td>
                 <UserNameTable inputs={subGroup.users} />
               </td>
+              <td>
+                {subGroup.campMemberCardIds.includes(campMemberCard._id) ? (
+                  <>
+                    {subGroup.isWearing ? <div>ใส่แพมเพิสทั้งหมด</div> : null}
+                    {subGroup.spicy ? <div>กินเผ็ดไม่ได้ทั้งหมด</div> : null}
+                  </>
+                ) : null}
+              </td>
             </tr>
           );
         })}
       </table>
+      <div>
+        คนที่ยังไม่มีกลุ่ม
+        <UserNameTable
+          inputs={peeLookupNong(
+            container.peesThatNotInGroup,
+            container.nongsThatNotInGroup
+          )}
+        />
+      </div>
       {selectIndexAction == null ? null : (
         <FinishButton
           text="สร้างใหม่"

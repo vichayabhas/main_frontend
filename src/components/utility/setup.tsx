@@ -212,8 +212,7 @@ export function peeLookupNong<P, N>(pees: P[], nongs: N[]): (P | N)[] {
     return nongs;
   }
   if (pees.length == 1) {
-    const outs: (P | N)[] = pees;
-    nongs.forEach((nong) => outs.push(nong));
+    const outs: (P | N)[] = [pees[0], ...nongs];
     return outs;
   }
   const mp = pees.length;
