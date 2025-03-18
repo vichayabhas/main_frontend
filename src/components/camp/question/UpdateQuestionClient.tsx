@@ -30,13 +30,14 @@ import FinishButton from "@/components/utility/FinishButton";
 import { ChoiceQuestions, TextQuestions } from "./updateQuestionClass";
 import { io } from "socket.io-client";
 import getAllQuestion from "@/libs/camp/getAllQuestion";
+import { RealTimeCamp } from "../authPart/UpdateCampClient";
 const socket = io(getBackendUrl());
 interface QuestionReady {
   element: React.ReactNode;
   order: number;
 }
 export default function UpdateQuestionClient({
-  camp,
+  camp: campInput,
   questions,
   token,
 }: {
@@ -44,6 +45,7 @@ export default function UpdateQuestionClient({
   questions: GetAllQuestion;
   token: string;
 }) {
+  const [camp, setCamp] = React.useState(campInput);
   const room = camp._id.toString();
   type EditMode = "normal" | "edit" | "delete" | "wait";
   const actionSocket = new SocketReady<QusetionType>(socket, "questionAction");
@@ -63,6 +65,7 @@ export default function UpdateQuestionClient({
     socket,
     "updateQuestion"
   );
+  const realTimeCamp = new RealTimeCamp(camp._id, socket);
   const [editMode, setEditMode] = React.useState<EditMode>("normal");
   const [showCorrectAnswerAndScore, setShowCorrectAnswerAndScore] =
     React.useState(camp.showCorrectAnswerAndScore);
@@ -304,12 +307,14 @@ export default function UpdateQuestionClient({
       texts.replace(newData.texts);
       choices.replace(newData.choices);
     });
+    realTimeCamp.listen(setCamp);
     return () => {
       choiceSocket.disconect();
       textSocket.disconect();
       actionSocket.disconect();
       deleteSocket.disconect();
       updateSocket.disconect();
+      realTimeCamp.disconect();
     };
   });
   switch (editMode) {

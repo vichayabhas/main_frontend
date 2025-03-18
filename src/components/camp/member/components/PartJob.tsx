@@ -7,15 +7,15 @@ import {
   Id,
   JobGenderRequie,
   jobGenderRequies,
-} from "../../../interface";
+} from "../../../../../interface";
 import { Checkbox, MenuItem, Select, TextField } from "@mui/material";
 import {
   AddRemoveHigh,
   downloadText,
   setTextToInt,
   setTextToString,
-} from "../utility/setup";
-import UserNameTable from "../utility/UserNameTable";
+} from "../../../utility/setup";
+import UserNameTable from "../../../utility/UserNameTable";
 import createJob from "@/libs/camp/createJob";
 import updateJobAssign from "@/libs/camp/updateJobAssign";
 import registerJob from "@/libs/camp/registerJob";

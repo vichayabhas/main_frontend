@@ -1,10 +1,21 @@
-import { getBackendUrl } from "@/components/utility/setup";
-import { UpdateAllPlanData } from "../../../interface";
-
+import { getBackendUrl, SocketReady } from "@/components/utility/setup";
+import {
+  PlanTrigger,
+  PlanUpdateOut,
+  UpdateAllPlanData,
+  UpdateBaanOut,
+  UpdatePartOut,
+} from "../../../interface";
+import { io } from "socket.io-client";
+const socket = io(getBackendUrl());
 export default async function planUpdateCamp(
   input: UpdateAllPlanData,
-  token: string
+  token: string,
+  socketInput: SocketReady<PlanTrigger>,
+  room: string
 ) {
+  const baanSocket = new SocketReady<UpdateBaanOut>(socket, "updateBaan");
+  const planSocket = new SocketReady<UpdatePartOut>(socket, "updatePart");
   const response = await fetch(`${getBackendUrl()}/camp/planUpdateCamp/`, {
     method: "PUT",
     cache: "no-store",
@@ -14,5 +25,12 @@ export default async function planUpdateCamp(
     },
     body: JSON.stringify(input),
   });
-  return await response.json();
+  const data: PlanUpdateOut = await response.json();
+  socketInput.trigger(data.planTrigger, room);
+  for (const baanTrigger of data.baanTriggers) {
+    baanSocket.trigger(baanTrigger, baanTrigger.baan._id.toString());
+  }
+  for (const partTrigger of data.partTriggers) {
+    planSocket.trigger(partTrigger, partTrigger._id.toString());
+  }
 }

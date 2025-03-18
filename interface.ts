@@ -193,6 +193,7 @@ export interface InterCampBack {
   jobIds: Id[];
   canReadTimeOnMirror: boolean;
   nongCall: string;
+  boyZoneLadyZoneState: BoyZoneLadyZoneState;
   //public
 }
 export interface InterCampStyle {
@@ -567,6 +568,7 @@ export interface InterCampFront {
   jobIds: Id[];
   canReadTimeOnMirror: boolean;
   nongCall: string;
+  boyZoneLadyZoneState: BoyZoneLadyZoneState;
   //public
 }
 export interface InterPartFront {
@@ -979,14 +981,13 @@ export type GetChat =
   | "getPartPeebaanChat";
 export interface AllPlaceData {
   allPlace: Map<string, InterPlace[]>;
-  allBuildings: Map<Id, InterBuilding>;
+  allBuildings: Map<Id, string>;
   //public
 }
 export interface ChatReady {
   chats: ShowChat[];
   timeOffset: InterTimeOffset;
   mode: Mode;
-  groupName: string;
   sendType: {
     id: Id;
     roomType: TypeChat;
@@ -995,9 +996,10 @@ export interface ChatReady {
   roomName: string;
   userId: Id;
   subscribe: string;
-  nongCall: string;
+  camp: BasicCamp;
   //private
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export const foodLimits = [
   "อิสลาม",
   "มังสวิรัติ",
@@ -1014,8 +1016,6 @@ export interface HeathIssuePack {
 export interface CampWelfarePack {
   baanWelfares: WelfarePack[];
   partWelfares: WelfarePack[];
-  isHavePeto: boolean;
-  groupName: string;
   campWelfare: WelfarePack;
   baanHaveBottles: CampNumberData[];
   partHaveBottles: CampNumberData[];
@@ -1036,8 +1036,7 @@ export interface CampWelfarePack {
   partIsWearings: CampNumberData[];
   campWearingNumber: CampNumberData;
   meals: InterMeal[];
-  _id: Id;
-  nongCall: string;
+  camp: BasicCamp;
   //public
 }
 export interface WelfarePack {
@@ -1051,12 +1050,10 @@ export interface WelfarePack {
   //public
 }
 export interface GetBaansForPlan {
-  name: string;
-  fullName: string;
   boy: InterPlace | null;
   girl: InterPlace | null;
   normal: InterPlace | null;
-  _id: Id;
+  baan: BasicBaan;
   //public
 }
 export interface GetPartForPlan {
@@ -1066,22 +1063,17 @@ export interface GetPartForPlan {
   //public
 }
 export interface GetAllPlanData {
-  name: string;
   baanDatas: GetBaansForPlan[];
   partDatas: GetPartForPlan[];
-  _id: Id;
-  groupName: string;
-  isOverNightCamp: boolean;
   baanBoySleeps: CampNumberData[];
   baanGirlSleeps: CampNumberData[];
   partBoySleeps: CampNumberData[];
   partGirlSleeps: CampNumberData[];
   boySleepNumber: CampNumberData;
   girlSleepNumber: CampNumberData;
-  isHavePeto: boolean;
   baanSleepDatas: CampSleepDataContainer[];
   partSleepDatas: CampSleepDataContainer[];
-  nongCall: string;
+  camp: BasicCamp;
   //public
 }
 export interface UpdateBaansForPlan {
@@ -1100,6 +1092,7 @@ export interface UpdateAllPlanData {
   baanDatas: UpdateBaansForPlan[];
   partDatas: UpdatePartsForPlan[];
   _id: Id;
+  boyZoneLadyZoneState: BoyZoneLadyZoneState;
   //public
 }
 export interface CampNumberData {
@@ -1270,9 +1263,7 @@ export interface GetAllAnswerAndQuestion {
   nongPaidAnswers: UserAndAllQuestionPack[];
   nongInterviewAnswers: UserAndAllQuestionPack[];
   success: boolean;
-  groupName: string;
-  canScoring: boolean;
-  nongCall: string;
+  camp: BasicCamp;
   //public
 }
 export interface ScoreTextQuestion {
@@ -1382,9 +1373,8 @@ export interface ReceiveAirQuality {
 export interface CampHealthIssuePack {
   baanHealthIssuePacks: ShowHealthIssuePack[];
   partHealthIssuePacks: ShowHealthIssuePack[];
-  isHavePeto: boolean;
-  groupName: string;
   campHealthIssuePack: ShowHealthIssuePack;
+  camp: BasicCamp;
   //public
 }
 export interface ShowHealthIssuePack {
@@ -1564,11 +1554,11 @@ export interface AuthSongsCamp {
 }
 export interface ShowCampSongReady {
   _id: Id;
-  baanName: string;
   songIds: Id[];
-  groupName: string;
   userLikeSongIds: Id[];
   showCampSongs: ShowCampSong[];
+  camp: BasicCamp;
+  baan: BasicBaan;
   //private
 }
 export interface BasicUser {
@@ -1647,6 +1637,10 @@ export interface BasicCamp {
   lockChangeQuestion: boolean;
   canReadTimeOnMirror: boolean;
   nongCall: string;
+  boyZoneLadyZoneState: BoyZoneLadyZoneState;
+  nongCampMemberCardIds: Id[];
+  peeCampMemberCardIds: Id[];
+  petoCampMemberCardIds: Id[];
   //public
 }
 export interface BasicPart {
@@ -1927,6 +1921,17 @@ export const socketEvents = [
   "registerSubGroup",
   "updateSubGroup",
   "updateGroupByAnyone",
+  "updatePlanData",
+  "createFood" /*room=mealId*/,
+  "updateFood" /*room=foodId*/,
+  "createMeal" /*room=campId*/,
+  "updateMeal" /*room=mealId*/,
+  "updateBaan",
+  "updateCamp",
+  "updatePart",
+  "updateImageAndDescruptions",
+  "triggerMeals",
+  "realTimeAuthPart",
 ] as const;
 export type SocketEvent = (typeof socketEvents)[number];
 export type QusetionType =
@@ -2068,4 +2073,66 @@ export interface OwnRegisterCampData {
   role: string;
   baan: string;
   size: Size;
+}
+export const boyZoneLadyZoneStates = [
+  "ปิดสมบูรณ์",
+  "เพศตรงข้ามออกจากโซน",
+  "ตรวจตรา",
+  "พร้อมอาบน้ำ",
+  "เปิดสมบูรณ์",
+  "ปิดแต่ยังเก็บของยังไม่หมด",
+] as const;
+export type BoyZoneLadyZoneState = (typeof boyZoneLadyZoneStates)[number];
+export const boyZoneLadyZoneStateForNongs = boyZoneLadyZoneStates.filter(
+  (v) => v == "เปิดสมบูรณ์" || v == "ปิดสมบูรณ์" || v == "เพศตรงข้ามออกจากโซน"
+);
+export type BoyZoneLadyZoneStateForNong =
+  (typeof boyZoneLadyZoneStateForNongs)[number];
+
+export interface TriggerCampMemberCard {
+  meals: GetMeals[];
+  campMemberCardId: Id;
+}
+export interface CreateMealOut {
+  meals: InterMeal[];
+  triggers: TriggerCampMemberCard[];
+}
+export interface UpdateMealOut {
+  meal: InterMeal;
+  triggers: TriggerCampMemberCard[];
+}
+export interface CreateFoodOut {
+  foods: InterFood[];
+  triggers: TriggerCampMemberCard[];
+}
+export interface UpdateFoodOut {
+  food: InterFood;
+  triggers: TriggerCampMemberCard[];
+}
+export interface UpdateBaanOut {
+  baan: BasicBaan;
+  boy: InterPlace | null;
+  girl: InterPlace | null;
+  normal: InterPlace | null;
+}
+export interface PlanUpdateOut {
+  baanTriggers: UpdateBaanOut[];
+  planTrigger: PlanTrigger;
+  partTriggers: UpdatePartOut[];
+}
+export interface PlanTrigger {
+  baanDatas: GetBaansForPlan[];
+  partDatas: GetPartForPlan[];
+  boyZoneLadyZoneState: BoyZoneLadyZoneState;
+}
+export interface UpdatePartOut {
+  place: InterPlace | null;
+  _id: Id;
+}
+export interface UpdateCampOut {
+  camp: BasicCamp;
+  parts: BasicPart[];
+}
+export interface GetAllPlaceDataSetup extends InterBuilding {
+  places: InterPlace[];
 }

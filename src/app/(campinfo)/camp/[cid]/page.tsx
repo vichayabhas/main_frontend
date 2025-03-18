@@ -43,7 +43,13 @@ export default async function HospitalDetailPage({
     switch (campState.state) {
       case "nong": {
         const data = await getNongCampData(campState.camp._id, token);
-        return <NongCampClient token={token} data={data} />;
+        return (
+          <NongCampClient
+            data={data}
+            token={token}
+            allPlaceData={allPlaceData}
+          />
+        );
       }
       case "pee": {
         const data = await getPeeCampData(campState.camp._id, token);

@@ -1,46 +1,75 @@
 "use client";
 
-import { GetNongData } from "../../../../interface";
+import { AllPlaceData, GetNongData } from "../../../../interface";
 
 import ImagesFromUrl from "../../utility/ImagesFromUrl";
-import ShowOwnCampData from "../ShowOwnCampData";
+import ShowOwnCampData from "./components/ShowOwnCampData";
 import chatStyle from "../../chat/chat.module.css";
 import React from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
-import { downloadText, setBoolean } from "../../utility/setup";
+import { downloadText, getBackendUrl, setBoolean } from "../../utility/setup";
 import TopMenuItem from "../../randomthing/TopMenuItem";
 import styles from "../../randomthing/topmenu.module.css";
 import AllInOneLock from "@/components/utility/AllInOneLock";
 import FinishButton from "@/components/utility/FinishButton";
-import BaanMembers from "./BaanMembers";
-import MirrorClient from "./MirrorClient";
+import MirrorClient from "./components/MirrorClient";
 import { Checkbox } from "@mui/material";
-import SubGroupClient from "./SubGroupClient";
+import SubGroupClient from "./components/SubGroupClient";
+import BaanMembers from "./components/BaanMembers";
+import { RealTimeFoodUpdate } from "../meal/setup";
+import { io } from "socket.io-client";
+import { RealTimeBaan } from "../authPart/UpdateBaanClient";
+import { RealTimeCamp } from "../authPart/UpdateCampClient";
 
 export default function NongCampClient({
-  data: {
+  data,
+  token,
+  allPlaceData,
+}: {
+  token: string;
+  data: GetNongData;
+  allPlaceData: AllPlaceData;
+}) {
+  const {
     user,
-    camp,
     campMemberCard,
-    baan,
-    normal,
-    boy,
-    girl,
     pees,
     nongs,
-    meals,
     healthIssue,
     displayOffset,
     mirrorData,
     defaultGroup,
     groups,
-  },
-  token,
-}: {
-  token: string;
-  data: GetNongData;
-}) {
+  } = data;
   const ref = React.useRef(null);
+  const [meals, setMeals] = React.useState(data.meals);
+  const [baan, setBaan] = React.useState(data.baan);
+  const [boy, setBoy] = React.useState(data.boy);
+  const [girl, setGirl] = React.useState(data.girl);
+  const [normal, setNormal] = React.useState(data.normal);
+  const [camp, setCamp] = React.useState(data.camp);
+  const socket = io(getBackendUrl());
+  const realTimeFoodUpdate = new RealTimeFoodUpdate(campMemberCard._id, socket);
+  const realTimeBaan = new RealTimeBaan(
+    baan._id,
+    socket,
+    setBoy,
+    setGirl,
+    setNormal,
+    setBaan,
+    allPlaceData
+  );
+  const realTimeCamp = new RealTimeCamp(camp._id, socket);
+  React.useEffect(() => {
+    realTimeFoodUpdate.listen(setMeals);
+    realTimeBaan.listen();
+    realTimeCamp.listen(setCamp);
+    return () => {
+      realTimeFoodUpdate.disconect();
+      realTimeBaan.disconect();
+      realTimeCamp.disconect();
+    };
+  });
   const download = useDownloadExcel({
     currentTableRef: ref.current,
     filename: `ห้อง${camp.groupName} ${

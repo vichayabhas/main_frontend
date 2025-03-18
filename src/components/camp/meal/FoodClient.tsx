@@ -1,16 +1,15 @@
 "use client";
-import {
-  FoodLimit,
-  GetFoodForUpdate,
-} from "../../../../interface";
+import { FoodLimit, GetFoodForUpdate, InterFood } from "../../../../interface";
 import { Checkbox, TextField } from "@mui/material";
 import {
   downloadText,
+  getBackendUrl,
   peeLookupNong,
   setBoolean,
   setSwop,
   setTextToString,
   SetUpDownPack,
+  SocketReady,
 } from "../../utility/setup";
 
 import deleteFood from "@/libs/randomthing/deleteFood";
@@ -20,6 +19,10 @@ import FinishButton from "@/components/utility/FinishButton";
 import GetTimeHtml from "@/components/utility/GetTimeHtml";
 import updateFood from "@/libs/randomthing/updateFood";
 import React from "react";
+import { io } from "socket.io-client";
+import { RealTimeCamp } from "../authPart/UpdateCampClient";
+
+const socket = io(getBackendUrl());
 export default function FoodClient({
   food,
   token,
@@ -27,6 +30,8 @@ export default function FoodClient({
   food: GetFoodForUpdate;
   token: string;
 }) {
+  const updateFoodSocket = new SocketReady<InterFood>(socket, "updateFood");
+  const room = food._id.toString();
   const [name, setName] = React.useState(food.name);
   const [isSpicy, setIsSpicy] = React.useState(food.isSpicy);
   const {
@@ -52,10 +57,29 @@ export default function FoodClient({
   const [petoCampMemberCardIds, setPetoCampMemberCardIds] = React.useState(
     food.petoCampMemberCardIds
   );
+  const [camp, setCamp] = React.useState(food.camp);
+  const realTimeCamp = new RealTimeCamp(camp._id, socket);
+  React.useEffect(() => {
+    updateFoodSocket.listen(room, (data) => {
+      setListPriority(data.listPriority);
+      setIsWhiteList(data.isWhiteList);
+      setมังสวิรัติ(data.lists.includes("มังสวิรัติ"));
+      setเจ(data.lists.includes("เจ"));
+      setอิสลาม(data.lists.includes("อิสลาม"));
+      setNongCampMemberCardIds(data.nongCampMemberCardIds);
+      setPeeCampMemberCardIds(data.peeCampMemberCardIds);
+      setPetoCampMemberCardIds(data.petoCampMemberCardIds);
+    });
+    realTimeCamp.listen(setCamp);
+    return () => {
+      updateFoodSocket.disconect();
+      realTimeCamp.disconect();
+    };
+  });
   const ref = React.useRef(null);
   const download = useDownloadExcel({
     currentTableRef: ref.current,
-    filename: `ข้อมูลแพ้อาหาร${food.camp.campName}`,
+    filename: `ข้อมูลแพ้อาหาร${camp.campName}`,
   });
   return (
     <div>
@@ -65,7 +89,7 @@ export default function FoodClient({
           <GetTimeHtml input={food.time} offset={food.displayOffset} />
         </div>
       </div>
-      <form
+      <div
         className="w-[70%] items-center p-10 rounded-3xl"
         style={{
           backgroundColor: "#961A1D",
@@ -173,7 +197,7 @@ export default function FoodClient({
             checked={เจ}
           />
         </div>
-      </form>
+      </div>
       <table ref={ref}>
         <tr>
           <th>ชื่อเล่น</th>
@@ -187,8 +211,7 @@ export default function FoodClient({
         </tr>
         {peeLookupNong(
           peeLookupNong(
-            food.camp.memberStructure ==
-              "nong->highSchool,pee->1year,peto->2upYear"
+            camp.memberStructure == "nong->highSchool,pee->1year,peto->2upYear"
               ? food.petoHealths.map((peto, i) => (
                   <tr key={i}>
                     <td>{peto.user.nickname}</td>
@@ -217,7 +240,7 @@ export default function FoodClient({
                 <td>{pee.user.nickname}</td>
                 <td>{pee.user.name}</td>
                 <td>{pee.user.lastname}</td>
-                <td>พี่{food.camp.groupName}</td>
+                <td>พี่{camp.groupName}</td>
                 <td>{pee.heathIssue.food}</td>
                 <td>{pee.heathIssue.foodConcern}</td>
                 <td>{pee.heathIssue.spicy ? "ไม่ได้" : "ได้"}</td>
@@ -240,7 +263,7 @@ export default function FoodClient({
               <td>{nong.user.nickname}</td>
               <td>{nong.user.name}</td>
               <td>{nong.user.lastname}</td>
-              <td>{food.camp.nongCall}</td>
+              <td>{camp.nongCall}</td>
               <td>{nong.heathIssue.food}</td>
               <td>{nong.heathIssue.foodConcern}</td>
               <td>{nong.heathIssue.spicy ? "ไม่ได้" : "ได้"}</td>
@@ -285,7 +308,10 @@ export default function FoodClient({
               isWhiteList,
               _id: food._id,
             },
-            token
+            token,
+            updateFoodSocket,
+            room,
+            socket
           );
         }}
       />

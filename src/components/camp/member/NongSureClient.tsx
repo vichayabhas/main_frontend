@@ -6,13 +6,25 @@ import { CampState } from "../../../../interface";
 import React from "react";
 import ImagesFromUrl from "../../utility/ImagesFromUrl";
 import FinishButton from "@/components/utility/FinishButton";
+import { RealTimeCamp } from "../authPart/UpdateCampClient";
+import { io } from "socket.io-client";
+import { getBackendUrl } from "@/components/utility/setup";
+const socket = io(getBackendUrl());
 export default function NongSureClient({
   token,
-  campState: { camp, link },
+  campState,
 }: {
   token: string;
   campState: CampState;
 }) {
+  const [camp, setCamp] = React.useState(campState.camp);
+  const realTimeCamp = new RealTimeCamp(camp._id, socket);
+  React.useEffect(() => {
+    realTimeCamp.listen(setCamp);
+    return () => {
+      realTimeCamp.disconect();
+    };
+  });
   switch (camp.registerModel) {
     case "noPaid": {
       return (
@@ -31,7 +43,7 @@ export default function NongSureClient({
       return (
         <div>
           <ImagesFromUrl urls={camp.pictureUrls} />
-          <Link href={link}>Link</Link>
+          <Link href={campState.link}>Link</Link>
           <FinishButton
             text="ยืนยันที่จะเข้าค่าย+จ่ายตัง"
             onClick={() => {
@@ -45,7 +57,7 @@ export default function NongSureClient({
       return (
         <div>
           <ImagesFromUrl urls={camp.pictureUrls} />
-          <Link href={link}>Link</Link>
+          <Link href={campState.link}>Link</Link>
           <FinishButton
             text="ยืนยันที่จะเข้าค่าย+จ่ายตัง"
             onClick={() => {

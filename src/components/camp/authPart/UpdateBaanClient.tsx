@@ -13,6 +13,8 @@ import {
   peeLookupNong,
   downloadText,
   setTextToInt,
+  getBackendUrl,
+  SocketReady,
 } from "@/components/utility/setup";
 import updateBaan from "@/libs/admin/updateBaan";
 import { TextField, Checkbox, Select, MenuItem } from "@mui/material";
@@ -25,8 +27,76 @@ import {
   JobGenderRequie,
   Id,
   jobGenderRequies,
+  UpdateBaanOut,
+  BasicBaan,
+  ShowPlace,
 } from "../../../../interface";
-import BaanMembers from "../member/BaanMembers";
+import BaanMembers from "../member/components/BaanMembers";
+import { io, Socket } from "socket.io-client";
+import { getShowPlaceFromInterPlace } from "@/components/randomthing/placeSetUp";
+const socket = io(getBackendUrl());
+
+export class RealTimeBaan {
+  private room: string;
+  private socket: SocketReady<UpdateBaanOut>;
+  private setBoy: React.Dispatch<React.SetStateAction<ShowPlace | null>>;
+  private setGirl: React.Dispatch<React.SetStateAction<ShowPlace | null>>;
+  private setNormal: React.Dispatch<React.SetStateAction<ShowPlace | null>>;
+  private setBaan: React.Dispatch<React.SetStateAction<BasicBaan>>;
+  private allPlaceData: AllPlaceData;
+  constructor(
+    baanId: Id,
+    socket: Socket,
+    setBoy: React.Dispatch<React.SetStateAction<ShowPlace | null>>,
+    setGirl: React.Dispatch<React.SetStateAction<ShowPlace | null>>,
+    setNormal: React.Dispatch<React.SetStateAction<ShowPlace | null>>,
+    setBaan: React.Dispatch<React.SetStateAction<BasicBaan>>,
+    allPlaceData: AllPlaceData
+  ) {
+    this.room = baanId.toString();
+    this.socket = new SocketReady<UpdateBaanOut>(socket, "updateBaan");
+    this.setBoy = setBoy;
+    this.setGirl = setGirl;
+    this.setNormal = setNormal;
+    this.setBaan = setBaan;
+    this.allPlaceData = allPlaceData;
+  }
+  public listen() {
+    this.socket.listen(this.room, (event) => {
+      this.setBaan(event.baan);
+      this.setBoy(getShowPlaceFromInterPlace(event.boy, this.allPlaceData));
+      this.setGirl(getShowPlaceFromInterPlace(event.girl, this.allPlaceData));
+      this.setNormal(
+        getShowPlaceFromInterPlace(event.normal, this.allPlaceData)
+      );
+    });
+  }
+  public disconect() {
+    this.socket.disconect();
+  }
+}
+export class RealTimeBasicBaan {
+  private room: string;
+  private socket: SocketReady<UpdateBaanOut>;
+  private setBaan: React.Dispatch<React.SetStateAction<BasicBaan>>;
+  constructor(
+    baanId: Id,
+    socket: Socket,
+    setBaan: React.Dispatch<React.SetStateAction<BasicBaan>>
+  ) {
+    this.room = baanId.toString();
+    this.socket = new SocketReady<UpdateBaanOut>(socket, "updateBaan");
+    this.setBaan = setBaan;
+  }
+  public listen() {
+    this.socket.listen(this.room, (event) => {
+      this.setBaan(event.baan);
+    });
+  }
+  public disconect() {
+    this.socket.disconect();
+  }
+}
 export default function UpdateBaanClient({
   coopData,
   allPlaceData,
@@ -63,6 +133,25 @@ export default function UpdateBaanClient({
   const [canWhriteMirror, setCanWhriteMirror] = React.useState(
     coopData.baan.canWhriteMirror
   );
+  const updateBaanSocket = new SocketReady<UpdateBaanOut>(socket, "updateBaan");
+  const room = coopData.baan._id.toString();
+  React.useEffect(() => {
+    updateBaanSocket.listen(room, (data) => {
+      setBoy(data.boy);
+      setGirl(data.girl);
+      setNormal(data.normal);
+      setName(data.baan.name);
+      setFullName(data.baan.fullName);
+      setLink(data.baan.link);
+      setNongSendMessage(data.baan.nongSendMessage);
+      setCanReadMirror(data.baan.canReadMirror);
+      setCanWhriteMirror(data.baan.canWhriteMirror);
+    });
+    return () => {
+      updateBaanSocket.disconect();
+    };
+  });
+
   if (!session) {
     return <BackToHome />;
   }
@@ -80,7 +169,7 @@ export default function UpdateBaanClient({
     <>
       <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
         <div className="text-4xl font-medium">Update บ้าน </div>
-        <form className="w-[30%] items-center bg-slate-600 p-10 rounded-3xl shadow-[25px_25px_40px_-10px_rgba(0,0,0,0.7)]">
+        <div className="w-[30%] items-center bg-slate-600 p-10 rounded-3xl shadow-[25px_25px_40px_-10px_rgba(0,0,0,0.7)]">
           <div className="flex flex-row items-center my-5">
             <label className="w-2/5 text-2xl text-slate-200"> ชื่อย่อ</label>
             <TextField
@@ -196,7 +285,9 @@ export default function UpdateBaanClient({
                       canReadMirror,
                       canWhriteMirror,
                     },
-                    session.user.token
+                    session.user.token,
+                    updateBaanSocket,
+                    room
                   );
                 } catch (error) {
                   console.log(error);
@@ -206,7 +297,7 @@ export default function UpdateBaanClient({
               update all
             </button>
           </div>
-        </form>
+        </div>
         <div className="flex flex-row items-center my-5">
           <label className="w-2/5 text-2xl text-white">ดูข้อมูลขั้นสูง</label>
           <Checkbox

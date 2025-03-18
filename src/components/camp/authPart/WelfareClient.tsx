@@ -2,6 +2,7 @@
 
 import {
   CampWelfarePack,
+  InterMeal,
   InterTimeOffset,
   RoleCamp,
   UpdateTimeOffsetRaw,
@@ -12,8 +13,10 @@ import React from "react";
 import {
   copy,
   downloadText,
+  getBackendUrl,
   selectTimeToSystem,
   setBoolean,
+  SocketReady,
 } from "../../utility/setup";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
@@ -23,6 +26,9 @@ import createMeal from "@/libs/randomthing/createMeal";
 import { useDownloadExcel } from "react-export-table-to-excel";
 import FinishButton from "@/components/utility/FinishButton";
 import GetTimeHtml from "@/components/utility/GetTimeHtml";
+import { io } from "socket.io-client";
+import { RealTimeCamp } from "./UpdateCampClient";
+const socket = io(getBackendUrl());
 export default function WelfareClient({
   welfare,
   displayOffset,
@@ -36,6 +42,10 @@ export default function WelfareClient({
   token: string;
   selectOffset: InterTimeOffset;
 }) {
+  const createMealSocket = new SocketReady<InterMeal[]>(
+    io(getBackendUrl()),
+    "createMeal"
+  );
   const welfareModes = [
     "ดูเฉพาะขนาดเสื้อ",
     "ดูทั้งหมด",
@@ -45,22 +55,37 @@ export default function WelfareClient({
   type WelfareMode = (typeof welfareModes)[number];
   const [welfareMode, setWelfareMode] =
     React.useState<WelfareMode>("ดูทั้งหมด");
+  const [camp, setCamp] = React.useState(welfare.camp);
   const [nong, setNong] = React.useState(true);
   const [pee, setPee] = React.useState(true);
-  const [peto, setPeto] = React.useState(welfare.isHavePeto);
+  const [peto, setPeto] = React.useState(
+    camp.memberStructure == "nong->highSchool,pee->1year,peto->2upYear"
+  );
   const [time, setTime] = React.useState<Date | null>(null);
+  const [meals, setMeals] = React.useState(welfare.meals);
+  const room = camp._id.toString();
   const showPart =
-    welfare.isHavePeto || welfareMode != "ซ่อนปัญหาสุขภาพพี่บ้านในฝ่าย";
+    camp.memberStructure == "nong->highSchool,pee->1year,peto->2upYear" ||
+    welfareMode != "ซ่อนปัญหาสุขภาพพี่บ้านในฝ่าย";
   const router = useRouter();
   const sizeRef = React.useRef(null);
   const foodRef = React.useRef(null);
   const sizeDownload = useDownloadExcel({
     currentTableRef: sizeRef.current,
-    filename: `ตารางขนาดเสื้อของค่าย${welfare.campWelfare.name}`,
+    filename: `ตารางขนาดเสื้อของค่าย${camp.campName}`,
   });
   const foodDownload = useDownloadExcel({
     currentTableRef: foodRef.current,
-    filename: `ข้อมูลแพ้อาหารของค่าย${welfare.campWelfare.name}`,
+    filename: `ข้อมูลแพ้อาหารของค่าย${camp.campName}`,
+  });
+  const realTimeCamp = new RealTimeCamp(camp._id, socket);
+  React.useEffect(() => {
+    createMealSocket.listen(room, setMeals);
+    realTimeCamp.listen(setCamp);
+    return () => {
+      createMealSocket.disconect();
+      realTimeCamp.disconect();
+    };
   });
   return (
     <>
@@ -86,19 +111,20 @@ export default function WelfareClient({
       >
         <tr>
           <th>กลุ่ม</th>
-          <th>น้อง S</th>
-          <th>น้อง M</th>
-          <th>น้อง L</th>
-          <th>น้อง XL</th>
-          <th>น้อง XXL</th>
-          <th>น้อง 3XL</th>
-          <th>พี่{welfare.groupName} S</th>
-          <th>พี่{welfare.groupName} M</th>
-          <th>พี่{welfare.groupName} L</th>
-          <th>พี่{welfare.groupName} XL</th>
-          <th>พี่{welfare.groupName} XXL</th>
-          <th>พี่{welfare.groupName} 3XL</th>
-          {welfare.isHavePeto ? (
+          <th>{camp.nongCall} S</th>
+          <th>{camp.nongCall} M</th>
+          <th>{camp.nongCall} L</th>
+          <th>{camp.nongCall} XL</th>
+          <th>{camp.nongCall} XXL</th>
+          <th>{camp.nongCall} 3XL</th>
+          <th>พี่{camp.groupName} S</th>
+          <th>พี่{camp.groupName} M</th>
+          <th>พี่{camp.groupName} L</th>
+          <th>พี่{camp.groupName} XL</th>
+          <th>พี่{camp.groupName} XXL</th>
+          <th>พี่{camp.groupName} 3XL</th>
+          {camp.memberStructure ==
+          "nong->highSchool,pee->1year,peto->2upYear" ? (
             <>
               <th>ปีโต S</th>
               <th>ปีโต M</th>
@@ -110,7 +136,7 @@ export default function WelfareClient({
           ) : null}
         </tr>
         <tr>
-          <td>{welfare.campWelfare.name}</td>
+          <td>{camp.campName}</td>
           <td>{welfare.campWelfare.nongSize.sizeS}</td>
           <td>{welfare.campWelfare.nongSize.sizeM}</td>
           <td>{welfare.campWelfare.nongSize.sizeL}</td>
@@ -123,7 +149,8 @@ export default function WelfareClient({
           <td>{welfare.campWelfare.peeSize.sizeXL}</td>
           <td>{welfare.campWelfare.peeSize.sizeXXL}</td>
           <td>{welfare.campWelfare.peeSize.size3XL}</td>
-          {welfare.isHavePeto ? (
+          {camp.memberStructure ==
+          "nong->highSchool,pee->1year,peto->2upYear" ? (
             <>
               <td>{welfare.campWelfare.petoSize.sizeS}</td>
               <td>{welfare.campWelfare.petoSize.sizeM}</td>
@@ -149,7 +176,8 @@ export default function WelfareClient({
             <td>{data.peeSize.sizeXL}</td>
             <td>{data.peeSize.sizeXXL}</td>
             <td>{data.peeSize.size3XL}</td>
-            {welfare.isHavePeto ? (
+            {camp.memberStructure ==
+            "nong->highSchool,pee->1year,peto->2upYear" ? (
               <>
                 <td>{data.petoSize.sizeS}</td>
                 <td>{data.petoSize.sizeM}</td>
@@ -176,7 +204,8 @@ export default function WelfareClient({
             <td>{data.peeSize.sizeXL}</td>
             <td>{data.peeSize.sizeXXL}</td>
             <td>{data.peeSize.size3XL}</td>
-            {welfare.isHavePeto ? (
+            {camp.memberStructure ==
+            "nong->highSchool,pee->1year,peto->2upYear" ? (
               <>
                 <td>{data.petoSize.sizeS}</td>
                 <td>{data.petoSize.sizeM}</td>
@@ -213,7 +242,7 @@ export default function WelfareClient({
                     <td>{nong.user.name}</td>
                     <td>{nong.user.lastname}</td>
                     <td>{baan.name}</td>
-                    <td>{welfare.nongCall}</td>
+                    <td>{camp.nongCall}</td>
                     <td>{nong.heathIssue.food}</td>
                     <td>{nong.heathIssue.foodConcern}</td>
                     <td>{nong.heathIssue.spicy ? "ไม่ได้" : "ได้"}</td>
@@ -228,7 +257,7 @@ export default function WelfareClient({
                     <td>{pee.user.name}</td>
                     <td>{pee.user.lastname}</td>
                     <td>{baan.name}</td>
-                    <td>พี่{welfare.groupName}</td>
+                    <td>พี่{camp.groupName}</td>
                     <td>{pee.heathIssue.food}</td>
                     <td>{pee.heathIssue.foodConcern}</td>
                     <td>{pee.heathIssue.spicy ? "ไม่ได้" : "ได้"}</td>
@@ -242,7 +271,8 @@ export default function WelfareClient({
             {showPart
               ? welfare.partWelfares.map((part) => (
                   <>
-                    {welfare.isHavePeto
+                    {camp.memberStructure ==
+                    "nong->highSchool,pee->1year,peto->2upYear"
                       ? part.petoHealths.map((peto, i) => (
                           <tr key={i}>
                             <td>{peto.user.nickname}</td>
@@ -268,7 +298,7 @@ export default function WelfareClient({
                             <td>{pee.user.name}</td>
                             <td>{pee.user.lastname}</td>
                             <td>{part.name}</td>
-                            <td>พี่{welfare.groupName}</td>
+                            <td>พี่{camp.groupName}</td>
                             <td>{pee.heathIssue.food}</td>
                             <td>{pee.heathIssue.foodConcern}</td>
                             <td>{pee.heathIssue.spicy ? "ไม่ได้" : "ได้"}</td>
@@ -289,56 +319,66 @@ export default function WelfareClient({
       )}
       จำนวนสมาชิกที่มีกระติกน้ำ
       <CampNumberTable
-        isHavePeto={welfare.isHavePeto}
+        isHavePeto={
+          camp.memberStructure == "nong->highSchool,pee->1year,peto->2upYear"
+        }
         main={welfare.campBottleNumber}
         baanNumbers={welfare.baanHaveBottles}
         partNumbers={welfare.partHaveBottles}
-        groupName={welfare.groupName}
+        groupName={camp.groupName}
         filename="จำนวนสมาชิกที่มีกระติกน้ำ"
-        nongCall={welfare.nongCall}
+        nongCall={camp.nongCall}
       />
       จำนวนสมาชิกที่มีกินเผ็ดไม่ได้
       <CampNumberTable
-        isHavePeto={welfare.isHavePeto}
+        isHavePeto={
+          camp.memberStructure == "nong->highSchool,pee->1year,peto->2upYear"
+        }
         main={welfare.campSpicyNumber}
         baanNumbers={welfare.baanSpicyS}
         partNumbers={welfare.partSpicyS}
-        groupName={welfare.groupName}
+        groupName={camp.groupName}
         filename="จำนวนสมาชิกที่มีกินเผ็ดไม่ได้"
-        nongCall={welfare.nongCall}
+        nongCall={camp.nongCall}
       />
       จำนวนสมาชิกที่ halal
       <CampNumberTable
-        isHavePeto={welfare.isHavePeto}
+        isHavePeto={
+          camp.memberStructure == "nong->highSchool,pee->1year,peto->2upYear"
+        }
         main={welfare.campHalalNumber}
         baanNumbers={welfare.baanHalalS}
         partNumbers={welfare.partHalalS}
-        groupName={welfare.groupName}
+        groupName={camp.groupName}
         filename="จำนวนสมาชิกที่ halal"
-        nongCall={welfare.nongCall}
+        nongCall={camp.nongCall}
       />
       จำนวนสมาชิกที่มีมังสวิรัติ
       <CampNumberTable
-        isHavePeto={welfare.isHavePeto}
+        isHavePeto={
+          camp.memberStructure == "nong->highSchool,pee->1year,peto->2upYear"
+        }
         main={welfare.campVegetarianNumber}
         baanNumbers={welfare.baanVegetarians}
         partNumbers={welfare.partVegetarians}
-        groupName={welfare.groupName}
+        groupName={camp.groupName}
         filename="จำนวนสมาชิกที่มีมังสวิรัติ"
-        nongCall={welfare.nongCall}
+        nongCall={camp.nongCall}
       />
       จำนวนสมาชิกที่กินเจ
       <CampNumberTable
-        isHavePeto={welfare.isHavePeto}
+        isHavePeto={
+          camp.memberStructure == "nong->highSchool,pee->1year,peto->2upYear"
+        }
         main={welfare.campVeganNumber}
         baanNumbers={welfare.baanVegans}
         partNumbers={welfare.partVegans}
-        groupName={welfare.groupName}
+        groupName={camp.groupName}
         filename="จำนวนสมาชิกที่กินเจ"
-        nongCall={welfare.nongCall}
+        nongCall={camp.nongCall}
       />
       <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
-        <form
+        <div
           className="w-[70%] items-center p-10 rounded-3xl"
           style={{
             backgroundColor: "#961A1D",
@@ -346,7 +386,7 @@ export default function WelfareClient({
         >
           <div className="flex flex-row items-center my-5">
             <label className="w-2/5 text-2xl text-white">
-              ข้าวมื้อนี้ให้{welfare.nongCall}หรือไม่
+              ข้าวมื้อนี้ให้{camp.nongCall}หรือไม่
             </label>
             <Checkbox
               onChange={setBoolean(setNong)}
@@ -360,7 +400,7 @@ export default function WelfareClient({
           </div>
           <div className="flex flex-row items-center my-5">
             <label className="w-2/5 text-2xl text-white">
-              ข้าวมื้อนี้ให้พี่{welfare.groupName}หรือไม่
+              ข้าวมื้อนี้ให้พี่{camp.groupName}หรือไม่
             </label>
             <Checkbox
               onChange={setBoolean(setPee)}
@@ -372,7 +412,8 @@ export default function WelfareClient({
               defaultChecked
             />
           </div>
-          {welfare.isHavePeto ? (
+          {camp.memberStructure ==
+          "nong->highSchool,pee->1year,peto->2upYear" ? (
             <div className="flex flex-row items-center my-5">
               <label className="w-2/5 text-2xl text-white">
                 ข้าวมื้อนี้ให้ปีโตหรือไม่
@@ -419,19 +460,22 @@ export default function WelfareClient({
                   }
                   createMeal(
                     {
-                      campId: welfare._id,
+                      campId: camp._id,
                       roles,
                       time: selectTimeToSystem(time, selectOffset),
                     },
-                    token
+                    token,
+                    createMealSocket,
+                    room,
+                    socket
                   );
                 }
               }}
             />
           </div>
-        </form>
+        </div>
       </div>
-      {welfare.meals
+      {meals
         .map(copy)
         .sort((a, b) => dayjs(a.time.toString()).diff(b.time.toString()))
         .map((v, i) => (

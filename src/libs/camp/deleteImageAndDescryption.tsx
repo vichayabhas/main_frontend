@@ -1,7 +1,12 @@
-import { getBackendUrl } from "@/components/utility/setup";
-import { Id } from "../../../interface";
+import { getBackendUrl, SocketReady } from "@/components/utility/setup";
+import { Id, ShowImageAndDescriptions } from "../../../interface";
 
-export default async function name(containerId: Id, token: string) {
+export default async function name(
+  containerId: Id,
+  token: string,
+  socket: SocketReady<ShowImageAndDescriptions[]>,
+  room: string
+) {
   const response = await fetch(
     `${getBackendUrl()}/camp/deleteImageAndDescryption/params/${containerId}`,
     {
@@ -12,5 +17,7 @@ export default async function name(containerId: Id, token: string) {
       },
     }
   );
-  return await response.json();
+  const data: ShowImageAndDescriptions[] = await response.json();
+  socket.trigger(data, room);
+  return data
 }

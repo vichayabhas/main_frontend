@@ -6,6 +6,7 @@ import {
   setBoolean,
   setTextToString,
   downloadText,
+  getBackendUrl,
 } from "@/components/utility/setup";
 import FinishButton from "@/components/utility/FinishButton";
 import getAllAnswerAndQuestion from "@/libs/camp/getAllAnswerAndQuestion";
@@ -22,6 +23,8 @@ import {
   UserAndAllQuestionPack,
 } from "../../../../interface";
 import AllAnswerAndQuestionPageBreakDown from "./AllAnswerAndQuestionPageBreakDown";
+import { io } from "socket.io-client";
+import { RealTimeCamp } from "../authPart/UpdateCampClient";
 
 interface AnswerReady {
   element: React.ReactNode;
@@ -109,6 +112,7 @@ function getTextElement(input: GetTextQuestion): React.ReactNode {
     </>
   );
 }
+const socket = io(getBackendUrl());
 export default function AllAnswerAndQuestionPage({
   dataInput,
   token,
@@ -120,16 +124,23 @@ export default function AllAnswerAndQuestionPage({
   campIdInput: string;
   readOnly?: boolean;
 }) {
-  if (!dataInput.canScoring) {
-    readOnly = true;
-  }
-
   const campId = stringToId(campIdInput);
   const [data, setData] = React.useState(dataInput);
   const [showAll, setShowAll] = React.useState(true);
   const [name, setName] = React.useState<string>("");
   const [nickname, setNickname] = React.useState<string>("");
   const [lastname, setLastname] = React.useState<string>("");
+  const [camp, setCamp] = React.useState(dataInput.camp);
+  const realTimeCamp = new RealTimeCamp(camp._id, socket);
+  React.useEffect(() => {
+    realTimeCamp.listen(setCamp);
+    return () => {
+      realTimeCamp.disconect();
+    };
+  });
+  if (!camp.lockChangeQuestion || camp.canAnswerTheQuestion) {
+    readOnly = true;
+  }
   async function update() {
     const buffer = await getAllAnswerAndQuestion(campId, token);
     setData(buffer);
@@ -252,11 +263,11 @@ export default function AllAnswerAndQuestionPage({
   });
   const nongDownload = useDownloadExcel({
     currentTableRef: nongRef.current,
-    filename: data.nongCall,
+    filename: camp.nongCall,
   });
   const peeDownload = useDownloadExcel({
     currentTableRef: peeRef.current,
-    filename: `พี่${data.groupName}`,
+    filename: `พี่${camp.groupName}`,
   });
   const choiceDownload = useDownloadExcel({
     currentTableRef: choiceRef.current,
@@ -422,11 +433,11 @@ export default function AllAnswerAndQuestionPage({
             dataReady={getDataReady()}
             types="น้องที่ยืนยันแล้ว"
           />
-          {data.nongCall}
+          {camp.nongCall}
           <AllAnswerAndQuestionPageBreakDown
             setMode={(dataInput2) => dataInput2.nongsAnswers}
             dataReady={getDataReady()}
-            types={data.nongCall}
+            types={camp.nongCall}
           />
           พี่พี่
           <AllAnswerAndQuestionPageBreakDown
@@ -469,7 +480,7 @@ export default function AllAnswerAndQuestionPage({
         {getAllAnswerAndQuestionReady(data.nongSureAnswers)}
       </table>
       <FinishButton text={downloadText} onClick={sureDownload.onDownload} />
-      {data.nongCall}
+      {camp.nongCall}
       <table ref={nongRef}>
         {headTable}
         {getAllAnswerAndQuestionReady(data.nongsAnswers)}

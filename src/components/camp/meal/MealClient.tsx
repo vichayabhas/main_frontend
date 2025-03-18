@@ -10,6 +10,8 @@ import {
   selectTimeToSystem,
   setTextToString,
   stringToId,
+  getBackendUrl,
+  SocketReady,
 } from "@/components/utility/setup";
 import createFood from "@/libs/randomthing/createFood";
 import deleteMeal from "@/libs/randomthing/deleteMeal";
@@ -20,18 +22,29 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { RoleCamp, FoodLimit, GetMealForUpdate } from "../../../../interface";
+import {
+  RoleCamp,
+  FoodLimit,
+  GetMealForUpdate,
+  InterMeal,
+  InterFood,
+} from "../../../../interface";
+import { io } from "socket.io-client";
+import { RealTimeCamp } from "../authPart/UpdateCampClient";
 
+const socket = io(getBackendUrl());
 export default function MealClient({
   params,
-  data: { foods, meal, camp, displayOffset, selectOffset },
+  data,
   token,
 }: {
   params: { pid: string; mid: string };
   token: string;
   data: GetMealForUpdate;
 }) {
+  const { displayOffset, selectOffset, meal } = data;
   const router = useRouter();
+  const [foods, setFoods] = React.useState(data.foods);
   const [nong, setNong] = React.useState(meal.roles.includes("nong"));
   const [pee, setPee] = React.useState(meal.roles.includes("pee"));
   const [peto, setPeto] = React.useState(meal.roles.includes("peto"));
@@ -49,6 +62,26 @@ export default function MealClient({
   const [มังสวิรัติ, setมังสวิรัติ] = React.useState(false);
   const [เจ, setเจ] = React.useState(false);
   const [อิสลาม, setอิสลาม] = React.useState(false);
+  const updateMealSocket = new SocketReady<InterMeal>(socket, "updateMeal");
+  const createFoodSocket = new SocketReady<InterFood[]>(socket, "createFood");
+  const room = meal._id.toString();
+  const [camp, setCamp] = React.useState(data.camp);
+  const realTimeCamp = new RealTimeCamp(camp._id, socket);
+  React.useEffect(() => {
+    updateMealSocket.listen(room, (newData) => {
+      setNong(newData.roles.includes("nong"));
+      setPee(newData.roles.includes("pee"));
+      setPeto(newData.roles.includes("peto"));
+      setTime(dayjs(addTime(newData.time.toString(), selectOffset)));
+    });
+    createFoodSocket.listen(room, setFoods);
+    realTimeCamp.listen(setCamp);
+    return () => {
+      updateMealSocket.disconect();
+      createFoodSocket.disconect();
+      realTimeCamp.disconect();
+    };
+  });
   return (
     <div>
       {foods.map((food, i) => (
@@ -69,7 +102,7 @@ export default function MealClient({
           <GetTimeHtml input={meal.time} offset={displayOffset} />
         </div>
       </div>
-      <form
+      <div
         className="w-[70%] items-center p-10 rounded-3xl"
         style={{
           backgroundColor: "#961A1D",
@@ -155,7 +188,10 @@ export default function MealClient({
                     roles,
                     time: selectTimeToSystem(time, selectOffset),
                   },
-                  token
+                  token,
+                  updateMealSocket,
+                  room,
+                  socket
                 );
               }
             }}
@@ -287,11 +323,14 @@ export default function MealClient({
                 campId: camp._id,
                 mealId: stringToId(params.mid),
               },
-              token
+              token,
+              createFoodSocket,
+              room,
+              socket
             );
           }}
         />
-      </form>
+      </div>
       <AllInOneLock token={token}>
         <FinishButton
           text="delete"

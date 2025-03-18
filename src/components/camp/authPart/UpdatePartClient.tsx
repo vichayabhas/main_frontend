@@ -1,14 +1,39 @@
 "use client";
 import React from "react";
 
-import { getId } from "../../utility/setup";
+import { getBackendUrl, getId, SocketReady } from "../../utility/setup";
 import PlaceSelect from "@/components/randomthing/PlaceSelect";
 import updatePart from "@/libs/admin/updatePart";
 import {
   GetPartForPlan,
   AllPlaceData,
   InterPlace,
+  UpdatePartOut,
+  Id,
+  ShowPlace,
 } from "../../../../interface";
+import { io, Socket } from "socket.io-client";
+import { getShowPlaceFromInterPlace } from "@/components/randomthing/placeSetUp";
+export class RealTimePart {
+  private room: string;
+  private socket: SocketReady<UpdatePartOut>;
+  constructor(partId: Id, socket: Socket) {
+    this.room = partId.toString();
+    this.socket = new SocketReady<UpdatePartOut>(socket, "updatePart");
+  }
+  public listen(
+    setPlace: React.Dispatch<React.SetStateAction<ShowPlace | null>>,
+    allPlaceData: AllPlaceData
+  ) {
+    this.socket.listen(this.room, (data) => {
+      setPlace(getShowPlaceFromInterPlace(data.place, allPlaceData));
+    });
+  }
+  public disconect() {
+    this.socket.disconect();
+  }
+}
+const socket = io(getBackendUrl());
 export default function UpdatePartClient({
   data,
   allPlaceData,
@@ -20,28 +45,34 @@ export default function UpdatePartClient({
 }) {
   // dispatch = useDispatch<AppDispatch>();
   //const update = useAppSelector((state) => state.bookSlice.bookItem);
+  const updateSocket = new SocketReady<UpdatePartOut>(socket, "updatePart");
 
   const [place, setPlace] = React.useState<InterPlace | null>(data.place);
+  const room = data._id.toString();
+  React.useEffect(() => {
+    updateSocket.listen(room, (data) => setPlace(data.place));
+    return () => {
+      updateSocket.disconect();
+    };
+  });
 
   return (
     <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
       <div className="text-4xl font-medium">Update Part</div>
-
-      <form className="w-[30%] items-center bg-slate-600 p-10 rounded-3xl shadow-[25px_25px_40px_-10px_rgba(0,0,0,0.7)]">
+      <div className="w-[30%] items-center bg-slate-600 p-10 rounded-3xl shadow-[25px_25px_40px_-10px_rgba(0,0,0,0.7)]">
         <PlaceSelect
           buildingText="เลือกตึกที่ใช้เป็นห้องฝ่าย"
           placeText="เลือกชั้นและห้องที่ใช้เป็นห้องฝ่าย"
           allPlaceData={allPlaceData}
-          place={data.place}
+          place={place}
           onClick={setPlace}
         />
-
         <div className="flex flex-row justify-end">
           <button
             className="bg-pink-300 p-3 rounded-lg shadow-[10px_10px_10px_-10px_rgba(0,0,0,0.5)] hover:bg-rose-700 hover:text-pink-50"
             onClick={() => {
               try {
-                updatePart(data._id, getId(place), token);
+                updatePart(data._id, getId(place), token, updateSocket, room);
               } catch (error) {
                 console.log(error);
               }
@@ -50,7 +81,7 @@ export default function UpdatePartClient({
             update all
           </button>
         </div>
-      </form>
+      </div>
     </div>
   );
 }

@@ -2,31 +2,22 @@
 import chatStyle from "../../chat/chat.module.css";
 import React from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
-import { downloadText } from "../../utility/setup";
+import { downloadText, getBackendUrl } from "../../utility/setup";
 import TopMenuItem from "../../randomthing/TopMenuItem";
 import styles from "../../randomthing/topmenu.module.css";
 import AllInOneLock from "@/components/utility/AllInOneLock";
 import FinishButton from "@/components/utility/FinishButton";
 import ImagesFromUrl from "@/components/utility/ImagesFromUrl";
-import PartClient from "../PartClient";
-import ShowOwnCampData from "../ShowOwnCampData";
+import ShowOwnCampData from "./components/ShowOwnCampData";
 import { GetPetoData, AllPlaceData } from "../../../../interface";
-import PartJob from "../PartJob";
+import PartJob from "./components/PartJob";
+import PartClient from "./components/PartClient";
+import { RealTimeFoodUpdate } from "../meal/setup";
+import { io } from "socket.io-client";
+import { RealTimeCamp } from "../authPart/UpdateCampClient";
+import { RealTimePart } from "../authPart/UpdatePartClient";
 export default function PetoCampClient({
-  data: {
-    user,
-    camp,
-    campMemberCard,
-    meals,
-    healthIssue,
-    displayOffset,
-    selectOffset,
-    partPlace,
-    part,
-    petos,
-    pees,
-    partJobs,
-  },
+  data,
   token,
   allPlaceData,
 }: {
@@ -34,10 +25,38 @@ export default function PetoCampClient({
   token: string;
   allPlaceData: AllPlaceData;
 }) {
+  const {
+    user,
+    campMemberCard,
+    healthIssue,
+    displayOffset,
+    selectOffset,
+    part,
+    petos,
+    pees,
+    partJobs,
+  } = data;
   const ref = React.useRef(null);
   const download = useDownloadExcel({
     currentTableRef: ref.current,
     filename: "ห้องฝ่าย",
+  });
+  const [meals, setMeals] = React.useState(data.meals);
+  const [camp, setCamp] = React.useState(data.camp);
+  const [partPlace, setPartPlace] = React.useState(data.partPlace);
+  const socket = io(getBackendUrl());
+  const realTimeFoodUpdate = new RealTimeFoodUpdate(campMemberCard._id, socket);
+  const realTimeCamp = new RealTimeCamp(camp._id, socket);
+  const realTimePart = new RealTimePart(part._id, socket);
+  React.useEffect(() => {
+    realTimeFoodUpdate.listen(setMeals);
+    realTimeCamp.listen(setCamp);
+    realTimePart.listen(setPartPlace, allPlaceData);
+    return () => {
+      realTimeFoodUpdate.disconect();
+      realTimeCamp.disconect();
+      realTimePart.disconect();
+    };
   });
   return (
     <>
@@ -180,15 +199,15 @@ export default function PetoCampClient({
         token={token}
         campMemberCardId={campMemberCard._id}
       />
-            <AllInOneLock token={token}>
-              <ShowOwnCampData
-                user={user}
-                campMemberCard={campMemberCard}
-                healthIssue={healthIssue}
-                meals={meals}
-                displayOffset={displayOffset}
-              />
-            </AllInOneLock>
+      <AllInOneLock token={token}>
+        <ShowOwnCampData
+          user={user}
+          campMemberCard={campMemberCard}
+          healthIssue={healthIssue}
+          meals={meals}
+          displayOffset={displayOffset}
+        />
+      </AllInOneLock>
     </>
   );
 }

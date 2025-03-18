@@ -1,9 +1,14 @@
-import { getBackendUrl } from "@/components/utility/setup";
-import { CreateImageAndDescriptionContainer } from "../../../interface";
+import { getBackendUrl, SocketReady } from "@/components/utility/setup";
+import {
+  CreateImageAndDescriptionContainer,
+  ShowImageAndDescriptions,
+} from "../../../interface";
 
 export default async function createImageAndDescriptionContainer(
   input: CreateImageAndDescriptionContainer,
-  token: string
+  token: string,
+  socket: SocketReady<ShowImageAndDescriptions[]>,
+  room: string
 ) {
   const response = await fetch(
     `${getBackendUrl()}/camp/createImageAndDescriptionContainer/`,
@@ -17,5 +22,7 @@ export default async function createImageAndDescriptionContainer(
       body: JSON.stringify(input),
     }
   );
-  return await response.json();
+  const data: ShowImageAndDescriptions[] = await response.json();
+  socket.trigger(data, room);
+  return data;
 }

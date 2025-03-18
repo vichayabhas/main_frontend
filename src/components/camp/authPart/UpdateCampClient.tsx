@@ -12,34 +12,59 @@ import {
   setBoolean,
   modifyElementInUseStateArray2Dimension,
   notEmpty,
+  SocketReady,
+  getBackendUrl,
 } from "@/components/utility/setup";
 import TypingImageSource from "@/components/utility/TypingImageSource";
-import Waiting from "@/components/utility/Waiting";
 import addBaan from "@/libs/admin/addBaan";
 import addPart from "@/libs/admin/addPart";
 import createBaanByGroup from "@/libs/admin/createBaanByGroup";
 import saveDeleteCamp from "@/libs/admin/saveDeleteCamp";
 import updateCamp from "@/libs/admin/updateCamp";
-import getCamp from "@/libs/camp/getCamp";
-import getParts from "@/libs/camp/getParts";
 import { TextField, Checkbox } from "@mui/material";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React from "react";
 import {
   BasicCamp,
   BasicPart,
   authTypes,
   Id,
   GetCampForUpdate,
+  UpdateCampOut,
 } from "../../../../interface";
+import { io, Socket } from "socket.io-client";
 
+const socket = io(getBackendUrl());
+interface RealTimeAuthPart {
+  i: number;
+  j: number;
+  check: boolean;
+}
+
+export class RealTimeCamp {
+  private room: string;
+  private socket: SocketReady<UpdateCampOut>;
+  constructor(campId: Id, socket: Socket) {
+    this.room = campId.toString();
+    this.socket = new SocketReady<UpdateCampOut>(socket, "updateCamp");
+  }
+  public listen(setCamp: React.Dispatch<React.SetStateAction<BasicCamp>>) {
+    this.socket.listen(this.room, (event) => {
+      setCamp(event.camp);
+    });
+  }
+  public disconect() {
+    this.socket.disconect();
+  }
+}
 export default function UpdateCampClient({
-  token,data
+  token,
+  data,
 }: {
-  data:GetCampForUpdate
+  data: GetCampForUpdate;
   token: string;
 }) {
   const [camp, setCamp] = React.useState(data.camp);
@@ -84,7 +109,7 @@ export default function UpdateCampClient({
     setMiddle: setCanAnswerTheQuestion,
     setDown: setOpen,
   } = new SetUpMiddleDownPack(
-    useState(
+    React.useState(
       SetUpMiddleDownPack.init(
         camp.lockChangeQuestion,
         camp.canAnswerTheQuestion,
@@ -101,11 +126,10 @@ export default function UpdateCampClient({
   const [canNongSeeAllTrackingSheet, setCanNongSeeAllTrackingSheet] =
     React.useState(camp.canNongSeeAllTrackingSheet);
   const [canNongAccessDataWithRoleNong, setCanNongAccessDataWithRoleNong] =
-    useState(camp.canNongAccessDataWithRoleNong);
+    React.useState(camp.canNongAccessDataWithRoleNong);
   const [arrayOfAuthPartList, setArrayOfAuthPartList] = React.useState<
     boolean[][]
   >(parts.map((part) => authTypes.map((auth) => part.auths.includes(auth))));
-  const [timeOut, setTimeOut] = React.useState(false);
   const [canReadTimeOnMirror, setCanReadTimeOnMirror] = React.useState(
     camp.canReadTimeOnMirror
   );
@@ -147,9 +171,27 @@ export default function UpdateCampClient({
     setCanReadTimeOnMirror(newCampData.canReadTimeOnMirror);
     setNongCall(newCampData.nongCall);
   }
-  if (timeOut) {
-    return <Waiting />;
-  }
+  const realTimeAuthPartSocket = new SocketReady<RealTimeAuthPart>(
+    socket,
+    "realTimeAuthPart"
+  );
+  const updateCampSocket = new SocketReady<UpdateCampOut>(socket, "updateCamp");
+  const room = data.camp._id.toString();
+  React.useEffect(() => {
+    updateCampSocket.listen(room, (newData) => {
+      reset(newData.camp, newData.parts);
+    });
+    realTimeAuthPartSocket.listen(room, ({ i, j, check }) => {
+      setMap(
+        setArrayOfAuthPartList,
+        modifyElementInUseStateArray2Dimension(i, j)
+      )(check);
+    });
+    return () => {
+      updateCampSocket.disconect();
+      realTimeAuthPartSocket.disconect();
+    };
+  });
   return (
     <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
       <div>บ้าน</div>
@@ -689,12 +731,9 @@ export default function UpdateCampClient({
               {authTypes.map((authType, j) => (
                 <td key={j}>
                   <Checkbox
-                    onChange={setBoolean(
-                      setMap(
-                        setArrayOfAuthPartList,
-                        modifyElementInUseStateArray2Dimension(i, j)
-                      )
-                    )}
+                    onChange={setBoolean((check) => {
+                      realTimeAuthPartSocket.trigger({ i, j, check }, room);
+                    })}
                     checked={arrayOfAuthPartList[i][j]}
                   />
                 </td>
@@ -711,7 +750,6 @@ export default function UpdateCampClient({
             onClick={async () => {
               if (dateStart && dateEnd && dateStart.isBefore(dateEnd)) {
                 try {
-                  setTimeOut(true);
                   await updateCamp(
                     {
                       link,
@@ -748,14 +786,11 @@ export default function UpdateCampClient({
                       nongCall,
                     },
                     camp._id,
-                    token
+                    token,
+                    updateCampSocket,
+                    room
                   );
-                  const newCampData = await getCamp(data.camp._id);
-                  const newPartsData = await getParts(data.camp._id, token);
-                  reset(newCampData, newPartsData);
-                  setTimeOut(false);
                 } catch (error) {
-                  setTimeOut(false);
                   console.log(error);
                 }
               } else {

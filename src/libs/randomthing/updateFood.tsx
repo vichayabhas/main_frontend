@@ -1,7 +1,15 @@
-import { getBackendUrl } from "@/components/utility/setup";
-import { UpdateFood } from "../../../interface";
+import { getBackendUrl, SocketReady } from "@/components/utility/setup";
+import { InterFood, UpdateFood, UpdateFoodOut } from "../../../interface";
+import { triggerMeals } from "../../components/camp/meal/setup";
+import { Socket } from "socket.io-client";
 
-export default async function updateFood(input: UpdateFood, token: string) {
+export default async function updateFood(
+  input: UpdateFood,
+  token: string,
+  socketReady: SocketReady<InterFood>,
+  room: string,
+  socket: Socket
+) {
   const response = await fetch(`${getBackendUrl()}/randomthing/updateFood/`, {
     method: "PUT",
     cache: "no-store",
@@ -11,5 +19,8 @@ export default async function updateFood(input: UpdateFood, token: string) {
     },
     body: JSON.stringify(input),
   });
-  return await response.json();
+  const data: UpdateFoodOut = await response.json();
+  socketReady.trigger(data.food, room);
+  triggerMeals(data.triggers, socket);
+  return data;
 }

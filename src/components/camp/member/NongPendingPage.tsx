@@ -3,6 +3,7 @@ import nongRegisterCamp from "@/libs/camp/nongRegisterCamp";
 import { MenuItem, Select, TextField } from "@mui/material";
 import { Choice, CampState } from "../../../../interface";
 import {
+  getBackendUrl,
   modifyElementInUseStateArray,
   setMap,
   setTextToString,
@@ -10,25 +11,37 @@ import {
 import Link from "next/link";
 import React from "react";
 import ImagesFromUrl from "../../utility/ImagesFromUrl";
+import { RealTimeCamp } from "../authPart/UpdateCampClient";
+import { io } from "socket.io-client";
 
+const socket = io(getBackendUrl());
 interface QuestionReady {
   element: React.ReactNode;
   order: number;
 }
 export default function NongPendingPage({
   token,
-  campState: { camp, user, questions, link: oldLink },
+  campState,
 }: {
   token: string;
   campState: CampState;
 }) {
-  const [link, setLink] = React.useState<string | null>(oldLink);
+  const { user, questions } = campState;
+  const [link, setLink] = React.useState<string | null>(campState.link);
   const [choiceAnswers, setChoiceAnswers] = React.useState<(Choice | "-")[]>(
     questions.choices.map((choice) => choice.answer)
   );
   const [textAnswers, setTextAnswers] = React.useState(
     questions.texts.map((text) => text.answer)
   );
+  const [camp, setCamp] = React.useState(campState.camp);
+  const realTimeCamp = new RealTimeCamp(camp._id, socket);
+  React.useEffect(() => {
+    realTimeCamp.listen(setCamp);
+    return () => {
+      realTimeCamp.disconect();
+    };
+  });
   const questionReady: QuestionReady[] = questions.choices
     .map((choice, i) => {
       let chooseChoice: string;
@@ -192,7 +205,9 @@ export default function NongPendingPage({
       {camp.registerSheetLink ? (
         <Link href={`${camp.registerSheetLink}${user._id}`}>ใบรับสมัคร</Link>
       ) : null}
-      {camp.registerSheetLink ? <Link href={oldLink}>ใบรับสมัคร</Link> : null}
+      {camp.registerSheetLink ? (
+        <Link href={campState.link}>ใบรับสมัคร</Link>
+      ) : null}
       {camp.open ? (
         <form className="w-[30%] items-center bg-slate-600 p-10 rounded-3xl shadow-[25px_25px_40px_-10px_rgba(0,0,0,0.7)]">
           <div className="flex flex-row items-center">

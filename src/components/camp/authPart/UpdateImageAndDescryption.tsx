@@ -5,21 +5,26 @@ import {
   Id,
   ImageAndDescriptionType,
   imageAndDescriptionTypes,
+  ShowImageAndDescriptions,
 } from "../../../../interface";
 import { MenuItem, Select, TextField } from "@mui/material";
 import {
   addItemInUseStateArray,
+  getBackendUrl,
   modifyElementInUseStateArray,
   removeElementInUseStateArray,
   setMap,
   setTextToInt,
   setTextToString,
+  SocketReady,
 } from "../../utility/setup";
 import editImageAndDescription from "@/libs/camp/editImageAndDescription";
 import createImageAndDescriptionContainer from "@/libs/camp/createImageAndDescriptionContainer";
 import FinishButton from "@/components/utility/FinishButton";
 import TypingImageSource from "@/components/utility/TypingImageSource";
+import { io } from "socket.io-client";
 
+const socket = io(getBackendUrl());
 export default function UpdateImageAndDescryption({
   imageAndDescryptionContainersPack,
   token,
@@ -34,6 +39,19 @@ export default function UpdateImageAndDescryption({
   const [name, setName] = React.useState<string>("");
   const [_id, set_id] = React.useState<Id | null>(null);
   const [childrenId, setChildrenId] = React.useState<(Id | null)[]>([]);
+  const [imageAndDescryptionContainers, setImageAndDescryptionContainers] =
+    React.useState(
+      imageAndDescryptionContainersPack.imageAndDescryptionContainers
+    );
+  const updateSocket = new SocketReady<ShowImageAndDescriptions[]>(
+    socket,
+    "updateImageAndDescruptions"
+  );
+  const room = imageAndDescryptionContainersPack.baan._id.toString();
+  React.useEffect(() => {
+    updateSocket.listen(room, setImageAndDescryptionContainers);
+    return () => updateSocket.disconect();
+  });
   return (
     <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
       <div
@@ -48,7 +66,7 @@ export default function UpdateImageAndDescryption({
           id="location"
           className="h-[2em] w-[200px]"
         >
-          {imageAndDescryptionContainersPack.imageAndDescryptionContainers.map(
+          {imageAndDescryptionContainers.map(
             (imageAndDescryptionContainer, i) => (
               <MenuItem
                 onClick={() => {
@@ -253,7 +271,9 @@ export default function UpdateImageAndDescryption({
                     order: orders[i],
                   })),
                 },
-                token
+                token,
+                updateSocket,
+                room
               );
             }}
           />
@@ -272,7 +292,9 @@ export default function UpdateImageAndDescryption({
                   })),
                   baanId: imageAndDescryptionContainersPack.baan._id,
                 },
-                token
+                token,
+                updateSocket,
+                room
               );
             }}
           />

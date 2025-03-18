@@ -9,7 +9,7 @@ import {
   BasicUser,
   InterSubGroup,
   Mode,
-} from "../../../../interface";
+} from "../../../../../interface";
 import React from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
 import FinishButton from "@/components/utility/FinishButton";

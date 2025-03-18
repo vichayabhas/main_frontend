@@ -28,6 +28,7 @@ import {
   ShowMember,
 } from "../../../../interface";
 import { io } from "socket.io-client";
+import { RealTimeCamp } from "./UpdateCampClient";
 const socket = io(getBackendUrl());
 function filterOut(inputs: ShowRegisterNong[]): (previous: Id[]) => Id[] {
   const ids = inputs.map((e) => e.user._id);
@@ -60,13 +61,14 @@ export default function RegisterPartClient({
       regisBaans,
       regisParts,
       peeRegisters,
-      camp,
       partMap,
       nongRegister,
       partBoardIdString,
     },
     setData,
   ] = React.useState(data);
+  const [camp, setCamp] = React.useState(data.camp);
+  const realTimeCamp = new RealTimeCamp(camp._id, socket);
   const mapIn: MyMap[] = regisBaans.map((regisBaan) => ({
     key: regisBaan.baan._id,
     value: regisBaan.baan.name,
@@ -142,8 +144,10 @@ export default function RegisterPartClient({
       const ids = data2.peeRegisters.map((e) => e.userId);
       setPeePassIds((previous) => previous.filter((o) => ids.includes(o)));
     });
+    realTimeCamp.listen(setCamp);
     return () => {
       updateSocket.disconect();
+      realTimeCamp.disconect();
     };
   });
   return (

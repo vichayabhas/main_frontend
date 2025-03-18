@@ -1,17 +1,18 @@
-import { getBackendUrl } from "@/components/utility/setup";
-import { Id } from "../../../interface";
+import { getBackendUrl, SocketReady } from "@/components/utility/setup";
+import { Id, UpdatePartOut } from "../../../interface";
 
 export default async function updatePart(
   partId: Id,
   placeId: Id | null,
-  token: string
+  token: string,
+  socket: SocketReady<UpdatePartOut>,
+  room: string
 ) {
   const response = await fetch(`${getBackendUrl()}/admin/updatePart`, {
     method: "PUT",
     cache: "no-store",
     headers: {
       "Content-Type": "application/json",
-
       authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
@@ -19,5 +20,6 @@ export default async function updatePart(
       placeId,
     }),
   });
-  return await response.json();
+  const data: UpdatePartOut = await response.json();
+  socket.trigger(data, room);
 }

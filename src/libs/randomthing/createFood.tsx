@@ -1,7 +1,15 @@
-import { getBackendUrl } from "@/components/utility/setup";
-import { CreateFood } from "../../../interface";
+import { getBackendUrl, SocketReady } from "@/components/utility/setup";
+import { CreateFood, CreateFoodOut, InterFood } from "../../../interface";
+import { triggerMeals } from "../../components/camp/meal/setup";
+import { Socket } from "socket.io-client";
 
-export default async function createFood(input: CreateFood, token: string) {
+export default async function createFood(
+  input: CreateFood,
+  token: string,
+  socketReady: SocketReady<InterFood[]>,
+  room: string,
+  socket: Socket
+) {
   const response = await fetch(`${getBackendUrl()}/randomthing/createFood/`, {
     method: "POST",
     cache: "no-store",
@@ -11,5 +19,8 @@ export default async function createFood(input: CreateFood, token: string) {
     },
     body: JSON.stringify(input),
   });
-  return await response.json();
+  const data: CreateFoodOut = await response.json();
+  socketReady.trigger(data.foods, room);
+  triggerMeals(data.triggers, socket);
+  return data;
 }

@@ -9,7 +9,7 @@ import {
   Id,
   ShowMember,
   UpdateTimeOffsetRaw,
-} from "../../../../interface";
+} from "../../../../../interface";
 import { useDownloadExcel } from "react-export-table-to-excel";
 import {
   downloadText,
@@ -171,6 +171,7 @@ export default function MirrorClient({
                           onClick={() => {
                             set_id(mirror._id);
                             setTypes("user");
+                            setMessage(mirror.message);
                           }}
                         />
                       </td>
@@ -341,6 +342,7 @@ export default function MirrorClient({
                           onClick={() => {
                             set_id(mirror._id);
                             setTypes("baan");
+                            setMessage(mirror.message);
                           }}
                         />
                       </td>

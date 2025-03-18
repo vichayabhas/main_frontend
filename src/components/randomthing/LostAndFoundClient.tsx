@@ -3,7 +3,13 @@
 import addLostAndFound from "@/libs/randomthing/addLostAndFound";
 import React from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
-import { AllPlaceData, Id, MyMap, ShowLostAndFound } from "../../../interface";
+import {
+  AllPlaceData,
+  Id,
+  InterPlace,
+  MyMap,
+  ShowLostAndFound,
+} from "../../../interface";
 import { MenuItem, Select, TextField } from "@mui/material";
 import FinishButton from "../utility/FinishButton";
 import { downloadText, setTextToString, getId } from "../utility/setup";
@@ -23,7 +29,7 @@ export default function LostAndFoundClient({
   const ref = React.useRef(null);
 
   const [chose, setChose] = React.useState<Id | null>(null);
-  const [placeId, setPlaceId] = React.useState<Id | null>(null);
+  const [place, setPlace] = React.useState<InterPlace | null>(null);
   const [detail, setDetail] = React.useState<string | null>(null);
   const [name, setName] = React.useState<string | null>(null);
   const [type, setType] = React.useState<"lost" | "found" | null>(null);
@@ -156,9 +162,7 @@ export default function LostAndFoundClient({
         </div>
         <PlaceSelect
           place={null}
-          onClick={(place) => {
-            setPlaceId(getId(place));
-          }}
+          onClick={setPlace}
           buildingText={"ตึกที่พบเจอหรือคิดว่าทำหายถ้ารู้"}
           placeText={"ชั้นและห้องที่พบเจอหรือคิดว่าทำหายถ้ารู้"}
           allPlaceData={allPlaceData}
@@ -200,7 +204,7 @@ export default function LostAndFoundClient({
                     campId: chose,
                     name,
                     detail,
-                    placeId,
+                    placeId: getId(place),
                   },
                   token
                 );

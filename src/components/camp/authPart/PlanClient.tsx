@@ -3,16 +3,17 @@
 import planUpdateCamp from "@/libs/camp/planUpdateCamp";
 import {
   downloadText,
+  getBackendUrl,
   getId,
   modifyElementInUseStateArray,
   peeLookupNong,
   setMap,
+  SocketReady,
   waiting,
 } from "../../utility/setup";
 import CampNumberTable from "../../utility/CampNumberTable";
 import React from "react";
 import Waiting from "../../utility/Waiting";
-import getAllPlanData from "@/libs/camp/getAllPlanData";
 import { useDownloadExcel } from "react-export-table-to-excel";
 import PlaceSelect from "@/components/randomthing/PlaceSelect";
 import AllInOneLock from "@/components/utility/AllInOneLock";
@@ -22,11 +23,17 @@ import {
   GetAllPlanData,
   AllPlaceData,
   InterPlace,
+  boyZoneLadyZoneStates,
+  PlanTrigger,
 } from "../../../../interface";
+import SetIndexButton from "@/components/utility/SetIndexButton";
+import { io } from "socket.io-client";
+import { RealTimeCamp } from "./UpdateCampClient";
 interface BundleRoleAndUser {
   role: "พี่" | "น้อง" | "ปีโต";
   user: BasicUser;
 }
+const socket = io(getBackendUrl());
 export default function PlanClient({
   data,
   token,
@@ -36,18 +43,49 @@ export default function PlanClient({
   token: string;
   allPlaceData: AllPlaceData;
 }) {
+  const [camp, setCamp] = React.useState(data.camp);
+  const [baanDatas, setBaanDatas] = React.useState(data.baanDatas);
+  const [partDatas, setPartDatas] = React.useState(data.partDatas);
   const [boys, setBoys] = React.useState<(InterPlace | null)[]>(
-    data.baanDatas.map((baan) => baan.boy)
+    baanDatas.map((baan) => baan.boy)
   );
   const [girls, setGirls] = React.useState<(InterPlace | null)[]>(
-    data.baanDatas.map((baan) => baan.girl)
+    baanDatas.map((baan) => baan.girl)
   );
   const [normals, setNormals] = React.useState<(InterPlace | null)[]>(
-    data.baanDatas.map((baan) => baan.normal)
+    baanDatas.map((baan) => baan.normal)
   );
   const [partPlaces, setPartPlaces] = React.useState<(InterPlace | null)[]>(
-    data.partDatas.map((part) => part.place)
+    partDatas.map((part) => part.place)
   );
+  const [index, setIndex] = React.useState(
+    boyZoneLadyZoneStates.findIndex((v) => v == camp.boyZoneLadyZoneState)
+  );
+  const realTimeCamp = new RealTimeCamp(camp._id, socket);
+
+  const planSocket = new SocketReady<PlanTrigger>(socket, "updatePlanData");
+  const room = camp._id.toString();
+  React.useEffect(() => {
+    planSocket.listen(room, (newData) => {
+      setBaanDatas(newData.baanDatas);
+      setPartDatas(newData.partDatas);
+      setBoys(newData.baanDatas.map((baan) => baan.boy));
+      setGirls(newData.baanDatas.map((baan) => baan.girl));
+      setNormals(newData.baanDatas.map((baan) => baan.normal));
+      setPartPlaces(newData.partDatas.map((part) => part.place));
+      setIndex(
+        boyZoneLadyZoneStates.findIndex(
+          (v) => v == newData.boyZoneLadyZoneState
+        )
+      );
+    });
+    realTimeCamp.listen(setCamp);
+
+    return () => {
+      planSocket.disconect();
+      realTimeCamp.disconect();
+    };
+  });
   function peeToBundle(user: BasicUser): BundleRoleAndUser {
     return { user, role: "พี่" };
   }
@@ -62,7 +100,7 @@ export default function PlanClient({
   const partRef = React.useRef(null);
   const baanDownload = useDownloadExcel({
     currentTableRef: baanRef.current,
-    filename: `สถานที่ใช้เป็นห้อง${data.groupName}ทั้งหมด`,
+    filename: `สถานที่ใช้เป็นห้อง${data.camp.groupName}ทั้งหมด`,
   });
   const partDownload = useDownloadExcel({
     currentTableRef: partRef.current,
@@ -83,20 +121,39 @@ export default function PlanClient({
         <Waiting />
       ) : (
         <>
+          {camp.nongSleepModel != "ไม่มีการค้างคืน" ? (
+            <SetIndexButton
+              array={boyZoneLadyZoneStates}
+              index={index}
+              setIndex={setIndex}
+              isCycle
+              nextText={
+                boyZoneLadyZoneStates[
+                  boyZoneLadyZoneStates.length - 1 == index ? 0 : index + 1
+                ]
+              }
+              beforeText={
+                boyZoneLadyZoneStates[
+                  index == 0 ? boyZoneLadyZoneStates.length - 1 : index - 1
+                ]
+              }
+              middleText={boyZoneLadyZoneStates[index]}
+            />
+          ) : null}
           <table ref={baanRef}>
             <tr>
-              <th>{data.groupName}ทั้งหมด</th>
-              <th>ห้อง{data.groupName}ปกติ</th>
-              {data.isOverNightCamp ? (
+              <th>{camp.groupName}ทั้งหมด</th>
+              <th>ห้อง{camp.groupName}ปกติ</th>
+              {camp.nongSleepModel != "ไม่มีการค้างคืน" ? (
                 <>
                   <th>ห้องนอนน้องผู้ชาย</th>
                   <th>ห้องนอนน้องผู้หญิง</th>
                 </>
               ) : null}
             </tr>
-            {data.baanDatas.map((baan, i) => (
+            {baanDatas.map((baan, i) => (
               <tr key={i}>
-                <td>{baan.name}</td>
+                <td>{baan.baan.name}</td>
                 <td>
                   <PlaceSelect
                     allPlaceData={allPlaceData}
@@ -109,7 +166,7 @@ export default function PlanClient({
                     )}
                   />
                 </td>
-                {data.isOverNightCamp ? (
+                {camp.nongSleepModel != "ไม่มีการค้างคืน" ? (
                   <>
                     <td>
                       <PlaceSelect
@@ -146,7 +203,7 @@ export default function PlanClient({
               <th>ฝ่ายทั้งหมด</th>
               <th>ห้องฝ่าย</th>
             </tr>
-            {data.partDatas.map((part, i) => (
+            {partDatas.map((part, i) => (
               <tr key={i}>
                 <td>{part.name}</td>
                 <td>
@@ -172,7 +229,7 @@ export default function PlanClient({
                 await planUpdateCamp(
                   {
                     baanDatas: data.baanDatas.map((baan, i) => ({
-                      _id: baan._id,
+                      _id: baan.baan._id,
                       boyId: getId(boys[i]),
                       girlId: getId(girls[i]),
                       normalId: getId(normals[i]),
@@ -181,55 +238,57 @@ export default function PlanClient({
                       _id: part._id,
                       placeId: getId(partPlaces[i]),
                     })),
-                    _id: data._id,
+                    _id: camp._id,
+                    boyZoneLadyZoneState: boyZoneLadyZoneStates[index],
                   },
-                  token
+                  token,
+                  planSocket,
+                  room
                 );
-                const newData = await getAllPlanData(data._id);
-                setBoys(newData.baanDatas.map((baan) => baan.boy));
-                setGirls(newData.baanDatas.map((baan) => baan.girl));
-                setNormals(newData.baanDatas.map((baan) => baan.normal));
-                setPartPlaces(newData.partDatas.map((part) => part.place));
               }, setTimeOut);
             }}
           />
         </>
       )}
-      <AllInOneLock lock={!data.isOverNightCamp}>
+      <AllInOneLock lock={camp.nongSleepModel == "ไม่มีการค้างคืน"}>
         จำนวนสมาชิกชายที่ค้างคืน
         <CampNumberTable
-          isHavePeto={data.isHavePeto}
+          isHavePeto={
+            camp.memberStructure == "nong->highSchool,pee->1year,peto->2upYear"
+          }
           main={data.boySleepNumber}
           baanNumbers={data.baanBoySleeps}
           partNumbers={data.partBoySleeps}
-          groupName={data.groupName}
+          groupName={camp.groupName}
           filename="สมาชิกชายที่ค้างคืน"
-          nongCall={data.nongCall}
+          nongCall={camp.nongCall}
         />
         จำนวนสมาชิกหญิงที่ค้างคืน
         <CampNumberTable
-          isHavePeto={data.isHavePeto}
+          isHavePeto={
+            camp.memberStructure == "nong->highSchool,pee->1year,peto->2upYear"
+          }
           main={data.girlSleepNumber}
           baanNumbers={data.baanGirlSleeps}
           partNumbers={data.partGirlSleeps}
-          groupName={data.groupName}
+          groupName={camp.groupName}
           filename="สมาชิกหญิงที่ค้างคืน"
-          nongCall={data.nongCall}
+          nongCall={camp.nongCall}
         />
         {data.baanSleepDatas.map((baan, i) => {
           const boyRef = React.useRef(null);
           const girlRef = React.useRef(null);
           const boyDownload = useDownloadExcel({
             currentTableRef: boyRef.current,
-            filename: `รายชื่อ${data.groupName}${baan.name}ผู้ชายที่นอนค้างคืน`,
+            filename: `รายชื่อ${camp.groupName}${baan.name}ผู้ชายที่นอนค้างคืน`,
           });
           const girlDownload = useDownloadExcel({
             currentTableRef: girlRef.current,
-            filename: `รายชื่อ${data.groupName}${baan.name}ผู้หญิงที่นอนค้างคืน`,
+            filename: `รายชื่อ${camp.groupName}${baan.name}ผู้หญิงที่นอนค้างคืน`,
           });
           return (
             <div key={i}>
-              รายชื่อ{data.groupName}
+              รายชื่อ{camp.groupName}
               {baan.name}ผู้ชายที่นอนค้างคืน
               <table ref={boyRef}>
                 <tr>
@@ -254,7 +313,7 @@ export default function PlanClient({
                 text={downloadText}
                 onClick={boyDownload.onDownload}
               />
-              รายชื่อ{data.groupName}
+              รายชื่อ{camp.groupName}
               {baan.name}ผู้หญิงที่นอนค้างคืน
               <table ref={girlRef}>
                 <tr>

@@ -4,11 +4,19 @@ import { useDownloadExcel } from "react-export-table-to-excel";
 import { ShowCampSongReady } from "../../../../interface";
 import updateSongPage from "@/libs/randomthing/updateSongPage";
 import FinishButton from "@/components/utility/FinishButton";
-import { setSwop, downloadText } from "@/components/utility/setup";
+import {
+  setSwop,
+  downloadText,
+  getBackendUrl,
+} from "@/components/utility/setup";
 import StringToHtml from "@/components/utility/StringToHtml";
 import { Checkbox } from "@mui/material";
 import React from "react";
+import { io } from "socket.io-client";
+import { RealTimeBasicBaan } from "./UpdateBaanClient";
+import { RealTimeCamp } from "./UpdateCampClient";
 
+const socket = io(getBackendUrl());
 export default function PrStudioBaan({
   token,
   data,
@@ -22,6 +30,18 @@ export default function PrStudioBaan({
     filename: `เพลงทั้งหมด`,
   });
   const [songIds, setSongIds] = React.useState(data.songIds);
+  const [camp, setCamp] = React.useState(data.camp);
+  const [baan, setBaan] = React.useState(data.baan);
+  const realTimeBaan = new RealTimeBasicBaan(baan._id, socket, setBaan);
+  const realTimeCamp = new RealTimeCamp(camp._id, socket);
+  React.useEffect(() => {
+    realTimeBaan.listen();
+    realTimeCamp.listen(setCamp);
+    return () => {
+      realTimeBaan.disconect();
+      realTimeCamp.disconect();
+    };
+  });
   return (
     <div>
       <table ref={ref}>
@@ -34,8 +54,8 @@ export default function PrStudioBaan({
           <th>เพลงนี้ใช้ในค่าย</th>
           <th>เพลงนี้ใช้ในบ้าน</th>
           <th>จำนวนน้องที่ชอบ</th>
-          <th>จำนวนพี่{data.groupName}ที่ชอบ</th>
-          <th>{data.baanName}</th>
+          <th>จำนวนพี่{camp.campName}ที่ชอบ</th>
+          <th>{baan.name}</th>
         </tr>
         {data.showCampSongs.map((song, songIndex) => {
           return (

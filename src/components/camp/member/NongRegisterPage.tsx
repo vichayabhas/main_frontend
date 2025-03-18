@@ -3,6 +3,7 @@ import nongRegisterCamp from "@/libs/camp/nongRegisterCamp";
 import { MenuItem, Select, TextField } from "@mui/material";
 import { Choice, CampState } from "../../../../interface";
 import {
+  getBackendUrl,
   modifyElementInUseStateArray,
   setMap,
   setTextToString,
@@ -10,18 +11,22 @@ import {
 import Link from "next/link";
 import React from "react";
 import ImagesFromUrl from "../../utility/ImagesFromUrl";
+import { io } from "socket.io-client";
+import { RealTimeCamp } from "../authPart/UpdateCampClient";
 
+const socket = io(getBackendUrl());
 interface QuestionReady {
   element: React.ReactNode;
   order: number;
 }
 export default function NongRegisterPage({
   token,
-  campState: { camp, user, questions },
+  campState,
 }: {
   token: string;
   campState: CampState;
 }) {
+  const { user, questions } = campState;
   const [link, setLink] = React.useState<string | null>("");
   const [choiceAnswers, setChoiceAnswers] = React.useState<(Choice | "-")[]>(
     questions.choices.map((choice) => choice.answer)
@@ -29,6 +34,14 @@ export default function NongRegisterPage({
   const [textAnswers, setTextAnswers] = React.useState(
     questions.texts.map((text) => text.answer)
   );
+  const [camp, setCamp] = React.useState(campState.camp);
+  const realTimeCamp = new RealTimeCamp(camp._id, socket);
+  React.useEffect(() => {
+    realTimeCamp.listen(setCamp);
+    return () => {
+      realTimeCamp.disconect();
+    };
+  });
   const questionReady: QuestionReady[] = questions.choices
     .map((choice, i) => {
       let chooseChoice: string;

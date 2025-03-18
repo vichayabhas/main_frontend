@@ -19,12 +19,8 @@ export default function PlaceSelect({
   // dispatch = useDispatch<AppDispatch>();
   //const update = useAppSelector((state) => state.bookSlice.bookItem);
 
-  const [nP, setNP] = React.useState<InterPlace | null>(place);
-
   const [nB, setNB] = React.useState<string | null>(
-    allPlaceData.allBuildings.get(place?.buildingId as Id)?.name as
-      | string
-      | null
+    allPlaceData.allBuildings.get(place?.buildingId as Id) as string | null
   );
 
   const nC = nB ? (allPlaceData.allPlace.get(nB) as InterPlace[]) : [];
@@ -58,7 +54,7 @@ export default function PlaceSelect({
       <div className="flex flex-row items-center my-5">
         <label className="w-2/5 text-2xl text-white">{placeText}</label>
         <Select
-          value={`${nP?.floor} ${nP?.room}`}
+          value={`${place?.floor} ${place?.room}`}
           variant="standard"
           name="location"
           id="location"
@@ -74,7 +70,6 @@ export default function PlaceSelect({
                 value={`${choice.floor} ${choice.room}`}
                 onClick={() => {
                   onClick(choice);
-                  setNP(choice);
                 }}
               >
                 {choice.floor} {choice.room}
@@ -85,7 +80,6 @@ export default function PlaceSelect({
             value={"-"}
             onClick={() => {
               onClick(null);
-              setNP(null);
             }}
           >
             -

@@ -8,10 +8,10 @@ import {
   InterCampMemberCard,
   BasicUser,
   UpdateTimeOffsetRaw,
-} from "../../../interface";
-import FinishButton from "../utility/FinishButton";
-import GetTimeHtml from "../utility/GetTimeHtml";
-import { downloadText, copy } from "../utility/setup";
+} from "../../../../../interface";
+import FinishButton from "../../../utility/FinishButton";
+import GetTimeHtml from "../../../utility/GetTimeHtml";
+import { downloadText, copy } from "../../../utility/setup";
 
 export default function ShowOwnCampData({
   healthIssue,

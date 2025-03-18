@@ -65,6 +65,9 @@ export default function AllAnswerAndQuestionPageBreakDown({
         modifyElementInUseStateArray2Dimension(i, j)
       )(score);
     });
+    return () => {
+      socketReady.disconect();
+    };
   });
   function scoring() {
     waiting(async () => {
@@ -146,9 +149,7 @@ export default function AllAnswerAndQuestionPageBreakDown({
             text="clear"
             onClick={() => setTextScores(setDefaultScore(setMode(data)))}
           />
-          {data.canScoring ? (
-            <FinishButton text="score" onClick={scoring} />
-          ) : null}
+          {!readOnly ? <FinishButton text="score" onClick={scoring} /> : null}
         </div>
       )}
     </div>

@@ -17,6 +17,7 @@ import {
 } from "../utility/setup";
 import StringToHtml from "../utility/StringToHtml";
 import { io } from "socket.io-client";
+import { RealTimeCamp } from "../camp/authPart/UpdateCampClient";
 const socket = io(getBackendUrl());
 const newChatSocket = new SocketReady<ShowChat>(socket, "newChat");
 export default function ChatClient({
@@ -28,6 +29,8 @@ export default function ChatClient({
 }) {
   const [message, setMessage] = React.useState<string | null>(null);
   const [messages, setMessages] = React.useState(data.chats);
+  const [camp, setCamp] = React.useState(data.camp);
+  const realTimeCamp = new RealTimeCamp(camp._id, socket);
   const sendType = data.sendType;
   React.useEffect(() => {
     const handleNewChat = (newChat: ShowChat) => {
@@ -36,8 +39,10 @@ export default function ChatClient({
       }
     };
     newChatSocket.listen(data.subscribe, handleNewChat);
+    realTimeCamp.listen(setCamp);
     return () => {
       newChatSocket.disconect();
+      realTimeCamp.disconect();
     };
   });
   return (
@@ -99,10 +104,12 @@ export default function ChatClient({
                         {chat.nickname} {chat.partName}
                       </td> // part
                     ) : chat.role == "nong" ? (
-                      <td>{chat.nickname} {data.nongCall}</td> // lable
+                      <td>
+                        {chat.nickname} {camp.nongCall}
+                      </td> // lable
                     ) : (
                       <td>
-                        {chat.nickname} พี่{data.groupName}
+                        {chat.nickname} พี่{camp.groupName}
                       </td> // group
                     )}
                   </tr>

@@ -4,8 +4,13 @@ import FinishButton from "@/components/utility/FinishButton";
 import { downloadText } from "@/components/utility/setup";
 import React from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
-import { BasicCamp, BasicBaan, ShowMember, Mode } from "../../../../interface";
 import { useRouter } from "next/navigation";
+import {
+  BasicCamp,
+  BasicBaan,
+  ShowMember,
+  Mode,
+} from "../../../../../interface";
 
 export default function BaanMembers({
   baan,
@@ -89,7 +94,13 @@ export default function BaanMembers({
                 {campRole !== "nong" ? (
                   <>
                     <td>{user.sleep ? <>ค้างคืน</> : <>ไม่ค้างคืน</>} </td>
-                    <td onClick={()=>{router.push(`/userProfile/${user._id}`)}}>{user._id.toString()}</td>
+                    <td
+                      onClick={() => {
+                        router.push(`/userProfile/${user._id}`);
+                      }}
+                    >
+                      {user._id.toString()}
+                    </td>
                     <td>{user.studentId}</td>
                     <td>{user.tel}</td>
                     <td>{user.email}</td>
@@ -164,7 +175,13 @@ export default function BaanMembers({
               {campRole !== "nong" ? (
                 <>
                   <td>{user.sleep ? <>ค้างคืน</> : <>ไม่ค้างคืน</>} </td>
-                  <td onClick={()=>{router.push(`/userProfile/${user._id}`)}}>{user._id.toString()}</td>
+                  <td
+                    onClick={() => {
+                      router.push(`/userProfile/${user._id}`);
+                    }}
+                  >
+                    {user._id.toString()}
+                  </td>
                   <td>{user.studentId}</td>
                   <td>{user.tel}</td>
                   <td>{user.email}</td>

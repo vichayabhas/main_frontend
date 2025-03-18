@@ -28,6 +28,8 @@ import UserNameTable from "@/components/utility/UserNameTable";
 import updateSubGroup from "@/libs/camp/updateSubGroup";
 import deleteSubGroup from "@/libs/camp/deleteSubGroup";
 import deleteGroupContainer from "@/libs/camp/deleteGroupContainer";
+import { RealTimeCamp } from "./UpdateCampClient";
+import { RealTimeBasicBaan } from "./UpdateBaanClient";
 const socket = io(getBackendUrl());
 export default function SubGroupAdminClient({
   data,
@@ -58,10 +60,18 @@ export default function SubGroupAdminClient({
   const [start, setStart] = React.useState(0);
   const [gender, setGender] = React.useState<"male" | "female" | null>(null);
   const [role, setRole] = React.useState<Mode | null>(null);
+  const [camp, setCamp] = React.useState(data.camp);
+  const [baan, setBaan] = React.useState(data.baan);
+  const realTimeCamp = new RealTimeCamp(camp._id, socket);
+  const realTimeBaan = new RealTimeBasicBaan(baan._id, socket, setBaan);
   React.useEffect(() => {
     updateSocket.listen(room, setGroups);
+    realTimeBaan.listen();
+    realTimeCamp.listen(setCamp);
     return () => {
       updateSocket.disconect();
+      realTimeBaan.disconect();
+      realTimeCamp.disconect();
     };
   });
   return (
@@ -97,8 +107,8 @@ export default function SubGroupAdminClient({
             />
           </div>
           <div>
-            ทุกคนใน{data.camp.groupName}
-            {data.baan.name}สามารถแก้ไขกลุ่มย่อยได้หรือไม่
+            ทุกคนใน{camp.groupName}
+            {baan.name}สามารถแก้ไขกลุ่มย่อยได้หรือไม่
             <Checkbox
               onChange={setBoolean(setCanAnybodyCreateSubGroup)}
               checked={canAnybodyCreateSubGroup}
@@ -115,7 +125,7 @@ export default function SubGroupAdminClient({
             </Select>
           </div>
           <div>
-            รูปแบบการแยกพี่{data.camp.groupName}กับ{data.camp.nongCall}
+            รูปแบบการแยกพี่{camp.groupName}กับ{camp.nongCall}
             <Select value={roleType} renderValue={() => roleType}>
               {groupRoleTypes.map((v, i) => (
                 <MenuItem key={i} onClick={() => setRoleType(v)}>
@@ -133,7 +143,7 @@ export default function SubGroupAdminClient({
                   roleType,
                   name: containerName,
                   canAnybodyCreateSubGroup,
-                  baanId: data.baan._id,
+                  baanId: baan._id,
                 },
                 token,
                 updateSocket,
@@ -152,13 +162,13 @@ export default function SubGroupAdminClient({
             />
           </div>
           <div>
-            เป็นกลุ่มหลักใน{data.camp.groupName}
-            {data.baan.name}หรือไม่
+            เป็นกลุ่มหลักใน{camp.groupName}
+            {baan.name}หรือไม่
             <Checkbox onChange={setBoolean(setIsDefault)} checked={isDefault} />
           </div>
           <div>
-            ทุกคนใน{data.camp.groupName}
-            {data.baan.name}สามารถแก้ไขกลุ่มย่อยได้หรือไม่
+            ทุกคนใน{camp.groupName}
+            {baan.name}สามารถแก้ไขกลุ่มย่อยได้หรือไม่
             <Checkbox
               onChange={setBoolean(setCanAnybodyCreateSubGroup)}
               checked={canAnybodyCreateSubGroup}
@@ -237,25 +247,25 @@ export default function SubGroupAdminClient({
               ) : null}
               {groups[selectIndex].roleType == "กำหนดตอนสร้างกลุ่มย่อย" ? (
                 <div>
-                  เลือกพี่{data.camp.groupName}หรือ{data.camp.nongCall}
+                  เลือกพี่{camp.groupName}หรือ{camp.nongCall}
                   <Select
                     value={role}
                     renderValue={() => {
                       switch (role) {
                         case "nong":
-                          return `${data.camp.nongCall}เท่านั้น`;
+                          return `${camp.nongCall}เท่านั้น`;
                         case "pee":
-                          return `พี่${data.camp.groupName}เท่านั้น`;
+                          return `พี่${camp.groupName}เท่านั้น`;
                         case null:
-                          return `โปรดเลือกเลือกพี่${data.camp.groupName}หรือ${data.camp.nongCall}`;
+                          return `โปรดเลือกเลือกพี่${camp.groupName}หรือ${camp.nongCall}`;
                       }
                     }}
                   >
                     <MenuItem onClick={() => setRole("nong")}>
-                    {data.camp.nongCall}เท่านั้น
+                      {camp.nongCall}เท่านั้น
                     </MenuItem>
                     <MenuItem onClick={() => setRole("pee")}>
-                      พี่${data.camp.groupName}เท่านั้น
+                      พี่{camp.groupName}เท่านั้น
                     </MenuItem>
                   </Select>
                 </div>

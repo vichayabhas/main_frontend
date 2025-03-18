@@ -9,14 +9,18 @@ import {
   setSwop,
   setSwop2DimensionArray,
   downloadText,
+  getBackendUrl,
 } from "@/components/utility/setup";
 import StringToHtml from "@/components/utility/StringToHtml";
 import { Checkbox } from "@mui/material";
 import React from "react";
 import { AuthSongsCamp } from "../../../../interface";
+import { RealTimeCamp } from "./UpdateCampClient";
+import { io } from "socket.io-client";
 
+const socket = io(getBackendUrl());
 export default function PrStudioClient({
-  authSong: { userLikeSongIds, baans, camp, authCamp, songs },
+  authSong,
   token,
   partIdString,
 }: {
@@ -24,16 +28,25 @@ export default function PrStudioClient({
   token: string;
   partIdString: string;
 }) {
+  const { userLikeSongIds, baans, authCamp, songs } = authSong;
   const ref = React.useRef(null);
   const { onDownload } = useDownloadExcel({
     currentTableRef: ref.current,
     filename: `เพลงทั้งหมด`,
   });
+  const [camp, setCamp] = React.useState(authSong.camp);
   const [campSongIds, setCampSongIds] = React.useState(camp.songIds);
   const [arrayOfBaanSongLists, setArrayOfBaanSongLists] = React.useState(
     baans.map(({ songIds }) => songIds)
   );
+  const realTimeCamp = new RealTimeCamp(camp._id, socket);
   const router = useRouter();
+  React.useEffect(() => {
+    realTimeCamp.listen(setCamp);
+    return () => {
+      realTimeCamp.disconect();
+    };
+  });
   return (
     <div>
       <table ref={ref}>

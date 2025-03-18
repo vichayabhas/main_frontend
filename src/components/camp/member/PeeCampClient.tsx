@@ -3,40 +3,51 @@
 import chatStyle from "../../chat/chat.module.css";
 import React from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
-import { AddRemoveHigh, downloadText, setBoolean } from "../../utility/setup";
+import {
+  AddRemoveHigh,
+  downloadText,
+  getBackendUrl,
+  setBoolean,
+} from "../../utility/setup";
 import TopMenuItem from "../../randomthing/TopMenuItem";
 import styles from "../../randomthing/topmenu.module.css";
-import ImageAndDescriptions from "../ImageAndDescriptions";
+import ImageAndDescriptions from "./components/ImageAndDescriptions";
 import UserNameTable from "../../utility/UserNameTable";
 import { Checkbox } from "@mui/material";
-import PartJob from "../PartJob";
+import PartJob from "./components/PartJob";
 import registerJob from "@/libs/camp/registerJob";
 import AllInOneLock from "@/components/utility/AllInOneLock";
 import FinishButton from "@/components/utility/FinishButton";
 import { GetPeeData, AllPlaceData, Id } from "../../../../interface";
-import BaanMembers from "./BaanMembers";
 import ImagesFromUrl from "@/components/utility/ImagesFromUrl";
-import PartClient from "../PartClient";
-import ShowOwnCampData from "../ShowOwnCampData";
-import MirrorClient from "./MirrorClient";
-import SubGroupClient from "./SubGroupClient";
+import ShowOwnCampData from "./components/ShowOwnCampData";
+import MirrorClient from "./components/MirrorClient";
+import SubGroupClient from "./components/SubGroupClient";
+import PartClient from "./components/PartClient";
+import BaanMembers from "./components/BaanMembers";
+import { RealTimeFoodUpdate } from "../meal/setup";
+import { io } from "socket.io-client";
+import { RealTimeBaan } from "../authPart/UpdateBaanClient";
+import { RealTimeCamp } from "../authPart/UpdateCampClient";
+import { RealTimePart } from "../authPart/UpdatePartClient";
 
 export default function PeeCampClient({
-  data: {
+  data,
+  token,
+  allPlaceData,
+}: {
+  data: GetPeeData;
+  token: string;
+  allPlaceData: AllPlaceData;
+}) {
+  const {
     user,
-    camp,
     campMemberCard,
-    baan,
-    normal,
-    boy,
-    girl,
     peeBaans,
     nongBaans,
-    meals,
     healthIssue,
     displayOffset,
     selectOffset,
-    partPlace,
     part,
     petoParts,
     peeParts,
@@ -46,15 +57,40 @@ export default function PeeCampClient({
     mirrorData,
     defaultGroup,
     groups,
-  },
-  token,
-  allPlaceData,
-}: {
-  data: GetPeeData;
-  token: string;
-  allPlaceData: AllPlaceData;
-}) {
+  } = data;
   const ref = React.useRef(null);
+  const [meals, setMeals] = React.useState(data.meals);
+  const [baan, setBaan] = React.useState(data.baan);
+  const [boy, setBoy] = React.useState(data.boy);
+  const [girl, setGirl] = React.useState(data.girl);
+  const [normal, setNormal] = React.useState(data.normal);
+  const [camp, setCamp] = React.useState(data.camp);
+  const [partPlace, setPartPlace] = React.useState(data.partPlace);
+  const socket = io(getBackendUrl());
+  const realTimeFoodUpdate = new RealTimeFoodUpdate(campMemberCard._id, socket);
+  const realTimeBaan = new RealTimeBaan(
+    baan._id,
+    socket,
+    setBoy,
+    setGirl,
+    setNormal,
+    setBaan,
+    allPlaceData
+  );
+  const realTimeCamp = new RealTimeCamp(camp._id, socket);
+  const realTimePart = new RealTimePart(part._id, socket);
+  React.useEffect(() => {
+    realTimeFoodUpdate.listen(setMeals);
+    realTimeBaan.listen();
+    realTimeCamp.listen(setCamp);
+    realTimePart.listen(setPartPlace, allPlaceData);
+    return () => {
+      realTimeFoodUpdate.disconect();
+      realTimeBaan.disconect();
+      realTimeCamp.disconect();
+      realTimePart.disconect();
+    };
+  });
   const download = useDownloadExcel({
     currentTableRef: ref.current,
     filename: `ห้อง${camp.groupName} ${
@@ -335,6 +371,7 @@ export default function PeeCampClient({
         mode={user.mode}
         token={token}
         gender={user.gender}
+        baanId={baan._id}
       />
       <AllInOneLock mode={user.mode}>
         <div
@@ -458,15 +495,15 @@ export default function PeeCampClient({
         token={token}
         campMemberCardId={campMemberCard._id}
       />
-            <AllInOneLock token={token}>
-              <ShowOwnCampData
-                user={user}
-                campMemberCard={campMemberCard}
-                healthIssue={healthIssue}
-                meals={meals}
-                displayOffset={displayOffset}
-              />
-            </AllInOneLock>
+      <AllInOneLock token={token}>
+        <ShowOwnCampData
+          user={user}
+          campMemberCard={campMemberCard}
+          healthIssue={healthIssue}
+          meals={meals}
+          displayOffset={displayOffset}
+        />
+      </AllInOneLock>
     </>
   );
 }

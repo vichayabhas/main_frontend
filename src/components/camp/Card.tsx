@@ -132,16 +132,20 @@ import React from "react";
 import InteractiveCard from "./InteractiveCard";
 
 import { ClockIcon } from "@mui/x-date-pickers";
-import { Id, InterCampFront } from "../../../interface";
+import { BasicCamp, Id } from "../../../interface";
+import { RealTimeCamp } from "./authPart/UpdateCampClient";
+import { io } from "socket.io-client";
+import { getBackendUrl } from "../utility/setup";
 
 //import { Router } from "next/router";
 //import { useRouter } from "next/navigation";
 
+const socket = io(getBackendUrl());
 export default function Card({
   hospitalName,
   onRating,
   link,
-  camp,
+  camp: campInput,
 }: {
   hospitalName: string;
   onRating: (input: string) => void;
@@ -149,11 +153,19 @@ export default function Card({
   link: string;
   imgSrc: string | null;
   id: Id;
-  camp: InterCampFront;
+  camp: BasicCamp;
   //onCarSelected :Function
 }) {
   //  const session=await getServerSession()
 
+  const [camp, setCamp] = React.useState(campInput);
+  const realTimeCamp = new RealTimeCamp(camp._id, socket);
+  React.useEffect(() => {
+    realTimeCamp.listen(setCamp);
+    return () => {
+      realTimeCamp.disconect();
+    };
+  });
   return (
     <InteractiveCard
       contentName={hospitalName}
