@@ -1,9 +1,15 @@
 import { getBackendUrl } from "@/components/utility/setup";
-import { UpdateSongPage } from "../../../interface";
+import { UpdateSongPage, UpdateSongPageOut } from "../../../interface";
+import {
+  triggerBaanSong,
+  triggerCampSong,
+} from "@/components/camp/authPart/setup";
+import { Socket } from "socket.io-client";
 
 export default async function updateSongPage(
   input: UpdateSongPage,
-  token: string
+  token: string,
+  socket: Socket
 ) {
   const response = await fetch(
     `${getBackendUrl()}/randomthing/updateSongPage/`,
@@ -17,5 +23,11 @@ export default async function updateSongPage(
       body: JSON.stringify(input),
     }
   );
-  return await response.json();
+  const data: UpdateSongPageOut = await response.json();
+  data.baans.forEach((baan) => {
+    triggerBaanSong(baan._id, baan.songIds, socket);
+  });
+  data.camps.forEach((camp) => {
+    triggerCampSong(camp._id, camp.songIds, socket);
+  });
 }

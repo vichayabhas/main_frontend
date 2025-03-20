@@ -8,15 +8,20 @@ import { Select, MenuItem, Checkbox, TextField } from "@mui/material";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
-import { GetMenuSongs, Id } from "../../../interface";
+import { GetMenuSongs, Id, ShowSong } from "../../../interface";
 import FinishButton from "../utility/FinishButton";
 import {
   setSwop,
   downloadText,
   setTextToString,
   setTextToInt,
+  getBackendUrl,
+  addItemInUseStateArray,
 } from "../utility/setup";
+import { io } from "socket.io-client";
+import { RealTimeNewSong } from "./setup";
 
+const socket = io(getBackendUrl());
 export default function SongClient({ data }: { data: GetMenuSongs }) {
   const ref = React.useRef(null);
   const { onDownload } = useDownloadExcel({
@@ -24,18 +29,41 @@ export default function SongClient({ data }: { data: GetMenuSongs }) {
     filename: "รายชื่อเพลงทั้งหมด",
   });
   const router = useRouter();
-  const [songIds, setSongIds] = React.useState<Id[]>([]);
+  const [songIds, setSongIds] = React.useState<Id[]>(data.likeSongIds);
   const [name, setName] = React.useState("");
   const [author, setAuthor] = React.useState("");
   const [time, setTime] = React.useState(0);
   const [link, setLink] = React.useState("");
-  const [mode, setMode] = React.useState("");
+  const [mode, setMode] = React.useState("addLikeSong");
+  const [songs, setSongs] = React.useState(data.songs);
   const { data: session } = useSession();
   const auth = data.authBaans.length + data.authCamps.length > 0;
   if (!auth) {
-    setMode("ownLikeSongs");
+    setMode("addLikeSong");
     setSongIds(data.likeSongIds);
   }
+  const realTimeNewSong = new RealTimeNewSong(socket);
+  React.useEffect(() => {
+    realTimeNewSong.listen(({ _id, name, time, link, author }) => {
+      setSongs(
+        addItemInUseStateArray<ShowSong>({
+          name,
+          campNames: [],
+          baanNames: [],
+          author,
+          time,
+          link,
+          like: 0,
+          _id,
+          baanRelates: [],
+          campRelates: [],
+        })
+      );
+    });
+    return () => {
+      realTimeNewSong.disconect();
+    };
+  });
   return (
     <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
       {auth ? (
@@ -96,7 +124,7 @@ export default function SongClient({ data }: { data: GetMenuSongs }) {
           <th>ชอบหรือไม่</th>
           <th>ไปหน้าเพลง</th>
         </tr>
-        {data.songs.map((song, i) => (
+        {songs.map((song, i) => (
           <tr key={i}>
             <td>{song.name}</td>
             <td>{song.time}</td>
@@ -130,7 +158,7 @@ export default function SongClient({ data }: { data: GetMenuSongs }) {
             name="Email"
             id="Email"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
-            onChange={setTextToString(setName)}
+            onChange={setTextToString(setName,true)}
             value={name}
           />
         </div>
@@ -170,7 +198,11 @@ export default function SongClient({ data }: { data: GetMenuSongs }) {
           text="create"
           onClick={() => {
             if (session) {
-              createSong({ time, author, name, link }, session.user.token);
+              createSong(
+                { time, author, name, link },
+                session.user.token,
+                socket
+              );
             }
           }}
         />

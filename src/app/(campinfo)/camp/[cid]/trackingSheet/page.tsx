@@ -24,7 +24,9 @@ export default async function page({ params }: { params: { cid: string } }) {
     <PasswordLock token={session.user.token} bypass={user.mode == "pee"}>
       <WorkingItemClient
         workingItems={workingItems.data}
-        baseUrl={`camp/${params.cid}trackingSheet`}
+        baseUrl={`camp/${params.cid}/trackingSheet`}
+        roomId={stringToId(params.cid)}
+        password={user.linkHash}
       />
     </PasswordLock>
   );

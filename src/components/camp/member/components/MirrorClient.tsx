@@ -5,7 +5,9 @@ import {
   BasicBaan,
   BasicCamp,
   BasicUser,
+  GetMirrorBaan,
   GetMirrorPack,
+  GetMirrorUser,
   Id,
   ShowMember,
   UpdateTimeOffsetRaw,
@@ -13,16 +15,23 @@ import {
 import { useDownloadExcel } from "react-export-table-to-excel";
 import {
   downloadText,
+  getBackendUrl,
   peeLookupNong,
   setTextToString,
+  SocketReady,
 } from "@/components/utility/setup";
 import FinishButton from "@/components/utility/FinishButton";
 import { MenuItem, Select, TextField } from "@mui/material";
-import updateMirror from "@/libs/camp/updateMirror";
-import deleteMirror from "@/libs/camp/deleteMirror";
-import createMirror from "@/libs/camp/createMirror";
 import GetTimeHtml from "@/components/utility/GetTimeHtml";
+import { io } from "socket.io-client";
+import createMirrorBaan from "@/libs/camp/createMirrorBaan";
+import createMirrorUser from "@/libs/camp/createMirrorUser";
+import deleteMirrorBaan from "@/libs/camp/deleteMirrorBaan";
+import deleteMirrorUser from "@/libs/camp/deleteMirrorUser";
+import updateMirrorBaan from "@/libs/camp/updateMirrorBaan";
+import updateMirrorUser from "@/libs/camp/updateMirrorUser";
 
+const socket = io(getBackendUrl());
 export default function MirrorClient({
   mirrorData,
   baan,
@@ -70,6 +79,43 @@ export default function MirrorClient({
   const [message, setMessage] = React.useState<string>("");
   const [types, setTypes] = React.useState<MirrorType>("user");
   const [_id, set_id] = React.useState<Id | null>(null);
+  const [userRecivers, setUserRecivers] = React.useState(
+    mirrorData.userRecivers
+  );
+  const [userSenders, setUserSenders] = React.useState(mirrorData.userSenders);
+  const [baanRecivers, setBaanRecivers] = React.useState(
+    mirrorData.baanRecivers
+  );
+  const [baanSenders, setBaanSenders] = React.useState(mirrorData.baanSenders);
+  const userReciverSocket = new SocketReady<GetMirrorUser[]>(
+    socket,
+    "reciveMirrorUser"
+  );
+  const userSenderSocket = new SocketReady<GetMirrorUser[]>(
+    socket,
+    "sendMirrorUser"
+  );
+  const baanReciverSocket = new SocketReady<GetMirrorBaan[]>(
+    socket,
+    "reciveMorrorBaan"
+  );
+  const baanSenderSocket = new SocketReady<GetMirrorBaan[]>(
+    socket,
+    "sendMirrorBaan"
+  );
+  React.useEffect(() => {
+    const room = campMemberCardId.toString();
+    userReciverSocket.listen(room, setUserRecivers);
+    userSenderSocket.listen(room, setUserSenders);
+    baanReciverSocket.listen(baan._id.toString(), setBaanRecivers);
+    baanSenderSocket.listen(room, setBaanSenders);
+    return () => {
+      userReciverSocket.disconect();
+      userSenderSocket.disconect();
+      baanReciverSocket.disconect();
+      baanSenderSocket.disconect();
+    };
+  });
   return (
     <div>
       {baan.canReadMirror ? (
@@ -82,7 +128,7 @@ export default function MirrorClient({
               <th>ข้อความ</th>
               {camp.canReadTimeOnMirror ? <th>เวลา</th> : null}
             </tr>
-            {mirrorData.userRecivers.map((mirror, i) => (
+            {userRecivers.map((mirror, i) => (
               <tr key={i}>
                 <td>{mirror.sender.nickname}</td>
                 <td>{mirror.sender.name}</td>
@@ -114,7 +160,7 @@ export default function MirrorClient({
               {camp.canReadTimeOnMirror ? <th>เวลา</th> : null}
               {baan.canWhriteMirror ? <th>action</th> : null}
             </tr>
-            {mirrorData.userSenders.map((mirror, i) => {
+            {userSenders.map((mirror, i) => {
               if (types == "user" && _id?.toString() == mirror._id.toString()) {
                 return (
                   <tr key={i}>
@@ -138,13 +184,23 @@ export default function MirrorClient({
                         <FinishButton
                           text="update"
                           onClick={() => {
-                            updateMirror({ _id, message }, token);
+                            updateMirrorUser(
+                              { _id, message },
+                              token,
+                              userSenderSocket,
+                              userReciverSocket
+                            );
                           }}
                         />
                         <FinishButton
                           text="delete"
                           onClick={() => {
-                            deleteMirror(_id, token);
+                            deleteMirrorUser(
+                              _id,
+                              token,
+                              userSenderSocket,
+                              userReciverSocket
+                            );
                           }}
                         />
                       </td>
@@ -207,14 +263,16 @@ export default function MirrorClient({
                       text="create"
                       onClick={() => {
                         if (reciver) {
-                          createMirror(
+                          createMirrorUser(
                             {
                               senderCampMemberCardId: campMemberCardId,
                               reciverId: reciver.campMemberCardId,
                               types: "user",
                               message,
                             },
-                            token
+                            token,
+                            userSenderSocket,
+                            userReciverSocket
                           );
                         } else {
                           alert("โปรดระบุผู้รับ");
@@ -261,7 +319,7 @@ export default function MirrorClient({
               <th>ข้อความ</th>
               {camp.canReadTimeOnMirror ? <th>เวลา</th> : null}
             </tr>
-            {mirrorData.baanRecivers.map((mirror, i) => (
+            {baanRecivers.map((mirror, i) => (
               <tr key={i}>
                 <td>{mirror.sender.nickname}</td>
                 <td>{mirror.sender.name}</td>
@@ -291,7 +349,7 @@ export default function MirrorClient({
               {camp.canReadTimeOnMirror ? <th>เวลา</th> : null}
               {baan.canWhriteMirror ? <th>action</th> : null}
             </tr>
-            {mirrorData.baanSenders.map((mirror, i) => {
+            {baanSenders.map((mirror, i) => {
               if (types == "baan" && _id?.toString() == mirror._id.toString()) {
                 return (
                   <tr key={i}>
@@ -312,13 +370,23 @@ export default function MirrorClient({
                         <FinishButton
                           text="update"
                           onClick={() => {
-                            updateMirror({ _id, message }, token);
+                            updateMirrorBaan(
+                              { _id, message },
+                              token,
+                              baanSenderSocket,
+                              baanReciverSocket
+                            );
                           }}
                         />
                         <FinishButton
                           text="delete"
                           onClick={() => {
-                            deleteMirror(_id, token);
+                            deleteMirrorBaan(
+                              _id,
+                              token,
+                              baanSenderSocket,
+                              baanReciverSocket
+                            );
                           }}
                         />
                       </td>
@@ -366,14 +434,16 @@ export default function MirrorClient({
                     <FinishButton
                       text="create"
                       onClick={() => {
-                        createMirror(
+                        createMirrorBaan(
                           {
                             senderCampMemberCardId: campMemberCardId,
                             reciverId: baan._id,
                             types: "baan",
                             message,
                           },
-                          token
+                          token,
+                          baanSenderSocket,
+                          baanReciverSocket
                         );
                       }}
                     />

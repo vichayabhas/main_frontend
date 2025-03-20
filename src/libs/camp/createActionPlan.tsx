@@ -1,9 +1,12 @@
 import { getBackendUrl } from "@/components/utility/setup";
-import { CreateActionPlan } from "../../../interface";
+import { CreateActionPlan, TriggerActionPlan } from "../../../interface";
+import { triggerActionPlan } from "@/components/camp/setup";
+import { Socket } from "socket.io-client";
 
 export default async function createActionPlan(
   input: CreateActionPlan,
-  token: string
+  token: string,
+  socket: Socket
 ) {
   const response = await fetch(`${getBackendUrl()}/camp/createActionPlan/`, {
     method: "POST",
@@ -14,5 +17,7 @@ export default async function createActionPlan(
     },
     body: JSON.stringify(input),
   });
-  return await response.json();
+  const data: TriggerActionPlan = await response.json();
+  triggerActionPlan(data, socket);
+  return data;
 }

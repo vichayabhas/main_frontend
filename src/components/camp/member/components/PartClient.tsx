@@ -22,6 +22,8 @@ import {
   notEmpty,
   addTime,
   setTextToInt,
+  getBackendUrl,
+  getId,
 } from "@/components/utility/setup";
 import {
   BasicPart,
@@ -33,7 +35,9 @@ import {
   InterPlace,
   MyMap,
 } from "../../../../../interface";
+import { io } from "socket.io-client";
 
+const socket = io(getBackendUrl());
 export default function PartClient({
   user,
   part,
@@ -357,7 +361,7 @@ export default function PartClient({
                 },
               },
             }}
-            onChange={(e) => setBody(e.target.value)}
+            onChange={setTextToString(setBody, true)}
           />
         </div>
         <SelectTemplate
@@ -368,13 +372,14 @@ export default function PartClient({
                 {
                   action,
                   partId: part._id,
-                  placeIds: places.filter(notEmpty).map((e) => e._id),
+                  placeIds: places.map(getId).filter(notEmpty),
                   start: addTime(start, selectOffset),
                   end: addTime(end, selectOffset),
                   headId,
                   body,
                 },
-                session.user.token
+                session.user.token,
+                socket
               );
             }
           }}
@@ -510,7 +515,8 @@ export default function PartClient({
                   fromId: null,
                   password: password ? password : "null",
                 },
-                session.user.token
+                session.user.token,
+                socket
               );
             }
           }}

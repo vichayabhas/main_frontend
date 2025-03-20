@@ -32,6 +32,8 @@ export default async function HospitalDetailPage({
       <WorkingItemClient
         workingItems={workingItems.data}
         baseUrl="trackingSheet"
+        roomId={stringToId(params.pid)}
+        password={user.linkHash}
       />
     </PasswordLock>
   );

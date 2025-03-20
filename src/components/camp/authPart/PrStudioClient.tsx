@@ -10,13 +10,16 @@ import {
   setSwop2DimensionArray,
   downloadText,
   getBackendUrl,
+  addItemInUseStateArray,
 } from "@/components/utility/setup";
 import StringToHtml from "@/components/utility/StringToHtml";
 import { Checkbox } from "@mui/material";
 import React from "react";
-import { AuthSongsCamp } from "../../../../interface";
+import { AuthSongsCamp, ShowCampSong } from "../../../../interface";
 import { RealTimeCamp } from "./UpdateCampClient";
 import { io } from "socket.io-client";
+import { RealTimeCampSong } from "./setup";
+import { RealTimeNewSong } from "@/components/randomthing/setup";
 
 const socket = io(getBackendUrl());
 export default function PrStudioClient({
@@ -28,23 +31,46 @@ export default function PrStudioClient({
   token: string;
   partIdString: string;
 }) {
-  const { userLikeSongIds, baans, authCamp, songs } = authSong;
+  const { userLikeSongIds, baans, authCamp } = authSong;
   const ref = React.useRef(null);
   const { onDownload } = useDownloadExcel({
     currentTableRef: ref.current,
     filename: `เพลงทั้งหมด`,
   });
+  const [songs, setSongs] = React.useState(authSong.songs);
   const [camp, setCamp] = React.useState(authSong.camp);
   const [campSongIds, setCampSongIds] = React.useState(camp.songIds);
   const [arrayOfBaanSongLists, setArrayOfBaanSongLists] = React.useState(
     baans.map(({ songIds }) => songIds)
   );
+  const realTimeCampSong = new RealTimeCampSong(camp._id, socket);
   const realTimeCamp = new RealTimeCamp(camp._id, socket);
   const router = useRouter();
+  const realTimeNewSong = new RealTimeNewSong(socket);
   React.useEffect(() => {
     realTimeCamp.listen(setCamp);
+    realTimeCampSong.listen(setCampSongIds);
+    realTimeNewSong.listen(({ name, author, time, link, _id }) => {
+      setSongs(
+        addItemInUseStateArray<ShowCampSong>({
+          nongLike: 0,
+          peeLike: 0,
+          petoLike: 0,
+          name,
+          campNames: [],
+          baanNames: [],
+          author,
+          time,
+          link,
+          like: 0,
+          _id,
+        })
+      );
+    });
     return () => {
       realTimeCamp.disconect();
+      realTimeCampSong.disconect();
+      realTimeNewSong.disconect();
     };
   });
   return (
@@ -130,7 +156,8 @@ export default function PrStudioClient({
               ],
               userLikeSongIds,
             },
-            token
+            token,
+            socket
           );
         }}
       />

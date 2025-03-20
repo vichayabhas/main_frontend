@@ -31,6 +31,7 @@ export default async function HospitalDetailPage({
       actionPlans={actionPlans.data}
       timeOffset={timeOffset}
       baseUrl={`camp/${params.cid}/actionPlan`}
+      roomId={stringToId(params.cid)}
     />
   );
 }

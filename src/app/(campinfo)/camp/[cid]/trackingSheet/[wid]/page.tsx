@@ -3,7 +3,6 @@ import BackToHome from "@/components/utility/BackToHome";
 import { getServerSession } from "next-auth";
 import getWorkingItem from "@/libs/camp/getWorkingItem";
 import getUserProfile from "@/libs/user/getUserProfile";
-import bcrypt from "bcrypt";
 import getPart from "@/libs/camp/getPart";
 import EditWorkingItem from "@/components/camp/EditWorkingItem";
 import PasswordLock from "@/components/utility/PasswordLock";
@@ -31,8 +30,8 @@ export default async function HospitalDetailPage({
   }
   const part = await getPart(workingItem.partId, session.user.token);
   const parts = await getParts(part.campId, session.user.token);
-  const auth = await bcrypt.compare(user.linkHash, workingItem.password);
-  if (!(await bcrypt.compare(user.linkHash, workingItem.password))) {
+  const auth = user.linkHash == workingItem.password;
+  if (!auth) {
     workingItem.link = null;
   }
   return (

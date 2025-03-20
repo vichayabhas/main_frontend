@@ -207,9 +207,12 @@ export function addTime(
     .add(-add.minute, "minutes")
     .toDate();
 }
-export function peeLookupNong<P, N>(pees: P[], nongs: N[]): (P | N)[] {
+export function peeLookupNong<P, N>(
+  pees: readonly P[],
+  nongs: readonly N[]
+): (P | N)[] {
   if (pees.length == 0) {
-    return nongs;
+    return nongs.map(copy);
   }
   if (pees.length == 1) {
     const outs: (P | N)[] = [pees[0], ...nongs];

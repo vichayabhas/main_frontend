@@ -3,9 +3,9 @@ import BackToHome from "@/components/utility/BackToHome";
 import getWorkingItems from "@/libs/camp/getWorkingItems";
 import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";
-import WorkingItemClient from "@/components/camp/WorkingItemClient";
 import PasswordLock from "@/components/utility/PasswordLock";
 import React from "react";
+import WorkingItemWithoutSocketClient from "@/components/camp/WorkingItemWithoutSocketClient";
 export default async function page() {
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -21,7 +21,7 @@ export default async function page() {
   }
   return (
     <PasswordLock token={session.user.token} bypass={user.mode == "pee"}>
-      <WorkingItemClient
+      <WorkingItemWithoutSocketClient
         workingItems={workingItems.data}
         baseUrl="trackingSheet"
       />

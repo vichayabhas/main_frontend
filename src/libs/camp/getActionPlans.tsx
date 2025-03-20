@@ -1,9 +1,9 @@
 import { getBackendUrl } from "@/components/utility/setup";
-import { showActionPlan, SuccessBase } from "../../../interface";
+import { ShowActionPlan, SuccessBase } from "../../../interface";
 
 export default async function getActionPlans(
   token: string
-): Promise<SuccessBase<showActionPlan[]>> {
+): Promise<SuccessBase<ShowActionPlan[]>> {
   const response = await fetch(`${getBackendUrl()}/camp/getActionPlans`, {
     method: "GET",
     cache: "no-store",

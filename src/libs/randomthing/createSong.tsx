@@ -1,7 +1,13 @@
 import { getBackendUrl } from "@/components/utility/setup";
-import { CreateSong } from "../../../interface";
+import { CreateSong, InterSong } from "../../../interface";
+import { triggerNewSong } from "@/components/randomthing/setup";
+import { Socket } from "socket.io-client";
 
-export default async function createSong(input: CreateSong, token: string) {
+export default async function createSong(
+  input: CreateSong,
+  token: string,
+  socket: Socket
+) {
   const response = await fetch(`${getBackendUrl()}/randomthing/createSong/`, {
     method: "POST",
     cache: "no-store",
@@ -11,5 +17,7 @@ export default async function createSong(input: CreateSong, token: string) {
     },
     body: JSON.stringify(input),
   });
-  return await response.json();
+  const data: InterSong = await response.json();
+  triggerNewSong(data, socket);
+  return data;
 }

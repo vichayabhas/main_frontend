@@ -13,6 +13,7 @@ import SelectTemplate from "../utility/SelectTemplate";
 import {
   addItemInUseStateArray,
   addTime,
+  getBackendUrl,
   modifyElementInUseStateArray,
   notEmpty,
   removeElementInUseStateArray,
@@ -25,7 +26,9 @@ import dayjs, { Dayjs } from "dayjs";
 import deleteActionPlan from "@/libs/camp/deleteActionPlan";
 import PlaceSelect from "../randomthing/PlaceSelect";
 import FinishButton from "../utility/FinishButton";
+import { io } from "socket.io-client";
 
+const socket = io(getBackendUrl());
 export default function EditActionPlan({
   data,
   allPlaceData,
@@ -157,14 +160,15 @@ export default function EditActionPlan({
                   body,
                 },
                 data.actionPlan._id,
-                token
+                token,
+                socket
               );
             }
           }}
           buttonText={"update"}
         />
         <FinishButton
-          onClick={() => deleteActionPlan(data.actionPlan._id, token)}
+          onClick={() => deleteActionPlan(data.actionPlan._id, token, socket)}
           text={"delete"}
         />
       </div>

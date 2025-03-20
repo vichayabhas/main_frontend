@@ -1,10 +1,10 @@
 import { getBackendUrl } from "@/components/utility/setup";
-import { Id, showActionPlan, SuccessBase } from "../../../interface";
+import { Id, ShowActionPlan, SuccessBase } from "../../../interface";
 
 export default async function getActionPlanByCampId(
   campId: Id,
   token: string
-): Promise<SuccessBase<showActionPlan[]>> {
+): Promise<SuccessBase<ShowActionPlan[]>> {
   const response = await fetch(
     `${getBackendUrl()}/camp/getActionPlanByCampId/params/${campId}`,
     {

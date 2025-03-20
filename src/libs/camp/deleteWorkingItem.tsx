@@ -1,7 +1,13 @@
 import { getBackendUrl } from "@/components/utility/setup";
-import { Id } from "../../../interface";
+import { Id, TriggerWorkingItem } from "../../../interface";
+import { Socket } from "socket.io-client";
+import { triggerTrackingSheet } from "@/components/camp/setup";
 
-export default async function deleteWorkingItem(id: Id, token: string) {
+export default async function deleteWorkingItem(
+  id: Id,
+  token: string,
+  socket: Socket
+) {
   const response = await fetch(
     `${getBackendUrl()}/camp/deleteWorkingItem/params/${id}`,
     {
@@ -15,5 +21,7 @@ export default async function deleteWorkingItem(id: Id, token: string) {
   if (!response.ok) {
     throw new Error("Fail");
   }
-  return await response.json();
+  const data: TriggerWorkingItem = await response.json();
+  triggerTrackingSheet(data, socket);
+  return data;
 }

@@ -1,5 +1,7 @@
 import { getBackendUrl } from "@/components/utility/setup";
-import { Id } from "../../../interface";
+import { Id, TriggerWorkingItem } from "../../../interface";
+import { triggerTrackingSheet } from "@/components/camp/setup";
+import { Socket } from "socket.io-client";
 
 export default async function updateWorkingItem(
   input: {
@@ -8,7 +10,8 @@ export default async function updateWorkingItem(
     status: "not start" | "in process" | "done";
   },
   id: Id,
-  token: string
+  token: string,
+  socket: Socket
 ) {
   const response = await fetch(
     `${getBackendUrl()}/camp/updateWorkingItem/params/${id}`,
@@ -22,5 +25,7 @@ export default async function updateWorkingItem(
       body: JSON.stringify(input),
     }
   );
-  return await response.json();
+  const data: TriggerWorkingItem = await response.json();
+  triggerTrackingSheet(data, socket);
+  return data;
 }

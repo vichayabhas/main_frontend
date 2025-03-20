@@ -1,10 +1,10 @@
 import { getBackendUrl } from "@/components/utility/setup";
-import { Id, showActionPlan } from "../../../interface";
+import { Id, ShowActionPlan } from "../../../interface";
 
 export default async function getActionPlan(
   id: Id,
   token: string
-): Promise<showActionPlan> {
+): Promise<ShowActionPlan> {
   const response = await fetch(
     `${getBackendUrl()}/camp/getActionPlan/params/${id}`,
     {

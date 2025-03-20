@@ -3,42 +3,25 @@
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
-import { ShowActionPlan, InterTimeOffset, Id } from "../../../interface";
+import { ShowActionPlan, InterTimeOffset } from "../../../interface";
 import FinishButton from "../utility/FinishButton";
 import GetTimeHtml from "../utility/GetTimeHtml";
-import {
-  getDifferentMinute,
-  downloadText,
-  getBackendUrl,
-} from "../utility/setup";
-import { io } from "socket.io-client";
-import { RealTimeActionPlan } from "./setup";
+import { getDifferentMinute, downloadText } from "../utility/setup";
 
-const socket = io(getBackendUrl());
-export default function ActionPlanClient({
-  actionPlans: actionPlanInput,
+export default function ActionPlanWithoutSocketClient({
+  actionPlans,
   timeOffset,
   baseUrl,
-  roomId,
 }: {
   actionPlans: ShowActionPlan[];
   timeOffset: InterTimeOffset;
   baseUrl: string;
-  roomId: Id;
 }) {
   const router = useRouter();
   const ref = React.useRef(null);
   const download = useDownloadExcel({
     currentTableRef: ref.current,
     filename: "action plan",
-  });
-  const [actionPlans, setActionPlans] = React.useState(actionPlanInput);
-  const realTimeActionPlan = new RealTimeActionPlan(roomId, socket);
-  React.useEffect(() => {
-    realTimeActionPlan.listen(setActionPlans);
-    return () => {
-      realTimeActionPlan.disconect();
-    };
   });
   return (
     <div

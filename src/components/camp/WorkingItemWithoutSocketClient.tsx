@@ -1,72 +1,24 @@
 "use client";
 import React from "react";
-import { Id, InterWorkingItem } from "../../../interface";
+import { InterWorkingItem } from "../../../interface";
 import { useRouter } from "next/navigation";
 import { useDownloadExcel } from "react-export-table-to-excel";
-import { downloadText, getBackendUrl } from "../utility/setup";
+import { downloadText } from "../utility/setup";
 import StringToHtml from "../utility/StringToHtml";
 import FinishButton from "../utility/FinishButton";
-import { io } from "socket.io-client";
-import { RealTimeTrackingSheet } from "./setup";
 
-const socket = io(getBackendUrl());
-export default function WorkingItemClient({
-  workingItems: inputs,
+export default function WorkingItemWithoutSocketClient({
+  workingItems,
   baseUrl,
-  roomId,
-  password: passwordIn,
 }: {
   workingItems: InterWorkingItem[];
   baseUrl: string;
-  roomId: Id;
-  password: string;
 }) {
   const router = useRouter();
   const ref = React.useRef(null);
   const download = useDownloadExcel({
     currentTableRef: ref.current,
     filename: "tracking sheet",
-  });
-  const [workingItems, setWorkingItems] = React.useState(inputs);
-  const realTimeTrackingSheet = new RealTimeTrackingSheet(roomId, socket);
-  React.useEffect(() => {
-    realTimeTrackingSheet.listen((data) => {
-      setWorkingItems(
-        data.map(
-          ({
-            _id,
-            link,
-            password,
-            linkOutIds,
-            partId,
-            partName,
-            name,
-            status,
-            fromId,
-            createBy,
-          }) => {
-            if (passwordIn != password) {
-              link = null;
-            }
-            return {
-              _id,
-              link,
-              linkOutIds,
-              partId,
-              partName,
-              password,
-              name,
-              status,
-              fromId,
-              createBy,
-            };
-          }
-        )
-      );
-    });
-    return()=>{
-      realTimeTrackingSheet.disconect()
-    }
   });
   return (
     <div>

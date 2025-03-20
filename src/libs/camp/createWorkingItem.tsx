@@ -1,9 +1,12 @@
 import { getBackendUrl } from "@/components/utility/setup";
-import { CreateWorkingItem } from "../../../interface";
+import { CreateWorkingItem, TriggerWorkingItem } from "../../../interface";
+import { Socket } from "socket.io-client";
+import { triggerTrackingSheet } from "@/components/camp/setup";
 
 export default async function createWorkingItem(
   input: CreateWorkingItem,
-  token: string
+  token: string,
+  socket: Socket
 ) {
   const response = await fetch(`${getBackendUrl()}/camp/createWorkingItem/`, {
     method: "POST",
@@ -14,5 +17,7 @@ export default async function createWorkingItem(
     },
     body: JSON.stringify(input),
   });
-  return await response.json();
+  const data: TriggerWorkingItem = await response.json();
+  triggerTrackingSheet(data, socket);
+  return data;
 }

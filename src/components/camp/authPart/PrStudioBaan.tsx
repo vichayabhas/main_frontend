@@ -1,13 +1,14 @@
 "use client";
 
 import { useDownloadExcel } from "react-export-table-to-excel";
-import { ShowCampSongReady } from "../../../../interface";
+import { ShowCampSong, ShowCampSongReady } from "../../../../interface";
 import updateSongPage from "@/libs/randomthing/updateSongPage";
 import FinishButton from "@/components/utility/FinishButton";
 import {
   setSwop,
   downloadText,
   getBackendUrl,
+  addItemInUseStateArray,
 } from "@/components/utility/setup";
 import StringToHtml from "@/components/utility/StringToHtml";
 import { Checkbox } from "@mui/material";
@@ -15,6 +16,8 @@ import React from "react";
 import { io } from "socket.io-client";
 import { RealTimeBasicBaan } from "./UpdateBaanClient";
 import { RealTimeCamp } from "./UpdateCampClient";
+import { RealTimeBaanSong } from "./setup";
+import { RealTimeNewSong } from "@/components/randomthing/setup";
 
 const socket = io(getBackendUrl());
 export default function PrStudioBaan({
@@ -32,14 +35,37 @@ export default function PrStudioBaan({
   const [songIds, setSongIds] = React.useState(data.songIds);
   const [camp, setCamp] = React.useState(data.camp);
   const [baan, setBaan] = React.useState(data.baan);
+  const [showCampSongs, setShowCampSongs] = React.useState(data.showCampSongs);
   const realTimeBaan = new RealTimeBasicBaan(baan._id, socket, setBaan);
   const realTimeCamp = new RealTimeCamp(camp._id, socket);
+  const realTimeBaanSong = new RealTimeBaanSong(baan._id, socket);
+  const realTimeNewSong = new RealTimeNewSong(socket);
   React.useEffect(() => {
     realTimeBaan.listen();
     realTimeCamp.listen(setCamp);
+    realTimeBaanSong.listen(setSongIds);
+    realTimeNewSong.listen(({ name, author, time, link, _id }) => {
+      setShowCampSongs(
+        addItemInUseStateArray<ShowCampSong>({
+          nongLike: 0,
+          peeLike: 0,
+          petoLike: 0,
+          name,
+          campNames: [],
+          baanNames: [],
+          author,
+          time,
+          link,
+          like: 0,
+          _id,
+        })
+      );
+    });
     return () => {
       realTimeBaan.disconect();
       realTimeCamp.disconect();
+      realTimeBaanSong.disconect();
+      realTimeNewSong.disconect()
     };
   });
   return (
@@ -57,7 +83,7 @@ export default function PrStudioBaan({
           <th>จำนวนพี่{camp.campName}ที่ชอบ</th>
           <th>{baan.name}</th>
         </tr>
-        {data.showCampSongs.map((song, songIndex) => {
+        {showCampSongs.map((song, songIndex) => {
           return (
             <tr key={songIndex}>
               <td>{song.name}</td>
@@ -91,10 +117,12 @@ export default function PrStudioBaan({
               camps: [],
               userLikeSongIds: data.userLikeSongIds,
             },
-            token
+            token,
+            socket
           );
         }}
       />
+      {showCampSongs.length}
     </div>
   );
 }

@@ -783,7 +783,7 @@ export interface CreateActionPlan {
   body: string;
   //public
 }
-export interface showActionPlan {
+export interface ShowActionPlan {
   _id: Id;
   action: string;
   partId: Id;
@@ -1932,6 +1932,17 @@ export const socketEvents = [
   "updateImageAndDescruptions",
   "triggerMeals",
   "realTimeAuthPart",
+  "newSong",
+  "updateBaanSong",
+  "updateCampSong",
+  "updateActionPlans",
+  "updateActionPlan",
+  "updateTrackingSheets",
+  "updateTrackingSheet",
+  "sendMirrorBaan",
+  "reciveMorrorBaan",
+  "sendMirrorUser",
+  "reciveMirrorUser",
 ] as const;
 export type SocketEvent = (typeof socketEvents)[number];
 export type QusetionType =
@@ -2051,7 +2062,7 @@ export interface CreateSubGroupByAnyone {
 export interface GetActionPlanForEdit {
   pees: ShowMember[];
   petos: ShowMember[];
-  actionPlan: showActionPlan;
+  actionPlan: ShowActionPlan;
   places: InterPlace[];
   selectOffset: UpdateTimeOffsetRaw;
 }
@@ -2135,4 +2146,32 @@ export interface UpdateCampOut {
 }
 export interface GetAllPlaceDataSetup extends InterBuilding {
   places: InterPlace[];
+}
+export interface UpdateSongPageOut {
+  baans: UpdateSongs[];
+  camps: UpdateSongs[];
+}
+export interface TriggerActionPlan {
+  forParts: ShowActionPlan[];
+  forCamps: ShowActionPlan[];
+  campId: Id;
+  partId: Id;
+}
+export interface TriggerWorkingItem {
+  forParts: InterWorkingItem[];
+  forCamps: InterWorkingItem[];
+  campId: Id;
+  partId: Id;
+}
+export interface TriggerMirrorBaan {
+  senders: GetMirrorBaan[];
+  recivers: GetMirrorBaan[];
+  senderId: Id;
+  reciverId: Id;
+}
+export interface TriggerMirrorUser {
+  senders: GetMirrorUser[];
+  recivers: GetMirrorUser[];
+  senderId: Id;
+  reciverId: Id;
 }

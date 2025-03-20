@@ -7,9 +7,11 @@ import SelectTemplate from "../utility/SelectTemplate";
 import updateWorkingItem from "@/libs/camp/updateWorkingItem";
 import deleteWorkingItem from "@/libs/camp/deleteWorkingItem";
 import React from "react";
-import { setTextToString } from "../utility/setup";
+import { getBackendUrl, setTextToString } from "../utility/setup";
 import StringToHtml from "../utility/StringToHtml";
 import FinishButton from "../utility/FinishButton";
+import { io } from "socket.io-client";
+const socket = io(getBackendUrl());
 export default function EditWorkingItem({
   workingItem,
   parts,
@@ -105,13 +107,18 @@ export default function EditWorkingItem({
         <FinishButton
           text="Update"
           onClick={() => {
-            updateWorkingItem({ name, link, status }, workingItem._id, token);
+            updateWorkingItem(
+              { name, link, status },
+              workingItem._id,
+              token,
+              socket
+            );
           }}
         />
         <FinishButton
           text="Delete"
           onClick={() => {
-            deleteWorkingItem(workingItem._id, token);
+            deleteWorkingItem(workingItem._id, token, socket);
           }}
         />
       </div>
@@ -133,7 +140,7 @@ export default function EditWorkingItem({
             id="Email"
             className="w-3/5 bg-slate-100 rounded-2xl border-gray-200"
             onChange={setTextToString(setNewLink)}
-            value={link}
+            value={newLink}
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -158,7 +165,8 @@ export default function EditWorkingItem({
                   fromId: workingItem._id,
                   password: password ? password : "null",
                 },
-                token
+                token,
+                socket
               );
             }
           }}

@@ -32,6 +32,7 @@ export default async function HospitalDetailPage({
         actionPlans={actionPlans.data}
         timeOffset={timeOffset}
         baseUrl="actionPlan"
+        roomId={stringToId(params.pid)}
       />
     </>
   );

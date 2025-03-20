@@ -6,9 +6,15 @@ import { Checkbox } from "@mui/material";
 import React from "react";
 import { ShowSongPage, Id } from "../../../interface";
 import FinishButton from "../utility/FinishButton";
-import { setSwop, setSwop2DimensionArray } from "../utility/setup";
+import {
+  getBackendUrl,
+  setSwop,
+  setSwop2DimensionArray,
+} from "../utility/setup";
 import StringToHtml from "../utility/StringToHtml";
+import { io } from "socket.io-client";
 
+const socket = io(getBackendUrl());
 export default function SongPageClient({ show }: { show: ShowSongPage }) {
   const [arrayOfCampSongLists, setArrayOfCampSongLists] = React.useState<
     Id[][]
@@ -107,7 +113,8 @@ export default function SongPageClient({ show }: { show: ShowSongPage }) {
                   songIds: arrayOfCampSongLists[i],
                 })),
               },
-              session.user.token
+              session.user.token,
+              socket
             );
           }
         }}

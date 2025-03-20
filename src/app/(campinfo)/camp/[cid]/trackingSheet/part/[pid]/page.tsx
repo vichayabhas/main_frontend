@@ -29,7 +29,9 @@ export default async function HospitalDetailPage({
     <PasswordLock token={session.user.token} bypass={user.mode == "pee"}>
       <WorkingItemClient
         workingItems={workingItems.data}
-        baseUrl={`camp/${params.cid}trackingSheet`}
+        baseUrl={`camp/${params.cid}/trackingSheet`}
+        roomId={stringToId(params.pid)}
+        password={user.linkHash}
       />
     </PasswordLock>
   );
