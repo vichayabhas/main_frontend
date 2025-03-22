@@ -26,6 +26,9 @@ export default async function planUpdateCamp(
     body: JSON.stringify(input),
   });
   const data: PlanUpdateOut = await response.json();
+  if (!response.ok) {
+    return data;
+  }
   socketInput.trigger(data.planTrigger, room);
   for (const baanTrigger of data.baanTriggers) {
     baanSocket.trigger(baanTrigger, baanTrigger.baan._id.toString());

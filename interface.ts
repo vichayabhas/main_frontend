@@ -194,6 +194,7 @@ export interface InterCampBack {
   canReadTimeOnMirror: boolean;
   nongCall: string;
   boyZoneLadyZoneState: BoyZoneLadyZoneState;
+  canNongSeeBaanOrder: boolean;
   //public
 }
 export interface InterCampStyle {
@@ -326,6 +327,7 @@ export interface InterCampMemberCard {
   mirrorReciverIds: Id[];
   mirrorBaanIds: Id[];
   subGroupIds: Id[];
+  orderIds: Id[];
   //private
 }
 export interface InterSong {
@@ -376,7 +378,6 @@ export interface InterUser {
   authPartIds: Id[];
   selectOffsetId: Id;
   displayOffsetId: Id;
-  chatIds: Id[];
   nongAnswerPackIds: Id[];
   peeAnswerPackIds: Id[];
   //private
@@ -569,6 +570,7 @@ export interface InterCampFront {
   canReadTimeOnMirror: boolean;
   nongCall: string;
   boyZoneLadyZoneState: BoyZoneLadyZoneState;
+  canNongSeeBaanOrder: boolean;
   //public
 }
 export interface InterPartFront {
@@ -657,6 +659,7 @@ export interface UpdateCamp {
   updatePart: UpdateAuthCamp[];
   canReadTimeOnMirror: boolean;
   nongCall: string;
+  canNongSeeBaanOrder: boolean;
   //public
 }
 export interface CreateCamp {
@@ -1433,6 +1436,9 @@ export interface GetNongData {
   mirrorData: GetMirrorPack;
   defaultGroup: GetGroupContainer | null;
   groups: GetGroupContainer[];
+  items: InterItem[];
+  baanOrders: ShowOrder[];
+  campMemberCardOrders: ShowOrder[];
   //private
 }
 export interface GetPeeData {
@@ -1459,6 +1465,10 @@ export interface GetPeeData {
   mirrorData: GetMirrorPack;
   defaultGroup: GetGroupContainer | null;
   groups: GetGroupContainer[];
+  items: InterItem[];
+  campMemberCardOrders: ShowOrder[];
+  baanOrders: ShowOrder[];
+  partOrders: ShowOrder[];
   //private
 }
 export interface GetPetoData {
@@ -1474,6 +1484,9 @@ export interface GetPetoData {
   petos: ShowMember[];
   pees: ShowMember[];
   partJobs: GetJob[];
+  items: InterItem[];
+  campMemberCardOrders: ShowOrder[];
+  partOrders: ShowOrder[];
   //private
 }
 export interface GetMenuSongs {
@@ -1641,6 +1654,7 @@ export interface BasicCamp {
   nongCampMemberCardIds: Id[];
   peeCampMemberCardIds: Id[];
   petoCampMemberCardIds: Id[];
+  canNongSeeBaanOrder: boolean;
   //public
 }
 export interface BasicPart {
@@ -1737,6 +1751,7 @@ export const authTypes = [
   "แก้ไขรูปภาพและคำอธิบายได้ทุกบ้าน",
   "แก้ไขรูปภาพและคำอธิบายได้เฉพาะบ้านตัวเอง",
   "แก้ไขกลุ่มได้",
+  "สามารถจัดการของได้",
 ] as const;
 export type AuthType = (typeof authTypes)[number];
 export interface CreateAuthCamp {
@@ -1943,6 +1958,11 @@ export const socketEvents = [
   "reciveMorrorBaan",
   "sendMirrorUser",
   "reciveMirrorUser",
+  "partUpdateOrder",
+  "baanUpdateOrder",
+  "campMemberCardUpdateOrder",
+  "campUpdateOrder",
+  "updateItem",
 ] as const;
 export type SocketEvent = (typeof socketEvents)[number];
 export type QusetionType =
@@ -2174,4 +2194,78 @@ export interface TriggerMirrorUser {
   recivers: GetMirrorUser[];
   senderId: Id;
   reciverId: Id;
+}
+export interface InterItem {
+  name: string;
+  orderIds: Id[];
+  campId: Id;
+  remain: number;
+  canNongOrder: boolean;
+  _id: Id;
+  imageLink: string | null;
+  canNongSee: boolean;
+}
+export interface InterOrder {
+  itemId: Id;
+  time: Date;
+  count: number;
+  fromId: Id;
+  types: "part" | "baan";
+  campMemberCardId: Id;
+  placeId: Id;
+  _id: Id;
+  isComplete: boolean;
+}
+export interface ShowOrder {
+  time: Date;
+  count: number;
+  types: "part" | "baan";
+  campMemberCardId: Id;
+  place: ShowPlace;
+  _id: Id;
+  fromName: string;
+  fromUser: BasicUser;
+  item: InterItem;
+  isComplete: boolean;
+}
+export interface CreateItem {
+  name: string;
+  campId: Id;
+  canNongOrder: boolean;
+  imageLink: string | null;
+  canNongSee: boolean;
+  remain: number;
+}
+export interface CreateOrder {
+  itemId: Id;
+  time: Date;
+  count: number;
+  fromId: Id;
+  types: "part" | "baan";
+  campMemberCardId: Id;
+  placeId: Id;
+}
+export interface UpdateItem {
+  name: string;
+  canNongOrder: boolean;
+  imageLink: string | null;
+  remain: number;
+  canNongSee: boolean;
+  _id: Id;
+}
+export interface TriggerOrder {
+  campMemberCardId: Id;
+  campMemberCardOrders: ShowOrder[];
+  fromId: Id;
+  fromOrders: ShowOrder[];
+  campId: Id;
+  campOrders: ShowOrder[];
+  items: InterItem[];
+  types: "part" | "baan";
+}
+export interface GetOrderForAdmin {
+  items: InterItem[];
+  displayOffset: UpdateTimeOffsetRaw;
+  orders: ShowOrder[];
+  camp: BasicCamp;
 }

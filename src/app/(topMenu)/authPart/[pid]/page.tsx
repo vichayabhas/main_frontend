@@ -30,6 +30,8 @@ import BackToHome from "@/components/utility/BackToHome";
 import getGroupContainerForAdmin from "@/libs/camp/getGroupContainerForAdmin";
 import SubGroupAdminClient from "@/components/camp/authPart/SubGroupAdminClient";
 import getCampForUpdate from "@/libs/admin/getCampForUpdate";
+import getOrderForAdmin from "@/libs/camp/getOrderForAdmin";
+import ManageItem from "@/components/camp/authPart/ManageItem";
 export default async function Baan({ params }: { params: { pid: string } }) {
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -214,6 +216,10 @@ export default async function Baan({ params }: { params: { pid: string } }) {
         break;
       }
     }
+  }
+  if (part.auths.includes("สามารถจัดการของได้") || isBoard) {
+    const data = await getOrderForAdmin(camp._id, token);
+    outputs.push(<ManageItem data={data} token={token} />);
   }
   return (
     <AllInOneLock lock={user.mode == "nong"} token={token} pushToHome bypass>

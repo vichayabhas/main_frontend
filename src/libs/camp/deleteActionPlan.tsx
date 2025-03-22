@@ -22,6 +22,9 @@ export default async function deleteActionPlan(
     throw new Error("Fail");
   }
   const data: TriggerActionPlan = await response.json();
+  if (!response.ok) {
+    return data;
+  }
   triggerActionPlan(data, socket);
   return data;
 }

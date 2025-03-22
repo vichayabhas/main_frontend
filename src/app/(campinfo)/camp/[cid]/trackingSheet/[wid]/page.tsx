@@ -31,9 +31,6 @@ export default async function HospitalDetailPage({
   const part = await getPart(workingItem.partId, session.user.token);
   const parts = await getParts(part.campId, session.user.token);
   const auth = user.linkHash == workingItem.password;
-  if (!auth) {
-    workingItem.link = null;
-  }
   return (
     <PasswordLock token={session.user.token} bypass={user.mode == "pee"}>
       <EditWorkingItem

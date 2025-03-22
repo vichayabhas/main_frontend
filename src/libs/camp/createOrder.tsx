@@ -1,14 +1,14 @@
 import { getBackendUrl } from "@/components/utility/setup";
-import { CreateSong, InterSong } from "../../../interface";
-import { triggerNewSong } from "@/components/randomthing/setup";
+import { CreateOrder, TriggerOrder } from "../../../interface";
+import { triggerOrder } from "@/components/camp/setup";
 import { Socket } from "socket.io-client";
 
-export default async function createSong(
-  input: CreateSong,
+export default async function createOrder(
+  input: CreateOrder,
   token: string,
   socket: Socket
 ) {
-  const response = await fetch(`${getBackendUrl()}/randomthing/createSong/`, {
+  const response = await fetch(`${getBackendUrl()}/camp/createOrder/`, {
     method: "POST",
     cache: "no-store",
     headers: {
@@ -17,10 +17,10 @@ export default async function createSong(
     },
     body: JSON.stringify(input),
   });
-  const data: InterSong = await response.json();
+  const data: TriggerOrder = await response.json();
   if (!response.ok) {
     return data;
   }
-  triggerNewSong(data, socket);
+  triggerOrder(data, socket);
   return data;
 }

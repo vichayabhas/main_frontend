@@ -30,6 +30,8 @@ import { io } from "socket.io-client";
 import { RealTimeBaan } from "../authPart/UpdateBaanClient";
 import { RealTimeCamp } from "../authPart/UpdateCampClient";
 import { RealTimePart } from "../authPart/UpdatePartClient";
+import ShowOrders from "./components/ShowOrders";
+import ShowItems from "./components/ShowItems";
 
 export default function PeeCampClient({
   data,
@@ -57,6 +59,10 @@ export default function PeeCampClient({
     mirrorData,
     defaultGroup,
     groups,
+    items,
+    baanOrders,
+    campMemberCardOrders,
+    partOrders,
   } = data;
   const ref = React.useRef(null);
   const [meals, setMeals] = React.useState(data.meals);
@@ -495,6 +501,44 @@ export default function PeeCampClient({
         token={token}
         campMemberCardId={campMemberCard._id}
       />
+      <ShowItems
+        from={{ baanId: baan._id, partId: part._id }}
+        items={items}
+        camp={camp}
+        campMemberCardId={campMemberCard._id}
+        token={token}
+        mode={user.mode}
+        allPlaceData={allPlaceData}
+      />
+      <ShowOrders
+        mode={user.mode}
+        orders={campMemberCardOrders}
+        filename={`orderที่ ${user.nickname} ${user.name} ${user.lastname} สั่ง`}
+        displayOffset={displayOffset}
+        role="pee"
+        roomId={campMemberCard._id}
+        types='campMemberCard'
+      />
+      <ShowOrders
+        mode={user.mode}
+        orders={baanOrders}
+        filename={`orderใน${camp.groupName}${baan.name}`}
+        displayOffset={displayOffset}
+        role="pee"
+        roomId={baan._id}
+        types='baan'
+      />
+      <AllInOneLock mode={user.mode}>
+        <ShowOrders
+          mode={user.mode}
+          orders={partOrders}
+          filename={`orderในฝ่าย${part.partName}`}
+          displayOffset={displayOffset}
+          role="pee"
+          roomId={part._id}
+          types='part'
+        />
+      </AllInOneLock>
       <AllInOneLock token={token}>
         <ShowOwnCampData
           user={user}

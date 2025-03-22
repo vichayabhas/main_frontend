@@ -7,7 +7,7 @@ export default async function updateActionPlan(
   input: UpdateActionPlan,
   id: Id,
   token: string,
-  socket:Socket
+  socket: Socket
 ) {
   const response = await fetch(
     `${getBackendUrl()}/camp/updateActionPlan/params/${id}`,
@@ -22,6 +22,9 @@ export default async function updateActionPlan(
     }
   );
   const data: TriggerActionPlan = await response.json();
-    triggerActionPlan(data, socket);
+  if (!response.ok) {
     return data;
+  }
+  triggerActionPlan(data, socket);
+  return data;
 }

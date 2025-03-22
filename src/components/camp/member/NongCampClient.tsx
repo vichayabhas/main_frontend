@@ -20,6 +20,8 @@ import { RealTimeFoodUpdate } from "../meal/setup";
 import { io } from "socket.io-client";
 import { RealTimeBaan } from "../authPart/UpdateBaanClient";
 import { RealTimeCamp } from "../authPart/UpdateCampClient";
+import ShowItems from "./components/ShowItems";
+import ShowOrders from "./components/ShowOrders";
 
 export default function NongCampClient({
   data,
@@ -40,6 +42,9 @@ export default function NongCampClient({
     mirrorData,
     defaultGroup,
     groups,
+    items,
+    campMemberCardOrders,
+    baanOrders,
   } = data;
   const ref = React.useRef(null);
   const [meals, setMeals] = React.useState(data.meals);
@@ -289,6 +294,35 @@ export default function NongCampClient({
         baan={baan}
         timeOffset={displayOffset}
       />
+      <ShowItems
+        from={{ baanId: baan._id }}
+        items={items}
+        camp={camp}
+        campMemberCardId={campMemberCard._id}
+        token={token}
+        mode={user.mode}
+        allPlaceData={allPlaceData}
+      />
+      <ShowOrders
+        mode={user.mode}
+        orders={campMemberCardOrders}
+        filename={`orderที่ ${user.nickname} ${user.name} ${user.lastname} สั่ง`}
+        displayOffset={displayOffset}
+        role="nong"
+        roomId={campMemberCard._id}
+        types='campMemberCard'
+      />
+      <AllInOneLock lock={!camp.canNongSeeBaanOrder}>
+        <ShowOrders
+          mode={user.mode}
+          orders={baanOrders}
+          filename={`orderใน${camp.groupName}${baan.name}`}
+          displayOffset={displayOffset}
+          role="nong"
+          roomId={baan._id}
+          types='baan'
+        />
+      </AllInOneLock>
       <AllInOneLock token={token}>
         <ShowOwnCampData
           user={user}

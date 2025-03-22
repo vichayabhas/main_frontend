@@ -21,6 +21,9 @@ export default async function createMirrorUser(
     body: JSON.stringify(input),
   });
   const data: TriggerMirrorUser = await response.json();
+  if (!response.ok) {
+    return data;
+  }
   senderSocket.trigger(data.senders, data.senderId.toString());
   reciverSocket.trigger(data.recivers, data.reciverId.toString());
   return data;

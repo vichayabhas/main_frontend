@@ -16,6 +16,8 @@ import { RealTimeFoodUpdate } from "../meal/setup";
 import { io } from "socket.io-client";
 import { RealTimeCamp } from "../authPart/UpdateCampClient";
 import { RealTimePart } from "../authPart/UpdatePartClient";
+import ShowOrders from "./components/ShowOrders";
+import ShowItems from "./components/ShowItems";
 export default function PetoCampClient({
   data,
   token,
@@ -35,6 +37,9 @@ export default function PetoCampClient({
     petos,
     pees,
     partJobs,
+    partOrders,
+    campMemberCardOrders,
+    items,
   } = data;
   const ref = React.useRef(null);
   const download = useDownloadExcel({
@@ -199,6 +204,35 @@ export default function PetoCampClient({
         token={token}
         campMemberCardId={campMemberCard._id}
       />
+      <ShowItems
+        from={{ partId: part._id }}
+        items={items}
+        camp={camp}
+        campMemberCardId={campMemberCard._id}
+        token={token}
+        mode={user.mode}
+        allPlaceData={allPlaceData}
+      />
+      <ShowOrders
+        mode={user.mode}
+        orders={campMemberCardOrders}
+        filename={`orderที่ ${user.nickname} ${user.name} ${user.lastname} สั่ง`}
+        displayOffset={displayOffset}
+        role="pee"
+        roomId={campMemberCard._id}
+        types='campMemberCard'
+      />
+      <AllInOneLock mode={user.mode}>
+        <ShowOrders
+          mode={user.mode}
+          orders={partOrders}
+          filename={`orderในฝ่าย${part.partName}`}
+          displayOffset={displayOffset}
+          role="pee"
+          roomId={part._id}
+          types='part'
+        />
+      </AllInOneLock>
       <AllInOneLock token={token}>
         <ShowOwnCampData
           user={user}

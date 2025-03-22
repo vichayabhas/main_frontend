@@ -21,6 +21,9 @@ export default async function createMirrorBaan(
     body: JSON.stringify(input),
   });
   const data: TriggerMirrorBaan = await response.json();
+  if (!response.ok) {
+    return data;
+  }
   senderSocket.trigger(data.senders, data.senderId.toString());
   reciverSocket.trigger(data.recivers, data.reciverId.toString());
   return data;

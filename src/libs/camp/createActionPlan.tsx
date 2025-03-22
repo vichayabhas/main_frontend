@@ -18,6 +18,9 @@ export default async function createActionPlan(
     body: JSON.stringify(input),
   });
   const data: TriggerActionPlan = await response.json();
+  if (!response.ok) {
+    return data;
+  }
   triggerActionPlan(data, socket);
   return data;
 }

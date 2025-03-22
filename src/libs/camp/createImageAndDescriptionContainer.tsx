@@ -23,6 +23,9 @@ export default async function createImageAndDescriptionContainer(
     }
   );
   const data: ShowImageAndDescriptions[] = await response.json();
+  if (!response.ok) {
+    return data;
+  }
   socket.trigger(data, room);
   return data;
 }

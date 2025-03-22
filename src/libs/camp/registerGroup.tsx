@@ -23,6 +23,9 @@ export default async function registerGroup(
     body: JSON.stringify(input),
   });
   const data: GroupContainerPack = await response.json();
+  if (!response.ok) {
+    return data;
+  }
   setSubGroupIds(data.subGroupIds);
   socket.trigger(data.group, room);
   return data;

@@ -18,6 +18,9 @@ export default async function createWorkingItem(
     body: JSON.stringify(input),
   });
   const data: TriggerWorkingItem = await response.json();
+  if (!response.ok) {
+    return data;
+  }
   triggerTrackingSheet(data, socket);
   return data;
 }

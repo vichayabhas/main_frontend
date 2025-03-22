@@ -133,6 +133,9 @@ export default function UpdateCampClient({
   const [canReadTimeOnMirror, setCanReadTimeOnMirror] = React.useState(
     camp.canReadTimeOnMirror
   );
+  const [canNongSeeBaanOrder, setCanNongSeeBaanOrder] = React.useState(
+    camp.canNongSeeBaanOrder
+  );
   const isHaveNongInGeneralRoleNong =
     camp.memberStructure == "nong->highSchool,pee->1year,peto->2upYear" ||
     camp.memberStructure == "nong->highSchool,pee->2upYear" ||
@@ -589,6 +592,20 @@ export default function UpdateCampClient({
             checked={canReadTimeOnMirror}
           />
         </div>
+        <div className="flex flex-row items-center my-5">
+          <label className="w-2/5 text-2xl text-white">
+            อนุญาติให้{nongCall}ดูorderใน{groupName}ได้หรือไม่
+          </label>
+          <Checkbox
+            sx={{
+              "&.Mui-checked": {
+                color: "#FFFFFF", // Custom color when checked
+              },
+            }}
+            onChange={setBoolean(setCanNongSeeBaanOrder)}
+            checked={canNongSeeBaanOrder}
+          />
+        </div>
         <AllInOneLock token={token} bypass={camp.canNongAccessDataWithRoleNong}>
           <div className="flex flex-row items-center my-5">
             <label className="w-2/5 text-2xl text-white">
@@ -784,6 +801,7 @@ export default function UpdateCampClient({
                       })),
                       canReadTimeOnMirror,
                       nongCall,
+                      canNongSeeBaanOrder,
                     },
                     camp._id,
                     token,

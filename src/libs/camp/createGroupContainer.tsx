@@ -20,6 +20,9 @@ export default async function createGroupContainer(
     }
   );
   const data: GetGroupContainer[] = await response.json();
+  if (!response.ok) {
+    return data;
+  }
   socket.trigger(data, room);
   return data;
 }

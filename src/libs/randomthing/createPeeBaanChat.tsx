@@ -17,6 +17,9 @@ export default async function createPeeBaanChat(
     body: JSON.stringify(input),
   });
   const data: ShowChat = await res.json();
+  if (!res.ok) {
+    return data;
+  }
   socket.trigger(data, room);
   return data;
 }

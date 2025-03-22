@@ -31,7 +31,7 @@ function showImage(
   }
   try {
     const url = new URL(imgSrc);
-    return (
+    const img = (
       <Image
         className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
         src={url.href}
@@ -43,6 +43,7 @@ function showImage(
         }}
       />
     );
+    return img;
   } catch {
     return "invalid";
   }

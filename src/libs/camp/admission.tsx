@@ -21,6 +21,9 @@ export default async function admission(
     body: JSON.stringify(input),
   });
   const data = await res.json();
+  if (!res.ok) {
+    return data;
+  }
   socket.trigger(data, room);
   return data;
 }

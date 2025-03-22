@@ -24,6 +24,9 @@ export default async function updateSongPage(
     }
   );
   const data: UpdateSongPageOut = await response.json();
+  if (!response.ok) {
+    return data;
+  }
   data.baans.forEach((baan) => {
     triggerBaanSong(baan._id, baan.songIds, socket);
   });

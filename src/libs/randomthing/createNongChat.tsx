@@ -17,6 +17,9 @@ export default async function createNongChat(
     body: JSON.stringify(input),
   });
   const data: ShowChat = await res.json();
+  if (!res.ok) {
+    return data;
+  }
   socket.trigger(data, room);
   return data;
 }

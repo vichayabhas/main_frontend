@@ -26,6 +26,9 @@ export default async function updateWorkingItem(
     }
   );
   const data: TriggerWorkingItem = await response.json();
+  if (!response.ok) {
+    return data;
+  }
   triggerTrackingSheet(data, socket);
   return data;
 }

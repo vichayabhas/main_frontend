@@ -18,6 +18,9 @@ export default async function deleteMirrorUser(
     }
   );
   const data: TriggerMirrorUser = await response.json();
+  if (!response.ok) {
+    return data;
+  }
   senderSocket.trigger(data.senders, data.senderId.toString());
   reciverSocket.trigger(data.recivers, data.reciverId.toString());
   return data;

@@ -20,6 +20,9 @@ export default async function createFood(
     body: JSON.stringify(input),
   });
   const data: CreateFoodOut = await response.json();
+  if (!response.ok) {
+    return data;
+  }
   socketReady.trigger(data.foods, room);
   triggerMeals(data.triggers, socket);
   return data;

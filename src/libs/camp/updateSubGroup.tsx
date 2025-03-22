@@ -17,6 +17,9 @@ export default async function updateSubGroup(
     body: JSON.stringify(input),
   });
   const data: GetGroupContainer[] = await response.json();
+  if (!response.ok) {
+    return data;
+  }
   socket.trigger(data, room);
   return data;
 }
