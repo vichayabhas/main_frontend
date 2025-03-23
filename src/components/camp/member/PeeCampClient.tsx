@@ -32,6 +32,7 @@ import { RealTimeCamp } from "../authPart/UpdateCampClient";
 import { RealTimePart } from "../authPart/UpdatePartClient";
 import ShowOrders from "./components/ShowOrders";
 import ShowItems from "./components/ShowItems";
+import { getFillTimeRegisterId, RealTimeBaanJob } from "./components/setup";
 
 export default function PeeCampClient({
   data,
@@ -55,7 +56,6 @@ export default function PeeCampClient({
     peeParts,
     imageAndDescriptions,
     partJobs,
-    baanJobs,
     mirrorData,
     defaultGroup,
     groups,
@@ -72,6 +72,7 @@ export default function PeeCampClient({
   const [normal, setNormal] = React.useState(data.normal);
   const [camp, setCamp] = React.useState(data.camp);
   const [partPlace, setPartPlace] = React.useState(data.partPlace);
+  const [baanJobs, setBaanJobs] = React.useState(data.baanJobs);
   const socket = io(getBackendUrl());
   const realTimeFoodUpdate = new RealTimeFoodUpdate(campMemberCard._id, socket);
   const realTimeBaan = new RealTimeBaan(
@@ -85,11 +86,15 @@ export default function PeeCampClient({
   );
   const realTimeCamp = new RealTimeCamp(camp._id, socket);
   const realTimePart = new RealTimePart(part._id, socket);
+  const realTimeBaanJob = new RealTimeBaanJob(baan._id, socket);
   React.useEffect(() => {
     realTimeFoodUpdate.listen(setMeals);
     realTimeBaan.listen();
     realTimeCamp.listen(setCamp);
     realTimePart.listen(setPartPlace, allPlaceData);
+    realTimeBaanJob.listen((data) =>
+      setBaanJobs(getFillTimeRegisterId(data, campMemberCard._id))
+    );
     return () => {
       realTimeFoodUpdate.disconect();
       realTimeBaan.disconect();
@@ -447,8 +452,10 @@ export default function PeeCampClient({
                   removeTimeRegisterIds,
                   campMemberCardId: campMemberCard._id,
                   types: "baan",
+                  fromId: baan._id,
                 },
-                token
+                token,
+                socket
               )
             }
           />
@@ -517,7 +524,7 @@ export default function PeeCampClient({
         displayOffset={displayOffset}
         role="pee"
         roomId={campMemberCard._id}
-        types='campMemberCard'
+        types="campMemberCard"
       />
       <ShowOrders
         mode={user.mode}
@@ -526,7 +533,7 @@ export default function PeeCampClient({
         displayOffset={displayOffset}
         role="pee"
         roomId={baan._id}
-        types='baan'
+        types="baan"
       />
       <AllInOneLock mode={user.mode}>
         <ShowOrders
@@ -536,7 +543,7 @@ export default function PeeCampClient({
           displayOffset={displayOffset}
           role="pee"
           roomId={part._id}
-          types='part'
+          types="part"
         />
       </AllInOneLock>
       <AllInOneLock token={token}>

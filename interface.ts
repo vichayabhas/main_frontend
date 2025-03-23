@@ -1884,12 +1884,14 @@ export interface GetJob {
   passFemales: BasicUser[];
   failFemales: BasicUser[];
   timeRegisterId: Id | null;
+  timeRegisters: InterTimeRegister[];
 }
 export interface RegisterJob {
   types: "baan" | "part";
   addJobIds: Id[];
   campMemberCardId: Id;
   removeTimeRegisterIds: Id[];
+  fromId: Id;
 }
 export interface InterMirror {
   senderCampMemberCardId: Id;
@@ -1963,6 +1965,8 @@ export const socketEvents = [
   "campMemberCardUpdateOrder",
   "campUpdateOrder",
   "updateItem",
+  "updatePartJob",
+  "updateBaanJob",
 ] as const;
 export type SocketEvent = (typeof socketEvents)[number];
 export type QusetionType =
@@ -2268,4 +2272,9 @@ export interface GetOrderForAdmin {
   displayOffset: UpdateTimeOffsetRaw;
   orders: ShowOrder[];
   camp: BasicCamp;
+}
+export interface TriggerJob {
+  event: "updatePartJob" | "updateBaanJob";
+  jobs: GetJob[];
+  roomId: Id;
 }

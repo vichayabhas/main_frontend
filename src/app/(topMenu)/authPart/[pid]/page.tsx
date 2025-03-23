@@ -222,7 +222,7 @@ export default async function Baan({ params }: { params: { pid: string } }) {
     outputs.push(<ManageItem data={data} token={token} />);
   }
   return (
-    <AllInOneLock lock={user.mode == "nong"} token={token} pushToHome bypass>
+    <AllInOneLock lock={user.mode == "nong"} token={token} pushToHome>
       {outputs}
     </AllInOneLock>
   );

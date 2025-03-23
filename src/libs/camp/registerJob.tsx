@@ -1,7 +1,13 @@
 import { getBackendUrl } from "@/components/utility/setup";
-import { RegisterJob } from "../../../interface";
+import { RegisterJob, TriggerJob } from "../../../interface";
+import { Socket } from "socket.io-client";
+import { triggerJob } from "@/components/camp/member/components/setup";
 
-export default async function registerJob(input: RegisterJob, token: string) {
+export default async function registerJob(
+  input: RegisterJob,
+  token: string,
+  socket: Socket
+) {
   const response = await fetch(`${getBackendUrl()}/camp/registerJob/`, {
     method: "POST",
     cache: "no-store",
@@ -11,5 +17,10 @@ export default async function registerJob(input: RegisterJob, token: string) {
     },
     body: JSON.stringify(input),
   });
-  return await response.json();
+  const data: TriggerJob = await response.json();
+  if (!response.ok) {
+    return data;
+  }
+  triggerJob(data, socket);
+  return data;
 }

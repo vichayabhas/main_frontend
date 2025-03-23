@@ -34,6 +34,7 @@ import {
 import BaanMembers from "../member/components/BaanMembers";
 import { io, Socket } from "socket.io-client";
 import { getShowPlaceFromInterPlace } from "@/components/randomthing/placeSetUp";
+import { RealTimeBaanJob } from "../member/components/setup";
 const socket = io(getBackendUrl());
 
 export class RealTimeBaan {
@@ -133,6 +134,8 @@ export default function UpdateBaanClient({
   const [canWhriteMirror, setCanWhriteMirror] = React.useState(
     coopData.baan.canWhriteMirror
   );
+  const [baanJobs, setBaanJobs] = React.useState(coopData.baanJobs);
+  const realTimeBaanJob = new RealTimeBaanJob(coopData.baan._id, socket);
   const updateBaanSocket = new SocketReady<UpdateBaanOut>(socket, "updateBaan");
   const room = coopData.baan._id.toString();
   React.useEffect(() => {
@@ -147,8 +150,10 @@ export default function UpdateBaanClient({
       setCanReadMirror(data.baan.canReadMirror);
       setCanWhriteMirror(data.baan.canWhriteMirror);
     });
+    realTimeBaanJob.listen(setBaanJobs);
     return () => {
       updateBaanSocket.disconect();
+      realTimeBaanJob.disconect();
     };
   });
 
@@ -371,7 +376,7 @@ export default function UpdateBaanClient({
               <th>ผู้ชายไม่ที่ผ่าน</th>
               <th>ผู้หญิงไม่ที่ผ่าน</th>
             </tr>
-            {coopData.baanJobs.map((baanJob, i) => {
+            {baanJobs.map((baanJob, i) => {
               if (baanJob._id.toString() == jobId?.toString()) {
                 return (
                   <tr key={i}>
@@ -460,7 +465,8 @@ export default function UpdateBaanClient({
                               name: jobName,
                               types: "baan",
                             },
-                            session.user.token
+                            session.user.token,
+                            socket
                           );
                         }}
                       />
@@ -477,14 +483,19 @@ export default function UpdateBaanClient({
                               types: "baan",
                               refId: coopData.camp._id,
                             },
-                            session.user.token
+                            session.user.token,
+                            socket
                           );
                         }}
                       />
                       <FinishButton
                         text="delete"
                         onClick={() => {
-                          deleteBaanJob(baanJob._id, session.user.token);
+                          deleteBaanJob(
+                            baanJob._id,
+                            session.user.token,
+                            socket
+                          );
                         }}
                       />
                     </td>
@@ -631,7 +642,8 @@ export default function UpdateBaanClient({
                           types: "baan",
                           refId: coopData.camp._id,
                         },
-                        session.user.token
+                        session.user.token,
+                        socket
                       );
                     }}
                   />

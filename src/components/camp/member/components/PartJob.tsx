@@ -12,6 +12,7 @@ import { Checkbox, MenuItem, Select, TextField } from "@mui/material";
 import {
   AddRemoveHigh,
   downloadText,
+  getBackendUrl,
   setTextToInt,
   setTextToString,
 } from "../../../utility/setup";
@@ -23,9 +24,12 @@ import deletPartJob from "@/libs/camp/deletPartJob";
 import AllInOneLock from "@/components/utility/AllInOneLock";
 import FinishButton from "@/components/utility/FinishButton";
 import { useDownloadExcel } from "react-export-table-to-excel";
+import { getFillTimeRegisterId, RealTimePartJob } from "./setup";
+import { io } from "socket.io-client";
+const socket = io(getBackendUrl());
 export default function PartJob({
   token,
-  partJobs,
+  partJobs: PartJobIn,
   part,
   user,
   campMemberCardId,
@@ -46,6 +50,16 @@ export default function PartJob({
     Id[]
   >([]);
   const [addJobIds, setaddJobIds] = React.useState<Id[]>([]);
+  const [partJobs, setPartJobs] = React.useState(PartJobIn);
+  const realTimePartJob = new RealTimePartJob(part._id, socket);
+  React.useEffect(() => {
+    realTimePartJob.listen((data) =>
+      setPartJobs(getFillTimeRegisterId(data, campMemberCardId))
+    );
+    return () => {
+      realTimePartJob.disconect();
+    };
+  });
   const ref = React.useRef(null);
   const download = useDownloadExcel({
     currentTableRef: ref.current,
@@ -182,14 +196,15 @@ export default function PartJob({
                             name: name,
                             types: "part",
                           },
-                          token
+                          token,
+                          socket
                         );
                       }}
                     />
                     <FinishButton
                       text="delete"
                       onClick={() => {
-                        deletPartJob(partJob._id, token);
+                        deletPartJob(partJob._id, token, socket);
                       }}
                     />
                     <FinishButton
@@ -205,7 +220,8 @@ export default function PartJob({
                             types: "part",
                             refId: part._id,
                           },
-                          token
+                          token,
+                          socket
                         );
                       }}
                     />
@@ -365,7 +381,8 @@ export default function PartJob({
                         types: "part",
                         refId: part._id,
                       },
-                      token
+                      token,
+                      socket
                     );
                   }}
                 />
@@ -385,8 +402,10 @@ export default function PartJob({
                 removeTimeRegisterIds,
                 campMemberCardId,
                 types: "part",
+                fromId: part._id,
               },
-              token
+              token,
+              socket
             )
           }
         />
