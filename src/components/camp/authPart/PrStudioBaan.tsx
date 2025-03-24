@@ -62,10 +62,10 @@ export default function PrStudioBaan({
       );
     });
     return () => {
-      realTimeBaan.disconect();
-      realTimeCamp.disconect();
-      realTimeBaanSong.disconect();
-      realTimeNewSong.disconect()
+      realTimeBaan.disconnect();
+      realTimeCamp.disconnect();
+      realTimeBaanSong.disconnect();
+      realTimeNewSong.disconnect()
     };
   });
   return (

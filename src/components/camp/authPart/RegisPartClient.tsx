@@ -146,8 +146,8 @@ export default function RegisterPartClient({
     });
     realTimeCamp.listen(setCamp);
     return () => {
-      updateSocket.disconect();
-      realTimeCamp.disconect();
+      updateSocket.disconnect();
+      realTimeCamp.disconnect();
     };
   });
   return (

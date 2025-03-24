@@ -135,7 +135,7 @@ export default function AllAnswerAndQuestionPage({
   React.useEffect(() => {
     realTimeCamp.listen(setCamp);
     return () => {
-      realTimeCamp.disconect();
+      realTimeCamp.disconnect();
     };
   });
   if (!camp.lockChangeQuestion || camp.canAnswerTheQuestion) {

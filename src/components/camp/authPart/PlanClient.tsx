@@ -82,8 +82,8 @@ export default function PlanClient({
     realTimeCamp.listen(setCamp);
 
     return () => {
-      planSocket.disconect();
-      realTimeCamp.disconect();
+      planSocket.disconnect();
+      realTimeCamp.disconnect();
     };
   });
   function peeToBundle(user: BasicUser): BundleRoleAndUser {

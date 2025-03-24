@@ -68,9 +68,9 @@ export default function PrStudioClient({
       );
     });
     return () => {
-      realTimeCamp.disconect();
-      realTimeCampSong.disconect();
-      realTimeNewSong.disconect();
+      realTimeCamp.disconnect();
+      realTimeCampSong.disconnect();
+      realTimeNewSong.disconnect();
     };
   });
   return (

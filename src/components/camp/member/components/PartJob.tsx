@@ -57,7 +57,7 @@ export default function PartJob({
       setPartJobs(getFillTimeRegisterId(data, campMemberCardId))
     );
     return () => {
-      realTimePartJob.disconect();
+      realTimePartJob.disconnect();
     };
   });
   const ref = React.useRef(null);

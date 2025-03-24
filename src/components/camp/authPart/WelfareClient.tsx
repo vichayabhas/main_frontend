@@ -83,8 +83,8 @@ export default function WelfareClient({
     createMealSocket.listen(room, setMeals);
     realTimeCamp.listen(setCamp);
     return () => {
-      createMealSocket.disconect();
-      realTimeCamp.disconect();
+      createMealSocket.disconnect();
+      realTimeCamp.disconnect();
     };
   });
   return (

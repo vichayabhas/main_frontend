@@ -110,10 +110,10 @@ export default function MirrorClient({
     baanReciverSocket.listen(baan._id.toString(), setBaanRecivers);
     baanSenderSocket.listen(room, setBaanSenders);
     return () => {
-      userReciverSocket.disconect();
-      userSenderSocket.disconect();
-      baanReciverSocket.disconect();
-      baanSenderSocket.disconect();
+      userReciverSocket.disconnect();
+      userSenderSocket.disconnect();
+      baanReciverSocket.disconnect();
+      baanSenderSocket.disconnect();
     };
   });
   return (

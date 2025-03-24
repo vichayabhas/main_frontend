@@ -14,7 +14,7 @@ export class RealTimeNewSong {
   public listen(event: (newSong: InterSong) => void) {
     this.socket.listen("", event);
   }
-  public disconect() {
-    this.socket.disconect();
+  public disconnect() {
+    this.socket.disconnect();
   }
 }

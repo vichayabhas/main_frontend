@@ -64,7 +64,7 @@ export default function ShowItems({
   React.useEffect(() => {
     realTimeItem.listen(setItems);
     return () => {
-      realTimeItem.disconect();
+      realTimeItem.disconnect();
     };
   });
   const itemsReady = items.filter((item) => {

@@ -37,7 +37,7 @@ export default function ActionPlanClient({
   React.useEffect(() => {
     realTimeActionPlan.listen(setActionPlans);
     return () => {
-      realTimeActionPlan.disconect();
+      realTimeActionPlan.disconnect();
     };
   });
   return (

@@ -41,8 +41,8 @@ export default function ChatClient({
     newChatSocket.listen(data.subscribe, handleNewChat);
     realTimeCamp.listen(setCamp);
     return () => {
-      newChatSocket.disconect();
-      realTimeCamp.disconect();
+      newChatSocket.disconnect();
+      realTimeCamp.disconnect();
     };
   });
   return (

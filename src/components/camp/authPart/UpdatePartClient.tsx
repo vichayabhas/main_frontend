@@ -29,8 +29,8 @@ export class RealTimePart {
       setPlace(getShowPlaceFromInterPlace(data.place, allPlaceData));
     });
   }
-  public disconect() {
-    this.socket.disconect();
+  public disconnect() {
+    this.socket.disconnect();
   }
 }
 const socket = io(getBackendUrl());
@@ -52,7 +52,7 @@ export default function UpdatePartClient({
   React.useEffect(() => {
     updateSocket.listen(room, (data) => setPlace(data.place));
     return () => {
-      updateSocket.disconect();
+      updateSocket.disconnect();
     };
   });
 

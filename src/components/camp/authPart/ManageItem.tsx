@@ -54,9 +54,9 @@ export default function ManageItem({
     realTimeItem.listen(setItems);
     realTimeOrder.listen(setOrders);
     return () => {
-      realTimeCamp.disconect();
-      realTimeItem.disconect();
-      realTimeOrder.disconect();
+      realTimeCamp.disconnect();
+      realTimeItem.disconnect();
+      realTimeOrder.disconnect();
     };
   });
   const itemRef = React.useRef(null);

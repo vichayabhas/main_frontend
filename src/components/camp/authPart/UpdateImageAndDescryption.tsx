@@ -50,7 +50,7 @@ export default function UpdateImageAndDescryption({
   const room = imageAndDescryptionContainersPack.baan._id.toString();
   React.useEffect(() => {
     updateSocket.listen(room, setImageAndDescryptionContainers);
-    return () => updateSocket.disconect();
+    return () => updateSocket.disconnect();
   });
   return (
     <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">

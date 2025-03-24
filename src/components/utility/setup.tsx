@@ -626,7 +626,7 @@ export class SocketReady<T> {
   public trigger(data: T, room: string) {
     this.socket.emit(`${this.eventName}Send`, data, room);
   }
-  public disconect() {
+  public disconnect() {
     this.socket.off(this.eventName);
   }
 }

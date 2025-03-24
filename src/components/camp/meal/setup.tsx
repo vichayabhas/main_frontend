@@ -29,7 +29,7 @@ export class RealTimeFoodUpdate {
       event(data.meals);
     });
   }
-  public disconect() {
-    this.socket.disconect();
+  public disconnect() {
+    this.socket.disconnect();
   }
 }

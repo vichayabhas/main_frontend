@@ -113,7 +113,7 @@ export default function SubGroupClient({
       setRemoveId(removeId);
     });
     return () => {
-      groupSocket.disconect();
+      groupSocket.disconnect();
     };
   });
   const [selectIndex, setSelectIndex] = React.useState(selectSubGroupIndexTem);

@@ -66,7 +66,7 @@ export default function AllAnswerAndQuestionPageBreakDown({
       )(score);
     });
     return () => {
-      socketReady.disconect();
+      socketReady.disconnect();
     };
   });
   function scoring() {

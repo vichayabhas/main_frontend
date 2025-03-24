@@ -50,7 +50,7 @@ export default function ShowOrders({
   React.useEffect(() => {
     realTimeOrder.listen(setOrders);
     return () => {
-      realTimeOrder.disconect();
+      realTimeOrder.disconnect();
     };
   });
   const orderRef = React.useRef(null);

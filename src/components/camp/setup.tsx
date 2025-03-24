@@ -33,8 +33,8 @@ export class RealTimeActionPlan {
   public listen(set: React.Dispatch<React.SetStateAction<ShowActionPlan[]>>) {
     this.socket.listen(this.room, set);
   }
-  public disconect() {
-    this.socket.disconect();
+  public disconnect() {
+    this.socket.disconnect();
   }
 }
 export function triggerTrackingSheet(
@@ -61,8 +61,8 @@ export class RealTimeTrackingSheet {
   public listen(set: (event: InterWorkingItem[]) => void) {
     this.socket.listen(this.room, set);
   }
-  public disconect() {
-    this.socket.disconect();
+  public disconnect() {
+    this.socket.disconnect();
   }
 }
 export function triggerOrder(input: TriggerOrder, socket: Socket) {
@@ -100,8 +100,8 @@ export class RealTimeOrder {
   public listen(set: (event: ShowOrder[]) => void) {
     this.socket.listen(this.room, set);
   }
-  public disconect() {
-    this.socket.disconect();
+  public disconnect() {
+    this.socket.disconnect();
   }
 }
 export function triggerItem(input: InterItem[], campId: Id, socket: Socket) {
@@ -118,7 +118,7 @@ export class RealTimeItem {
   public listen(set: (event: InterItem[]) => void) {
     this.socket.listen(this.room, set);
   }
-  public disconect() {
-    this.socket.disconect();
+  public disconnect() {
+    this.socket.disconnect();
   }
 }

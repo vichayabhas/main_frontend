@@ -16,8 +16,8 @@ export class RealTimeBaanSong {
   public listen(setSongIds: (set: Id[]) => void) {
     this.socket.listen(this.room, setSongIds);
   }
-  public disconect() {
-    this.socket.disconect();
+  public disconnect() {
+    this.socket.disconnect();
   }
 }
 export function triggerCampSong(campId: Id, songIds: Id[], socket: Socket) {
@@ -34,7 +34,7 @@ export class RealTimeCampSong {
   public listen(setSongIds: (set: Id[]) => void) {
     this.socket.listen(this.room, setSongIds);
   }
-  public disconect() {
-    this.socket.disconect();
+  public disconnect() {
+    this.socket.disconnect();
   }
 }

@@ -56,8 +56,8 @@ export class RealTimeCamp {
       setCamp(event.camp);
     });
   }
-  public disconect() {
-    this.socket.disconect();
+  public disconnect() {
+    this.socket.disconnect();
   }
 }
 export default function UpdateCampClient({
@@ -191,8 +191,8 @@ export default function UpdateCampClient({
       )(check);
     });
     return () => {
-      updateCampSocket.disconect();
-      realTimeAuthPartSocket.disconect();
+      updateCampSocket.disconnect();
+      realTimeAuthPartSocket.disconnect();
     };
   });
   return (

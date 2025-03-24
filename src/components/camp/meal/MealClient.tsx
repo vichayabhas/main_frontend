@@ -77,9 +77,9 @@ export default function MealClient({
     createFoodSocket.listen(room, setFoods);
     realTimeCamp.listen(setCamp);
     return () => {
-      updateMealSocket.disconect();
-      createFoodSocket.disconect();
-      realTimeCamp.disconect();
+      updateMealSocket.disconnect();
+      createFoodSocket.disconnect();
+      realTimeCamp.disconnect();
     };
   });
   return (

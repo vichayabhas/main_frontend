@@ -22,7 +22,7 @@ export default function NongSureClient({
   React.useEffect(() => {
     realTimeCamp.listen(setCamp);
     return () => {
-      realTimeCamp.disconect();
+      realTimeCamp.disconnect();
     };
   });
   switch (camp.registerModel) {

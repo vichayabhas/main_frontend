@@ -72,8 +72,8 @@ export default function FoodClient({
     });
     realTimeCamp.listen(setCamp);
     return () => {
-      updateFoodSocket.disconect();
-      realTimeCamp.disconect();
+      updateFoodSocket.disconnect();
+      realTimeCamp.disconnect();
     };
   });
   const ref = React.useRef(null);

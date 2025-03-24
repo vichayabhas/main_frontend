@@ -96,10 +96,10 @@ export default function PeeCampClient({
       setBaanJobs(getFillTimeRegisterId(data, campMemberCard._id))
     );
     return () => {
-      realTimeFoodUpdate.disconect();
-      realTimeBaan.disconect();
-      realTimeCamp.disconect();
-      realTimePart.disconect();
+      realTimeFoodUpdate.disconnect();
+      realTimeBaan.disconnect();
+      realTimeCamp.disconnect();
+      realTimePart.disconnect();
     };
   });
   const download = useDownloadExcel({

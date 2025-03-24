@@ -309,12 +309,12 @@ export default function UpdateQuestionClient({
     });
     realTimeCamp.listen(setCamp);
     return () => {
-      choiceSocket.disconect();
-      textSocket.disconect();
-      actionSocket.disconect();
-      deleteSocket.disconect();
-      updateSocket.disconect();
-      realTimeCamp.disconect();
+      choiceSocket.disconnect();
+      textSocket.disconnect();
+      actionSocket.disconnect();
+      deleteSocket.disconnect();
+      updateSocket.disconnect();
+      realTimeCamp.disconnect();
     };
   });
   switch (editMode) {

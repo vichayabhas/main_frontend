@@ -61,7 +61,7 @@ export default function SongClient({ data }: { data: GetMenuSongs }) {
       );
     });
     return () => {
-      realTimeNewSong.disconect();
+      realTimeNewSong.disconnect();
     };
   });
   return (

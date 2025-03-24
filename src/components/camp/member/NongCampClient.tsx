@@ -70,9 +70,9 @@ export default function NongCampClient({
     realTimeBaan.listen();
     realTimeCamp.listen(setCamp);
     return () => {
-      realTimeFoodUpdate.disconect();
-      realTimeBaan.disconect();
-      realTimeCamp.disconect();
+      realTimeFoodUpdate.disconnect();
+      realTimeBaan.disconnect();
+      realTimeCamp.disconnect();
     };
   });
   const download = useDownloadExcel({

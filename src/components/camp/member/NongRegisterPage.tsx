@@ -39,7 +39,7 @@ export default function NongRegisterPage({
   React.useEffect(() => {
     realTimeCamp.listen(setCamp);
     return () => {
-      realTimeCamp.disconect();
+      realTimeCamp.disconnect();
     };
   });
   const questionReady: QuestionReady[] = questions.choices

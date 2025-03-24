@@ -69,9 +69,9 @@ export default function SubGroupAdminClient({
     realTimeBaan.listen();
     realTimeCamp.listen(setCamp);
     return () => {
-      updateSocket.disconect();
-      realTimeBaan.disconect();
-      realTimeCamp.disconect();
+      updateSocket.disconnect();
+      realTimeBaan.disconnect();
+      realTimeCamp.disconnect();
     };
   });
   return (

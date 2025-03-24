@@ -163,7 +163,7 @@ export default function Card({
   React.useEffect(() => {
     realTimeCamp.listen(setCamp);
     return () => {
-      realTimeCamp.disconect();
+      realTimeCamp.disconnect();
     };
   });
   return (

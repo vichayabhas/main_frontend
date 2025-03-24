@@ -87,8 +87,8 @@ export class RealTimeBaanJob {
   public listen(set: React.Dispatch<GetJob[]>) {
     this.socket.listen(this.room, set);
   }
-  public disconect() {
-    this.socket.disconect();
+  public disconnect() {
+    this.socket.disconnect();
   }
 }
 export class RealTimePartJob {
@@ -101,7 +101,7 @@ export class RealTimePartJob {
   public listen(set: React.Dispatch<GetJob[]>) {
     this.socket.listen(this.room, set);
   }
-  public disconect() {
-    this.socket.disconect();
+  public disconnect() {
+    this.socket.disconnect();
   }
 }

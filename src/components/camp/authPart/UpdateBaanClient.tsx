@@ -72,8 +72,8 @@ export class RealTimeBaan {
       );
     });
   }
-  public disconect() {
-    this.socket.disconect();
+  public disconnect() {
+    this.socket.disconnect();
   }
 }
 export class RealTimeBasicBaan {
@@ -94,8 +94,8 @@ export class RealTimeBasicBaan {
       this.setBaan(event.baan);
     });
   }
-  public disconect() {
-    this.socket.disconect();
+  public disconnect() {
+    this.socket.disconnect();
   }
 }
 export default function UpdateBaanClient({
@@ -152,8 +152,8 @@ export default function UpdateBaanClient({
     });
     realTimeBaanJob.listen(setBaanJobs);
     return () => {
-      updateBaanSocket.disconect();
-      realTimeBaanJob.disconect();
+      updateBaanSocket.disconnect();
+      realTimeBaanJob.disconnect();
     };
   });
 

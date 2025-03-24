@@ -58,9 +58,9 @@ export default function PetoCampClient({
     realTimeCamp.listen(setCamp);
     realTimePart.listen(setPartPlace, allPlaceData);
     return () => {
-      realTimeFoodUpdate.disconect();
-      realTimeCamp.disconect();
-      realTimePart.disconect();
+      realTimeFoodUpdate.disconnect();
+      realTimeCamp.disconnect();
+      realTimePart.disconnect();
     };
   });
   return (
