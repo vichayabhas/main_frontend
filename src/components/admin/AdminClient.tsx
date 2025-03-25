@@ -1,6 +1,5 @@
 "use client";
 
-import { Session } from "next-auth";
 import { Select, MenuItem, TextField, Input, Checkbox } from "@mui/material";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -15,6 +14,8 @@ import {
   Id,
   authTypes,
   CreateCamp,
+  GetAdminData,
+  BasicUser,
 } from "../../../interface";
 import FinishButton from "../utility/FinishButton";
 import {
@@ -24,9 +25,9 @@ import {
   setMap,
   modifyElementInUseStateArray,
   modifyElementInUseStateArray2Dimension,
-  stringToId,
   notEmpty,
   getBackendUrl,
+  setSwop,
 } from "../utility/setup";
 
 const defaultPartAuths: CreateAuthCamp[] = [
@@ -46,6 +47,8 @@ const defaultPartAuths: CreateAuthCamp[] = [
       "แก้ไขคำถาม",
       "แผน",
       "แก้ไขรูปภาพและคำอธิบายได้ทุกบ้าน",
+      "แก้ไขกลุ่มได้",
+      "สามารถจัดการของได้",
     ],
   },
   {
@@ -63,17 +66,15 @@ const defaultPartAuths: CreateAuthCamp[] = [
   },
   { partName: "พยาบาล", auths: ["พยาบาล"] },
   { partName: "พี่บ้าน", auths: [] },
-  { partName: "สวัสดิการ", auths: ["สวัสดิการ"] },
+  { partName: "สวัสดิการ", auths: ["สวัสดิการ", "สามารถจัดการของได้"] },
   { partName: "แผน", auths: ["แผน", "แก้ไขรูปภาพและคำอธิบายได้ทุกบ้าน"] },
 ];
 export default function AdminClient({
-  campNameContainers,
-  session,
-  partNameContainers,
+  token,
+  data: { campNameContainers, partNameContainers, users },
 }: {
-  campNameContainers: InterNameContainer[];
-  session: Session;
-  partNameContainers: InterPartNameContainer[];
+  data: GetAdminData;
+  token: string;
 }) {
   const models: (
     | "นอนทุกคน"
@@ -95,7 +96,7 @@ export default function AdminClient({
   const [registerModel, setRegisterModel] = React.useState<
     "noPaid" | "noInterview" | "all" | null
   >(null);
-  const [boardIds, setBoardIds] = React.useState<string | null>(null);
+  const [boardIds, setBoardIds] = React.useState<Id[]>([]);
   const [newName, setNewName] = React.useState<string | null>(null);
   const [nongSleepModel, setNongSleepModel] = React.useState<
     "นอนทุกคน" | "เลือกได้ว่าจะค้างคืนหรือไม่" | "ไม่มีการค้างคืน" | null
@@ -114,6 +115,16 @@ export default function AdminClient({
   const [checks, setChecks] = React.useState<boolean[]>(
     defaultPartAuths.map(() => true)
   );
+  const [name, setName] = React.useState<string>("");
+  const [nickname, setNickname] = React.useState<string>("");
+  const [lastname, setLastname] = React.useState<string>("");
+  function filterUser(input: BasicUser): boolean {
+    return (
+      input.name.search(name) == 0 &&
+      input.nickname.search(nickname) == 0 &&
+      input.lastname.search(lastname) == 0
+    );
+  }
   return (
     <form
       className="w-[70%] items-center p-10 rounded-3xl "
@@ -414,19 +425,12 @@ export default function AdminClient({
           )}
         </Select>
       </div>
-
-      <div className="flex flex-row items-center mt-4">
-        <label
-          className="w-2/5 text-2xl text-white"
-          style={{
-            textAlign: "left",
-          }}
-        >
-          บอร์ดค่าย userId ให้ใส่ , ห้ามเว้นวรรค
-        </label>
+      <div className="flex flex-row items-center">
+        <label className="w-2/5 text-2xl text-white">ชื่อจริง</label>
         <TextField
           name="Name"
           id="Name"
+          className="w-3/5 bg-white rounded-2xl "
           sx={{
             backgroundColor: "#f5f5f5",
             "& .MuiOutlinedInput-root": {
@@ -442,11 +446,92 @@ export default function AdminClient({
               },
             },
           }}
-          className="w-3/5 bg-white rounded-2xl shadow-inner"
-          onChange={setTextToString(setBoardIds)}
-          value={boardIds}
+          onChange={setTextToString(setName, true)}
+          value={name}
         />
       </div>
+      <div className="flex flex-row items-center my-5">
+        <label className="w-2/5 text-2xl text-white">นามสกุล</label>
+        <TextField
+          name="LastName"
+          id="LastName"
+          className="w-3/5 bg-white rounded-2xl border-gray-200"
+          sx={{
+            backgroundColor: "#f5f5f5",
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderRadius: " 1rem",
+                borderColor: "transparent",
+              },
+              "&:hover fieldset": {
+                borderColor: "#5479FF",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#5479FF",
+              },
+            },
+          }}
+          onChange={setTextToString(setLastname, true)}
+          value={lastname}
+        />
+      </div>
+      <div className="flex flex-row items-center">
+        <label className="w-2/5 text-2xl text-white">ชือเล่น</label>
+        <TextField
+          name="Nickname"
+          id="Nickname"
+          className="w-3/5 bg-white rounded-2xl border-gray-200"
+          sx={{
+            backgroundColor: "#f5f5f5",
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderRadius: " 1rem",
+                borderColor: "transparent",
+              },
+              "&:hover fieldset": {
+                borderColor: "#5479FF",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#5479FF",
+              },
+            },
+          }}
+          onChange={setTextToString(setNickname)}
+          value={nickname}
+        />
+      </div>
+      <table>
+        <tr>
+          <th>ชื่อเล่น</th>
+          <th>ชื่อจริง</th>
+          <th>นามสกุล</th>
+          <th>รหัสประจำตัวนิสิต</th>
+          <th>check</th>
+        </tr>
+        {users
+          .filter((user) => {
+            if (name == "" && nickname == "" && lastname == "") {
+              return boardIds.includes(user._id);
+            }
+            return filterUser(user) || boardIds.includes(user._id);
+          })
+          .map((user, i) => {
+            return (
+              <tr key={i}>
+                <td>{user.nickname}</td>
+                <td>{user.name}</td>
+                <td>{user.lastname}</td>
+                <td></td>
+                <td>
+                  <Checkbox
+                    checked={boardIds.includes(user._id)}
+                    onChange={setSwop(user._id, setBoardIds)}
+                  />
+                </td>
+              </tr>
+            );
+          })}
+      </table>
       <table>
         <tr>
           <th>ฝ่าย</th>
@@ -491,7 +576,7 @@ export default function AdminClient({
           onClick={() => {
             if (
               chose &&
-              boardIds &&
+              boardIds.length &&
               memberStructure &&
               registerModel &&
               round &&
@@ -503,9 +588,7 @@ export default function AdminClient({
               try {
                 const reddy: CreateCamp = {
                   nameId: chose,
-                  boardIds: boardIds
-                    .split(",")
-                    .map((input: string) => stringToId(input)),
+                  boardIds,
                   registerModel,
                   round,
                   dateEnd,
@@ -528,7 +611,7 @@ export default function AdminClient({
                     )
                     .filter(notEmpty),
                 };
-                createCamp(reddy, session.user.token);
+                createCamp(reddy, token);
               } catch (error) {
                 alert(error);
                 console.log(error);
@@ -586,7 +669,7 @@ export default function AdminClient({
         onClick={() => {
           if (newName) {
             try {
-              addCampName(newName, session.user.token);
+              addCampName(newName, token);
             } catch (error) {
               console.log(error);
             }
@@ -632,7 +715,7 @@ export default function AdminClient({
         onClick={() => {
           if (newPartName) {
             try {
-              addPartName(newPartName, session.user.token);
+              addPartName(newPartName, token);
             } catch (error) {
               console.log(error);
             }
@@ -650,7 +733,7 @@ export default function AdminClient({
             cache: "no-store",
             headers: {
               "Content-Type": "application/json",
-              authorization: `Bearer ${session.user.token}`,
+              authorization: `Bearer ${token}`,
             },
           });
         }}
@@ -663,7 +746,7 @@ export default function AdminClient({
             cache: "no-store",
             headers: {
               "Content-Type": "application/json",
-              authorization: `Bearer ${session.user.token}`,
+              authorization: `Bearer ${token}`,
             },
           });
         }}

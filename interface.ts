@@ -2278,3 +2278,8 @@ export interface TriggerJob {
   jobs: GetJob[];
   roomId: Id;
 }
+export interface GetAdminData {
+  campNameContainers: InterNameContainer[];
+  partNameContainers: InterPartNameContainer[];
+  users: BasicUser[];
+}

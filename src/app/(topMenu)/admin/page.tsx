@@ -7,10 +7,9 @@ import HospitalCatalog from "@/components/camp/HospitalCatalog";
 import { LinearProgress } from "@mui/material";
 import React from "react";
 import { Suspense } from "react";
-import getCampNames from "@/libs/admin/getCampNames";
-import getPartNames from "@/libs/admin/getPartNames";
 import PasswordLock from "@/components/utility/PasswordLock";
 import AdminClient from "@/components/admin/AdminClient";
+import getAdminData from "@/libs/admin/getAdminData";
 
 export default async function adminPage() {
   //const router=useRouter()
@@ -24,8 +23,7 @@ export default async function adminPage() {
     return <BackToHome />;
   }
   const camps = await getCamps();
-  const campNameContainers = await getCampNames();
-  const partNameContainers = await getPartNames();
+  const data = await getAdminData();
 
   return (
     <PasswordLock token={session.user.token} bypass={false}>
@@ -45,9 +43,8 @@ export default async function adminPage() {
           <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
             <div className="text-4xl font-medium">สร้างค่าย</div>
             <AdminClient
-              campNameContainers={campNameContainers}
-              session={session}
-              partNameContainers={partNameContainers}
+              token={session.user.token}
+              data={data}
             />
           </div>
         </Suspense>
