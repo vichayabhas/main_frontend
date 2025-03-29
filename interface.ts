@@ -2207,6 +2207,7 @@ export interface InterItem {
   canNongOrder: boolean;
   _id: Id;
   imageLink: string | null;
+  canNongSeeOrder: boolean;
   canNongSee: boolean;
 }
 export interface InterOrder {
@@ -2239,6 +2240,7 @@ export interface CreateItem {
   imageLink: string | null;
   canNongSee: boolean;
   remain: number;
+  canNongSeeOrder: boolean;
 }
 export interface CreateOrder {
   itemId: Id;
@@ -2255,6 +2257,7 @@ export interface UpdateItem {
   imageLink: string | null;
   remain: number;
   canNongSee: boolean;
+  canNongSeeOrder: boolean;
   _id: Id;
 }
 export interface TriggerOrder {

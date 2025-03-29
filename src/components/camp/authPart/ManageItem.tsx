@@ -8,7 +8,7 @@ import {
   setBoolean,
   setTextToInt,
   setTextToString,
-  SetUpDownPack,
+  SetUpMiddleDownPack,
 } from "@/components/utility/setup";
 import React from "react";
 import { RealTimeCamp } from "./UpdateCampClient";
@@ -41,14 +41,18 @@ export default function ManageItem({
     down: canNongOrder,
     setUp: setCanNongSee,
     setDown: setCanNongOrder,
-  } = new SetUpDownPack(React.useState(SetUpDownPack.init(false, false)));
+    middle: canNongSeeOrder,
+    setMiddle: setCanNongSeeOrder,
+  } = new SetUpMiddleDownPack(
+    React.useState(SetUpMiddleDownPack.init(false, false, false))
+  );
   const [index, setIndex] = React.useState<null | number>(null);
   const [items, setItems] = React.useState(data.items);
   const [orders, setOrders] = React.useState(data.orders);
   const [camp, setCamp] = React.useState(data.camp);
   const realTimeCamp = new RealTimeCamp(camp._id, socket);
   const realTimeItem = new RealTimeItem(camp._id, socket);
-  const realTimeOrder = new RealTimeOrder(camp._id, socket,'camp');
+  const realTimeOrder = new RealTimeOrder(camp._id, socket, "camp");
   React.useEffect(() => {
     realTimeCamp.listen(setCamp);
     realTimeItem.listen(setItems);
@@ -77,6 +81,7 @@ export default function ManageItem({
           <th>ของอะไร</th>
           <th>รูปภาพ</th>
           <th>{camp.nongCall}สามารถดูของได้หรือไม่</th>
+          <th>{camp.nongCall}สามารถดูorderได้หรือไม่</th>
           <th>{camp.nongCall}สามารถสั่งได้หรือไม่</th>
           <th>เหลือเท่าไหร่</th>
           <th>action</th>
@@ -98,6 +103,12 @@ export default function ManageItem({
                   <Checkbox
                     onChange={setBoolean(setCanNongSee)}
                     checked={canNongSee}
+                  />
+                </td>
+                <td>
+                  <Checkbox
+                    onChange={setBoolean(setCanNongSeeOrder)}
+                    checked={canNongSeeOrder}
                   />
                 </td>
                 <td>
@@ -125,6 +136,7 @@ export default function ManageItem({
                           remain,
                           canNongSee,
                           _id: item._id,
+                          canNongSeeOrder,
                         },
                         token,
                         camp._id,
@@ -159,6 +171,9 @@ export default function ManageItem({
                   <Checkbox checked={item.canNongSee} readOnly />
                 </td>
                 <td>
+                  <Checkbox checked={item.canNongSeeOrder} readOnly />
+                </td>
+                <td>
                   <Checkbox checked={item.canNongOrder} readOnly />
                 </td>
                 <td>{item.remain}</td>
@@ -172,6 +187,7 @@ export default function ManageItem({
                       setImageLink(item.imageLink);
                       setName(item.name);
                       setRemain(item.remain);
+                      setCanNongSeeOrder(item.canNongSeeOrder);
                     }}
                   />
                 </td>
@@ -194,6 +210,12 @@ export default function ManageItem({
               <Checkbox
                 onChange={setBoolean(setCanNongSee)}
                 checked={canNongSee}
+              />
+            </td>
+            <td>
+              <Checkbox
+                onChange={setBoolean(setCanNongSeeOrder)}
+                checked={canNongSeeOrder}
               />
             </td>
             <td>
@@ -221,6 +243,7 @@ export default function ManageItem({
                       remain,
                       canNongSee,
                       campId: camp._id,
+                      canNongSeeOrder,
                     },
                     token,
                     camp._id,
@@ -232,6 +255,7 @@ export default function ManageItem({
           </tr>
         ) : (
           <tr>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>

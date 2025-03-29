@@ -43,6 +43,12 @@ export default function ShowOrders({
     if (order.types == "part") {
       return false;
     }
+    if (order.item.canNongSeeOrder) {
+      return true;
+    }
+    if (role == "nong") {
+      return false;
+    }
     return order.item.canNongSee;
   });
   const realTimeOrder = new RealTimeOrder(roomId, socket, types);
