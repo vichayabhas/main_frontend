@@ -37,14 +37,13 @@ export default function ShowOrders({
 }) {
   const [orders, setOrders] = React.useState(ordersIn);
   const ordersReady = orders.filter((order) => {
-    const { item } = order;
-    if (item.canNongOrder) {
+    if (role != "nong" && mode == "pee") {
       return true;
     }
-    if (role == "nong") {
+    if (order.types == "part") {
       return false;
     }
-    return item.canNongSee || mode == "pee";
+    return order.item.canNongSee;
   });
   const realTimeOrder = new RealTimeOrder(roomId, socket, types);
   React.useEffect(() => {

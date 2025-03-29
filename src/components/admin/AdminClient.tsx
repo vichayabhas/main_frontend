@@ -125,6 +125,14 @@ export default function AdminClient({
       input.lastname.search(lastname) == 0
     );
   }
+  function reset() {
+    if (
+      memberStructure == "allYearMix" ||
+      memberStructure == "nong->highSchool,pee->allYear"
+    ) {
+      setBoardIds([]);
+    }
+  }
   return (
     <form
       className="w-[70%] items-center p-10 rounded-3xl "
@@ -272,6 +280,7 @@ export default function AdminClient({
             value={"น้องค่ายเป็นเด็กมใปลาย พี่บ้านเป็นปี 1"}
             onClick={() => {
               setMemberStructure("nong->highSchool,pee->1year,peto->2upYear");
+              reset();
             }}
           >
             น้องค่ายเป็นเด็กมใปลาย พี่บ้านเป็นปี 1
@@ -279,6 +288,7 @@ export default function AdminClient({
           <MenuItem
             onClick={() => {
               setMemberStructure("nong->1year,pee->2upYear");
+              reset();
             }}
             value="น้องค่ายเป็นปี 1"
           >
@@ -287,6 +297,7 @@ export default function AdminClient({
           <MenuItem
             onClick={() => {
               setMemberStructure("nong->highSchool,pee->2upYear");
+              reset();
             }}
             value="น้องค่ายเป็นเด็กมใปลาย พี่บ้านเป็นปีโต"
           >
@@ -512,6 +523,36 @@ export default function AdminClient({
           .filter((user) => {
             if (name == "" && nickname == "" && lastname == "") {
               return boardIds.includes(user._id);
+            }
+            if (!memberStructure) {
+              return false;
+            }
+            switch (memberStructure) {
+              case "nong->highSchool,pee->1year,peto->2upYear": {
+                if (user.role == "pee") {
+                  return false;
+                } else {
+                  break;
+                }
+              }
+              case "nong->highSchool,pee->2upYear": {
+                if (user.role == "pee") {
+                  return false;
+                } else {
+                  break;
+                }
+              }
+              case "nong->1year,pee->2upYear": {
+                if (user.role == "pee") {
+                  return false;
+                } else {
+                  break;
+                }
+              }
+              case "nong->highSchool,pee->allYear":
+                break;
+              case "allYearMix":
+                break;
             }
             return filterUser(user) || boardIds.includes(user._id);
           })
