@@ -1,5 +1,5 @@
 import { GetMealForUpdate, Id } from "../../../interface";
-import { getBackendUrl } from "../utility/setup";
+import { getBackendUrl } from "../../components/utility/setup";
 
 export default async function getMealForUpdate(
   mealId: Id,

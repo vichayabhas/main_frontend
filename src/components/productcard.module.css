@@ -6,13 +6,13 @@ div.card {
     border-radius: 10px;
     padding-top: 10px;
 }
-div.cardimg {
+div.cardImg {
     width: 100%;
     height: 70%;
     position: relative;
 
 }
-div.cardtext {
+div.cardText {
     width: 100%;
     height: 30%;
     padding: 10px;

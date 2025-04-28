@@ -3,13 +3,13 @@ import { Id, TriggerJob } from "../../../interface";
 import { triggerJob } from "@/components/camp/member/components/setup";
 import { Socket } from "socket.io-client";
 
-export default async function deletPartJob(
+export default async function deletePartJob(
   jobId: Id,
   token: string,
   socket: Socket
 ) {
   const response = await fetch(
-    `${getBackendUrl()}/camp/deletPartJob/params/${jobId}`,
+    `${getBackendUrl()}/camp/deletePartJob/params/${jobId}`,
     {
       method: "DELETE",
       cache: "no-store",

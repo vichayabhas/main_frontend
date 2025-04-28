@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import styles from "./topmenu.module.css";
+import styles from "./topMenu.module.css";
 
 export default function TopMenuItem({
   title,

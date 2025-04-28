@@ -79,7 +79,7 @@ export default function BaanMembers({
                 <th>email</th>
                 <th>มีกระติกน้ำหรือไม่</th>
                 <th>ขนาดเสื้อ</th>
-                <th>กรุปของนิสิต</th>
+                <th>กรุ๊ปของนิสิต</th>
                 <th>ปัญหาสุขภาพ</th>
               </>
             ) : null}
@@ -161,7 +161,7 @@ export default function BaanMembers({
                 <th>email</th>
                 <th>มีกระติกน้ำหรือไม่</th>
                 <th>ขนาดเสื้อ</th>
-                <th>กรุปของนิสิต</th>
+                <th>กรุ๊ปของนิสิต</th>
                 <th>ปัญหาสุขภาพ</th>
               </>
             ) : null}

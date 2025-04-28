@@ -24,9 +24,9 @@ import {
   GetCoopData,
   AllPlaceData,
   InterPlace,
-  JobGenderRequie,
+  JobGenderRequire,
   Id,
-  jobGenderRequies,
+  jobGenderRequires,
   UpdateBaanOut,
   BasicBaan,
   ShowPlace,
@@ -123,7 +123,7 @@ export default function UpdateBaanClient({
   );
   const [highMode, setHighMode] = React.useState(false);
   const [jobName, setJobName] = React.useState("");
-  const [reqType, setReqType] = React.useState<JobGenderRequie>("ไม่กำหนด");
+  const [reqType, setReqType] = React.useState<JobGenderRequire>("ไม่กำหนด");
   const [male, setMale] = React.useState(0);
   const [female, setFemale] = React.useState(0);
   const [sum, setSum] = React.useState(0);
@@ -131,8 +131,8 @@ export default function UpdateBaanClient({
   const [canReadMirror, setCanReadMirror] = React.useState(
     coopData.baan.canReadMirror
   );
-  const [canWhriteMirror, setCanWhriteMirror] = React.useState(
-    coopData.baan.canWhriteMirror
+  const [canWriteMirror, setCanWriteMirror] = React.useState(
+    coopData.baan.canWriteMirror
   );
   const [baanJobs, setBaanJobs] = React.useState(coopData.baanJobs);
   const realTimeBaanJob = new RealTimeBaanJob(coopData.baan._id, socket);
@@ -148,7 +148,7 @@ export default function UpdateBaanClient({
       setLink(data.baan.link);
       setNongSendMessage(data.baan.nongSendMessage);
       setCanReadMirror(data.baan.canReadMirror);
-      setCanWhriteMirror(data.baan.canWhriteMirror);
+      setCanWriteMirror(data.baan.canWriteMirror);
     });
     realTimeBaanJob.listen(setBaanJobs);
     return () => {
@@ -249,13 +249,13 @@ export default function UpdateBaanClient({
               อนุญาตให้เขียน mirror หรือไม่
             </label>
             <Checkbox
-              onChange={setBoolean(setCanWhriteMirror)}
+              onChange={setBoolean(setCanWriteMirror)}
               sx={{
                 "&.Mui-checked": {
                   color: "#FFFFFF", // Custom color when checked
                 },
               }}
-              checked={canWhriteMirror}
+              checked={canWriteMirror}
             />
           </div>
           <div className="flex flex-row items-center my-5">
@@ -288,7 +288,7 @@ export default function UpdateBaanClient({
                       normalPlaceId: normal ? normal._id : null,
                       nongSendMessage,
                       canReadMirror,
-                      canWhriteMirror,
+                      canWriteMirror,
                     },
                     session.user.token,
                     updateBaanSocket,
@@ -438,7 +438,7 @@ export default function UpdateBaanClient({
                         }}
                         value={reqType}
                       >
-                        {jobGenderRequies.map((v, i) => (
+                        {jobGenderRequires.map((v, i) => (
                           <MenuItem key={i} onClick={() => setReqType(v)}>
                             {v}
                           </MenuItem>
@@ -619,7 +619,7 @@ export default function UpdateBaanClient({
                     }}
                     value={reqType}
                   >
-                    {jobGenderRequies.map((v, i) => (
+                    {jobGenderRequires.map((v, i) => (
                       <MenuItem key={i} onClick={() => setReqType(v)}>
                         {v}
                       </MenuItem>

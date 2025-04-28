@@ -9,7 +9,7 @@ export default async function updateMirrorBaan(
   input: UpdateMirror,
   token: string,
   senderSocket: SocketReady<GetMirrorBaan[]>,
-  reciverSocket: SocketReady<GetMirrorBaan[]>
+  receiverSocket: SocketReady<GetMirrorBaan[]>
 ) {
   const response = await fetch(`${getBackendUrl()}/camp/updateMirrorBaan/`, {
     method: "PUT",
@@ -25,6 +25,6 @@ export default async function updateMirrorBaan(
     return data;
   }
   senderSocket.trigger(data.senders, data.senderId.toString());
-  reciverSocket.trigger(data.recivers, data.reciverId.toString());
+  receiverSocket.trigger(data.receivers, data.receiverId.toString());
   return data;
 }

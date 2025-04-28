@@ -18,7 +18,7 @@ import getTimeOffset from "@/libs/user/getTimeOffset";
 import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";
 import React from "react";
-import UpdateImageAndDescryption from "@/components/camp/authPart/UpdateImageAndDescryption";
+import UpdateImageAndDescription from "@/components/camp/authPart/UpdateImageAndDescription";
 import getImageAndDescriptions from "@/libs/camp/getImageAndDescriptions";
 import PlanClient from "@/components/camp/authPart/PlanClient";
 import PrStudioClient from "@/components/camp/authPart/PrStudioClient";
@@ -140,14 +140,14 @@ export default async function Baan({ params }: { params: { pid: string } }) {
       }
       case "pee": {
         const peeCamp = await getPeeCamp(campMemberCard.campModelId, token);
-        const imageAndDescryptionContainersPack = await getImageAndDescriptions(
+        const imageAndDescriptionContainersPack = await getImageAndDescriptions(
           peeCamp.baanId,
           token
         );
         outputs.push(
-          <UpdateImageAndDescryption
-            imageAndDescryptionContainersPack={
-              imageAndDescryptionContainersPack
+          <UpdateImageAndDescription
+            imageAndDescriptionContainersPack={
+              imageAndDescriptionContainersPack
             }
             token={token}
           />
@@ -157,12 +157,12 @@ export default async function Baan({ params }: { params: { pid: string } }) {
       case "peto": {
         let i = 0;
         while (i < camp.baanIds.length) {
-          const imageAndDescryptionContainersPack =
+          const imageAndDescriptionContainersPack =
             await getImageAndDescriptions(camp.baanIds[i++], token);
           outputs.push(
-            <UpdateImageAndDescryption
-              imageAndDescryptionContainersPack={
-                imageAndDescryptionContainersPack
+            <UpdateImageAndDescription
+              imageAndDescriptionContainersPack={
+                imageAndDescriptionContainersPack
               }
               token={token}
             />
@@ -175,13 +175,13 @@ export default async function Baan({ params }: { params: { pid: string } }) {
   if (part.auths.includes("แก้ไขรูปภาพและคำอธิบายได้ทุกบ้าน") || isBoard) {
     let i = 0;
     while (i < camp.baanIds.length) {
-      const imageAndDescryptionContainersPack = await getImageAndDescriptions(
+      const imageAndDescriptionContainersPack = await getImageAndDescriptions(
         camp.baanIds[i++],
         token
       );
       outputs.push(
-        <UpdateImageAndDescryption
-          imageAndDescryptionContainersPack={imageAndDescryptionContainersPack}
+        <UpdateImageAndDescription
+          imageAndDescriptionContainersPack={imageAndDescriptionContainersPack}
           token={token}
         />
       );

@@ -70,7 +70,7 @@ export interface InterBaanBack {
   jobIds: Id[];
   mirrorIds: Id[];
   canReadMirror: boolean;
-  canWhriteMirror: boolean;
+  canWriteMirror: boolean;
   groupContainerIds: Id[];
   defaultGroupId: Id | null;
 
@@ -195,6 +195,7 @@ export interface InterCampBack {
   nongCall: string;
   boyZoneLadyZoneState: BoyZoneLadyZoneState;
   canNongSeeBaanOrder: boolean;
+  scoreIds: Id[];
   //public
 }
 export interface InterCampStyle {
@@ -324,7 +325,7 @@ export interface InterCampMemberCard {
   baanJobIds: Id[];
   partJobIds: Id[];
   mirrorSenderIds: Id[];
-  mirrorReciverIds: Id[];
+  mirrorReceiverIds: Id[];
   mirrorBaanIds: Id[];
   subGroupIds: Id[];
   orderIds: Id[];
@@ -462,7 +463,7 @@ export interface InterBaanFront {
   jobIds: Id[];
   mirrorIds: Id[];
   canReadMirror: boolean;
-  canWhriteMirror: boolean;
+  canWriteMirror: boolean;
   groupContainerIds: Id[];
   defaultGroupId: Id | null;
   //public
@@ -571,6 +572,7 @@ export interface InterCampFront {
   nongCall: string;
   boyZoneLadyZoneState: BoyZoneLadyZoneState;
   canNongSeeBaanOrder: boolean;
+  scoreIds: Id[];
   //public
 }
 export interface InterPartFront {
@@ -739,7 +741,7 @@ export interface UpdateBaan {
   normalPlaceId: Id | null;
   nongSendMessage: boolean;
   canReadMirror: boolean;
-  canWhriteMirror: boolean;
+  canWriteMirror: boolean;
   //public
 }
 export type Group =
@@ -832,7 +834,6 @@ export interface RegisPart {
   //public
 }
 export interface InterTimeOffset {
-  userId: Id;
   day: number;
   hour: number;
   minute: number;
@@ -1600,8 +1601,10 @@ export interface BasicBaan {
   nongSendMessage: boolean;
   songIds: Id[];
   canReadMirror: boolean;
-  canWhriteMirror: boolean;
+  canWriteMirror: boolean;
   mirrorIds: Id[];
+  nongIds: Id[];
+  peeIds: Id[];
   //public
 }
 export interface BasicCamp {
@@ -1819,21 +1822,21 @@ export interface CreateImageAndDescriptionContainer {
   baanId: Id;
 }
 export interface GetImageAndDescriptionsPackForUpdate {
-  imageAndDescryptionContainers: ShowImageAndDescriptions[];
+  imageAndDescriptionContainers: ShowImageAndDescriptions[];
   baan: BasicBaan;
   isOverNight: boolean;
 }
-export const jobGenderRequies = [
+export const jobGenderRequires = [
   "ไม่กำหนด",
   "ให้ความสำคัญ",
   "เท่านั้น",
 ] as const;
-export type JobGenderRequie = (typeof jobGenderRequies)[number];
+export type JobGenderRequire = (typeof jobGenderRequires)[number];
 export interface InterJobAssign {
   types: "baan" | "part";
   refId: Id;
   name: string;
-  reqType: JobGenderRequie;
+  reqType: JobGenderRequire;
   memberIds: Id[];
   _id: Id;
   male: number;
@@ -1858,14 +1861,14 @@ export interface CreateJobAssign {
   types: "baan" | "part";
   refId: Id;
   name: string;
-  reqType: JobGenderRequie;
+  reqType: JobGenderRequire;
   male: number;
   female: number;
   sum: number;
 }
 export interface UpdateJobAssign {
   name: string;
-  reqType: JobGenderRequie;
+  reqType: JobGenderRequire;
   _id: Id;
   male: number;
   female: number;
@@ -1874,7 +1877,7 @@ export interface UpdateJobAssign {
 }
 export interface GetJob {
   name: string;
-  reqType: JobGenderRequie;
+  reqType: JobGenderRequire;
   male: number;
   female: number;
   sum: number;
@@ -1895,7 +1898,7 @@ export interface RegisterJob {
 }
 export interface InterMirror {
   senderCampMemberCardId: Id;
-  reciverId: Id;
+  receiverId: Id;
   message: string;
   types: "baan" | "user";
   _id: Id;
@@ -1903,7 +1906,7 @@ export interface InterMirror {
 }
 export interface CreateMirror {
   senderCampMemberCardId: Id;
-  reciverId: Id;
+  receiverId: Id;
   message: string;
   types: "baan" | "user";
 }
@@ -1913,16 +1916,16 @@ export interface UpdateMirror {
 }
 export interface GetMirrorUser extends InterMirror {
   sender: BasicUser;
-  reciver: BasicUser;
+  receiver: BasicUser;
 }
 export interface GetMirrorBaan extends InterMirror {
   sender: BasicUser;
-  reciver: BasicBaan;
+  receiver: BasicBaan;
 }
 export interface GetMirrorPack {
-  userRecivers: GetMirrorUser[];
+  userReceivers: GetMirrorUser[];
   userSenders: GetMirrorUser[];
-  baanRecivers: GetMirrorBaan[];
+  baanReceivers: GetMirrorBaan[];
   baanSenders: GetMirrorBaan[];
 }
 export const socketEvents = [
@@ -1946,7 +1949,7 @@ export const socketEvents = [
   "updateBaan",
   "updateCamp",
   "updatePart",
-  "updateImageAndDescruptions",
+  "updateImageAndDescriptions",
   "triggerMeals",
   "realTimeAuthPart",
   "newSong",
@@ -1957,9 +1960,9 @@ export const socketEvents = [
   "updateTrackingSheets",
   "updateTrackingSheet",
   "sendMirrorBaan",
-  "reciveMorrorBaan",
+  "receiveMirrorBaan",
   "sendMirrorUser",
-  "reciveMirrorUser",
+  "receiveMirrorUser",
   "partUpdateOrder",
   "baanUpdateOrder",
   "campMemberCardUpdateOrder",
@@ -1969,7 +1972,7 @@ export const socketEvents = [
   "updateBaanJob",
 ] as const;
 export type SocketEvent = (typeof socketEvents)[number];
-export type QusetionType =
+export type QuestionType =
   | "addText"
   | "addChoice"
   | "removeText"
@@ -2189,15 +2192,15 @@ export interface TriggerWorkingItem {
 }
 export interface TriggerMirrorBaan {
   senders: GetMirrorBaan[];
-  recivers: GetMirrorBaan[];
+  receivers: GetMirrorBaan[];
   senderId: Id;
-  reciverId: Id;
+  receiverId: Id;
 }
 export interface TriggerMirrorUser {
   senders: GetMirrorUser[];
-  recivers: GetMirrorUser[];
+  receivers: GetMirrorUser[];
   senderId: Id;
-  reciverId: Id;
+  receiverId: Id;
 }
 export interface InterItem {
   name: string;
@@ -2286,3 +2289,26 @@ export interface GetAdminData {
   partNameContainers: InterPartNameContainer[];
   users: BasicUser[];
 }
+export interface UniversityStaffRegister {
+  name: string;
+  lastname: string;
+  nickname: string;
+  email: string;
+  password: string;
+  tel: string;
+  //private
+}
+export interface InterUniversityStaff {
+  name: string;
+  lastname: string;
+  nickname: string;
+  email: string;
+  password: string;
+  tel: string;
+  shortActivityIds: Id[];
+  selectOffsetId: Id;
+  displayOffsetId: Id;
+  //private
+}
+export const userTypes = ["student", "guest", "universityStaff"] as const;
+export type UserType = (typeof userTypes)[number];

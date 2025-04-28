@@ -6,7 +6,7 @@ import React from "react";
 import chatStyle from "./chat.module.css";
 import FinishButton from "../utility/FinishButton";
 
-export default function ChatChoiseClient({
+export default function ChatChoiceClient({
   nongs,
   campId,
 }: {

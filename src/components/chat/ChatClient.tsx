@@ -106,7 +106,7 @@ export default function ChatClient({
                     ) : chat.role == "nong" ? (
                       <td>
                         {chat.nickname} {camp.nongCall}
-                      </td> // lable
+                      </td> // label
                     ) : (
                       <td>
                         {chat.nickname} พี่{camp.groupName}

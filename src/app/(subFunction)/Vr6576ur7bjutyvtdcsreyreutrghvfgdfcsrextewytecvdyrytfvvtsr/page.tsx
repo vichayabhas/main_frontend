@@ -43,7 +43,7 @@ export default function page() {
   ];
   return (
     <div>
-      <label>กรุปของนิสิต</label>
+      <label>กรุ๊ปของนิสิต</label>
       <Select value={group}>
         {allGroup.map((g, i) => (
           <MenuItem

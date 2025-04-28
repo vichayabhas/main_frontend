@@ -10,6 +10,7 @@ import {
   downloadText,
   getBackendUrl,
   SocketReady,
+  notify,
 } from "@/components/utility/setup";
 import StringToHtml from "@/components/utility/StringToHtml";
 import Waiting from "@/components/utility/Waiting";
@@ -43,6 +44,7 @@ export default function RegisterPartClient({
   token: string;
   isBoard: boolean;
 }) {
+  const limit = 600;
   const updateSocket = new SocketReady<RegisterData>(socket, "registerUpdate");
   const router = useRouter();
   const [nongPendingIds, setNongPendingIds] = React.useState<Id[]>([]);
@@ -68,6 +70,15 @@ export default function RegisterPartClient({
     setData,
   ] = React.useState(data);
   const [camp, setCamp] = React.useState(data.camp);
+  const [countDowns, setCountDowns] = React.useState<number[]>(
+    regisBaans.map((baan) => {
+      if (baan.baan.nongIds.length > 0 && baan.baan.peeIds.length == 0) {
+        return limit;
+      } else {
+        return -1;
+      }
+    })
+  );
   const realTimeCamp = new RealTimeCamp(camp._id, socket);
   const mapIn: MyMap[] = regisBaans.map((regisBaan) => ({
     key: regisBaan.baan._id,
@@ -143,11 +154,41 @@ export default function RegisterPartClient({
       setNongSureIds(filterOut(data2.nongRegister.sures));
       const ids = data2.peeRegisters.map((e) => e.userId);
       setPeePassIds((previous) => previous.filter((o) => ids.includes(o)));
+      setCountDowns((counts) =>
+        data2.regisBaans.map((baan, i) => {
+          if (baan.baan.nongIds.length > 0 && baan.baan.peeIds.length == 0) {
+            if (counts[i] > 0) {
+              return counts[i];
+            } else {
+              return limit;
+            }
+          } else {
+            return -1;
+          }
+        })
+      );
     });
     realTimeCamp.listen(setCamp);
+    const interval = setInterval(() => {
+      setCountDowns((counts) =>
+        counts.map((count, i) => {
+          if (count > 0) {
+            return count - 1;
+          } else if (count == 0) {
+            notify(
+              `มีน้องโดยไม่มีพี่อยู่ใน${camp.groupName}${regisBaans[i].baan.name}`
+            );
+            return limit;
+          } else {
+            return -1;
+          }
+        })
+      );
+    }, 1000);
     return () => {
       updateSocket.disconnect();
       realTimeCamp.disconnect();
+      clearInterval(interval);
     };
   });
   return (
@@ -720,7 +761,7 @@ export default function RegisterPartClient({
         }}
         buttonText={"จัดบ้าน"}
       />
-      {regisBaans.map((regisBaan) => {
+      {regisBaans.map((regisBaan, i) => {
         const nongRef = React.useRef(null);
         const peeRef = React.useRef(null);
         const nongDownload = useDownloadExcel({
@@ -743,6 +784,7 @@ export default function RegisterPartClient({
               >
                 รายชื่อน้อง{camp.groupName}
                 {regisBaan.baan.fullName}
+                {countDowns[i] > -1 ? countDowns[i] : null}
               </div>
               <table
                 ref={nongRef}
@@ -760,7 +802,7 @@ export default function RegisterPartClient({
                   <th className=" border border-x-black">email</th>
                   <th className=" border border-x-black">มีกระติกน้ำหรือไม่</th>
                   <th className=" border border-x-black">ขนาดเสื้อ</th>
-                  <th className=" border border-x-black">กรุปของนิสิต</th>
+                  <th className=" border border-x-black">กรุ๊ปของนิสิต</th>
                   <th className=" border border-x-black">ปัญหาสุขภาพ</th>
                   <th className=" border border-x-black">select</th>
                 </tr>
@@ -813,7 +855,7 @@ export default function RegisterPartClient({
                       ) : (
                         <td className=" border border-x-black">-</td>
                       )}
-                      <td>
+                      <td className=" border border-x-black">
                         <Checkbox
                           onChange={setSwop(user._id, setMembers)}
                           checked={members.includes(user._id)}
@@ -967,7 +1009,7 @@ export default function RegisterPartClient({
                   <th className=" border border-x-black">email</th>
                   <th className=" border border-x-black">มีกระติกน้ำหรือไม่</th>
                   <th className=" border border-x-black">ขนาดเสื้อ</th>
-                  <th className=" border border-x-black">กรุปของนิสิต</th>
+                  <th className=" border border-x-black">กรุ๊ปของนิสิต</th>
                   <th className=" border border-x-black">ปัญหาสุขภาพ</th>
                   <th className=" border border-x-black">select</th>
                 </tr>
@@ -1061,7 +1103,7 @@ export default function RegisterPartClient({
                   <th className=" border border-x-black">email</th>
                   <th className=" border border-x-black">มีกระติกน้ำหรือไม่</th>
                   <th className=" border border-x-black">ขนาดเสื้อ</th>
-                  <th className=" border border-x-black">กรุปของนิสิต</th>
+                  <th className=" border border-x-black">กรุ๊ปของนิสิต</th>
                   <th className=" border border-x-black">ปัญหาสุขภาพ</th>
                   <th className=" border border-x-black">select</th>
                 </tr>

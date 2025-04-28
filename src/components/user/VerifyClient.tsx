@@ -4,7 +4,7 @@ import verifyEmail from "@/libs/user/verifyEmail";
 import { TextField } from "@mui/material";
 import React from "react";
 import { setTextToString } from "../utility/setup";
-export default function VerifileClient({ token }: { token: string }) {
+export default function VerifyClient({ token }: { token: string }) {
 
   const [password, setPassword] = React.useState<string>("");
   return (

@@ -5,7 +5,7 @@ import getAllBuilding from "@/libs/randomthing/getAllBuilding";
 import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";
 import React from "react";
-export default async function Placepage() {
+export default async function PlacePage() {
   const buildings = await getAllBuilding();
   const session = await getServerSession(authOptions);
   if (!session) {

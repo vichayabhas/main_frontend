@@ -8,7 +8,7 @@ import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { InterTimeOffset } from "../../../interface";
-import DateConv from "../utility/Dateconv";
+import DateConvert from "../utility/DateConvert";
 import FinishButton from "../utility/FinishButton";
 export default function TestDateTime({
   token,
@@ -51,29 +51,29 @@ export default function TestDateTime({
     "November",
     "December",
   ];
-  const dayn = String(dateObj.getDate()).padStart(2, "0");
-  const monthn = monthArray[dateObj.getMonth()];
-  const yearn = dateObj.getFullYear();
-  const hoursn = String(dateObj.getHours()).padStart(2, "0");
-  const minutesn = String(dateObj.getMinutes()).padStart(2, "0");
+  const dayDisplay = String(dateObj.getDate()).padStart(2, "0");
+  const monthDisplay = monthArray[dateObj.getMonth()];
+  const yearDisplay = dateObj.getFullYear();
+  const hoursDisplay = String(dateObj.getHours()).padStart(2, "0");
+  const minutesDisplay = String(dateObj.getMinutes()).padStart(2, "0");
   const dateObjs = select
     ?.add(-(displayMinute + selectMinute), "minutes")
     .add(-(displayHour + selectHour), "hours")
     .add(-(displayDay + selectDay), "days")
     .toDate();
-  const days = String(dateObjs.getDate()).padStart(2, "0");
-  const months = monthArray[dateObjs.getMonth()];
-  const years = dateObjs.getFullYear();
-  const hourss = String(dateObjs.getHours()).padStart(2, "0");
-  const minutess = String(dateObjs.getMinutes()).padStart(2, "0");
+  const daySelect = String(dateObjs.getDate()).padStart(2, "0");
+  const monthSelect = monthArray[dateObjs.getMonth()];
+  const yearSelect = dateObjs.getFullYear();
+  const hoursSelect = String(dateObjs.getHours()).padStart(2, "0");
+  const minutesSelect = String(dateObjs.getMinutes()).padStart(2, "0");
   return (
     <div>
-      <DateConv
-        day={dayn}
-        hours={hoursn}
-        year={yearn}
-        month={monthn}
-        minutes={minutesn}
+      <DateConvert
+        day={dayDisplay}
+        hours={hoursDisplay}
+        year={yearDisplay}
+        month={monthDisplay}
+        minutes={minutesDisplay}
       />
       <div className="flex flex-row items-center">
         <label className="w-2/5 text-2xl text-slate-200">แสดงวัน</label>
@@ -109,12 +109,12 @@ export default function TestDateTime({
         />
       </div>
 
-      <DateConv
-        day={days}
-        hours={hourss}
-        year={years}
-        month={months}
-        minutes={minutess}
+      <DateConvert
+        day={daySelect}
+        hours={hoursSelect}
+        year={yearSelect}
+        month={monthSelect}
+        minutes={minutesSelect}
       />
       <div className="flex flex-row items-center">
         <label className="w-2/5 text-2xl text-slate-200">ปรับวัน</label>

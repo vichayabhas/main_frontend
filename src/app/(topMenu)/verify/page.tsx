@@ -1,6 +1,6 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import BackToHome from "@/components/utility/BackToHome";
-import VerifileClient from "@/components/user/VerifyClient";
+import VerifyClient from "@/components/user/VerifyClient";
 import getSystemInfo from "@/libs/randomthing/getSystemInfo";
 import getUserProfile from "@/libs/user/getUserProfile";
 import signId from "@/libs/user/signId";
@@ -20,5 +20,5 @@ export default async function page() {
   if (!success) {
     return <BackToHome />;
   }
-  return <VerifileClient token={session.user.token} />;
+  return <VerifyClient token={session.user.token} />;
 }

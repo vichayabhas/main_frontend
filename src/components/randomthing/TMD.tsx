@@ -29,7 +29,7 @@ export default async function TMD({
     .split('onchange="selectFilter()">')[1]
     .split("</select>")[0]
     .split("</option>");
-  const seven = `<div${raw7.split("div")[238]}div>`;
+  const seven = `<div${raw7.split("div")[226]}div>`;
   op.pop();
   function getChoice(input: string): Choice {
     return {

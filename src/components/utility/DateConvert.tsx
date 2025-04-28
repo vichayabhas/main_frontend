@@ -2,7 +2,7 @@
 
 //import React from "react";
 import React from "react";
-export default function DateConv({
+export default function DateConvert({
   day,
   month,
   year,

@@ -1,4 +1,4 @@
-.menucontainer{
+.menuContainer{
     height: 60px;
     background-color: #961A1D;
     color: white;
@@ -15,12 +15,12 @@
     outline-width:5px;
     overflow: hidden;
 }
-.logoimg{
+.logoImg{
     height: 100%;
     width: auto;
 
 }
-.itemcontainer {
+.itemContainer {
     width: 120px;
     text-align: center;
     margin-top: auto;
@@ -46,7 +46,7 @@
     color: #961A1D;
 }
 
-.menucontainerCamp{
+.menuContainerCamp{
     height: 60px;
     background-color: #373737;
     color: white;

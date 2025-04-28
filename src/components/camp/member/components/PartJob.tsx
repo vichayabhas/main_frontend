@@ -5,8 +5,8 @@ import {
   BasicUser,
   GetJob,
   Id,
-  JobGenderRequie,
-  jobGenderRequies,
+  JobGenderRequire,
+  jobGenderRequires,
 } from "../../../../../interface";
 import { Checkbox, MenuItem, Select, TextField } from "@mui/material";
 import {
@@ -20,7 +20,7 @@ import UserNameTable from "../../../utility/UserNameTable";
 import createJob from "@/libs/camp/createJob";
 import updateJobAssign from "@/libs/camp/updateJobAssign";
 import registerJob from "@/libs/camp/registerJob";
-import deletPartJob from "@/libs/camp/deletPartJob";
+import deletePartJob from "@/libs/camp/deletePartJob";
 import AllInOneLock from "@/components/utility/AllInOneLock";
 import FinishButton from "@/components/utility/FinishButton";
 import { useDownloadExcel } from "react-export-table-to-excel";
@@ -41,7 +41,7 @@ export default function PartJob({
   campMemberCardId: Id;
 }) {
   const [name, setName] = React.useState("");
-  const [reqType, setReqType] = React.useState<JobGenderRequie>("ไม่กำหนด");
+  const [reqType, setReqType] = React.useState<JobGenderRequire>("ไม่กำหนด");
   const [male, setMale] = React.useState(0);
   const [female, setFemale] = React.useState(0);
   const [sum, setSum] = React.useState(0);
@@ -49,7 +49,7 @@ export default function PartJob({
   const [removeTimeRegisterIds, setRemoveTimeRegisterIds] = React.useState<
     Id[]
   >([]);
-  const [addJobIds, setaddJobIds] = React.useState<Id[]>([]);
+  const [addJobIds, setAddJobIds] = React.useState<Id[]>([]);
   const [partJobs, setPartJobs] = React.useState(PartJobIn);
   const realTimePartJob = new RealTimePartJob(part._id, socket);
   React.useEffect(() => {
@@ -67,7 +67,7 @@ export default function PartJob({
   });
   const manageJobId = new AddRemoveHigh(
     addJobIds,
-    setaddJobIds,
+    setAddJobIds,
     removeTimeRegisterIds,
     setRemoveTimeRegisterIds
   );
@@ -157,7 +157,7 @@ export default function PartJob({
                       }}
                       value={reqType}
                     >
-                      {jobGenderRequies.map((v, i) => (
+                      {jobGenderRequires.map((v, i) => (
                         <MenuItem key={i} onClick={() => setReqType(v)}>
                           {v}
                         </MenuItem>
@@ -204,7 +204,7 @@ export default function PartJob({
                     <FinishButton
                       text="delete"
                       onClick={() => {
-                        deletPartJob(partJob._id, token, socket);
+                        deletePartJob(partJob._id, token, socket);
                       }}
                     />
                     <FinishButton
@@ -358,7 +358,7 @@ export default function PartJob({
                   }}
                   value={reqType}
                 >
-                  {jobGenderRequies.map((v, i) => (
+                  {jobGenderRequires.map((v, i) => (
                     <MenuItem key={i} onClick={() => setReqType(v)}>
                       {v}
                     </MenuItem>

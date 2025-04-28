@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import DateConv from "./Dateconv";
+import DateConvert from "./DateConvert";
 import React from "react";
 import { UpdateTimeOffsetRaw } from "../../../interface";
 export default function GetTimeHtml({
@@ -34,7 +34,7 @@ export default function GetTimeHtml({
   const hours = String(dateObj.getHours()).padStart(2, "0");
   const minutes = String(dateObj.getMinutes()).padStart(2, "0");
   return (
-    <DateConv
+    <DateConvert
       day={day}
       minutes={minutes}
       month={month}

@@ -45,7 +45,7 @@ export default function peeOnlyPage() {
               router.push("/");
             }}
           >
-            Verifile
+            Verify
           </button>
         </div>
       </div>

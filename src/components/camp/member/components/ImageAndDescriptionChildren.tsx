@@ -5,7 +5,7 @@ import { InterImageAndDescription, Mode } from "../../../../../interface";
 import Image from "next/image";
 import SetIndexButton from "@/components/utility/SetIndexButton";
 import { copy } from "@/components/utility/setup";
-export default function ImageAndDescriptionChildern({
+export default function ImageAndDescriptionChildren({
   token,
   mode,
   data,

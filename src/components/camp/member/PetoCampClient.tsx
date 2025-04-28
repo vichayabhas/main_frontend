@@ -4,7 +4,7 @@ import React from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
 import { downloadText, getBackendUrl } from "../../utility/setup";
 import TopMenuItem from "../../randomthing/TopMenuItem";
-import styles from "../../randomthing/topmenu.module.css";
+import styles from "../../randomthing/topMenu.module.css";
 import AllInOneLock from "@/components/utility/AllInOneLock";
 import FinishButton from "@/components/utility/FinishButton";
 import ImagesFromUrl from "@/components/utility/ImagesFromUrl";
@@ -66,7 +66,7 @@ export default function PetoCampClient({
   return (
     <>
       {user.mode == "nong" ? (
-        <div className={styles.menucontainerCamp}>
+        <div className={styles.menuContainerCamp}>
           <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
             <AllInOneLock
               lock={
@@ -105,7 +105,7 @@ export default function PetoCampClient({
           </div>
         </div>
       ) : (
-        <div className={styles.menucontainerCamp}>
+        <div className={styles.menuContainerCamp}>
           <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
             <TopMenuItem
               title="action plan"

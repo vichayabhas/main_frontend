@@ -25,31 +25,31 @@ import TypingImageSource from "@/components/utility/TypingImageSource";
 import { io } from "socket.io-client";
 
 const socket = io(getBackendUrl());
-export default function UpdateImageAndDescryption({
-  imageAndDescryptionContainersPack,
+export default function UpdateImageAndDescription({
+  imageAndDescriptionContainersPack,
   token,
 }: {
-  imageAndDescryptionContainersPack: GetImageAndDescriptionsPackForUpdate;
+  imageAndDescriptionContainersPack: GetImageAndDescriptionsPackForUpdate;
   token: string;
 }) {
   const [types, setTypes] = React.useState<ImageAndDescriptionType>("normal");
   const [imageUrls, setImageUrls] = React.useState<(string | null)[]>([]);
-  const [descryptions, setDescryptions] = React.useState<string[]>([]);
+  const [descriptions, setDescriptions] = React.useState<string[]>([]);
   const [orders, setOrders] = React.useState<number[]>([]);
   const [name, setName] = React.useState<string>("");
   const [_id, set_id] = React.useState<Id | null>(null);
   const [childrenId, setChildrenId] = React.useState<(Id | null)[]>([]);
-  const [imageAndDescryptionContainers, setImageAndDescryptionContainers] =
+  const [imageAndDescriptionContainers, setImageAndDescriptionContainers] =
     React.useState(
-      imageAndDescryptionContainersPack.imageAndDescryptionContainers
+      imageAndDescriptionContainersPack.imageAndDescriptionContainers
     );
   const updateSocket = new SocketReady<ShowImageAndDescriptions[]>(
     socket,
-    "updateImageAndDescruptions"
+    "updateImageAndDescriptions"
   );
-  const room = imageAndDescryptionContainersPack.baan._id.toString();
+  const room = imageAndDescriptionContainersPack.baan._id.toString();
   React.useEffect(() => {
-    updateSocket.listen(room, setImageAndDescryptionContainers);
+    updateSocket.listen(room, setImageAndDescriptionContainers);
     return () => updateSocket.disconnect();
   });
   return (
@@ -66,36 +66,36 @@ export default function UpdateImageAndDescryption({
           id="location"
           className="h-[2em] w-[200px]"
         >
-          {imageAndDescryptionContainers.map(
-            (imageAndDescryptionContainer, i) => (
+          {imageAndDescriptionContainers.map(
+            (imageAndDescriptionContainer, i) => (
               <MenuItem
                 onClick={() => {
-                  setTypes(imageAndDescryptionContainer.types);
+                  setTypes(imageAndDescriptionContainer.types);
                   setChildrenId(
-                    imageAndDescryptionContainer.children.map(({ _id }) => _id)
+                    imageAndDescriptionContainer.children.map(({ _id }) => _id)
                   );
-                  setDescryptions(
-                    imageAndDescryptionContainer.children.map(
+                  setDescriptions(
+                    imageAndDescriptionContainer.children.map(
                       ({ description }) => description
                     )
                   );
                   setOrders(
-                    imageAndDescryptionContainer.children.map(
+                    imageAndDescriptionContainer.children.map(
                       ({ order }) => order
                     )
                   );
                   setImageUrls(
-                    imageAndDescryptionContainer.children.map(
+                    imageAndDescriptionContainer.children.map(
                       ({ imageUrl }) => imageUrl
                     )
                   );
-                  set_id(imageAndDescryptionContainer._id);
-                  setName(imageAndDescryptionContainer.name);
+                  set_id(imageAndDescriptionContainer._id);
+                  setName(imageAndDescriptionContainer.name);
                 }}
                 key={i}
-                value={imageAndDescryptionContainer.name}
+                value={imageAndDescriptionContainer.name}
               >
-                {imageAndDescryptionContainer.name}
+                {imageAndDescriptionContainer.name}
               </MenuItem>
             )
           )}
@@ -112,7 +112,7 @@ export default function UpdateImageAndDescryption({
             onClick={() => {
               setTypes("normal");
               setChildrenId([]);
-              setDescryptions([]);
+              setDescriptions([]);
               setOrders([]);
               setImageUrls([]);
               set_id(null);
@@ -148,7 +148,7 @@ export default function UpdateImageAndDescryption({
             value={name}
           />
         </div>
-        {imageAndDescryptionContainersPack.isOverNight ? (
+        {imageAndDescriptionContainersPack.isOverNight ? (
           <Select
             variant="standard"
             name="location"
@@ -202,9 +202,9 @@ export default function UpdateImageAndDescryption({
                     },
                   }}
                   onChange={setTextToString(
-                    setMap(setDescryptions, modifyElementInUseStateArray(i))
+                    setMap(setDescriptions, modifyElementInUseStateArray(i))
                   )}
-                  value={descryptions[i]}
+                  value={descriptions[i]}
                 />
               </td>
               <td>
@@ -241,7 +241,7 @@ export default function UpdateImageAndDescryption({
           text="add"
           onClick={() => {
             setChildrenId(addItemInUseStateArray<Id | null>(null));
-            setDescryptions(addItemInUseStateArray(""));
+            setDescriptions(addItemInUseStateArray(""));
             setOrders(addItemInUseStateArray(0));
             setImageUrls(addItemInUseStateArray<string | null>(null));
           }}
@@ -250,7 +250,7 @@ export default function UpdateImageAndDescryption({
           text="remove"
           onClick={() => {
             setChildrenId(removeElementInUseStateArray);
-            setDescryptions(removeElementInUseStateArray);
+            setDescriptions(removeElementInUseStateArray);
             setOrders(removeElementInUseStateArray);
             setImageUrls(removeElementInUseStateArray);
           }}
@@ -267,7 +267,7 @@ export default function UpdateImageAndDescryption({
                   children: childrenId.map((id, i) => ({
                     _id: id,
                     imageUrl: imageUrls[i],
-                    description: descryptions[i],
+                    description: descriptions[i],
                     order: orders[i],
                   })),
                 },
@@ -288,9 +288,9 @@ export default function UpdateImageAndDescryption({
                   children: orders.map((order, i) => ({
                     order,
                     imageUrl: imageUrls[i],
-                    description: descryptions[i],
+                    description: descriptions[i],
                   })),
-                  baanId: imageAndDescryptionContainersPack.baan._id,
+                  baanId: imageAndDescriptionContainersPack.baan._id,
                 },
                 token,
                 updateSocket,

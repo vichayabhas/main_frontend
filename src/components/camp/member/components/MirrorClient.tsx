@@ -55,49 +55,49 @@ export default function MirrorClient({
 }) {
   type MirrorType = "user" | "baan";
   const users = peeLookupNong(pees, nongs);
-  const userRecieverRef = React.useRef(null);
+  const userReceiverRef = React.useRef(null);
   const userSenderRef = React.useRef(null);
-  const baanReciverRef = React.useRef(null);
+  const baanReceiverRef = React.useRef(null);
   const baanSenderRef = React.useRef(null);
-  const userRecieverDownload = useDownloadExcel({
-    currentTableRef: userRecieverRef.current,
+  const userReceiverDownload = useDownloadExcel({
+    currentTableRef: userReceiverRef.current,
     filename: `mirror ฝั่งรับของ${user.nickname} ${user.name} ${user.lastname}`,
   });
   const userSenderDownload = useDownloadExcel({
     currentTableRef: userSenderRef.current,
     filename: `mirror ฝั่งส่งของ${user.nickname} ${user.name} ${user.lastname}`,
   });
-  const baanReciverDownload = useDownloadExcel({
-    currentTableRef: baanReciverRef.current,
+  const baanReceiverDownload = useDownloadExcel({
+    currentTableRef: baanReceiverRef.current,
     filename: `mirror ฝั่งรับของ${camp.groupName}${baan.name}`,
   });
   const baanSenderDownload = useDownloadExcel({
     currentTableRef: baanSenderRef.current,
     filename: `mirror ฝั่งส่งของ${camp.groupName}${baan.name}`,
   });
-  const [reciver, setReciver] = React.useState<ShowMember | null>(null);
+  const [receiver, setReceiver] = React.useState<ShowMember | null>(null);
   const [message, setMessage] = React.useState<string>("");
   const [types, setTypes] = React.useState<MirrorType>("user");
   const [_id, set_id] = React.useState<Id | null>(null);
-  const [userRecivers, setUserRecivers] = React.useState(
-    mirrorData.userRecivers
+  const [userReceivers, setUserReceivers] = React.useState(
+    mirrorData.userReceivers
   );
   const [userSenders, setUserSenders] = React.useState(mirrorData.userSenders);
-  const [baanRecivers, setBaanRecivers] = React.useState(
-    mirrorData.baanRecivers
+  const [baanReceivers, setBaanReceivers] = React.useState(
+    mirrorData.baanReceivers
   );
   const [baanSenders, setBaanSenders] = React.useState(mirrorData.baanSenders);
-  const userReciverSocket = new SocketReady<GetMirrorUser[]>(
+  const userReceiverSocket = new SocketReady<GetMirrorUser[]>(
     socket,
-    "reciveMirrorUser"
+    "receiveMirrorUser"
   );
   const userSenderSocket = new SocketReady<GetMirrorUser[]>(
     socket,
     "sendMirrorUser"
   );
-  const baanReciverSocket = new SocketReady<GetMirrorBaan[]>(
+  const baanReceiverSocket = new SocketReady<GetMirrorBaan[]>(
     socket,
-    "reciveMorrorBaan"
+    "receiveMirrorBaan"
   );
   const baanSenderSocket = new SocketReady<GetMirrorBaan[]>(
     socket,
@@ -105,14 +105,14 @@ export default function MirrorClient({
   );
   React.useEffect(() => {
     const room = campMemberCardId.toString();
-    userReciverSocket.listen(room, setUserRecivers);
+    userReceiverSocket.listen(room, setUserReceivers);
     userSenderSocket.listen(room, setUserSenders);
-    baanReciverSocket.listen(baan._id.toString(), setBaanRecivers);
+    baanReceiverSocket.listen(baan._id.toString(), setBaanReceivers);
     baanSenderSocket.listen(room, setBaanSenders);
     return () => {
-      userReciverSocket.disconnect();
+      userReceiverSocket.disconnect();
       userSenderSocket.disconnect();
-      baanReciverSocket.disconnect();
+      baanReceiverSocket.disconnect();
       baanSenderSocket.disconnect();
     };
   });
@@ -120,7 +120,7 @@ export default function MirrorClient({
     <div>
       {baan.canReadMirror ? (
         <div>
-          <table ref={userRecieverRef}>
+          <table ref={userReceiverRef}>
             <tr>
               <th>ชื่อเล่น</th>
               <th>ชื่อจริง</th>
@@ -128,7 +128,7 @@ export default function MirrorClient({
               <th>ข้อความ</th>
               {camp.canReadTimeOnMirror ? <th>เวลา</th> : null}
             </tr>
-            {userRecivers.map((mirror, i) => (
+            {userReceivers.map((mirror, i) => (
               <tr key={i}>
                 <td>{mirror.sender.nickname}</td>
                 <td>{mirror.sender.name}</td>
@@ -144,11 +144,11 @@ export default function MirrorClient({
           </table>
           <FinishButton
             text={downloadText}
-            onClick={userRecieverDownload.onDownload}
+            onClick={userReceiverDownload.onDownload}
           />
         </div>
       ) : null}
-      {baan.canReadMirror || baan.canWhriteMirror ? (
+      {baan.canReadMirror || baan.canWriteMirror ? (
         <div>
           <table ref={userSenderRef}>
             <tr>
@@ -158,15 +158,15 @@ export default function MirrorClient({
               <th>select</th>
               <th>ข้อความ</th>
               {camp.canReadTimeOnMirror ? <th>เวลา</th> : null}
-              {baan.canWhriteMirror ? <th>action</th> : null}
+              {baan.canWriteMirror ? <th>action</th> : null}
             </tr>
             {userSenders.map((mirror, i) => {
               if (types == "user" && _id?.toString() == mirror._id.toString()) {
                 return (
                   <tr key={i}>
-                    <td>{mirror.reciver.nickname}</td>
-                    <td>{mirror.reciver.name}</td>
-                    <td>{mirror.reciver.lastname}</td>
+                    <td>{mirror.receiver.nickname}</td>
+                    <td>{mirror.receiver.name}</td>
+                    <td>{mirror.receiver.lastname}</td>
                     <td></td>
                     <td>
                       <TextField
@@ -179,7 +179,7 @@ export default function MirrorClient({
                         <GetTimeHtml input={mirror.time} offset={timeOffset} />
                       </td>
                     ) : null}
-                    {baan.canWhriteMirror ? (
+                    {baan.canWriteMirror ? (
                       <td>
                         <FinishButton
                           text="update"
@@ -188,7 +188,7 @@ export default function MirrorClient({
                               { _id, message },
                               token,
                               userSenderSocket,
-                              userReciverSocket
+                              userReceiverSocket
                             );
                           }}
                         />
@@ -199,7 +199,7 @@ export default function MirrorClient({
                               _id,
                               token,
                               userSenderSocket,
-                              userReciverSocket
+                              userReceiverSocket
                             );
                           }}
                         />
@@ -210,9 +210,9 @@ export default function MirrorClient({
               } else {
                 return (
                   <tr key={i}>
-                    <td>{mirror.reciver.nickname}</td>
-                    <td>{mirror.reciver.name}</td>
-                    <td>{mirror.reciver.lastname}</td>
+                    <td>{mirror.receiver.nickname}</td>
+                    <td>{mirror.receiver.name}</td>
+                    <td>{mirror.receiver.lastname}</td>
                     <td></td>
                     <td>{mirror.message}</td>
                     {camp.canReadTimeOnMirror ? (
@@ -220,7 +220,7 @@ export default function MirrorClient({
                         <GetTimeHtml input={mirror.time} offset={timeOffset} />
                       </td>
                     ) : null}
-                    {baan.canWhriteMirror ? (
+                    {baan.canWriteMirror ? (
                       <td>
                         <FinishButton
                           text="select"
@@ -236,16 +236,16 @@ export default function MirrorClient({
                 );
               }
             })}
-            {baan.canWhriteMirror ? (
+            {baan.canWriteMirror ? (
               types == "user" && !_id ? (
                 <tr>
-                  <td>{reciver?.nickname}</td>
-                  <td>{reciver?.name}</td>
-                  <td>{reciver?.lastname}</td>
+                  <td>{receiver?.nickname}</td>
+                  <td>{receiver?.name}</td>
+                  <td>{receiver?.lastname}</td>
                   <td>
                     <Select>
                       {users.map((v, i) => (
-                        <MenuItem key={i} onClick={() => setReciver(v)}>
+                        <MenuItem key={i} onClick={() => setReceiver(v)}>
                           {v.nickname} {v.name} {v.lastname}
                         </MenuItem>
                       ))}
@@ -262,17 +262,17 @@ export default function MirrorClient({
                     <FinishButton
                       text="create"
                       onClick={() => {
-                        if (reciver) {
+                        if (receiver) {
                           createMirrorUser(
                             {
                               senderCampMemberCardId: campMemberCardId,
-                              reciverId: reciver.campMemberCardId,
+                              receiverId: receiver.campMemberCardId,
                               types: "user",
                               message,
                             },
                             token,
                             userSenderSocket,
-                            userReciverSocket
+                            userReceiverSocket
                           );
                         } else {
                           alert("โปรดระบุผู้รับ");
@@ -310,7 +310,7 @@ export default function MirrorClient({
       ) : null}
       {baan.canReadMirror ? (
         <div>
-          <table ref={baanReciverRef}>
+          <table ref={baanReceiverRef}>
             <tr>
               <th>ชื่อเล่น</th>
               <th>ชื่อจริง</th>
@@ -319,12 +319,12 @@ export default function MirrorClient({
               <th>ข้อความ</th>
               {camp.canReadTimeOnMirror ? <th>เวลา</th> : null}
             </tr>
-            {baanRecivers.map((mirror, i) => (
+            {baanReceivers.map((mirror, i) => (
               <tr key={i}>
                 <td>{mirror.sender.nickname}</td>
                 <td>{mirror.sender.name}</td>
                 <td>{mirror.sender.lastname}</td>
-                <td>{mirror.reciver.name}</td>
+                <td>{mirror.receiver.name}</td>
                 <td>{mirror.message}</td>
                 {camp.canReadTimeOnMirror ? (
                   <td>
@@ -336,24 +336,24 @@ export default function MirrorClient({
           </table>
           <FinishButton
             text={downloadText}
-            onClick={baanReciverDownload.onDownload}
+            onClick={baanReceiverDownload.onDownload}
           />
         </div>
       ) : null}
-      {baan.canReadMirror || baan.canWhriteMirror ? (
+      {baan.canReadMirror || baan.canWriteMirror ? (
         <div>
           <table ref={baanSenderRef}>
             <tr>
               <th>{camp.groupName}</th>
               <th>ข้อความ</th>
               {camp.canReadTimeOnMirror ? <th>เวลา</th> : null}
-              {baan.canWhriteMirror ? <th>action</th> : null}
+              {baan.canWriteMirror ? <th>action</th> : null}
             </tr>
             {baanSenders.map((mirror, i) => {
               if (types == "baan" && _id?.toString() == mirror._id.toString()) {
                 return (
                   <tr key={i}>
-                    <td>{mirror.reciver.name}</td>
+                    <td>{mirror.receiver.name}</td>
                     <td>
                       <TextField
                         onChange={setTextToString(setMessage, true)}
@@ -365,7 +365,7 @@ export default function MirrorClient({
                         <GetTimeHtml input={mirror.time} offset={timeOffset} />
                       </td>
                     ) : null}
-                    {baan.canWhriteMirror ? (
+                    {baan.canWriteMirror ? (
                       <td>
                         <FinishButton
                           text="update"
@@ -374,7 +374,7 @@ export default function MirrorClient({
                               { _id, message },
                               token,
                               baanSenderSocket,
-                              baanReciverSocket
+                              baanReceiverSocket
                             );
                           }}
                         />
@@ -385,7 +385,7 @@ export default function MirrorClient({
                               _id,
                               token,
                               baanSenderSocket,
-                              baanReciverSocket
+                              baanReceiverSocket
                             );
                           }}
                         />
@@ -396,14 +396,14 @@ export default function MirrorClient({
               } else {
                 return (
                   <tr key={i}>
-                    <td>{mirror.reciver.name}</td>
+                    <td>{mirror.receiver.name}</td>
                     <td>{mirror.message}</td>
                     {camp.canReadTimeOnMirror ? (
                       <td>
                         <GetTimeHtml input={mirror.time} offset={timeOffset} />
                       </td>
                     ) : null}
-                    {baan.canWhriteMirror ? (
+                    {baan.canWriteMirror ? (
                       <td>
                         <FinishButton
                           text="select"
@@ -419,7 +419,7 @@ export default function MirrorClient({
                 );
               }
             })}
-            {baan.canWhriteMirror ? (
+            {baan.canWriteMirror ? (
               types == "baan" && !_id ? (
                 <tr>
                   <td>{baan.name}</td>
@@ -437,13 +437,13 @@ export default function MirrorClient({
                         createMirrorBaan(
                           {
                             senderCampMemberCardId: campMemberCardId,
-                            reciverId: baan._id,
+                            receiverId: baan._id,
                             types: "baan",
                             message,
                           },
                           token,
                           baanSenderSocket,
-                          baanReciverSocket
+                          baanReceiverSocket
                         );
                       }}
                     />

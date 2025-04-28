@@ -9,7 +9,7 @@ export default async function createMirrorBaan(
   input: CreateMirror,
   token: string,
   senderSocket: SocketReady<GetMirrorBaan[]>,
-  reciverSocket: SocketReady<GetMirrorBaan[]>
+  receiverSocket: SocketReady<GetMirrorBaan[]>
 ) {
   const response = await fetch(`${getBackendUrl()}/camp/createMirrorBaan/`, {
     method: "POST",
@@ -25,6 +25,6 @@ export default async function createMirrorBaan(
     return data;
   }
   senderSocket.trigger(data.senders, data.senderId.toString());
-  reciverSocket.trigger(data.recivers, data.reciverId.toString());
+  receiverSocket.trigger(data.receivers, data.receiverId.toString());
   return data;
 }

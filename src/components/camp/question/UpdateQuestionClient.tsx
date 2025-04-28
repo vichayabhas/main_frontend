@@ -6,7 +6,7 @@ import {
   Id,
   BasicCamp,
   TriggerTextQuestion,
-  QusetionType,
+  QuestionType,
   TriggerChoiceQuestion,
   QuestionDeleteAction,
 } from "../../../../interface";
@@ -48,7 +48,7 @@ export default function UpdateQuestionClient({
   const [camp, setCamp] = React.useState(campInput);
   const room = camp._id.toString();
   type EditMode = "normal" | "edit" | "delete" | "wait";
-  const actionSocket = new SocketReady<QusetionType>(socket, "questionAction");
+  const actionSocket = new SocketReady<QuestionType>(socket, "questionAction");
   const textSocket = new SocketReady<TriggerTextQuestion>(
     socket,
     "trigTextQuestion"

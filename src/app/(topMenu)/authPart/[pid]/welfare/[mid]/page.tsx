@@ -4,7 +4,7 @@ import MealClient from "@/components/camp/meal/MealClient";
 import { stringToId } from "@/components/utility/setup";
 import { getServerSession } from "next-auth";
 import React from "react";
-import getMealForUpdate from "@/components/randomthing/getMealForUpdate";
+import getMealForUpdate from "@/libs/randomthing/getMealForUpdate";
 export default async function page({
   params,
 }: {

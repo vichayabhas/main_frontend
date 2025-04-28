@@ -9,7 +9,7 @@ export default async function updateMirrorUser(
   input: UpdateMirror,
   token: string,
   senderSocket: SocketReady<GetMirrorUser[]>,
-  reciverSocket: SocketReady<GetMirrorUser[]>
+  receiverSocket: SocketReady<GetMirrorUser[]>
 ) {
   const response = await fetch(`${getBackendUrl()}/camp/updateMirrorUser/`, {
     method: "PUT",
@@ -25,6 +25,6 @@ export default async function updateMirrorUser(
     return data;
   }
   senderSocket.trigger(data.senders, data.senderId.toString());
-  reciverSocket.trigger(data.recivers, data.reciverId.toString());
+  receiverSocket.trigger(data.receivers, data.receiverId.toString());
   return data;
 }

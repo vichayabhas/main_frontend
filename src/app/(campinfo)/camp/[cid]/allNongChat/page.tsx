@@ -6,10 +6,10 @@ import getUserFromCamp from "@/libs/camp/getUserFromCamp";
 import getChat from "@/libs/randomthing/getChat";
 import getCampMemberCardByCampId from "@/libs/user/getCampMemberCardByCampId";
 import { getServerSession } from "next-auth";
-import ChatChoiseClient from "@/components/chat/ChatChoiseClient";
+import ChatChoiceClient from "@/components/chat/ChatChoiceClient";
 import { stringToId } from "@/components/utility/setup";
 import React from "react";
-export default async function NongChatChoise({
+export default async function NongChatChoice({
   params,
 }: {
   params: { cid: string };
@@ -32,7 +32,7 @@ export default async function NongChatChoise({
     case "pee": {
       const peeCamp = await getPeeCamp(shirtManage.campModelId, token);
       const nongs = await getUserFromCamp("getNongsFromBaanId", peeCamp.baanId);
-      return <ChatChoiseClient nongs={nongs} campId={campId} />;
+      return <ChatChoiceClient nongs={nongs} campId={campId} />;
     }
     case "peto":
       return <BackToHome />;

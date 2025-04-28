@@ -85,7 +85,7 @@ export default function PlaceClient({
               console.log(error);
             }
           } else {
-            alert("Please type in all the detavdtrjbyfugjunils!");
+            alert("Please type in all the detail!");
           }
         }}
       >

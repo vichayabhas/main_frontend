@@ -9,7 +9,7 @@ export default async function createMirrorUser(
   input: CreateMirror,
   token: string,
   senderSocket: SocketReady<GetMirrorUser[]>,
-  reciverSocket: SocketReady<GetMirrorUser[]>
+  receiverSocket: SocketReady<GetMirrorUser[]>
 ) {
   const response = await fetch(`${getBackendUrl()}/camp/createMirrorUser/`, {
     method: "POST",
@@ -25,6 +25,6 @@ export default async function createMirrorUser(
     return data;
   }
   senderSocket.trigger(data.senders, data.senderId.toString());
-  reciverSocket.trigger(data.recivers, data.reciverId.toString());
+  receiverSocket.trigger(data.receivers, data.receiverId.toString());
   return data;
 }

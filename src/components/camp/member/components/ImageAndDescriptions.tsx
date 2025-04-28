@@ -5,7 +5,7 @@ import { Id, Mode, ShowImageAndDescriptions } from "../../../../../interface";
 import React from "react";
 import AllInOneLock from "../../../utility/AllInOneLock";
 import FinishButton from "../../../utility/FinishButton";
-import ImageAndDescriptionChildern from "./ImageAndDescryptionChildren";
+import ImageAndDescriptionChildren from "./ImageAndDescriptionChildren";
 import { io } from "socket.io-client";
 import { getBackendUrl, SocketReady } from "@/components/utility/setup";
 
@@ -28,17 +28,17 @@ export default function ImageAndDescriptions({
   }
   const [selectIndex, setSelectIndex] = React.useState<number | null>(null);
   const [index, setIndex] = React.useState(0);
-  const [imageAndDescryptionContainers, setImageAndDescryptionContainers] =
+  const [imageAndDescriptionContainers, setImageAndDescriptionContainers] =
     React.useState(dataIn);
   const name =
-    selectIndex == null ? "" : imageAndDescryptionContainers[selectIndex].name;
+    selectIndex == null ? "" : imageAndDescriptionContainers[selectIndex].name;
   const updateSocket = new SocketReady<ShowImageAndDescriptions[]>(
     socket,
-    "updateImageAndDescruptions"
+    "updateImageAndDescriptions"
   );
   const room = baanId.toString();
   React.useEffect(() => {
-    updateSocket.listen(room, setImageAndDescryptionContainers);
+    updateSocket.listen(room, setImageAndDescriptionContainers);
     return () => updateSocket.disconnect();
   });
   return (
@@ -56,7 +56,7 @@ export default function ImageAndDescriptions({
             value={name}
             renderValue={() => name}
           >
-            {imageAndDescryptionContainers
+            {imageAndDescriptionContainers
               .filter((v) => {
                 if (v.children.length == 0) {
                   return false;
@@ -80,10 +80,10 @@ export default function ImageAndDescriptions({
               ))}
           </Select>
         ) : (
-          <ImageAndDescriptionChildern
+          <ImageAndDescriptionChildren
             index={index}
             setIndex={setIndex}
-            data={imageAndDescryptionContainers[selectIndex].children}
+            data={imageAndDescriptionContainers[selectIndex].children}
             mode={mode}
             token={token}
           />

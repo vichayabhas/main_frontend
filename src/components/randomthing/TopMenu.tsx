@@ -1,9 +1,9 @@
-import styles from "./topmenu.module.css";
+import styles from "./topMenu.module.css";
 import TopMenuItem from "./TopMenuItem";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import getUserProfile from "@/libs/user/getUserProfile";
-import DateConv from "../utility/Dateconv";
+import DateConvert from "../utility/DateConvert";
 import getTimeOffset from "@/libs/user/getTimeOffset";
 import dayjs from "dayjs";
 import getSystemInfo from "@/libs/randomthing/getSystemInfo";
@@ -44,9 +44,9 @@ export default async function TopMenu() {
       if (user.role == "nong") {
         return (
           //น้องจริง
-          <div className={styles.menucontainer}>
+          <div className={styles.menuContainer}>
             <Logo />
-            <DateConv
+            <DateConvert
               day={day}
               minutes={minutes}
               month={month}
@@ -74,9 +74,9 @@ export default async function TopMenu() {
       } else {
         // พี่ และ admin mode น้อง
         return (
-          <div className={styles.menucontainer}>
+          <div className={styles.menuContainer}>
             <Logo />
-            <DateConv
+            <DateConvert
               day={day}
               minutes={minutes}
               month={month}
@@ -103,9 +103,9 @@ export default async function TopMenu() {
       if (user.role == "admin") {
         // admin mode พี่
         return (
-          <div className={styles.menucontainer}>
+          <div className={styles.menuContainer}>
             <Logo />
-            <DateConv
+            <DateConvert
               day={day}
               minutes={minutes}
               month={month}
@@ -131,9 +131,9 @@ export default async function TopMenu() {
       } else {
         return (
           // พี่ mode พี่
-          <div className={styles.menucontainer}>
+          <div className={styles.menuContainer}>
             <Logo />
-            <DateConv
+            <DateConvert
               day={day}
               minutes={minutes}
               month={month}
@@ -166,9 +166,9 @@ export default async function TopMenu() {
     const minutes = String(dateObj.getMinutes()).padStart(2, "0");
     return (
       // not login
-      <div className={styles.menucontainer}>
+      <div className={styles.menuContainer}>
         <Logo />
-        <DateConv
+        <DateConvert
           day={day}
           minutes={minutes}
           month={month}

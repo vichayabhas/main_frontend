@@ -353,7 +353,7 @@ export default function WelfareClient({
         filename="จำนวนสมาชิกที่ halal"
         nongCall={camp.nongCall}
       />
-      จำนวนสมาชิกที่มีมังสวิรัติ
+      จำนวนสมาชิกที่มังสวิรัติ
       <CampNumberTable
         isHavePeto={
           camp.memberStructure == "nong->highSchool,pee->1year,peto->2upYear"
@@ -362,7 +362,7 @@ export default function WelfareClient({
         baanNumbers={welfare.baanVegetarians}
         partNumbers={welfare.partVegetarians}
         groupName={camp.groupName}
-        filename="จำนวนสมาชิกที่มีมังสวิรัติ"
+        filename="จำนวนสมาชิกที่มังสวิรัติ"
         nongCall={camp.nongCall}
       />
       จำนวนสมาชิกที่กินเจ

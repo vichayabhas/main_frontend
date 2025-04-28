@@ -2,7 +2,7 @@ import { stringToId } from "@/components/utility/setup";
 import getHeathIssue from "@/libs/user/getHeathIssue";
 import getUser from "@/libs/user/getUser";
 import React from "react";
-export default async function HelthIshuePage({
+export default async function HealthIssuePage({
   params,
 }: {
   params: { hid: string };

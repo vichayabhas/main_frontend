@@ -9,7 +9,7 @@ import React from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
 import { downloadText, getBackendUrl, setBoolean } from "../../utility/setup";
 import TopMenuItem from "../../randomthing/TopMenuItem";
-import styles from "../../randomthing/topmenu.module.css";
+import styles from "../../randomthing/topMenu.module.css";
 import AllInOneLock from "@/components/utility/AllInOneLock";
 import FinishButton from "@/components/utility/FinishButton";
 import MirrorClient from "./components/MirrorClient";
@@ -84,7 +84,7 @@ export default function NongCampClient({
   const [showAllGroups, setShowAllGroups] = React.useState(false);
   return (
     <>
-      <div className={styles.menucontainerCamp}>
+      <div className={styles.menuContainerCamp}>
         <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
           <AllInOneLock
             lock={

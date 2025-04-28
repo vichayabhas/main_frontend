@@ -37,7 +37,7 @@ function getSubGroupValid(
 ) {
   const maleValid =
     user.gender == "Male" && subGroup.genderType != "หญิงเท่านั้น";
-  const felaleValid =
+  const femaleValid =
     user.gender == "Female" && subGroup.genderType != "ชายเท่านั้น";
   const nongValid =
     campMemberCard.role == "nong" && subGroup.roleType != "พี่เท่านั้น";
@@ -46,7 +46,7 @@ function getSubGroupValid(
   const limitValid =
     subGroup.campMemberCardIds.length < subGroup.limit ||
     subGroupIds.includes(subGroup._id);
-  return (maleValid || felaleValid) && (nongValid || peeValid) && limitValid;
+  return (maleValid || femaleValid) && (nongValid || peeValid) && limitValid;
 }
 
 const socket = io(getBackendUrl());

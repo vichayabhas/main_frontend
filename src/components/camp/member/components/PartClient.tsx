@@ -112,7 +112,7 @@ export default function PartClient({
             marginBottom: "10px",
           }}
         >
-          รายชื่อพี่บ้านฝ่าย{part.partName}
+          รายชื่อพี่{camp.groupName}ฝ่าย{part.partName}
         </div>
         <table ref={peeRef}>
           <tr style={{ border: "solid", borderColor: "#373737" }}>
@@ -127,7 +127,7 @@ export default function PartClient({
             <th>email</th>
             <th>มีกระติกน้ำหรือไม่</th>
             <th>ขนาดเสื้อ</th>
-            <th>กรุปของนิสิต</th>
+            <th>กรุ๊ปของนิสิต</th>
             <th>ปัญหาสุขภาพ</th>
           </tr>
           {pees.map((user: ShowMember, i) => (
@@ -186,7 +186,7 @@ export default function PartClient({
             <th>email</th>
             <th>มีกระติกน้ำหรือไม่</th>
             <th>ขนาดเสื้อ</th>
-            <th>กรุปของนิสิต</th>
+            <th>กรุ๊ปของนิสิต</th>
             <th>ปัญหาสุขภาพ</th>
           </tr>
           {petos.map((user: ShowMember, i) => (

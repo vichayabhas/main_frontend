@@ -10,7 +10,7 @@ import {
   setBoolean,
 } from "../../utility/setup";
 import TopMenuItem from "../../randomthing/TopMenuItem";
-import styles from "../../randomthing/topmenu.module.css";
+import styles from "../../randomthing/topMenu.module.css";
 import ImageAndDescriptions from "./components/ImageAndDescriptions";
 import UserNameTable from "../../utility/UserNameTable";
 import { Checkbox } from "@mui/material";
@@ -116,11 +116,11 @@ export default function PeeCampClient({
   const [removeTimeRegisterIds, setRemoveTimeRegisterIds] = React.useState<
     Id[]
   >([]);
-  const [addJobIds, setaddJobIds] = React.useState<Id[]>([]);
+  const [addJobIds, setAddJobIds] = React.useState<Id[]>([]);
 
   const manageJobId = new AddRemoveHigh(
     addJobIds,
-    setaddJobIds,
+    setAddJobIds,
     removeTimeRegisterIds,
     setRemoveTimeRegisterIds
   );
@@ -129,7 +129,7 @@ export default function PeeCampClient({
   return (
     <>
       {user.mode == "nong" ? (
-        <div className={styles.menucontainerCamp}>
+        <div className={styles.menuContainerCamp}>
           <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
             <AllInOneLock
               bypass={
@@ -178,7 +178,7 @@ export default function PeeCampClient({
           </div>
         </div>
       ) : (
-        <div className={styles.menucontainerCamp}>
+        <div className={styles.menuContainerCamp}>
           <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
             <TopMenuItem
               title="action plan"

@@ -17,5 +17,4 @@ export default async function PartChoice({
   const campId = stringToId(params.cid);
   const parts = await getParts(campId, session.user.token);
   return <ChoicePartChatClient parts={parts} />;
-  //เอาทุกฝ่ายในค่ายมาให้เลือกให้อ่านแชต
 }

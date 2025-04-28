@@ -630,3 +630,10 @@ export class SocketReady<T> {
     this.socket.off(this.eventName);
   }
 }
+export function notify(message: string) {
+  Notification.requestPermission().then((permission) => {
+    if (permission == "granted") {
+      new Notification(message);
+    }
+  });
+}
