@@ -1,6 +1,6 @@
 "use client";
 import { Session } from "next-auth";
-import { Id, InterCampFront, InterUser } from "../../../interface";
+import { BasicCamp, Id, InterUser } from "../../../interface";
 import React from "react";
 import { useRouter } from "next/navigation";
 import peeUpdateMode from "@/libs/user/peeUpdateMode";
@@ -15,7 +15,7 @@ export default function UpdateModeRaw({
 }: {
   session: Session | null;
   user: InterUser | null;
-  camps: InterCampFront[];
+  camps: BasicCamp[];
 }) {
   const router = useRouter();
 
@@ -98,7 +98,7 @@ export default function UpdateModeRaw({
             }}
           />
         </div>
-        {camps.map((camp: InterCampFront, i) => {
+        {camps.map((camp: BasicCamp, i) => {
           return (
             <div className="text-2xl my-10 text-white" key={i}>
               <Checkbox

@@ -1,7 +1,7 @@
 import { getBackendUrl } from "@/components/utility/setup";
-import { InterCampFront } from "../../../interface";
+import { BasicCamp } from "../../../interface";
 
-export default async function getCamps(): Promise<InterCampFront[]> {
+export default async function getCamps(): Promise<BasicCamp[]> {
   const response = await fetch(`${getBackendUrl()}/camp/getCamps`, {
     cache: "no-store",
   });

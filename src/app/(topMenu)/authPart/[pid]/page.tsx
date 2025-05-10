@@ -45,12 +45,12 @@ export default async function Baan({ params }: { params: { pid: string } }) {
   const selectOffset = await getTimeOffset(user.selectOffsetId);
   const displayOffset = await getTimeOffset(user.displayOffsetId);
   const campMemberCard = await getCampMemberCardByCampId(part.campId, token);
-  if (!user.authPartIds.includes(camp.partBoardId) && part.auths.length == 0) {
+  if (!camp.boardIds.includes(user._id) && part.auths.length == 0) {
     return <BackToHome />;
   }
   const outputs: React.ReactNode[] = [];
   let isBoard = false;
-  if (user.authPartIds.includes(camp.partBoardId)) {
+  if (camp.boardIds.includes(user._id)) {
     const data = await getCampForUpdate(camp._id, token);
     outputs.push(
       <>

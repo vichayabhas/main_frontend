@@ -32,12 +32,12 @@ export default async function Baan({ params }: { params: { bid: string } }) {
     case "pee": {
       const peeCamp = await getPeeCamp(campMemberCard.campModelId, token);
       const part = await getPart(peeCamp.partId, token);
-      if (user.authPartIds.includes(camp.partBoardId)) {
+      if (camp.boardIds.includes(user._id)) {
         return <UpdateBaanServer baanId={baanId} />;
       }
       if (
         part.auths.includes("หัวหน้าพี่เลี้ยง") &&
-        peeCamp.baanId.toString().localeCompare(params.bid)
+        peeCamp.baanId.toString() == params.bid
       ) {
         return <UpdateBaanServer baanId={baanId} />;
       }
@@ -46,7 +46,7 @@ export default async function Baan({ params }: { params: { bid: string } }) {
     case "peto": {
       const petoCamp = await getPetoCamp(campMemberCard.campModelId, token);
       const part = await getPart(petoCamp.partId, token);
-      if (user.authPartIds.includes(camp.partBoardId)) {
+      if (camp.boardIds.includes(user._id)) {
         return <UpdateBaanServer baanId={baanId} />;
       }
       if (part.auths.includes("หัวหน้าพี่เลี้ยง")) {

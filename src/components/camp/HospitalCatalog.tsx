@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { InterCampFront } from "../../../interface";
+import { BasicCamp } from "../../../interface";
 import Card from "./Card";
 import React from "react";
 export default function HospitalCatalog({
@@ -9,7 +9,7 @@ export default function HospitalCatalog({
 
   university,
 }: {
-  hospitalsJson: InterCampFront[];
+  hospitalsJson: BasicCamp[];
   url: string;
 
   university: boolean;
@@ -28,7 +28,7 @@ export default function HospitalCatalog({
           alignContent: "space-around",
         }}
       >
-        {hospitalsJsonReady.map((camp: InterCampFront, i) => {
+        {hospitalsJsonReady.map((camp: BasicCamp, i) => {
           if (
             (camp.memberStructure == "nong->1year,pee->2upYear" ||
               camp.memberStructure == "allYearMix") &&
