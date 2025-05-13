@@ -4,8 +4,7 @@ import { Id, ShowImageAndDescriptions } from "../../../interface";
 export default async function deleteImageAndDescription(
   containerId: Id,
   token: string,
-  socket: SocketReady<ShowImageAndDescriptions[]>,
-  room: string
+  socket: SocketReady<ShowImageAndDescriptions[]>
 ) {
   const response = await fetch(
     `${getBackendUrl()}/camp/deleteImageAndDescription/params/${containerId}`,
@@ -21,6 +20,6 @@ export default async function deleteImageAndDescription(
   if (!response.ok) {
     return data;
   }
-  socket.trigger(data, room);
-  return data
+  socket.trigger(data);
+  return data;
 }

@@ -40,9 +40,9 @@ export default function SubGroupAdminClient({
 }) {
   const updateSocket = new SocketReady<GetGroupContainer[]>(
     socket,
-    "updateSubGroup"
+    "updateSubGroup",
+    data.baan._id
   );
-  const room = data.baan._id.toString();
   const [_id, set_id] = React.useState<Id | null>(null);
   const [containerName, setContainerName] = React.useState("");
   const [selectIndex, setSelectIndex] = React.useState<number | null>(null);
@@ -65,7 +65,7 @@ export default function SubGroupAdminClient({
   const realTimeCamp = new RealTimeCamp(camp._id, socket);
   const realTimeBaan = new RealTimeBasicBaan(baan._id, socket, setBaan);
   React.useEffect(() => {
-    updateSocket.listen(room, setGroups);
+    updateSocket.listen(setGroups);
     realTimeBaan.listen();
     realTimeCamp.listen(setCamp);
     return () => {
@@ -147,7 +147,6 @@ export default function SubGroupAdminClient({
                 },
                 token,
                 updateSocket,
-                room
               )
             }
           />
@@ -186,7 +185,6 @@ export default function SubGroupAdminClient({
                 },
                 token,
                 updateSocket,
-                room
               )
             }
           />
@@ -197,7 +195,6 @@ export default function SubGroupAdminClient({
                 groups[selectIndex]._id,
                 token,
                 updateSocket,
-                room
               );
               setSelectIndex(null);
             }}
@@ -308,7 +305,6 @@ export default function SubGroupAdminClient({
                     },
                     token,
                     updateSocket,
-                    room
                   )
                 }
               />
@@ -353,7 +349,6 @@ export default function SubGroupAdminClient({
                             },
                             token,
                             updateSocket,
-                            room
                           );
                         }}
                       />
@@ -364,7 +359,6 @@ export default function SubGroupAdminClient({
                             subGroup._id,
                             token,
                             updateSocket,
-                            room
                           );
                           set_id(null);
                         }}

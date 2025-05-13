@@ -46,24 +46,31 @@ export default function UpdateQuestionClient({
   token: string;
 }) {
   const [camp, setCamp] = React.useState(campInput);
-  const room = camp._id.toString();
   type EditMode = "normal" | "edit" | "delete" | "wait";
-  const actionSocket = new SocketReady<QuestionType>(socket, "questionAction");
+  const actionSocket = new SocketReady<QuestionType>(
+    socket,
+    "questionAction",
+    camp._id
+  );
   const textSocket = new SocketReady<TriggerTextQuestion>(
     socket,
-    "trigTextQuestion"
+    "trigTextQuestion",
+    camp._id
   );
   const choiceSocket = new SocketReady<TriggerChoiceQuestion>(
     socket,
-    "trigChoiceQuestion"
+    "trigChoiceQuestion",
+    camp._id
   );
   const deleteSocket = new SocketReady<QuestionDeleteAction>(
     socket,
-    "deleteQuestion"
+    "deleteQuestion",
+    camp._id
   );
   const updateSocket = new SocketReady<GetAllQuestion>(
     socket,
-    "updateQuestion"
+    "updateQuestion",
+    camp._id
   );
   const realTimeCamp = new RealTimeCamp(camp._id, socket);
   const [editMode, setEditMode] = React.useState<EditMode>("normal");
@@ -238,7 +245,7 @@ export default function UpdateQuestionClient({
       token
     );
     const newQuestions = await getAllQuestion(token, camp._id);
-    updateSocket.trigger(newQuestions, room);
+    updateSocket.trigger(newQuestions);
     setEditMode("normal");
   }
   async function deleteQuestion() {
@@ -251,19 +258,19 @@ export default function UpdateQuestionClient({
     while (i < deleteTextIds.length) {
       await deleteTextQuestion(deleteTextIds[i++], token);
     }
-    deleteSocket.trigger({ deleteChoiceIds, deleteTextIds }, room);
+    deleteSocket.trigger({ deleteChoiceIds, deleteTextIds });
     setDeleteChoiceIds([]);
     setDeleteTextIds([]);
     setEditMode("normal");
   }
   React.useEffect(() => {
-    textSocket.listen(room, (event: TriggerTextQuestion) => {
+    textSocket.listen((event: TriggerTextQuestion) => {
       const i = event.index;
       texts.modOrder(i)(event.order);
       texts.modQuestion(i)(event.question);
       texts.modScore(i)(event.score);
     });
-    choiceSocket.listen(room, (event: TriggerChoiceQuestion) => {
+    choiceSocket.listen((event: TriggerChoiceQuestion) => {
       const i = event.index;
       choices.modQuestion(i)(event.question);
       choices.modA(i)(event.a);
@@ -279,7 +286,7 @@ export default function UpdateQuestionClient({
       choices.modOrder(i)(event.order);
       choices.modCorrect(i)(event.correct);
     });
-    actionSocket.listen(room, (t) => {
+    actionSocket.listen((t) => {
       switch (t) {
         case "addText": {
           addTextQuestion();
@@ -299,11 +306,11 @@ export default function UpdateQuestionClient({
         }
       }
     });
-    deleteSocket.listen(room, (set) => {
+    deleteSocket.listen((set) => {
       texts.deletes(set.deleteTextIds);
       choices.deletes(set.deleteChoiceIds);
     });
-    updateSocket.listen(room, (newData) => {
+    updateSocket.listen((newData) => {
       texts.replace(newData.texts);
       choices.replace(newData.choices);
     });
@@ -447,25 +454,22 @@ export default function UpdateQuestionClient({
                       },
                     }}
                     onChange={setTextToString((set) => {
-                      choiceSocket.trigger(
-                        {
-                          index: i,
-                          question: set,
-                          a: choices.getA(i),
-                          b: choices.getB(i),
-                          c: choices.getC(i),
-                          d: choices.getD(i),
-                          e: choices.getE(i),
-                          scoreA: choices.getScoreA(i),
-                          scoreB: choices.getScoreB(i),
-                          scoreC: choices.getScoreC(i),
-                          scoreD: choices.getScoreD(i),
-                          scoreE: choices.getScoreE(i),
-                          correct: choices.getCorrect(i),
-                          order: choices.getOrder(i),
-                        },
-                        room
-                      );
+                      choiceSocket.trigger({
+                        index: i,
+                        question: set,
+                        a: choices.getA(i),
+                        b: choices.getB(i),
+                        c: choices.getC(i),
+                        d: choices.getD(i),
+                        e: choices.getE(i),
+                        scoreA: choices.getScoreA(i),
+                        scoreB: choices.getScoreB(i),
+                        scoreC: choices.getScoreC(i),
+                        scoreD: choices.getScoreD(i),
+                        scoreE: choices.getScoreE(i),
+                        correct: choices.getCorrect(i),
+                        order: choices.getOrder(i),
+                      });
                     }, true)}
                     value={choices.getQuestion(i)}
                   />
@@ -492,25 +496,22 @@ export default function UpdateQuestionClient({
                       },
                     }}
                     onChange={setTextToString((set) => {
-                      choiceSocket.trigger(
-                        {
-                          index: i,
-                          question: choices.getQuestion(i),
-                          a: set,
-                          b: choices.getB(i),
-                          c: choices.getC(i),
-                          d: choices.getD(i),
-                          e: choices.getE(i),
-                          scoreA: choices.getScoreA(i),
-                          scoreB: choices.getScoreB(i),
-                          scoreC: choices.getScoreC(i),
-                          scoreD: choices.getScoreD(i),
-                          scoreE: choices.getScoreE(i),
-                          correct: choices.getCorrect(i),
-                          order: choices.getOrder(i),
-                        },
-                        room
-                      );
+                      choiceSocket.trigger({
+                        index: i,
+                        question: choices.getQuestion(i),
+                        a: set,
+                        b: choices.getB(i),
+                        c: choices.getC(i),
+                        d: choices.getD(i),
+                        e: choices.getE(i),
+                        scoreA: choices.getScoreA(i),
+                        scoreB: choices.getScoreB(i),
+                        scoreC: choices.getScoreC(i),
+                        scoreD: choices.getScoreD(i),
+                        scoreE: choices.getScoreE(i),
+                        correct: choices.getCorrect(i),
+                        order: choices.getOrder(i),
+                      });
                     }, true)}
                     value={choices.getA(i)}
                   />
@@ -537,25 +538,22 @@ export default function UpdateQuestionClient({
                       },
                     }}
                     onChange={setTextToString((set) => {
-                      choiceSocket.trigger(
-                        {
-                          index: i,
-                          question: choices.getQuestion(i),
-                          a: choices.getA(i),
-                          b: set,
-                          c: choices.getC(i),
-                          d: choices.getD(i),
-                          e: choices.getE(i),
-                          scoreA: choices.getScoreA(i),
-                          scoreB: choices.getScoreB(i),
-                          scoreC: choices.getScoreC(i),
-                          scoreD: choices.getScoreD(i),
-                          scoreE: choices.getScoreE(i),
-                          correct: choices.getCorrect(i),
-                          order: choices.getOrder(i),
-                        },
-                        room
-                      );
+                      choiceSocket.trigger({
+                        index: i,
+                        question: choices.getQuestion(i),
+                        a: choices.getA(i),
+                        b: set,
+                        c: choices.getC(i),
+                        d: choices.getD(i),
+                        e: choices.getE(i),
+                        scoreA: choices.getScoreA(i),
+                        scoreB: choices.getScoreB(i),
+                        scoreC: choices.getScoreC(i),
+                        scoreD: choices.getScoreD(i),
+                        scoreE: choices.getScoreE(i),
+                        correct: choices.getCorrect(i),
+                        order: choices.getOrder(i),
+                      });
                     }, true)}
                     value={choices.getB(i)}
                   />
@@ -582,25 +580,22 @@ export default function UpdateQuestionClient({
                       },
                     }}
                     onChange={setTextToString((set) => {
-                      choiceSocket.trigger(
-                        {
-                          index: i,
-                          question: choices.getQuestion(i),
-                          a: choices.getA(i),
-                          b: choices.getB(i),
-                          c: set,
-                          d: choices.getD(i),
-                          e: choices.getE(i),
-                          scoreA: choices.getScoreA(i),
-                          scoreB: choices.getScoreB(i),
-                          scoreC: choices.getScoreC(i),
-                          scoreD: choices.getScoreD(i),
-                          scoreE: choices.getScoreE(i),
-                          correct: choices.getCorrect(i),
-                          order: choices.getOrder(i),
-                        },
-                        room
-                      );
+                      choiceSocket.trigger({
+                        index: i,
+                        question: choices.getQuestion(i),
+                        a: choices.getA(i),
+                        b: choices.getB(i),
+                        c: set,
+                        d: choices.getD(i),
+                        e: choices.getE(i),
+                        scoreA: choices.getScoreA(i),
+                        scoreB: choices.getScoreB(i),
+                        scoreC: choices.getScoreC(i),
+                        scoreD: choices.getScoreD(i),
+                        scoreE: choices.getScoreE(i),
+                        correct: choices.getCorrect(i),
+                        order: choices.getOrder(i),
+                      });
                     }, true)}
                     value={choices.getC(i)}
                   />
@@ -627,25 +622,22 @@ export default function UpdateQuestionClient({
                       },
                     }}
                     onChange={setTextToString((set) => {
-                      choiceSocket.trigger(
-                        {
-                          index: i,
-                          question: choices.getQuestion(i),
-                          a: choices.getA(i),
-                          b: choices.getB(i),
-                          c: choices.getC(i),
-                          d: set,
-                          e: choices.getE(i),
-                          scoreA: choices.getScoreA(i),
-                          scoreB: choices.getScoreB(i),
-                          scoreC: choices.getScoreC(i),
-                          scoreD: choices.getScoreD(i),
-                          scoreE: choices.getScoreE(i),
-                          correct: choices.getCorrect(i),
-                          order: choices.getOrder(i),
-                        },
-                        room
-                      );
+                      choiceSocket.trigger({
+                        index: i,
+                        question: choices.getQuestion(i),
+                        a: choices.getA(i),
+                        b: choices.getB(i),
+                        c: choices.getC(i),
+                        d: set,
+                        e: choices.getE(i),
+                        scoreA: choices.getScoreA(i),
+                        scoreB: choices.getScoreB(i),
+                        scoreC: choices.getScoreC(i),
+                        scoreD: choices.getScoreD(i),
+                        scoreE: choices.getScoreE(i),
+                        correct: choices.getCorrect(i),
+                        order: choices.getOrder(i),
+                      });
                     }, true)}
                     value={choices.getD(i)}
                   />
@@ -672,25 +664,22 @@ export default function UpdateQuestionClient({
                       },
                     }}
                     onChange={setTextToString((set) => {
-                      choiceSocket.trigger(
-                        {
-                          index: i,
-                          question: choices.getQuestion(i),
-                          a: choices.getA(i),
-                          b: choices.getB(i),
-                          c: choices.getC(i),
-                          d: choices.getD(i),
-                          e: set,
-                          scoreA: choices.getScoreA(i),
-                          scoreB: choices.getScoreB(i),
-                          scoreC: choices.getScoreC(i),
-                          scoreD: choices.getScoreD(i),
-                          scoreE: choices.getScoreE(i),
-                          correct: choices.getCorrect(i),
-                          order: choices.getOrder(i),
-                        },
-                        room
-                      );
+                      choiceSocket.trigger({
+                        index: i,
+                        question: choices.getQuestion(i),
+                        a: choices.getA(i),
+                        b: choices.getB(i),
+                        c: choices.getC(i),
+                        d: choices.getD(i),
+                        e: set,
+                        scoreA: choices.getScoreA(i),
+                        scoreB: choices.getScoreB(i),
+                        scoreC: choices.getScoreC(i),
+                        scoreD: choices.getScoreD(i),
+                        scoreE: choices.getScoreE(i),
+                        correct: choices.getCorrect(i),
+                        order: choices.getOrder(i),
+                      });
                     }, true)}
                     value={choices.getE(i)}
                   />
@@ -718,25 +707,22 @@ export default function UpdateQuestionClient({
                       },
                     }}
                     onChange={setTextToFloat((set) => {
-                      choiceSocket.trigger(
-                        {
-                          index: i,
-                          question: choices.getQuestion(i),
-                          a: choices.getA(i),
-                          b: choices.getB(i),
-                          c: choices.getC(i),
-                          d: choices.getD(i),
-                          e: choices.getE(i),
-                          scoreA: set,
-                          scoreB: choices.getScoreB(i),
-                          scoreC: choices.getScoreC(i),
-                          scoreD: choices.getScoreD(i),
-                          scoreE: choices.getScoreE(i),
-                          correct: choices.getCorrect(i),
-                          order: choices.getOrder(i),
-                        },
-                        room
-                      );
+                      choiceSocket.trigger({
+                        index: i,
+                        question: choices.getQuestion(i),
+                        a: choices.getA(i),
+                        b: choices.getB(i),
+                        c: choices.getC(i),
+                        d: choices.getD(i),
+                        e: choices.getE(i),
+                        scoreA: set,
+                        scoreB: choices.getScoreB(i),
+                        scoreC: choices.getScoreC(i),
+                        scoreD: choices.getScoreD(i),
+                        scoreE: choices.getScoreE(i),
+                        correct: choices.getCorrect(i),
+                        order: choices.getOrder(i),
+                      });
                     })}
                     value={choices.getScoreA(i).toString()}
                   />
@@ -764,25 +750,22 @@ export default function UpdateQuestionClient({
                       },
                     }}
                     onChange={setTextToFloat((set) => {
-                      choiceSocket.trigger(
-                        {
-                          index: i,
-                          question: choices.getQuestion(i),
-                          a: choices.getA(i),
-                          b: choices.getB(i),
-                          c: choices.getC(i),
-                          d: choices.getD(i),
-                          e: choices.getE(i),
-                          scoreA: choices.getScoreA(i),
-                          scoreB: set,
-                          scoreC: choices.getScoreC(i),
-                          scoreD: choices.getScoreD(i),
-                          scoreE: choices.getScoreE(i),
-                          correct: choices.getCorrect(i),
-                          order: choices.getOrder(i),
-                        },
-                        room
-                      );
+                      choiceSocket.trigger({
+                        index: i,
+                        question: choices.getQuestion(i),
+                        a: choices.getA(i),
+                        b: choices.getB(i),
+                        c: choices.getC(i),
+                        d: choices.getD(i),
+                        e: choices.getE(i),
+                        scoreA: choices.getScoreA(i),
+                        scoreB: set,
+                        scoreC: choices.getScoreC(i),
+                        scoreD: choices.getScoreD(i),
+                        scoreE: choices.getScoreE(i),
+                        correct: choices.getCorrect(i),
+                        order: choices.getOrder(i),
+                      });
                     })}
                     value={choices.getScoreB(i).toString()}
                   />
@@ -810,25 +793,22 @@ export default function UpdateQuestionClient({
                       },
                     }}
                     onChange={setTextToFloat((set) => {
-                      choiceSocket.trigger(
-                        {
-                          index: i,
-                          question: choices.getQuestion(i),
-                          a: choices.getA(i),
-                          b: choices.getB(i),
-                          c: choices.getC(i),
-                          d: choices.getD(i),
-                          e: choices.getE(i),
-                          scoreA: choices.getScoreA(i),
-                          scoreB: choices.getScoreB(i),
-                          scoreC: set,
-                          scoreD: choices.getScoreD(i),
-                          scoreE: choices.getScoreE(i),
-                          correct: choices.getCorrect(i),
-                          order: choices.getOrder(i),
-                        },
-                        room
-                      );
+                      choiceSocket.trigger({
+                        index: i,
+                        question: choices.getQuestion(i),
+                        a: choices.getA(i),
+                        b: choices.getB(i),
+                        c: choices.getC(i),
+                        d: choices.getD(i),
+                        e: choices.getE(i),
+                        scoreA: choices.getScoreA(i),
+                        scoreB: choices.getScoreB(i),
+                        scoreC: set,
+                        scoreD: choices.getScoreD(i),
+                        scoreE: choices.getScoreE(i),
+                        correct: choices.getCorrect(i),
+                        order: choices.getOrder(i),
+                      });
                     })}
                     value={choices.getScoreC(i).toString()}
                   />
@@ -856,25 +836,22 @@ export default function UpdateQuestionClient({
                       },
                     }}
                     onChange={setTextToFloat((set) => {
-                      choiceSocket.trigger(
-                        {
-                          index: i,
-                          question: choices.getQuestion(i),
-                          a: choices.getA(i),
-                          b: choices.getB(i),
-                          c: choices.getC(i),
-                          d: choices.getD(i),
-                          e: choices.getE(i),
-                          scoreA: choices.getScoreA(i),
-                          scoreB: choices.getScoreB(i),
-                          scoreC: choices.getScoreC(i),
-                          scoreD: set,
-                          scoreE: choices.getScoreE(i),
-                          correct: choices.getCorrect(i),
-                          order: choices.getOrder(i),
-                        },
-                        room
-                      );
+                      choiceSocket.trigger({
+                        index: i,
+                        question: choices.getQuestion(i),
+                        a: choices.getA(i),
+                        b: choices.getB(i),
+                        c: choices.getC(i),
+                        d: choices.getD(i),
+                        e: choices.getE(i),
+                        scoreA: choices.getScoreA(i),
+                        scoreB: choices.getScoreB(i),
+                        scoreC: choices.getScoreC(i),
+                        scoreD: set,
+                        scoreE: choices.getScoreE(i),
+                        correct: choices.getCorrect(i),
+                        order: choices.getOrder(i),
+                      });
                     })}
                     value={choices.getScoreD(i).toString()}
                   />
@@ -902,25 +879,22 @@ export default function UpdateQuestionClient({
                       },
                     }}
                     onChange={setTextToFloat((set) => {
-                      choiceSocket.trigger(
-                        {
-                          index: i,
-                          question: choices.getQuestion(i),
-                          a: choices.getA(i),
-                          b: choices.getB(i),
-                          c: choices.getC(i),
-                          d: choices.getD(i),
-                          e: choices.getE(i),
-                          scoreA: choices.getScoreA(i),
-                          scoreB: choices.getScoreB(i),
-                          scoreC: choices.getScoreC(i),
-                          scoreD: choices.getScoreD(i),
-                          scoreE: set,
-                          correct: choices.getCorrect(i),
-                          order: choices.getOrder(i),
-                        },
-                        room
-                      );
+                      choiceSocket.trigger({
+                        index: i,
+                        question: choices.getQuestion(i),
+                        a: choices.getA(i),
+                        b: choices.getB(i),
+                        c: choices.getC(i),
+                        d: choices.getD(i),
+                        e: choices.getE(i),
+                        scoreA: choices.getScoreA(i),
+                        scoreB: choices.getScoreB(i),
+                        scoreC: choices.getScoreC(i),
+                        scoreD: choices.getScoreD(i),
+                        scoreE: set,
+                        correct: choices.getCorrect(i),
+                        order: choices.getOrder(i),
+                      });
                     })}
                     value={choices.getScoreE(i).toString()}
                   />
@@ -938,25 +912,22 @@ export default function UpdateQuestionClient({
                 >
                   <MenuItem
                     onClick={() => {
-                      choiceSocket.trigger(
-                        {
-                          index: i,
-                          question: choices.getQuestion(i),
-                          a: choices.getA(i),
-                          b: choices.getB(i),
-                          c: choices.getC(i),
-                          d: choices.getD(i),
-                          e: choices.getE(i),
-                          scoreA: choices.getScoreA(i),
-                          scoreB: choices.getScoreB(i),
-                          scoreC: choices.getScoreC(i),
-                          scoreD: choices.getScoreD(i),
-                          scoreE: choices.getScoreE(i),
-                          correct: "A",
-                          order: choices.getOrder(i),
-                        },
-                        room
-                      );
+                      choiceSocket.trigger({
+                        index: i,
+                        question: choices.getQuestion(i),
+                        a: choices.getA(i),
+                        b: choices.getB(i),
+                        c: choices.getC(i),
+                        d: choices.getD(i),
+                        e: choices.getE(i),
+                        scoreA: choices.getScoreA(i),
+                        scoreB: choices.getScoreB(i),
+                        scoreC: choices.getScoreC(i),
+                        scoreD: choices.getScoreD(i),
+                        scoreE: choices.getScoreE(i),
+                        correct: "A",
+                        order: choices.getOrder(i),
+                      });
                     }}
                     value={`A ${choices.getA(i)} คะแนน ${choices.getScoreA(i)}`}
                   >
@@ -964,25 +935,22 @@ export default function UpdateQuestionClient({
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
-                      choiceSocket.trigger(
-                        {
-                          index: i,
-                          question: choices.getQuestion(i),
-                          a: choices.getA(i),
-                          b: choices.getB(i),
-                          c: choices.getC(i),
-                          d: choices.getD(i),
-                          e: choices.getE(i),
-                          scoreA: choices.getScoreA(i),
-                          scoreB: choices.getScoreB(i),
-                          scoreC: choices.getScoreC(i),
-                          scoreD: choices.getScoreD(i),
-                          scoreE: choices.getScoreE(i),
-                          correct: "B",
-                          order: choices.getOrder(i),
-                        },
-                        room
-                      );
+                      choiceSocket.trigger({
+                        index: i,
+                        question: choices.getQuestion(i),
+                        a: choices.getA(i),
+                        b: choices.getB(i),
+                        c: choices.getC(i),
+                        d: choices.getD(i),
+                        e: choices.getE(i),
+                        scoreA: choices.getScoreA(i),
+                        scoreB: choices.getScoreB(i),
+                        scoreC: choices.getScoreC(i),
+                        scoreD: choices.getScoreD(i),
+                        scoreE: choices.getScoreE(i),
+                        correct: "B",
+                        order: choices.getOrder(i),
+                      });
                     }}
                     value={`B ${choices.getB(i)} คะแนน ${choices.getScoreB(i)}`}
                   >
@@ -990,25 +958,22 @@ export default function UpdateQuestionClient({
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
-                      choiceSocket.trigger(
-                        {
-                          index: i,
-                          question: choices.getQuestion(i),
-                          a: choices.getA(i),
-                          b: choices.getB(i),
-                          c: choices.getC(i),
-                          d: choices.getD(i),
-                          e: choices.getE(i),
-                          scoreA: choices.getScoreA(i),
-                          scoreB: choices.getScoreB(i),
-                          scoreC: choices.getScoreC(i),
-                          scoreD: choices.getScoreD(i),
-                          scoreE: choices.getScoreE(i),
-                          correct: "C",
-                          order: choices.getOrder(i),
-                        },
-                        room
-                      );
+                      choiceSocket.trigger({
+                        index: i,
+                        question: choices.getQuestion(i),
+                        a: choices.getA(i),
+                        b: choices.getB(i),
+                        c: choices.getC(i),
+                        d: choices.getD(i),
+                        e: choices.getE(i),
+                        scoreA: choices.getScoreA(i),
+                        scoreB: choices.getScoreB(i),
+                        scoreC: choices.getScoreC(i),
+                        scoreD: choices.getScoreD(i),
+                        scoreE: choices.getScoreE(i),
+                        correct: "C",
+                        order: choices.getOrder(i),
+                      });
                     }}
                     value={`C ${choices.getC(i)} คะแนน ${choices.getScoreC(i)}`}
                   >
@@ -1016,25 +981,22 @@ export default function UpdateQuestionClient({
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
-                      choiceSocket.trigger(
-                        {
-                          index: i,
-                          question: choices.getQuestion(i),
-                          a: choices.getA(i),
-                          b: choices.getB(i),
-                          c: choices.getC(i),
-                          d: choices.getD(i),
-                          e: choices.getE(i),
-                          scoreA: choices.getScoreA(i),
-                          scoreB: choices.getScoreB(i),
-                          scoreC: choices.getScoreC(i),
-                          scoreD: choices.getScoreD(i),
-                          scoreE: choices.getScoreE(i),
-                          correct: "D",
-                          order: choices.getOrder(i),
-                        },
-                        room
-                      );
+                      choiceSocket.trigger({
+                        index: i,
+                        question: choices.getQuestion(i),
+                        a: choices.getA(i),
+                        b: choices.getB(i),
+                        c: choices.getC(i),
+                        d: choices.getD(i),
+                        e: choices.getE(i),
+                        scoreA: choices.getScoreA(i),
+                        scoreB: choices.getScoreB(i),
+                        scoreC: choices.getScoreC(i),
+                        scoreD: choices.getScoreD(i),
+                        scoreE: choices.getScoreE(i),
+                        correct: "D",
+                        order: choices.getOrder(i),
+                      });
                     }}
                     value={`D ${choices.getD(i)} คะแนน ${choices.getScoreD(i)}`}
                   >
@@ -1042,25 +1004,22 @@ export default function UpdateQuestionClient({
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
-                      choiceSocket.trigger(
-                        {
-                          index: i,
-                          question: choices.getQuestion(i),
-                          a: choices.getA(i),
-                          b: choices.getB(i),
-                          c: choices.getC(i),
-                          d: choices.getD(i),
-                          e: choices.getE(i),
-                          scoreA: choices.getScoreA(i),
-                          scoreB: choices.getScoreB(i),
-                          scoreC: choices.getScoreC(i),
-                          scoreD: choices.getScoreD(i),
-                          scoreE: choices.getScoreE(i),
-                          correct: "E",
-                          order: choices.getOrder(i),
-                        },
-                        room
-                      );
+                      choiceSocket.trigger({
+                        index: i,
+                        question: choices.getQuestion(i),
+                        a: choices.getA(i),
+                        b: choices.getB(i),
+                        c: choices.getC(i),
+                        d: choices.getD(i),
+                        e: choices.getE(i),
+                        scoreA: choices.getScoreA(i),
+                        scoreB: choices.getScoreB(i),
+                        scoreC: choices.getScoreC(i),
+                        scoreD: choices.getScoreD(i),
+                        scoreE: choices.getScoreE(i),
+                        correct: "E",
+                        order: choices.getOrder(i),
+                      });
                     }}
                     value={`E ${choices.getE(i)} คะแนน ${choices.getScoreE(i)}`}
                   >
@@ -1068,25 +1027,22 @@ export default function UpdateQuestionClient({
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
-                      choiceSocket.trigger(
-                        {
-                          index: i,
-                          question: choices.getQuestion(i),
-                          a: choices.getA(i),
-                          b: choices.getB(i),
-                          c: choices.getC(i),
-                          d: choices.getD(i),
-                          e: choices.getE(i),
-                          scoreA: choices.getScoreA(i),
-                          scoreB: choices.getScoreB(i),
-                          scoreC: choices.getScoreC(i),
-                          scoreD: choices.getScoreD(i),
-                          scoreE: choices.getScoreE(i),
-                          correct: "-",
-                          order: choices.getOrder(i),
-                        },
-                        room
-                      );
+                      choiceSocket.trigger({
+                        index: i,
+                        question: choices.getQuestion(i),
+                        a: choices.getA(i),
+                        b: choices.getB(i),
+                        c: choices.getC(i),
+                        d: choices.getD(i),
+                        e: choices.getE(i),
+                        scoreA: choices.getScoreA(i),
+                        scoreB: choices.getScoreB(i),
+                        scoreC: choices.getScoreC(i),
+                        scoreD: choices.getScoreD(i),
+                        scoreE: choices.getScoreE(i),
+                        correct: "-",
+                        order: choices.getOrder(i),
+                      });
                     }}
                     value={"-"}
                   >
@@ -1116,25 +1072,22 @@ export default function UpdateQuestionClient({
                       },
                     }}
                     onChange={setTextToInt((set) => {
-                      choiceSocket.trigger(
-                        {
-                          index: i,
-                          question: choices.getQuestion(i),
-                          a: choices.getA(i),
-                          b: choices.getB(i),
-                          c: choices.getC(i),
-                          d: choices.getD(i),
-                          e: choices.getE(i),
-                          scoreA: choices.getScoreA(i),
-                          scoreB: choices.getScoreB(i),
-                          scoreC: choices.getScoreC(i),
-                          scoreD: choices.getScoreD(i),
-                          scoreE: choices.getScoreE(i),
-                          correct: choices.getCorrect(i),
-                          order: set,
-                        },
-                        room
-                      );
+                      choiceSocket.trigger({
+                        index: i,
+                        question: choices.getQuestion(i),
+                        a: choices.getA(i),
+                        b: choices.getB(i),
+                        c: choices.getC(i),
+                        d: choices.getD(i),
+                        e: choices.getE(i),
+                        scoreA: choices.getScoreA(i),
+                        scoreB: choices.getScoreB(i),
+                        scoreC: choices.getScoreC(i),
+                        scoreD: choices.getScoreD(i),
+                        scoreE: choices.getScoreE(i),
+                        correct: choices.getCorrect(i),
+                        order: set,
+                      });
                     })}
                     value={choices.getOrder(i).toString()}
                   />
@@ -1145,13 +1098,13 @@ export default function UpdateQuestionClient({
           <FinishButton
             text="เพิ่มคำถามที่เป็นตัวเลือก"
             onClick={() => {
-              actionSocket.trigger("addChoice", room);
+              actionSocket.trigger("addChoice");
             }}
           />
           <FinishButton
             text="ลบคำถามที่เป็นตัวเลือก"
             onClick={() => {
-              actionSocket.trigger("removeChoice", room);
+              actionSocket.trigger("removeChoice");
             }}
           />
           {texts.indexes.map((i) => (
@@ -1180,15 +1133,12 @@ export default function UpdateQuestionClient({
                     },
                   }}
                   onChange={setTextToString((set) => {
-                    textSocket.trigger(
-                      {
-                        question: set,
-                        index: i,
-                        score: texts.getScore(i),
-                        order: texts.getOrder(i),
-                      },
-                      room
-                    );
+                    textSocket.trigger({
+                      question: set,
+                      index: i,
+                      score: texts.getScore(i),
+                      order: texts.getOrder(i),
+                    });
                   }, true)}
                   value={texts.getQuestion(i)}
                 />
@@ -1216,15 +1166,12 @@ export default function UpdateQuestionClient({
                     },
                   }}
                   onChange={setTextToFloat((set) => {
-                    textSocket.trigger(
-                      {
-                        question: texts.getQuestion(i),
-                        index: i,
-                        score: set,
-                        order: texts.getOrder(i),
-                      },
-                      room
-                    );
+                    textSocket.trigger({
+                      question: texts.getQuestion(i),
+                      index: i,
+                      score: set,
+                      order: texts.getOrder(i),
+                    });
                   })}
                   value={texts.getScore(i).toString()}
                 />
@@ -1252,15 +1199,12 @@ export default function UpdateQuestionClient({
                     },
                   }}
                   onChange={setTextToInt((set) => {
-                    textSocket.trigger(
-                      {
-                        question: texts.getQuestion(i),
-                        index: i,
-                        score: texts.getScore(i),
-                        order: set,
-                      },
-                      room
-                    );
+                    textSocket.trigger({
+                      question: texts.getQuestion(i),
+                      index: i,
+                      score: texts.getScore(i),
+                      order: set,
+                    });
                   })}
                   value={texts.getOrder(i).toString()}
                 />
@@ -1270,13 +1214,13 @@ export default function UpdateQuestionClient({
           <FinishButton
             text="เพิ่มคำถามที่พิมพ์ตอบ"
             onClick={() => {
-              actionSocket.trigger("addText", room);
+              actionSocket.trigger("addText");
             }}
           />
           <FinishButton
             text="ลบคำถามที่พิมพ์ตอบ"
             onClick={() => {
-              actionSocket.trigger("removeText", room);
+              actionSocket.trigger("removeText");
             }}
           />
           <FinishButton text="update" onClick={update} />

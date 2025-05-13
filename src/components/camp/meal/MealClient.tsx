@@ -62,19 +62,26 @@ export default function MealClient({
   const [มังสวิรัติ, setมังสวิรัติ] = React.useState(false);
   const [เจ, setเจ] = React.useState(false);
   const [อิสลาม, setอิสลาม] = React.useState(false);
-  const updateMealSocket = new SocketReady<InterMeal>(socket, "updateMeal");
-  const createFoodSocket = new SocketReady<InterFood[]>(socket, "createFood");
-  const room = meal._id.toString();
+  const updateMealSocket = new SocketReady<InterMeal>(
+    socket,
+    "updateMeal",
+    meal._id
+  );
+  const createFoodSocket = new SocketReady<InterFood[]>(
+    socket,
+    "createFood",
+    meal._id
+  );
   const [camp, setCamp] = React.useState(data.camp);
   const realTimeCamp = new RealTimeCamp(camp._id, socket);
   React.useEffect(() => {
-    updateMealSocket.listen(room, (newData) => {
+    updateMealSocket.listen((newData) => {
       setNong(newData.roles.includes("nong"));
       setPee(newData.roles.includes("pee"));
       setPeto(newData.roles.includes("peto"));
       setTime(dayjs(addTime(newData.time.toString(), selectOffset)));
     });
-    createFoodSocket.listen(room, setFoods);
+    createFoodSocket.listen(setFoods);
     realTimeCamp.listen(setCamp);
     return () => {
       updateMealSocket.disconnect();
@@ -190,7 +197,6 @@ export default function MealClient({
                   },
                   token,
                   updateMealSocket,
-                  room,
                   socket
                 );
               }
@@ -325,7 +331,6 @@ export default function MealClient({
               },
               token,
               createFoodSocket,
-              room,
               socket
             );
           }}

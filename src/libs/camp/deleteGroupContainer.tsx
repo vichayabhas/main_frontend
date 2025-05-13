@@ -4,8 +4,7 @@ import { GetGroupContainer, Id } from "../../../interface";
 export default async function deleteGroupContainer(
   containerId: Id,
   token: string,
-  socket: SocketReady<GetGroupContainer[]>,
-  room: string
+  socket: SocketReady<GetGroupContainer[]>
 ) {
   const response = await fetch(
     `${getBackendUrl()}/camp/deleteGroupContainer/params/${containerId}`,
@@ -21,6 +20,6 @@ export default async function deleteGroupContainer(
   if (!response.ok) {
     return data;
   }
-  socket.trigger(data, room);
+  socket.trigger(data);
   return data;
 }

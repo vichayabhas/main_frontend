@@ -89,26 +89,29 @@ export default function MirrorClient({
   const [baanSenders, setBaanSenders] = React.useState(mirrorData.baanSenders);
   const userReceiverSocket = new SocketReady<GetMirrorUser[]>(
     socket,
-    "receiveMirrorUser"
+    "receiveMirrorUser",
+    campMemberCardId
   );
   const userSenderSocket = new SocketReady<GetMirrorUser[]>(
     socket,
-    "sendMirrorUser"
+    "sendMirrorUser",
+    campMemberCardId
   );
   const baanReceiverSocket = new SocketReady<GetMirrorBaan[]>(
     socket,
-    "receiveMirrorBaan"
+    "receiveMirrorBaan",
+    baan._id
   );
   const baanSenderSocket = new SocketReady<GetMirrorBaan[]>(
     socket,
-    "sendMirrorBaan"
+    "sendMirrorBaan",
+    campMemberCardId
   );
   React.useEffect(() => {
-    const room = campMemberCardId.toString();
-    userReceiverSocket.listen(room, setUserReceivers);
-    userSenderSocket.listen(room, setUserSenders);
-    baanReceiverSocket.listen(baan._id.toString(), setBaanReceivers);
-    baanSenderSocket.listen(room, setBaanSenders);
+    userReceiverSocket.listen(setUserReceivers);
+    userSenderSocket.listen(setUserSenders);
+    baanReceiverSocket.listen(setBaanReceivers);
+    baanSenderSocket.listen(setBaanSenders);
     return () => {
       userReceiverSocket.disconnect();
       userSenderSocket.disconnect();

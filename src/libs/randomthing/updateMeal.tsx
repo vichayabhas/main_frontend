@@ -7,7 +7,6 @@ export default async function updateMeal(
   input: UpdateMeal,
   token: string,
   socketReady: SocketReady<InterMeal>,
-  room: string,
   socket: Socket
 ) {
   const response = await fetch(`${getBackendUrl()}/randomthing/updateMeal/`, {
@@ -23,7 +22,7 @@ export default async function updateMeal(
   if (!response.ok) {
     return data;
   }
-  socketReady.trigger(data.meal, room);
+  socketReady.trigger(data.meal);
   triggerMeals(data.triggers, socket);
   return data;
 }

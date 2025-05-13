@@ -45,7 +45,11 @@ export default function RegisterPartClient({
   isBoard: boolean;
 }) {
   const limit = 600;
-  const updateSocket = new SocketReady<RegisterData>(socket, "registerUpdate");
+  const updateSocket = new SocketReady<RegisterData>(
+    socket,
+    "registerUpdate",
+    data.camp._id
+  );
   const router = useRouter();
   const [nongPendingIds, setNongPendingIds] = React.useState<Id[]>([]);
   const [nongInterviewIds, setNongInterviewIds] = React.useState<Id[]>([]);
@@ -144,9 +148,8 @@ export default function RegisterPartClient({
     currentTableRef: peePassRef.current,
     filename: "พี่ที่สมัครเข้ามา",
   });
-  const room = data.camp._id.toString();
   React.useEffect(() => {
-    updateSocket.listen(room, (data2: RegisterData) => {
+    updateSocket.listen((data2: RegisterData) => {
       setData(data2);
       setNongPendingIds(filterOut(data2.nongRegister.pendings));
       setNongInterviewIds(filterOut(data2.nongRegister.interviews));
@@ -345,8 +348,7 @@ export default function RegisterPartClient({
                         { members: nongPendingIds, campId: camp._id },
                         "interview",
                         token,
-                        updateSocket,
-                        room
+                        updateSocket
                       );
                       setNongPendingIds([]);
                     });
@@ -360,8 +362,7 @@ export default function RegisterPartClient({
                         { members: nongPendingIds, campId: camp._id },
                         "kick/nong",
                         token,
-                        updateSocket,
-                        room
+                        updateSocket
                       );
                       setNongPendingIds([]);
                     });
@@ -435,8 +436,7 @@ export default function RegisterPartClient({
                         { members: nongInterviewIds, campId: camp._id },
                         "pass",
                         token,
-                        updateSocket,
-                        room
+                        updateSocket
                       );
                       setNongInterviewIds([]);
                     });
@@ -450,8 +450,7 @@ export default function RegisterPartClient({
                         { members: nongInterviewIds, campId: camp._id },
                         "kick/nong",
                         token,
-                        updateSocket,
-                        room
+                        updateSocket
                       );
                       setNongInterviewIds([]);
                     });
@@ -478,8 +477,7 @@ export default function RegisterPartClient({
                         { members: nongPendingIds, campId: camp._id },
                         "pass",
                         token,
-                        updateSocket,
-                        room
+                        updateSocket
                       );
                       setNongPendingIds([]);
                     });
@@ -493,8 +491,7 @@ export default function RegisterPartClient({
                         { members: nongPendingIds, campId: camp._id },
                         "kick/nong",
                         token,
-                        updateSocket,
-                        room
+                        updateSocket
                       );
                       setNongPendingIds([]);
                     });
@@ -615,8 +612,7 @@ export default function RegisterPartClient({
                         { members: nongPaidIds, campId: camp._id },
                         "sure",
                         token,
-                        updateSocket,
-                        room
+                        updateSocket
                       );
                       setNongPaidIds([]);
                     });
@@ -630,8 +626,7 @@ export default function RegisterPartClient({
                         { members: nongPaidIds, campId: camp._id },
                         "kick/nong",
                         token,
-                        updateSocket,
-                        room
+                        updateSocket
                       );
                       setNongPendingIds([]);
                     });
@@ -748,12 +743,7 @@ export default function RegisterPartClient({
               token,
               "add"
             );
-            await changeBaan(
-              { userIds: members, baanId },
-              token,
-              updateSocket,
-              room
-            );
+            await changeBaan({ userIds: members, baanId }, token, updateSocket);
             setNongSureIds([]);
             setPeePassIds([]);
             setMembers([]);
@@ -1177,7 +1167,7 @@ export default function RegisterPartClient({
         <SelectTemplate
           mapIn={partMap}
           select={(partId) => {
-            changePart({ userIds, partId }, token, updateSocket, room);
+            changePart({ userIds, partId }, token, updateSocket);
           }}
           buttonText={"ย้ายฝ่าย"}
         />
@@ -1185,7 +1175,7 @@ export default function RegisterPartClient({
         <SelectTemplate
           mapIn={regis}
           select={(partId) => {
-            changePart({ userIds, partId }, token, updateSocket, room);
+            changePart({ userIds, partId }, token, updateSocket);
           }}
           buttonText={"ย้ายฝ่าย"}
         />

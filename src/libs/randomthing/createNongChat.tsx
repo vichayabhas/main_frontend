@@ -5,7 +5,6 @@ export default async function createNongChat(
   input: CreateNongChat,
   token: string,
   socket: SocketReady<ShowChat>,
-  room: string
 ) {
   const res = await fetch(`${getBackendUrl()}/randomthing/createNongChat`, {
     method: "POST",
@@ -20,6 +19,6 @@ export default async function createNongChat(
   if (!res.ok) {
     return data;
   }
-  socket.trigger(data, room);
+  socket.trigger(data);
   return data;
 }

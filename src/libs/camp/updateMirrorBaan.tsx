@@ -24,7 +24,7 @@ export default async function updateMirrorBaan(
   if (!response.ok) {
     return data;
   }
-  senderSocket.trigger(data.senders, data.senderId.toString());
-  receiverSocket.trigger(data.receivers, data.receiverId.toString());
+  senderSocket.triggerToOther(data.senders, data.senderId.toString());
+  receiverSocket.triggerToOther(data.receivers, data.receiverId.toString());
   return data;
 }

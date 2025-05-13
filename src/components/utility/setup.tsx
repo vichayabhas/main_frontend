@@ -612,19 +612,24 @@ export class AddRemoveHigh {
 export class SocketReady<T> {
   private socket: Socket;
   private eventName: SocketEvent;
-  constructor(socket: Socket, event: SocketEvent) {
+  private room: string;
+  constructor(socket: Socket, event: SocketEvent, room: string | Id) {
     this.socket = socket;
     this.eventName = event;
+    this.room = room.toString();
   }
-  public listen(room: string, event: (arg0: T) => void) {
+  public listen(event: (arg0: T) => void) {
     this.socket.on(this.eventName, (data: T, r: string) => {
-      if (r == room) {
+      if (r == this.room) {
         event(data);
       }
     });
   }
-  public trigger(data: T, room: string) {
-    this.socket.emit(`${this.eventName}Send`, data, room);
+  public trigger(data: T) {
+    this.socket.emit(`${this.eventName}Send`, data, this.room);
+  }
+  public triggerToOther(data: T,room:Id|string) {
+    this.socket.emit(`${this.eventName}Send`, data, room.toString());
   }
   public disconnect() {
     this.socket.off(this.eventName);

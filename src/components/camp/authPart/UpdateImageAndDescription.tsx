@@ -45,11 +45,10 @@ export default function UpdateImageAndDescription({
     );
   const updateSocket = new SocketReady<ShowImageAndDescriptions[]>(
     socket,
-    "updateImageAndDescriptions"
+    "updateImageAndDescriptions",imageAndDescriptionContainersPack.baan._id
   );
-  const room = imageAndDescriptionContainersPack.baan._id.toString();
   React.useEffect(() => {
-    updateSocket.listen(room, setImageAndDescriptionContainers);
+    updateSocket.listen(setImageAndDescriptionContainers);
     return () => updateSocket.disconnect();
   });
   return (
@@ -272,8 +271,7 @@ export default function UpdateImageAndDescription({
                   })),
                 },
                 token,
-                updateSocket,
-                room
+                updateSocket
               );
             }}
           />
@@ -293,8 +291,7 @@ export default function UpdateImageAndDescription({
                   baanId: imageAndDescriptionContainersPack.baan._id,
                 },
                 token,
-                updateSocket,
-                room
+                updateSocket
               );
             }}
           />

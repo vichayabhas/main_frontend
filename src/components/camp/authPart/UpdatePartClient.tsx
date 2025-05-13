@@ -15,17 +15,15 @@ import {
 import { io, Socket } from "socket.io-client";
 import { getShowPlaceFromInterPlace } from "@/components/randomthing/placeSetUp";
 export class RealTimePart {
-  private room: string;
   private socket: SocketReady<UpdatePartOut>;
   constructor(partId: Id, socket: Socket) {
-    this.room = partId.toString();
-    this.socket = new SocketReady<UpdatePartOut>(socket, "updatePart");
+    this.socket = new SocketReady<UpdatePartOut>(socket, "updatePart",partId);
   }
   public listen(
     setPlace: React.Dispatch<React.SetStateAction<ShowPlace | null>>,
     allPlaceData: AllPlaceData
   ) {
-    this.socket.listen(this.room, (data) => {
+    this.socket.listen( (data) => {
       setPlace(getShowPlaceFromInterPlace(data.place, allPlaceData));
     });
   }
@@ -45,12 +43,11 @@ export default function UpdatePartClient({
 }) {
   // dispatch = useDispatch<AppDispatch>();
   //const update = useAppSelector((state) => state.bookSlice.bookItem);
-  const updateSocket = new SocketReady<UpdatePartOut>(socket, "updatePart");
+  const updateSocket = new SocketReady<UpdatePartOut>(socket, "updatePart",data._id);
 
   const [place, setPlace] = React.useState<InterPlace | null>(data.place);
-  const room = data._id.toString();
   React.useEffect(() => {
-    updateSocket.listen(room, (data) => setPlace(data.place));
+    updateSocket.listen( (data) => setPlace(data.place));
     return () => {
       updateSocket.disconnect();
     };
@@ -72,7 +69,7 @@ export default function UpdatePartClient({
             className="bg-pink-300 p-3 rounded-lg shadow-[10px_10px_10px_-10px_rgba(0,0,0,0.5)] hover:bg-rose-700 hover:text-pink-50"
             onClick={() => {
               try {
-                updatePart(data._id, getId(place), token, updateSocket, room);
+                updatePart(data._id, getId(place), token, updateSocket);
               } catch (error) {
                 console.log(error);
               }

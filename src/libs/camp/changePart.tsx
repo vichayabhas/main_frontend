@@ -8,7 +8,6 @@ export default async function changePart(
   },
   token: string,
   socket: SocketReady<RegisterData>,
-  room: string
 ) {
   const res = await fetch(`${getBackendUrl()}/camp/changePart`, {
     method: "POST",
@@ -23,6 +22,6 @@ export default async function changePart(
   if (!res.ok) {
     return data;
   }
-  socket.trigger(data, room);
+  socket.trigger(data);
   return data;
 }

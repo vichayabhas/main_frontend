@@ -9,7 +9,6 @@ export default async function admission(
   mode: "interview" | "pass" | "sure" | "kick/pee" | "kick/nong",
   token: string,
   socket: SocketReady<RegisterData>,
-  room: string
 ) {
   const res = await fetch(`${getBackendUrl()}/camp/${mode}`, {
     method: "POST",
@@ -24,6 +23,6 @@ export default async function admission(
   if (!res.ok) {
     return data;
   }
-  socket.trigger(data, room);
+  socket.trigger(data);
   return data;
 }

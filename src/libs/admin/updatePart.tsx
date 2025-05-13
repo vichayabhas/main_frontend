@@ -6,7 +6,6 @@ export default async function updatePart(
   placeId: Id | null,
   token: string,
   socket: SocketReady<UpdatePartOut>,
-  room: string
 ) {
   const response = await fetch(`${getBackendUrl()}/admin/updatePart`, {
     method: "PUT",
@@ -21,5 +20,5 @@ export default async function updatePart(
     }),
   });
   const data: UpdatePartOut = await response.json();
-  socket.trigger(data, room);
+  socket.trigger(data);
 }

@@ -13,25 +13,28 @@ import { SocketReady } from "../utility/setup";
 import React from "react";
 
 export function triggerActionPlan(input: TriggerActionPlan, socket: Socket) {
-  const socketReady = new SocketReady<ShowActionPlan[]>(
+  new SocketReady<ShowActionPlan[]>(
     socket,
-    "updateActionPlans"
-  );
-  socketReady.trigger(input.forCamps, input.campId.toString());
-  socketReady.trigger(input.forParts, input.partId.toString());
+    "updateActionPlans",
+    input.campId
+  ).trigger(input.forCamps);
+  new SocketReady<ShowActionPlan[]>(
+    socket,
+    "updateActionPlans",
+    input.partId
+  ).trigger(input.forParts);
 }
 export class RealTimeActionPlan {
-  private room: string;
   private socket: SocketReady<ShowActionPlan[]>;
   constructor(roomId: Id, socket: Socket) {
-    this.room = roomId.toString();
     this.socket = new SocketReady<ShowActionPlan[]>(
       socket,
-      "updateActionPlans"
+      "updateActionPlans",
+      roomId
     );
   }
   public listen(set: React.Dispatch<React.SetStateAction<ShowActionPlan[]>>) {
-    this.socket.listen(this.room, set);
+    this.socket.listen(set);
   }
   public disconnect() {
     this.socket.disconnect();
@@ -41,25 +44,28 @@ export function triggerTrackingSheet(
   input: TriggerWorkingItem,
   socket: Socket
 ) {
-  const socketReady = new SocketReady<InterWorkingItem[]>(
+  new SocketReady<InterWorkingItem[]>(
     socket,
-    "updateTrackingSheets"
-  );
-  socketReady.trigger(input.forCamps, input.campId.toString());
-  socketReady.trigger(input.forParts, input.partId.toString());
+    "updateTrackingSheets",
+    input.campId
+  ).trigger(input.forCamps);
+  new SocketReady<InterWorkingItem[]>(
+    socket,
+    "updateTrackingSheets",
+    input.partId
+  ).trigger(input.forParts);
 }
 export class RealTimeTrackingSheet {
-  private room: string;
   private socket: SocketReady<InterWorkingItem[]>;
   constructor(roomId: Id, socket: Socket) {
-    this.room = roomId.toString();
     this.socket = new SocketReady<InterWorkingItem[]>(
       socket,
-      "updateTrackingSheets"
+      "updateTrackingSheets",
+      roomId
     );
   }
   public listen(set: (event: InterWorkingItem[]) => void) {
-    this.socket.listen(this.room, set);
+    this.socket.listen(set);
   }
   public disconnect() {
     this.socket.disconnect();
@@ -68,55 +74,51 @@ export class RealTimeTrackingSheet {
 export function triggerOrder(input: TriggerOrder, socket: Socket) {
   const socketReadyCampMemberCard = new SocketReady<ShowOrder[]>(
     socket,
-    "campMemberCardUpdateOrder"
+    "campMemberCardUpdateOrder",
+    input.campId
   );
   const socketReadyFrom = new SocketReady<ShowOrder[]>(
     socket,
-    `${input.types}UpdateOrder`
+    `${input.types}UpdateOrder`,
+    input.fromId
   );
   const socketReadyCamp = new SocketReady<ShowOrder[]>(
     socket,
-    "campUpdateOrder"
+    "campUpdateOrder",
+    input.campMemberCardId
   );
-  socketReadyCamp.trigger(input.campOrders, input.campId.toString());
-  socketReadyFrom.trigger(input.fromOrders, input.fromId.toString());
-  socketReadyCampMemberCard.trigger(
-    input.campMemberCardOrders,
-    input.campMemberCardId.toString()
-  );
+  socketReadyCamp.trigger(input.campOrders);
+  socketReadyFrom.trigger(input.fromOrders);
+  socketReadyCampMemberCard.trigger(input.campMemberCardOrders);
   triggerItem(input.items, input.campId, socket);
 }
 export class RealTimeOrder {
-  private room: string;
   private socket: SocketReady<ShowOrder[]>;
   constructor(
     roomId: Id,
     socket: Socket,
     types: "camp" | "campMemberCard" | "baan" | "part"
   ) {
-    this.room = roomId.toString();
-    this.socket = new SocketReady(socket, `${types}UpdateOrder`);
+    this.socket = new SocketReady(socket, `${types}UpdateOrder`,roomId);
   }
   public listen(set: (event: ShowOrder[]) => void) {
-    this.socket.listen(this.room, set);
+    this.socket.listen( set);
   }
   public disconnect() {
     this.socket.disconnect();
   }
 }
 export function triggerItem(input: InterItem[], campId: Id, socket: Socket) {
-  const socketReady = new SocketReady<InterItem[]>(socket, "updateItem");
-  socketReady.trigger(input, campId.toString());
+  const socketReady = new SocketReady<InterItem[]>(socket, "updateItem",campId);
+  socketReady.trigger(input, );
 }
 export class RealTimeItem {
-  private room: string;
   private socket: SocketReady<InterItem[]>;
   constructor(campId: Id, socket: Socket) {
-    this.room = campId.toString();
-    this.socket = new SocketReady(socket, "updateItem");
+    this.socket = new SocketReady(socket, "updateItem",campId);
   }
   public listen(set: (event: InterItem[]) => void) {
-    this.socket.listen(this.room, set);
+    this.socket.listen(set);
   }
   public disconnect() {
     this.socket.disconnect();

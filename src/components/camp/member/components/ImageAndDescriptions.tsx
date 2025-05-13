@@ -34,11 +34,10 @@ export default function ImageAndDescriptions({
     selectIndex == null ? "" : imageAndDescriptionContainers[selectIndex].name;
   const updateSocket = new SocketReady<ShowImageAndDescriptions[]>(
     socket,
-    "updateImageAndDescriptions"
+    "updateImageAndDescriptions",baanId
   );
-  const room = baanId.toString();
   React.useEffect(() => {
-    updateSocket.listen(room, setImageAndDescriptionContainers);
+    updateSocket.listen(setImageAndDescriptionContainers);
     return () => updateSocket.disconnect();
   });
   return (

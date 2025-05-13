@@ -4,8 +4,7 @@ import { UpdateBaan, UpdateBaanOut } from "../../../interface";
 export default async function updateBaan(
   input: UpdateBaan,
   token: string,
-  socket: SocketReady<UpdateBaanOut>,
-  room: string
+  socket: SocketReady<UpdateBaanOut>
 ) {
   const response = await fetch(`${getBackendUrl()}/admin/updateBaan`, {
     method: "PUT",
@@ -17,6 +16,6 @@ export default async function updateBaan(
     body: JSON.stringify(input),
   });
   const data: UpdateBaanOut = await response.json();
-  socket.trigger(data, room);
+  socket.trigger(data);
   return data;
 }

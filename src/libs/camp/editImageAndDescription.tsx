@@ -7,8 +7,7 @@ import {
 export default async function editImageAndDescription(
   input: EditImageAndDescriptionContainer,
   token: string,
-  socket: SocketReady<ShowImageAndDescriptions[]>,
-  room: string
+  socket: SocketReady<ShowImageAndDescriptions[]>
 ) {
   const response = await fetch(
     `${getBackendUrl()}/camp/editImageAndDescription/`,
@@ -26,6 +25,6 @@ export default async function editImageAndDescription(
   if (!response.ok) {
     return data;
   }
-  socket.trigger(data, room);
+  socket.trigger(data);
   return data;
 }

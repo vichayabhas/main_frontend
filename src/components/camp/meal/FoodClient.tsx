@@ -30,8 +30,7 @@ export default function FoodClient({
   food: GetFoodForUpdate;
   token: string;
 }) {
-  const updateFoodSocket = new SocketReady<InterFood>(socket, "updateFood");
-  const room = food._id.toString();
+  const updateFoodSocket = new SocketReady<InterFood>(socket, "updateFood",food._id);
   const [name, setName] = React.useState(food.name);
   const [isSpicy, setIsSpicy] = React.useState(food.isSpicy);
   const {
@@ -60,7 +59,7 @@ export default function FoodClient({
   const [camp, setCamp] = React.useState(food.camp);
   const realTimeCamp = new RealTimeCamp(camp._id, socket);
   React.useEffect(() => {
-    updateFoodSocket.listen(room, (data) => {
+    updateFoodSocket.listen((data) => {
       setListPriority(data.listPriority);
       setIsWhiteList(data.isWhiteList);
       setมังสวิรัติ(data.lists.includes("มังสวิรัติ"));
@@ -310,7 +309,6 @@ export default function FoodClient({
             },
             token,
             updateFoodSocket,
-            room,
             socket
           );
         }}

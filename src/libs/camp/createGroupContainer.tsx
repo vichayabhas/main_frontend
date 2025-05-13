@@ -5,7 +5,6 @@ export default async function createGroupContainer(
   input: CreateGroupContainer,
   token: string,
   socket: SocketReady<GetGroupContainer[]>,
-  room: string
 ) {
   const response = await fetch(
     `${getBackendUrl()}/camp/createGroupContainer/`,
@@ -23,6 +22,6 @@ export default async function createGroupContainer(
   if (!response.ok) {
     return data;
   }
-  socket.trigger(data, room);
+  socket.trigger(data);
   return data;
 }

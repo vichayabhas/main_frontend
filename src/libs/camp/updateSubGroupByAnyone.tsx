@@ -5,7 +5,6 @@ export default async function updateSubGroupByAnyone(
   input: UpdateSubGroup,
   token: string,
   socket: SocketReady<GetGroupContainer>,
-  room: string
 ) {
   const response = await fetch(
     `${getBackendUrl()}/camp/updateSubGroupByAnyone/`,
@@ -23,6 +22,6 @@ export default async function updateSubGroupByAnyone(
   if (!response.ok) {
     return data;
   }
-  socket.trigger(data, room);
+  socket.trigger(data);
   return data;
 }

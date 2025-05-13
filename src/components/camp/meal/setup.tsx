@@ -6,26 +6,26 @@ export function triggerMeals(
   inputs: TriggerCampMemberCard[],
   socketIn: Socket
 ) {
-  const socket = new SocketReady<TriggerCampMemberCard>(
-    socketIn,
-    "triggerMeals"
-  );
   for (const input of inputs) {
-    socket.trigger(input, input.campMemberCardId.toString());
+    const socket = new SocketReady<TriggerCampMemberCard>(
+      socketIn,
+      "triggerMeals",
+      input.campMemberCardId
+    );
+    socket.trigger(input);
   }
 }
 export class RealTimeFoodUpdate {
-  private room: string;
   private socket: SocketReady<TriggerCampMemberCard>;
   constructor(campMemberCardId: Id, socket: Socket) {
-    this.room = campMemberCardId.toString();
     this.socket = new SocketReady<TriggerCampMemberCard>(
       socket,
-      "triggerMeals"
+      "triggerMeals",
+      campMemberCardId
     );
   }
   public listen(event: (data: GetMeals[]) => void) {
-    this.socket.listen(this.room, (data) => {
+    this.socket.listen((data) => {
       event(data.meals);
     });
   }

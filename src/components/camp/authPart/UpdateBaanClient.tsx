@@ -38,7 +38,6 @@ import { RealTimeBaanJob } from "../member/components/setup";
 const socket = io(getBackendUrl());
 
 export class RealTimeBaan {
-  private room: string;
   private socket: SocketReady<UpdateBaanOut>;
   private setBoy: React.Dispatch<React.SetStateAction<ShowPlace | null>>;
   private setGirl: React.Dispatch<React.SetStateAction<ShowPlace | null>>;
@@ -54,8 +53,7 @@ export class RealTimeBaan {
     setBaan: React.Dispatch<React.SetStateAction<BasicBaan>>,
     allPlaceData: AllPlaceData
   ) {
-    this.room = baanId.toString();
-    this.socket = new SocketReady<UpdateBaanOut>(socket, "updateBaan");
+    this.socket = new SocketReady<UpdateBaanOut>(socket, "updateBaan", baanId);
     this.setBoy = setBoy;
     this.setGirl = setGirl;
     this.setNormal = setNormal;
@@ -63,7 +61,7 @@ export class RealTimeBaan {
     this.allPlaceData = allPlaceData;
   }
   public listen() {
-    this.socket.listen(this.room, (event) => {
+    this.socket.listen((event) => {
       this.setBaan(event.baan);
       this.setBoy(getShowPlaceFromInterPlace(event.boy, this.allPlaceData));
       this.setGirl(getShowPlaceFromInterPlace(event.girl, this.allPlaceData));
@@ -86,11 +84,11 @@ export class RealTimeBasicBaan {
     setBaan: React.Dispatch<React.SetStateAction<BasicBaan>>
   ) {
     this.room = baanId.toString();
-    this.socket = new SocketReady<UpdateBaanOut>(socket, "updateBaan");
+    this.socket = new SocketReady<UpdateBaanOut>(socket, "updateBaan", baanId);
     this.setBaan = setBaan;
   }
   public listen() {
-    this.socket.listen(this.room, (event) => {
+    this.socket.listen((event) => {
       this.setBaan(event.baan);
     });
   }
@@ -136,10 +134,13 @@ export default function UpdateBaanClient({
   );
   const [baanJobs, setBaanJobs] = React.useState(coopData.baanJobs);
   const realTimeBaanJob = new RealTimeBaanJob(coopData.baan._id, socket);
-  const updateBaanSocket = new SocketReady<UpdateBaanOut>(socket, "updateBaan");
-  const room = coopData.baan._id.toString();
+  const updateBaanSocket = new SocketReady<UpdateBaanOut>(
+    socket,
+    "updateBaan",
+    coopData.baan._id
+  );
   React.useEffect(() => {
-    updateBaanSocket.listen(room, (data) => {
+    updateBaanSocket.listen((data) => {
       setBoy(data.boy);
       setGirl(data.girl);
       setNormal(data.normal);
@@ -292,7 +293,6 @@ export default function UpdateBaanClient({
                     },
                     session.user.token,
                     updateBaanSocket,
-                    room
                   );
                 } catch (error) {
                   console.log(error);

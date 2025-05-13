@@ -42,10 +42,7 @@ export default function WelfareClient({
   token: string;
   selectOffset: InterTimeOffset;
 }) {
-  const createMealSocket = new SocketReady<InterMeal[]>(
-    io(getBackendUrl()),
-    "createMeal"
-  );
+  
   const welfareModes = [
     "ดูเฉพาะขนาดเสื้อ",
     "ดูทั้งหมด",
@@ -63,7 +60,6 @@ export default function WelfareClient({
   );
   const [time, setTime] = React.useState<Date | null>(null);
   const [meals, setMeals] = React.useState(welfare.meals);
-  const room = camp._id.toString();
   const showPart =
     camp.memberStructure == "nong->highSchool,pee->1year,peto->2upYear" ||
     welfareMode != "ซ่อนปัญหาสุขภาพพี่บ้านในฝ่าย";
@@ -79,8 +75,12 @@ export default function WelfareClient({
     filename: `ข้อมูลแพ้อาหารของค่าย${camp.campName}`,
   });
   const realTimeCamp = new RealTimeCamp(camp._id, socket);
+  const createMealSocket = new SocketReady<InterMeal[]>(
+    socket,
+    "createMeal",camp._id
+  );
   React.useEffect(() => {
-    createMealSocket.listen(room, setMeals);
+    createMealSocket.listen(setMeals);
     realTimeCamp.listen(setCamp);
     return () => {
       createMealSocket.disconnect();
@@ -466,7 +466,6 @@ export default function WelfareClient({
                     },
                     token,
                     createMealSocket,
-                    room,
                     socket
                   );
                 }

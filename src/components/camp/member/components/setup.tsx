@@ -74,32 +74,32 @@ export function getFillTimeRegisterId(
   );
 }
 export function triggerJob(input: TriggerJob, socket: Socket) {
-  const socketReady = new SocketReady<GetJob[]>(socket, input.event);
-  socketReady.trigger(input.jobs, input.roomId.toString());
+  const socketReady = new SocketReady<GetJob[]>(
+    socket,
+    input.event,
+    input.roomId
+  );
+  socketReady.trigger(input.jobs);
 }
 export class RealTimeBaanJob {
-  private room: string;
   private socket: SocketReady<GetJob[]>;
   constructor(roomId: Id, socket: Socket) {
-    this.room = roomId.toString();
-    this.socket = new SocketReady<GetJob[]>(socket, "updateBaanJob");
+    this.socket = new SocketReady<GetJob[]>(socket, "updateBaanJob", roomId);
   }
   public listen(set: React.Dispatch<GetJob[]>) {
-    this.socket.listen(this.room, set);
+    this.socket.listen(set);
   }
   public disconnect() {
     this.socket.disconnect();
   }
 }
 export class RealTimePartJob {
-  private room: string;
   private socket: SocketReady<GetJob[]>;
   constructor(roomId: Id, socket: Socket) {
-    this.room = roomId.toString();
-    this.socket = new SocketReady<GetJob[]>(socket, "updatePartJob");
+    this.socket = new SocketReady<GetJob[]>(socket, "updatePartJob", roomId);
   }
   public listen(set: React.Dispatch<GetJob[]>) {
-    this.socket.listen(this.room, set);
+    this.socket.listen(set);
   }
   public disconnect() {
     this.socket.disconnect();

@@ -52,14 +52,13 @@ export default function AllAnswerAndQuestionPageBreakDown({
   setMode: (dataIn: GetAllAnswerAndQuestion) => UserAndAllQuestionPack[];
   types: string;
 }) {
-  const room = `${campId.toString()}${types}`;
-  const socketReady = new SocketReady<ScoreEvent>(socket, "scoreTextAnswer");
+  const socketReady = new SocketReady<ScoreEvent>(socket, "scoreTextAnswer",`${campId.toString()}${types}`);
   const [textScores, setTextScores] = React.useState(
     setDefaultScore(setMode(data))
   );
   const [isTimeout, setTimeOut] = React.useState(false);
   React.useEffect(() => {
-    socketReady.listen(room, ({ i, j, score }: ScoreEvent) => {
+    socketReady.listen(({ i, j, score }: ScoreEvent) => {
       setMap(
         setTextScores,
         modifyElementInUseStateArray2Dimension(i, j)
@@ -131,7 +130,7 @@ export default function AllAnswerAndQuestionPageBreakDown({
                             //   modifyElementInUseStateArray2Dimension(i, j)
                             // )
                             (score) => {
-                              socketReady.trigger({ i, j, score }, room);
+                              socketReady.trigger({ i, j, score });
                             }
                           )}
                           type="number"

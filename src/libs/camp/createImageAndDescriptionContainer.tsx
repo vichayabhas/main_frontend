@@ -7,8 +7,7 @@ import {
 export default async function createImageAndDescriptionContainer(
   input: CreateImageAndDescriptionContainer,
   token: string,
-  socket: SocketReady<ShowImageAndDescriptions[]>,
-  room: string
+  socket: SocketReady<ShowImageAndDescriptions[]>
 ) {
   const response = await fetch(
     `${getBackendUrl()}/camp/createImageAndDescriptionContainer/`,
@@ -26,6 +25,6 @@ export default async function createImageAndDescriptionContainer(
   if (!response.ok) {
     return data;
   }
-  socket.trigger(data, room);
+  socket.trigger(data);
   return data;
 }

@@ -5,7 +5,6 @@ export default async function updateGroupContainer(
   input: UpdateGroupContainer,
   token: string,
   socket: SocketReady<GetGroupContainer[]>,
-  room: string
 ) {
   const response = await fetch(
     `${getBackendUrl()}/camp/updateGroupContainer/`,
@@ -20,6 +19,6 @@ export default async function updateGroupContainer(
     }
   );
   const data: GetGroupContainer[] = await response.json();
-  socket.trigger(data, room);
+  socket.trigger(data);
   return data;
 }

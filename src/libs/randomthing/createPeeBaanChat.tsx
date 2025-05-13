@@ -5,7 +5,6 @@ export default async function createPeeBaanChat(
   input: CreateBaanChat,
   token: string,
   socket: SocketReady<ShowChat>,
-  room: string
 ) {
   const res = await fetch(`${getBackendUrl()}/randomthing/createPeeBaanChat`, {
     method: "POST",
@@ -20,6 +19,6 @@ export default async function createPeeBaanChat(
   if (!res.ok) {
     return data;
   }
-  socket.trigger(data, room);
+  socket.trigger(data);
   return data;
 }

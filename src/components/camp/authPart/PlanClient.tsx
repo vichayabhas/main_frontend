@@ -63,10 +63,13 @@ export default function PlanClient({
   );
   const realTimeCamp = new RealTimeCamp(camp._id, socket);
 
-  const planSocket = new SocketReady<PlanTrigger>(socket, "updatePlanData");
-  const room = camp._id.toString();
+  const planSocket = new SocketReady<PlanTrigger>(
+    socket,
+    "updatePlanData",
+    camp._id
+  );
   React.useEffect(() => {
-    planSocket.listen(room, (newData) => {
+    planSocket.listen((newData) => {
       setBaanDatas(newData.baanDatas);
       setPartDatas(newData.partDatas);
       setBoys(newData.baanDatas.map((baan) => baan.boy));
@@ -242,8 +245,7 @@ export default function PlanClient({
                     boyZoneLadyZoneState: boyZoneLadyZoneStates[index],
                   },
                   token,
-                  planSocket,
-                  room
+                  planSocket
                 );
               }, setTimeOut);
             }}

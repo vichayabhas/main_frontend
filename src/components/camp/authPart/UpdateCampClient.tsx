@@ -45,14 +45,12 @@ interface RealTimeAuthPart {
 }
 
 export class RealTimeCamp {
-  private room: string;
   private socket: SocketReady<UpdateCampOut>;
   constructor(campId: Id, socket: Socket) {
-    this.room = campId.toString();
-    this.socket = new SocketReady<UpdateCampOut>(socket, "updateCamp");
+    this.socket = new SocketReady<UpdateCampOut>(socket, "updateCamp",campId);
   }
   public listen(setCamp: React.Dispatch<React.SetStateAction<BasicCamp>>) {
-    this.socket.listen(this.room, (event) => {
+    this.socket.listen((event) => {
       setCamp(event.camp);
     });
   }
@@ -176,15 +174,14 @@ export default function UpdateCampClient({
   }
   const realTimeAuthPartSocket = new SocketReady<RealTimeAuthPart>(
     socket,
-    "realTimeAuthPart"
+    "realTimeAuthPart",data.camp._id
   );
-  const updateCampSocket = new SocketReady<UpdateCampOut>(socket, "updateCamp");
-  const room = data.camp._id.toString();
+  const updateCampSocket = new SocketReady<UpdateCampOut>(socket, "updateCamp",data.camp._id);
   React.useEffect(() => {
-    updateCampSocket.listen(room, (newData) => {
+    updateCampSocket.listen((newData) => {
       reset(newData.camp, newData.parts);
     });
-    realTimeAuthPartSocket.listen(room, ({ i, j, check }) => {
+    realTimeAuthPartSocket.listen(({ i, j, check }) => {
       setMap(
         setArrayOfAuthPartList,
         modifyElementInUseStateArray2Dimension(i, j)
@@ -749,7 +746,7 @@ export default function UpdateCampClient({
                 <td key={j}>
                   <Checkbox
                     onChange={setBoolean((check) => {
-                      realTimeAuthPartSocket.trigger({ i, j, check }, room);
+                      realTimeAuthPartSocket.trigger({ i, j, check });
                     })}
                     checked={arrayOfAuthPartList[i][j]}
                   />
@@ -806,7 +803,6 @@ export default function UpdateCampClient({
                     camp._id,
                     token,
                     updateCampSocket,
-                    room
                   );
                 } catch (error) {
                   console.log(error);

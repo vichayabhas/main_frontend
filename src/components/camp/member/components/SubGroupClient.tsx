@@ -80,14 +80,13 @@ export default function SubGroupClient({
   );
   const groupSocket = new SocketReady<GetGroupContainer>(
     socket,
-    "registerSubGroup"
+    "registerSubGroup",data._id
   );
   const ref = React.useRef(null);
   const download = useDownloadExcel({
     filename: `กลุ่มทั้งหมดของ${camp.groupName}${baan.name}`,
     currentTableRef: ref.current,
   });
-  const room = data._id.toString();
   const [container, setGroup] = React.useState(data);
   const [removeId, setRemoveId] = React.useState(removeIdTem);
   const [selectIndexAction, setSelectIndexAction] = React.useState<
@@ -98,7 +97,7 @@ export default function SubGroupClient({
   const [gender, setGender] = React.useState<"male" | "female" | null>(null);
   const [role, setRole] = React.useState<Mode | null>(null);
   React.useEffect(() => {
-    groupSocket.listen(room, (e) => {
+    groupSocket.listen( (e) => {
       setGroup(e);
       let i = 0;
       let selectSubGroupIndexTem: number | null = null;
@@ -198,7 +197,6 @@ export default function SubGroupClient({
                           { limit, name: subGroupName, _id: subGroup._id },
                           token,
                           groupSocket,
-                          room
                         );
                       }}
                     />
@@ -325,7 +323,6 @@ export default function SubGroupClient({
                 },
                 token,
                 groupSocket,
-                room
               )
             }
           />
@@ -347,7 +344,6 @@ export default function SubGroupClient({
             },
             token,
             groupSocket,
-            room,
             setSubGroupIds
           );
         }}

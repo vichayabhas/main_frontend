@@ -6,7 +6,6 @@ export default async function updateCamp(
   id: Id,
   token: string,
   socket: SocketReady<UpdateCampOut>,
-  room: string
 ) {
   const response = await fetch(
     `${getBackendUrl()}/admin/updateCamp/params/${id}`,
@@ -21,6 +20,6 @@ export default async function updateCamp(
     }
   );
   const data: UpdateCampOut = await response.json();
-  socket.trigger(data, room);
+  socket.trigger(data);
   return data
 }

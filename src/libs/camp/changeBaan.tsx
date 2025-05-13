@@ -8,7 +8,6 @@ export default async function changeBaan(
   },
   token: string,
   socket: SocketReady<RegisterData>,
-  room: string
 ) {
   const res = await fetch(`${getBackendUrl()}/camp/changeBaan`, {
     method: "POST",
@@ -23,6 +22,6 @@ export default async function changeBaan(
   if (!res.ok) {
     return data;
   }
-  socket.trigger(data, room);
+  socket.trigger(data);
   return data;
 }

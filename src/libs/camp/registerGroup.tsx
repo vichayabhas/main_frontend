@@ -10,7 +10,6 @@ export default async function registerGroup(
   input: RegisterGroup,
   token: string,
   socket: SocketReady<GetGroupContainer>,
-  room: string,
   setSubGroupIds: React.Dispatch<React.SetStateAction<Id[]>>
 ) {
   const response = await fetch(`${getBackendUrl()}/camp/registerGroup/`, {
@@ -27,6 +26,6 @@ export default async function registerGroup(
     return data;
   }
   setSubGroupIds(data.subGroupIds);
-  socket.trigger(data.group, room);
+  socket.trigger(data.group);
   return data;
 }

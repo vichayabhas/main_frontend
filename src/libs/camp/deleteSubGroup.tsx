@@ -4,8 +4,7 @@ import { GetGroupContainer, Id } from "../../../interface";
 export default async function deleteSubGroup(
   subGroupId: Id,
   token: string,
-  socket: SocketReady<GetGroupContainer[]>,
-  room: string
+  socket: SocketReady<GetGroupContainer[]>
 ) {
   const response = await fetch(
     `${getBackendUrl()}/camp/deleteSubGroup/params/${subGroupId}`,
@@ -21,6 +20,6 @@ export default async function deleteSubGroup(
   if (!response.ok) {
     return data;
   }
-  socket.trigger(data, room);
+  socket.trigger(data);
   return data;
 }

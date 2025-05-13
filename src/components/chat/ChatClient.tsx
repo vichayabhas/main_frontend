@@ -19,7 +19,7 @@ import StringToHtml from "../utility/StringToHtml";
 import { io } from "socket.io-client";
 import { RealTimeCamp } from "../camp/authPart/UpdateCampClient";
 const socket = io(getBackendUrl());
-const newChatSocket = new SocketReady<ShowChat>(socket, "newChat");
+
 export default function ChatClient({
   data,
   token,
@@ -32,13 +32,14 @@ export default function ChatClient({
   const [camp, setCamp] = React.useState(data.camp);
   const realTimeCamp = new RealTimeCamp(camp._id, socket);
   const sendType = data.sendType;
+  const newChatSocket = new SocketReady<ShowChat>(socket, "newChat",data.subscribe);
   React.useEffect(() => {
     const handleNewChat = (newChat: ShowChat) => {
       if (newChat.canReadInModeNong || data.mode == "pee") {
         setMessages(addItemInUseStateArray(newChat));
       }
     };
-    newChatSocket.listen(data.subscribe, handleNewChat);
+    newChatSocket.listen( handleNewChat);
     realTimeCamp.listen(setCamp);
     return () => {
       newChatSocket.disconnect();
@@ -219,7 +220,6 @@ export default function ChatClient({
                           { baanId: sendType.id, message },
                           token,
                           newChatSocket,
-                          data.subscribe
                         );
                         break;
                       }
@@ -228,7 +228,6 @@ export default function ChatClient({
                           { partId: sendType.id, message },
                           token,
                           newChatSocket,
-                          data.subscribe
                         );
                         break;
                       }
@@ -237,7 +236,6 @@ export default function ChatClient({
                           { CampMemberCard: sendType.id, message },
                           token,
                           newChatSocket,
-                          data.subscribe
                         );
                         break;
                       }
@@ -246,7 +244,6 @@ export default function ChatClient({
                           { baanId: sendType.id, message },
                           token,
                           newChatSocket,
-                          data.subscribe
                         );
                         break;
                       }
@@ -255,7 +252,6 @@ export default function ChatClient({
                           { partId: sendType.id, message },
                           token,
                           newChatSocket,
-                          data.subscribe
                         );
                         break;
                       }

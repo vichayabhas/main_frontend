@@ -4,8 +4,7 @@ import { CreateSubGroupByAnyone, GetGroupContainer } from "../../../interface";
 export default async function createSubGroupByAnyone(
   input: CreateSubGroupByAnyone,
   token: string,
-  socket: SocketReady<GetGroupContainer>,
-  room: string
+  socket: SocketReady<GetGroupContainer>
 ) {
   const response = await fetch(
     `${getBackendUrl()}/camp/createSubGroupByAnyone/`,
@@ -23,6 +22,6 @@ export default async function createSubGroupByAnyone(
   if (!response.ok) {
     return data;
   }
-  socket.trigger(data, room);
+  socket.trigger(data);
   return data;
 }

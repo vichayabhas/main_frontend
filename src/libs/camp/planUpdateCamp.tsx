@@ -12,10 +12,9 @@ export default async function planUpdateCamp(
   input: UpdateAllPlanData,
   token: string,
   socketInput: SocketReady<PlanTrigger>,
-  room: string
 ) {
-  const baanSocket = new SocketReady<UpdateBaanOut>(socket, "updateBaan");
-  const planSocket = new SocketReady<UpdatePartOut>(socket, "updatePart");
+  const baanSocket = new SocketReady<UpdateBaanOut>(socket, "updateBaan",'');
+  const planSocket = new SocketReady<UpdatePartOut>(socket, "updatePart",'');
   const response = await fetch(`${getBackendUrl()}/camp/planUpdateCamp/`, {
     method: "PUT",
     cache: "no-store",
@@ -29,11 +28,11 @@ export default async function planUpdateCamp(
   if (!response.ok) {
     return data;
   }
-  socketInput.trigger(data.planTrigger, room);
+  socketInput.trigger(data.planTrigger);
   for (const baanTrigger of data.baanTriggers) {
-    baanSocket.trigger(baanTrigger, baanTrigger.baan._id.toString());
+    baanSocket.triggerToOther(baanTrigger, baanTrigger.baan._id.toString());
   }
   for (const partTrigger of data.partTriggers) {
-    planSocket.trigger(partTrigger, partTrigger._id.toString());
+    planSocket.triggerToOther(partTrigger, partTrigger._id.toString());
   }
 }
