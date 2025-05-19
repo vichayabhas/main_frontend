@@ -56,6 +56,7 @@ export default async function TopMenu() {
             <div>{systemMode}</div>
             <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
               <TopMenuItem title="weather" pageRef="/weather" />
+              <TopMenuItem title="gewertz square" pageRef="/gewertzSquare" />
               <TopMenuItem title="ปรับตั้งเวลา" pageRef="/testTime" />
               <TopMenuItem title="เพลง" pageRef="/song" />
               <TopMenuItem title="Lost & Found" pageRef="/lostAndFound" />
@@ -86,6 +87,7 @@ export default async function TopMenu() {
             <div>{systemMode}</div>
             <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
               <TopMenuItem title="weather" pageRef="/weather" />
+              <TopMenuItem title="gewertz square" pageRef="/gewertzSquare" />
               <TopMenuItem title="ปรับตั้งเวลา" pageRef="/testTime" />
               <TopMenuItem title="เพลง" pageRef="/song" />
               <TopMenuItem title="Lost & Found" pageRef="/lostAndFound" />
@@ -115,6 +117,7 @@ export default async function TopMenu() {
             <div>{systemMode}</div>
             <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
               <TopMenuItem title="weather" pageRef="/weather" />
+              <TopMenuItem title="gewertz square" pageRef="/gewertzSquare" />
               <TopMenuItem title="ปรับตั้งเวลา" pageRef="/testTime" />
               <TopMenuItem title="เพลง" pageRef="/song" />
               <TopMenuItem title="Lost & Found" pageRef="/lostAndFound" />
@@ -143,6 +146,7 @@ export default async function TopMenu() {
             <div>{systemMode}</div>
             <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
               <TopMenuItem title="weather" pageRef="/weather" />
+              <TopMenuItem title="gewertz square" pageRef="/gewertzSquare" />
               <TopMenuItem title="ปรับตั้งเวลา" pageRef="/testTime" />
               <TopMenuItem title="เพลง" pageRef="/song" />
               <TopMenuItem title="Lost & Found" pageRef="/lostAndFound" />
@@ -178,6 +182,7 @@ export default async function TopMenu() {
         <div>{systemMode}</div>
         <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
           <TopMenuItem title="weather" pageRef="/weather" />
+          <TopMenuItem title="gewertz square" pageRef="/gewertzSquare" />
           <TopMenuItem title="เพลง" pageRef="/song" />
           <TopMenuItem title="Sign In" pageRef="/api/auth/signin" />
           <TopMenuItem title="Register" pageRef="/signup" />

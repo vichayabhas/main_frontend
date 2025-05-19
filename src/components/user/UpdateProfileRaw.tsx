@@ -234,7 +234,7 @@ export default function UpdateProfileRaw({
                 color: "#FFFFFF", // Custom color when checked
               },
             }}
-            checked={user.haveBottle}
+            checked={haveBottle}
           />
         </div>
         <div className="flex flex-row justify-end"></div>
@@ -249,7 +249,7 @@ export default function UpdateProfileRaw({
                 color: "#FFFFFF", // Custom color when checked
               },
             }}
-            checked={user.likeToSleepAtCamp}
+            checked={likeToSleepAtCamp}
           />
         </div>
         <div className="flex flex-row justify-end">

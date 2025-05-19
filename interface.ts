@@ -365,6 +365,8 @@ export interface InterUser {
   displayOffsetId: Id;
   nongAnswerPackIds: Id[];
   peeAnswerPackIds: Id[];
+  gewertzSquareBookingIds: Id[];
+  departureAuths: Departure[];
   //private
 }
 export interface InterWorkingItem {
@@ -1267,12 +1269,6 @@ export interface ScoreTextQuestions {
 export interface InterFood {
   campId: Id;
   isWhiteList: boolean;
-  // peeIds: Id[];
-  // nongIds: Id[];
-  // petoIds: Id[];
-  // nongHeathIssueIds: Id[];
-  // peeHeathIssueIds: Id[];
-  // petoHeathIssueIds: Id[];
   nongCampMemberCardIds: Id[];
   peeCampMemberCardIds: Id[];
   petoCampMemberCardIds: Id[];
@@ -1573,6 +1569,8 @@ export interface BasicUser {
   fridayActEn: boolean;
   fridayAuth: boolean;
   likeToSleepAtCamp: boolean;
+  gewertzSquareBookingIds: Id[];
+  departureAuths: Departure[];
   //private
 }
 export interface BasicBaan {
@@ -1956,6 +1954,8 @@ export const socketEvents = [
   "updateItem",
   "updatePartJob",
   "updateBaanJob",
+  "updateGewertzSquareBookingAll",
+  "updateGewertzSquareBookingOwn",
 ] as const;
 export type SocketEvent = (typeof socketEvents)[number];
 export type QuestionType =
@@ -2294,7 +2294,75 @@ export interface InterUniversityStaff {
   shortActivityIds: Id[];
   selectOffsetId: Id;
   displayOffsetId: Id;
+  gewertzSquareBookingIds: Id[];
+  fridayActEn: boolean;
+  departureAuths: Departure[];
+  _id:Id
   //private
 }
-export const userTypes = ["student", "guest", "universityStaff"] as const;
+export const userTypes = ["student", "universityStaff"] as const;
 export type UserType = (typeof userTypes)[number];
+export const gewertzSquareRoomTypes = [
+  "Spark1",
+  "Spark2",
+  "Spark3",
+  "Spark1&2",
+  "Spark2&3",
+  "Spark1&2&3",
+  "E-III",
+  "Demo form",
+] as const;
+export type GewertzSquareRoomType = (typeof gewertzSquareRoomTypes)[number];
+export const gewertzSquareAvailableTimes = [
+  8, 9, 10, 11, 12, 13, 14, 15, 16,
+] as const;
+export type GewertzSquareAvailableTime =
+  (typeof gewertzSquareAvailableTimes)[number];
+export const gewertzSquareMaxContinue = 3;
+export interface InterGewertzSquareBooking {
+  day: number;
+  month: number;
+  year: number;
+  time: GewertzSquareAvailableTime;
+  room: GewertzSquareRoomType;
+  userId: Id;
+  userType: UserType;
+  _id: Id;
+  tel: string;
+  period: number;
+}
+export interface BookingGewertzSquareRoom {
+  day: number;
+  month: number;
+  year: number;
+  time: GewertzSquareAvailableTime;
+  room: GewertzSquareRoomType;
+  tel: string;
+  period: number;
+}
+export interface CommonUser {
+  gewertzSquareBookingIds: Id[];
+  _id: Id;
+  name: string;
+  lastname: string;
+  nickname: string;
+  fridayActEn: boolean;
+  departureAuths: Departure[];
+  tel: string;
+}
+export interface GetGewertzSquareBooking {
+  all: InterGewertzSquareBooking[];
+  own: InterGewertzSquareBooking[];
+}
+export interface UpdateBookingGewertzSquareRoom
+  extends BookingGewertzSquareRoom {
+  _id: Id;
+}
+export interface UpdateUniversityStaff {
+  name: string;
+  lastname: string;
+  nickname: string;
+  email: string;
+  tel: string;
+  //private
+}
