@@ -46,8 +46,11 @@ const monthArray = [
 ];
 function isAvailableGewertzSquareRoom(
   oldBookings: InterGewertzSquareBooking[],
-  room: GewertzSquareRoomType
+  room: GewertzSquareRoomType | null
 ) {
+  if (!room) {
+    return true;
+  }
   const oldRooms = oldBookings.map(({ room }) => room);
   if (oldRooms.includes(room)) {
     return false;
@@ -130,6 +133,7 @@ export default function GewertzSquarePageClient({
   while (i < gewertzSquareMaxContinue) {
     availablePeriod.push(++i);
   }
+
   React.useEffect(() => {
     ownSocket.listen(setOwns);
     allSocket.listen(setAlls);
@@ -141,60 +145,12 @@ export default function GewertzSquarePageClient({
   return (
     <div>
       <div>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <div>
-            <label>เลือกวันที่:</label>
-            <DatePicker
-              value={dayjs.utc().year(year).month(month).date(day)}
-              onChange={(value: Dayjs | null) => {
-                if (value) {
-                  const utcDate = value.utc();
-                  setYear(utcDate.year());
-                  setMonth(utcDate.month());
-                  setDay(utcDate.date());
-                }
-              }}
-            />
-            <p>ปี: {year}</p>
-            <p>เดือน: {monthArray[month]}</p>
-            <p>วันที่: {day}</p>
-          </div>
-        </LocalizationProvider>
-        <div>
-          <label>เลือกเวลา</label>
-          <Select value={time} renderValue={copy}>
-            {gewertzSquareAvailableTimes.map(
-              (gewertzSquareAvailableTime, i) => (
-                <MenuItem
-                  key={i}
-                  onClick={() => setTime(gewertzSquareAvailableTime)}
-                  value={gewertzSquareAvailableTime}
-                >
-                  {gewertzSquareAvailableTime}
-                </MenuItem>
-              )
-            )}
-          </Select>
-        </div>
-        <div>
-          <label>จำนวนชั่วโมง</label>
-          <Select value={period} renderValue={copy}>
-            {availablePeriod.map((period, i) => (
-              <MenuItem
-                key={i}
-                onClick={() => setPeriod(period)}
-                value={period}
-              >
-                {period}
-              </MenuItem>
-            ))}
-          </Select>
-        </div>
         <div>
           <label>เลือกห้อง</label>
           <Select value={room} renderValue={copy}>
             {gewertzSquareRoomTypes
               .filter((gewertzSquareRoomType) => {
+                return true;
                 if (
                   time + period - 1 >
                   gewertzSquareAvailableTimes[
@@ -258,12 +214,103 @@ export default function GewertzSquarePageClient({
               })}
           </Select>
         </div>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <div>
+            <label>เลือกวันที่:</label>
+            <DatePicker
+              value={dayjs.utc().year(year).month(month).date(day)}
+              onChange={(value: Dayjs | null) => {
+                if (value) {
+                  const utcDate = value.utc();
+                  setYear(utcDate.year());
+                  setMonth(utcDate.month());
+                  setDay(utcDate.date());
+                }
+              }}
+            />
+            <p>ปี: {year}</p>
+            <p>เดือน: {monthArray[month]}</p>
+            <p>วันที่: {day}</p>
+          </div>
+        </LocalizationProvider>
+        <div>
+          <label>จำนวนชั่วโมง</label>
+          <Select value={period} renderValue={copy}>
+            {availablePeriod.map((period, i) => (
+              <MenuItem
+                key={i}
+                onClick={() => setPeriod(period)}
+                value={period}
+              >
+                {period}
+              </MenuItem>
+            ))}
+          </Select>
+        </div>
+        <div>
+          <label>เลือกเวลา</label>
+          <Select value={time} renderValue={copy}>
+            {gewertzSquareAvailableTimes
+              .filter((time) => {
+                if (
+                  time + period - 1 >
+                  gewertzSquareAvailableTimes[
+                    gewertzSquareAvailableTimes.length - 1
+                  ]
+                ) {
+                  return false;
+                }
+                let i = 0;
+                while (i < gewertzSquareMaxContinue) {
+                  const oldBookings = alls.filter(
+                    (oldBooking) =>
+                      oldBooking.period > i &&
+                      oldBooking.day == day &&
+                      oldBooking.month == month &&
+                      oldBooking.year == year &&
+                      oldBooking.time == time - i
+                  );
+                  if (!isAvailableGewertzSquareRoom(oldBookings, room)) {
+                    return false;
+                  }
+                  if (time - ++i < gewertzSquareAvailableTimes[0]) {
+                    break;
+                  }
+                }
+                i = 0;
+                while (i < period - 1) {
+                  const oldBookings = alls.filter(
+                    (oldBooking) =>
+                      oldBooking.day == day &&
+                      oldBooking.month == month &&
+                      oldBooking.year == year &&
+                      oldBooking.time == time + ++i
+                  );
+                  if (!isAvailableGewertzSquareRoom(oldBookings, room)) {
+                    return false;
+                  }
+                }
+                return true;
+              })
+              .map((gewertzSquareAvailableTime, i) => (
+                <MenuItem
+                  key={i}
+                  onClick={() => setTime(gewertzSquareAvailableTime)}
+                  value={gewertzSquareAvailableTime}
+                >
+                  {gewertzSquareAvailableTime}
+                </MenuItem>
+              ))}
+          </Select>
+        </div>
         <div>
           <label>tel</label>
           <TextField value={tel} onChange={setTextToString(setTel)} />
         </div>
       </div>
-      {token ? (
+      {token &&
+      user &&
+      user.departureAuths.includes("วิศวกรรมไฟฟ้า (Electrical Engineering)") ? (
         <div>
           <FinishButton
             text="จอง"

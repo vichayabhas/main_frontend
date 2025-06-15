@@ -2297,10 +2297,14 @@ export interface InterUniversityStaff {
   gewertzSquareBookingIds: Id[];
   fridayActEn: boolean;
   departureAuths: Departure[];
-  _id:Id
+  _id: Id;
   //private
 }
-export const userTypes = ["student", "universityStaff"] as const;
+export const userTypes = [
+  "student",
+  "universityStaff",
+  "gewertzSquare",
+] as const;
 export type UserType = (typeof userTypes)[number];
 export const gewertzSquareRoomTypes = [
   "Spark1",
@@ -2345,10 +2349,10 @@ export interface CommonUser {
   _id: Id;
   name: string;
   lastname: string;
-  nickname: string;
   fridayActEn: boolean;
   departureAuths: Departure[];
   tel: string;
+  email: string;
 }
 export interface GetGewertzSquareBooking {
   all: InterGewertzSquareBooking[];
@@ -2365,4 +2369,11 @@ export interface UpdateUniversityStaff {
   email: string;
   tel: string;
   //private
+}
+export interface GewertzSquareRegister {
+  name: string;
+  lastname: string;
+  tel: string;
+  password: string;
+  email: string;
 }
