@@ -2377,3 +2377,10 @@ export interface GewertzSquareRegister {
   password: string;
   email: string;
 }
+export interface UpdateGewertzSquareAccount {
+  name: string;
+  lastname: string;
+  email: string;
+  tel: string;
+  //private
+}
