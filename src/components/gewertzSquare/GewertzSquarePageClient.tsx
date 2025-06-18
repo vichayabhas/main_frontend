@@ -149,58 +149,58 @@ export default function GewertzSquarePageClient({
           <label>เลือกห้อง</label>
           <Select value={room} renderValue={copy}>
             {gewertzSquareRoomTypes
-              .filter((gewertzSquareRoomType) => {
-                return true;
-                if (
-                  time + period - 1 >
-                  gewertzSquareAvailableTimes[
-                    gewertzSquareAvailableTimes.length - 1
-                  ]
-                ) {
-                  return false;
-                }
-                let i = 0;
-                while (i < gewertzSquareMaxContinue) {
-                  const oldBookings = alls.filter(
-                    (oldBooking) =>
-                      oldBooking.period > i &&
-                      oldBooking.day == day &&
-                      oldBooking.month == month &&
-                      oldBooking.year == year &&
-                      oldBooking.time == time - i
-                  );
-                  if (
-                    !isAvailableGewertzSquareRoom(
-                      oldBookings,
-                      gewertzSquareRoomType
-                    )
-                  ) {
-                    return false;
-                  }
-                  if (time - ++i < gewertzSquareAvailableTimes[0]) {
-                    break;
-                  }
-                }
-                i = 0;
-                while (i < period - 1) {
-                  const oldBookings = alls.filter(
-                    (oldBooking) =>
-                      oldBooking.day == day &&
-                      oldBooking.month == month &&
-                      oldBooking.year == year &&
-                      oldBooking.time == time + ++i
-                  );
-                  if (
-                    !isAvailableGewertzSquareRoom(
-                      oldBookings,
-                      gewertzSquareRoomType
-                    )
-                  ) {
-                    return false;
-                  }
-                }
-                return true;
-              })
+              // .filter((gewertzSquareRoomType) => {
+              //   return true;
+              // if (
+              //   time + period - 1 >
+              //   gewertzSquareAvailableTimes[
+              //     gewertzSquareAvailableTimes.length - 1
+              //   ]
+              // ) {
+              //   return false;
+              // }
+              // let i = 0;
+              // while (i < gewertzSquareMaxContinue) {
+              //   const oldBookings = alls.filter(
+              //     (oldBooking) =>
+              //       oldBooking.period > i &&
+              //       oldBooking.day == day &&
+              //       oldBooking.month == month &&
+              //       oldBooking.year == year &&
+              //       oldBooking.time == time - i
+              //   );
+              //   if (
+              //     !isAvailableGewertzSquareRoom(
+              //       oldBookings,
+              //       gewertzSquareRoomType
+              //     )
+              //   ) {
+              //     return false;
+              //   }
+              //   if (time - ++i < gewertzSquareAvailableTimes[0]) {
+              //     break;
+              //   }
+              // }
+              // i = 0;
+              // while (i < period - 1) {
+              //   const oldBookings = alls.filter(
+              //     (oldBooking) =>
+              //       oldBooking.day == day &&
+              //       oldBooking.month == month &&
+              //       oldBooking.year == year &&
+              //       oldBooking.time == time + ++i
+              //   );
+              //   if (
+              //     !isAvailableGewertzSquareRoom(
+              //       oldBookings,
+              //       gewertzSquareRoomType
+              //     )
+              //   ) {
+              //     return false;
+              //   }
+              // }
+              // return true;
+              // })
               .map((gewertzSquareRoomType, i) => {
                 return (
                   <MenuItem
@@ -531,6 +531,48 @@ export default function GewertzSquarePageClient({
                   </tr>
                 );
               }
+            })}
+          </table>
+        </div>
+      ) : null}
+      {user && token && user.extraAuth.includes("gewertz square admin") ? (
+        <div>
+          <table>
+            <tr>
+              <th>วัน</th>
+              <th>เดือน</th>
+              <th>ปี</th>
+              <th>เวลา</th>
+              <th>จำนวนชั่วโมง</th>
+              <th>ห้อง</th>
+              <th>tel</th>
+              <th>delete</th>
+            </tr>
+            {alls.map((own, i) => {
+              return (
+                <tr key={i}>
+                  <td>{own.day}</td>
+                  <td>{monthArray[own.month]}</td>
+                  <td>{own.year}</td>
+                  <td>{own.time}</td>
+                  <td>{own.period}</td>
+                  <td>{own.room}</td>
+                  <td>{own.tel}</td>
+                  <td>
+                    <FinishButton
+                      text="delete"
+                      onClick={() => {
+                        deleteBookingGewertzSquareRoom(
+                          own._id,
+                          token,
+                          ownSocket,
+                          allSocket
+                        );
+                      }}
+                    />
+                  </td>
+                </tr>
+              );
             })}
           </table>
         </div>

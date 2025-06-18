@@ -367,6 +367,7 @@ export interface InterUser {
   peeAnswerPackIds: Id[];
   gewertzSquareBookingIds: Id[];
   departureAuths: Departure[];
+  extraAuth: ExtraAuths[];
   //private
 }
 export interface InterWorkingItem {
@@ -1571,6 +1572,7 @@ export interface BasicUser {
   likeToSleepAtCamp: boolean;
   gewertzSquareBookingIds: Id[];
   departureAuths: Departure[];
+  extraAuth: ExtraAuths[];
   //private
 }
 export interface BasicBaan {
@@ -2298,6 +2300,7 @@ export interface InterUniversityStaff {
   fridayActEn: boolean;
   departureAuths: Departure[];
   _id: Id;
+  extraAuth: ExtraAuths[];
   //private
 }
 export const userTypes = [
@@ -2353,6 +2356,7 @@ export interface CommonUser {
   departureAuths: Departure[];
   tel: string;
   email: string;
+  extraAuth: ExtraAuths[];
 }
 export interface GetGewertzSquareBooking {
   all: InterGewertzSquareBooking[];
@@ -2384,3 +2388,5 @@ export interface UpdateGewertzSquareAccount {
   tel: string;
   //private
 }
+export const extraAuths = ["gewertz square admin"] as const;
+export type ExtraAuths = (typeof extraAuths)[number];
