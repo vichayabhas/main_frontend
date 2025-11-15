@@ -1,4 +1,5 @@
-export type Id = string;
+import { Id } from "./configTypes";
+export type { Id };
 export interface InterActionPlan {
   action: string;
   partId: Id;
@@ -2101,18 +2102,17 @@ export interface OwnRegisterCampData {
 }
 export const boyZoneLadyZoneStates = [
   "ปิดสมบูรณ์",
-  "เพศตรงข้ามออกจากโซน",
   "ตรวจตรา",
   "พร้อมอาบน้ำ",
-  "เปิดสมบูรณ์",
+  "นอน",
   "ปิดแต่ยังเก็บของยังไม่หมด",
 ] as const;
 export type BoyZoneLadyZoneState = (typeof boyZoneLadyZoneStates)[number];
-export const boyZoneLadyZoneStateForNongs = boyZoneLadyZoneStates.filter(
-  (v) => v == "เปิดสมบูรณ์" || v == "ปิดสมบูรณ์" || v == "เพศตรงข้ามออกจากโซน"
-);
-export type BoyZoneLadyZoneStateForNong =
-  (typeof boyZoneLadyZoneStateForNongs)[number];
+// export const boyZoneLadyZoneStateForNongs = boyZoneLadyZoneStates.filter(
+//   (v) => v == "เปิดสมบูรณ์" || v == "ปิดสมบูรณ์" || v == "เพศตรงข้ามออกจากโซน"
+// );
+// export type BoyZoneLadyZoneStateForNong =
+//   (typeof boyZoneLadyZoneStateForNongs)[number];
 
 export interface TriggerCampMemberCard {
   meals: GetMeals[];

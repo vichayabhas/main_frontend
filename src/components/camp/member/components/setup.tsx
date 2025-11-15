@@ -16,12 +16,9 @@ export function getBoyZoneLadyZoneByMode(
     return input;
   }
   if (input == "ตรวจตรา") {
-    return "เพศตรงข้ามออกจากโซน";
+    return 'ปิดสมบูรณ์';
   }
   if (input == "ปิดแต่ยังเก็บของยังไม่หมด") {
-    return "ปิดสมบูรณ์";
-  }
-  if (input == "พร้อมอาบน้ำ") {
     return "ปิดสมบูรณ์";
   }
   return input;
