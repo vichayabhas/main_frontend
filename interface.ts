@@ -1,5 +1,4 @@
-import mongoose from "mongoose";
-export type Id = mongoose.Types.ObjectId;
+export type Id = string;
 export interface InterActionPlan {
   action: string;
   partId: Id;

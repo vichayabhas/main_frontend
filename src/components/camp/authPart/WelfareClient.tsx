@@ -42,7 +42,6 @@ export default function WelfareClient({
   token: string;
   selectOffset: InterTimeOffset;
 }) {
-  
   const welfareModes = [
     "ดูเฉพาะขนาดเสื้อ",
     "ดูทั้งหมด",
@@ -77,7 +76,8 @@ export default function WelfareClient({
   const realTimeCamp = new RealTimeCamp(camp._id, socket);
   const createMealSocket = new SocketReady<InterMeal[]>(
     socket,
-    "createMeal",camp._id
+    "createMeal",
+    camp._id
   );
   React.useEffect(() => {
     createMealSocket.listen(setMeals);

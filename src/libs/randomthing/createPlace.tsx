@@ -1,10 +1,10 @@
 import { getBackendUrl } from "@/components/utility/setup";
-import mongoose from "mongoose";
+import { Id } from "../../../interface";
 
 export default async function createPlace(
   floor: string,
   room: string,
-  buildingId: mongoose.Types.ObjectId,
+  buildingId: Id,
   token: string
 ) {
   const res = await fetch(`${getBackendUrl()}/randomthing/createPlace`, {

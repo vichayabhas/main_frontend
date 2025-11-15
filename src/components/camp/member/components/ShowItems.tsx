@@ -128,7 +128,7 @@ export default function ShowItems({
                   <TextField
                     onChange={setTextToInt(setCount)}
                     value={count.toString()}
-                    type='number'
+                    type="number"
                   />
                 </td>
                 <td>
@@ -171,9 +171,9 @@ export default function ShowItems({
                             count,
                             itemId: item._id,
                             placeId: place._id,
-                            fromId: !from.baanId
+                            fromId: from.baanId==undefined
                               ? from.partId
-                              : !from.partId
+                              : from.partId==undefined
                               ? from.baanId
                               : types == "baan"
                               ? from.baanId

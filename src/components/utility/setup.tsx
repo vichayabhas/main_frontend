@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import {
   InterSize,
   InterActionPlan,
@@ -323,7 +322,7 @@ export function getDifferentMinute(start: Date, end: Date) {
   return dayjs(end).diff(start, "minute");
 }
 export function stringToId(input: string) {
-  return new mongoose.Types.ObjectId(input);
+  return input;
 }
 export function removeElementInUseStateArray<T>(input: T[]) {
   return input.filter((e, i, a) => i < a.length - 1);
@@ -628,7 +627,7 @@ export class SocketReady<T> {
   public trigger(data: T) {
     this.socket.emit(`${this.eventName}Send`, data, this.room);
   }
-  public triggerToOther(data: T,room:Id|string) {
+  public triggerToOther(data: T, room: Id | string) {
     this.socket.emit(`${this.eventName}Send`, data, room.toString());
   }
   public disconnect() {
@@ -641,4 +640,47 @@ export function notify(message: string) {
       new Notification(message);
     }
   });
+}
+type RequireAtLeastOneAllowMultiple<T, K extends keyof T = keyof T> =
+  Partial<T> & Pick<T, K>;
+// export function getIdFromObject<T extends Id>(
+//   mode: T,
+//   from: RequireAtLeastOneAllowMultiple<{ [K in `${T}Id`]?: Id }>
+// ):Id {
+//   const primaryKey = `${mode}Id` as `${T}Id`;
+
+//   if (from[primaryKey]) return from[primaryKey]!;
+
+//   const allKeys = Object.keys(from) as Array<`${T}Id`>;
+//   for (const key of allKeys) {
+//     const value = from[key];
+//     if (value) return value;
+//   }
+
+// }
+
+
+type T='baan'|'part'
+export function getIdFromObject(
+  mode: T,
+  from: RequireAtLeastOneAllowMultiple<{ 'partId': Id,'baanId':Id }>
+):Id {
+
+
+
+  switch(mode){
+    case 'baan':
+      if(from.baanId){
+        return from.baanId
+      }else{
+        return from.partId
+      }
+    case 'part':
+      if(from.partId){
+        return from.partId
+      }else{
+        return from.baanId
+      }
+  }
+
 }

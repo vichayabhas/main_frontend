@@ -38,10 +38,6 @@ export default function SongClient({ data }: { data: GetMenuSongs }) {
   const [songs, setSongs] = React.useState(data.songs);
   const { data: session } = useSession();
   const auth = data.authBaans.length + data.authCamps.length > 0;
-  if (!auth) {
-    setMode("addLikeSong");
-    setSongIds(data.likeSongIds);
-  }
   const realTimeNewSong = new RealTimeNewSong(socket);
   React.useEffect(() => {
     realTimeNewSong.listen(({ _id, name, time, link, author }) => {

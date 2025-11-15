@@ -1,7 +1,32 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ['drive.google.com', "media.discordapp.net", 'drive.usercontent.google.com']
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'drive.usercontent.google.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'media.discordapp.net',
+            },
+            {
+                protocol: 'https',
+                hostname: 'i.imgur.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'raw.githubusercontent.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'cdn.discordapp.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'dl.dropboxusercontent.com',
+            },
+        ],
     },
     async headers() {
         return [
