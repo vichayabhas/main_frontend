@@ -585,16 +585,15 @@ export class AddRemoveHigh {
   public set(addId: Id, removeId: Id | null) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
       setBoolean((input) => {
-        const timeRegisterId = removeId;
-        if (!timeRegisterId) {
+        if (!removeId) {
           setSwop(addId, this.setAddIds)(event);
         } else {
           if (input) {
             this.setRemoveIds((previous: Id[]) =>
-              previous.filter((e) => e.toString() != timeRegisterId.toString())
+              previous.filter((e) => e.toString() != removeId.toString())
             );
           } else {
-            this.setRemoveIds(addItemInUseStateArray(timeRegisterId));
+            this.setRemoveIds(addItemInUseStateArray(removeId));
           }
         }
       })(event);
@@ -640,4 +639,16 @@ export function notify(message: string) {
       new Notification(message);
     }
   });
+}
+  if(names.length==1){
+    return names[0]
+  }
+  let out = "";
+  let i=0
+  while(i<names.length-2){
+    out+=names[i]+", "
+    i++
+  }
+  out+=names[i]+" และ "+names[i+1]
+  return out
 }

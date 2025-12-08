@@ -99,23 +99,27 @@ export class RealTimeOrder {
     socket: Socket,
     types: "camp" | "campMemberCard" | "baan" | "part"
   ) {
-    this.socket = new SocketReady(socket, `${types}UpdateOrder`,roomId);
+    this.socket = new SocketReady(socket, `${types}UpdateOrder`, roomId);
   }
   public listen(set: (event: ShowOrder[]) => void) {
-    this.socket.listen( set);
+    this.socket.listen(set);
   }
   public disconnect() {
     this.socket.disconnect();
   }
 }
 export function triggerItem(input: InterItem[], campId: Id, socket: Socket) {
-  const socketReady = new SocketReady<InterItem[]>(socket, "updateItem",campId);
-  socketReady.trigger(input, );
+  const socketReady = new SocketReady<InterItem[]>(
+    socket,
+    "updateItem",
+    campId
+  );
+  socketReady.trigger(input);
 }
 export class RealTimeItem {
   private socket: SocketReady<InterItem[]>;
   constructor(campId: Id, socket: Socket) {
-    this.socket = new SocketReady(socket, "updateItem",campId);
+    this.socket = new SocketReady(socket, "updateItem", campId);
   }
   public listen(set: (event: InterItem[]) => void) {
     this.socket.listen(set);

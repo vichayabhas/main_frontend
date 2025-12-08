@@ -1,5 +1,5 @@
 import React from "react";
-import { Mode, RoleCamp } from "../../../interface";
+import { Mode, Role, RoleCamp } from "../../../interface";
 import BackToHome from "./BackToHome";
 import PasswordLock from "./PasswordLock";
 
@@ -11,6 +11,7 @@ export default function AllInOneLock({
   lock,
   mode,
   pushToHome,
+  spacialBypass,
 }: {
   children: React.ReactNode;
   token?: string;
@@ -19,6 +20,10 @@ export default function AllInOneLock({
   lock?: boolean;
   mode?: Mode;
   pushToHome?: boolean;
+  spacialBypass?: {
+    role: Role;
+    bypass: boolean;
+  };
 }) {
   if (bypass) {
     return children;
@@ -97,6 +102,14 @@ export default function AllInOneLock({
     if (role) {
       switch (role) {
         case "nong": {
+          if (
+            mode == "pee" &&
+            spacialBypass &&
+            spacialBypass.bypass &&
+            spacialBypass.role != "nong"
+          ) {
+            return children;
+          }
           if (pushToHome) {
             return <BackToHome />;
           } else {
@@ -150,6 +163,76 @@ export default function AllInOneLock({
             return children;
         }
       } else return children;
+    }
+  }
+}
+export function checkValid({
+  role,
+  bypass,
+  lock,
+  mode,
+  spacialBypass,
+}: {
+  role?: RoleCamp;
+  bypass?: boolean;
+  lock?: boolean;
+  mode?: Mode;
+  spacialBypass?: {
+    role: Role;
+    bypass: boolean;
+  };
+}) {
+  if (bypass) {
+    return true;
+  }
+  if (lock) {
+    return false;
+  }
+  if (role) {
+    switch (role) {
+      case "nong": {
+        return (
+          mode == "pee" &&
+          spacialBypass &&
+          spacialBypass.bypass &&
+          spacialBypass.role != "nong"
+        );
+      }
+      case "pee": {
+        if (mode) {
+          switch (mode) {
+            case "nong":
+              return false;
+            case "pee":
+              return true;
+          }
+        } else {
+          return true;
+        }
+      }
+      case "peto": {
+        if (mode) {
+          switch (mode) {
+            case "nong":
+              return false;
+            case "pee":
+              return true;
+          }
+        } else {
+          return true;
+        }
+      }
+    }
+  } else {
+    if (mode) {
+      switch (mode) {
+        case "nong":
+          return false;
+        case "pee":
+          return true;
+      }
+    } else {
+      return true;
     }
   }
 }

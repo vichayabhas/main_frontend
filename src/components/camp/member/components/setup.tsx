@@ -16,7 +16,7 @@ export function getBoyZoneLadyZoneByMode(
     return input;
   }
   if (input == "ตรวจตรา") {
-    return 'ปิดสมบูรณ์';
+    return "ปิดสมบูรณ์";
   }
   if (input == "ปิดแต่ยังเก็บของยังไม่หมด") {
     return "ปิดสมบูรณ์";
