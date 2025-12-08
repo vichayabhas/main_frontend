@@ -640,6 +640,7 @@ export function notify(message: string) {
     }
   });
 }
+export function getLastAnd(names:string[]){
   if(names.length==1){
     return names[0]
   }
