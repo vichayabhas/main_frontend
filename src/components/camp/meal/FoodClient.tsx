@@ -217,9 +217,9 @@ export default function FoodClient({
                     <td>{peto.user.name}</td>
                     <td>{peto.user.lastname}</td>
                     <td>ปีโต</td>
-                    <td>{peto.heathIssue.food}</td>
-                    <td>{peto.heathIssue.foodConcern}</td>
-                    <td>{peto.heathIssue.spicy ? "ไม่ได้" : "ได้"}</td>
+                    <td>{peto.healthIssue.food}</td>
+                    <td>{peto.healthIssue.foodConcern}</td>
+                    <td>{peto.healthIssue.spicy ? "ไม่ได้" : "ได้"}</td>
                     <td>
                       <Checkbox
                         onChange={setSwop(
@@ -240,9 +240,9 @@ export default function FoodClient({
                 <td>{pee.user.name}</td>
                 <td>{pee.user.lastname}</td>
                 <td>พี่{camp.groupName}</td>
-                <td>{pee.heathIssue.food}</td>
-                <td>{pee.heathIssue.foodConcern}</td>
-                <td>{pee.heathIssue.spicy ? "ไม่ได้" : "ได้"}</td>
+                <td>{pee.healthIssue.food}</td>
+                <td>{pee.healthIssue.foodConcern}</td>
+                <td>{pee.healthIssue.spicy ? "ไม่ได้" : "ได้"}</td>
                 <td>
                   <Checkbox
                     onChange={setSwop(
@@ -263,9 +263,9 @@ export default function FoodClient({
               <td>{nong.user.name}</td>
               <td>{nong.user.lastname}</td>
               <td>{camp.nongCall}</td>
-              <td>{nong.heathIssue.food}</td>
-              <td>{nong.heathIssue.foodConcern}</td>
-              <td>{nong.heathIssue.spicy ? "ไม่ได้" : "ได้"}</td>
+              <td>{nong.healthIssue.food}</td>
+              <td>{nong.healthIssue.foodConcern}</td>
+              <td>{nong.healthIssue.spicy ? "ไม่ได้" : "ได้"}</td>
               <td>
                 <Checkbox
                   onChange={setSwop(

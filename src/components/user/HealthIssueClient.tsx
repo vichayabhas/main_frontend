@@ -1,30 +1,30 @@
 "use client";
 
-import updateHeath from "@/libs/user/updateHeath";
+import updateHealth from "@/libs/user/updateHealth";
 import { TextField, Select, MenuItem, Checkbox } from "@mui/material";
 import React from "react";
-import { HeathIssueBody, FoodLimit, foodLimits } from "../../../interface";
+import { HealthIssueBody, FoodLimit, foodLimits } from "../../../interface";
 import FinishButton from "../utility/FinishButton";
 import { setTextToString, setBoolean } from "../utility/setup";
 
-export default function HeathIssueClient({
-  heathIssue,
+export default function HealthIssueClient({
+  healthIssue,
   token,
 }: {
-  heathIssue: HeathIssueBody;
+  healthIssue: HealthIssueBody;
   token: string;
 }) {
-  const [food, set1] = React.useState<string>(heathIssue.food);
-  const [medicine, set2] = React.useState<string>(heathIssue.medicine);
+  const [food, set1] = React.useState<string>(healthIssue.food);
+  const [medicine, set2] = React.useState<string>(healthIssue.medicine);
   const [chronicDisease, set3] = React.useState<string>(
-    heathIssue.chronicDisease
+    healthIssue.chronicDisease
   );
-  const [spicy, set4] = React.useState<boolean>(heathIssue.spicy);
-  const [extra, set5] = React.useState<string>(heathIssue.extra);
-  const [isWearing, set6] = React.useState<boolean>(heathIssue.isWearing);
+  const [spicy, set4] = React.useState<boolean>(healthIssue.spicy);
+  const [extra, set5] = React.useState<string>(healthIssue.extra);
+  const [isWearing, set6] = React.useState<boolean>(healthIssue.isWearing);
   const [mode, setMode] = React.useState<boolean>(false);
-  const [foodConcern, set7] = React.useState<string>(heathIssue.foodConcern);
-  const [foodLimit, set8] = React.useState<FoodLimit>(heathIssue.foodLimit);
+  const [foodConcern, set7] = React.useState<string>(healthIssue.foodConcern);
+  const [foodLimit, set8] = React.useState<FoodLimit>(healthIssue.foodLimit);
   return (
     <div className="w-[100%] flex flex-col items-center pt-20 space-y-10">
       <div
@@ -252,7 +252,7 @@ export default function HeathIssueClient({
         <FinishButton
           text="update"
           onClick={() => {
-            updateHeath(
+            updateHealth(
               {
                 food,
                 chronicDisease,

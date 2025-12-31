@@ -3,56 +3,29 @@ import TopMenuItem from "./TopMenuItem";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import getUserProfile from "@/libs/user/getUserProfile";
-import DateConvert from "../utility/DateConvert";
 import getTimeOffset from "@/libs/user/getTimeOffset";
-import dayjs from "dayjs";
 import getSystemInfo from "@/libs/randomthing/getSystemInfo";
 import Logo from "../utility/Logo";
 import React from "react";
+import NotificationClient from "./NotificationClient";
+import getNotification from "@/libs/randomthing/getNotification";
+import GetTimeHtml from "../utility/GetTimeHtml";
+import { zeroTimeOffset } from "../utility/setup";
 export default async function TopMenu() {
-  const monthArray = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
   const session = await getServerSession(authOptions);
   const { systemMode, endEmail } = await getSystemInfo();
   if (session) {
     const user = await getUserProfile(session.user.token);
     const timeOffset = await getTimeOffset(user.displayOffsetId);
-    const dateObj = dayjs(Date.now())
-      .add(-timeOffset.day, "days")
-      .add(-timeOffset.hour, "hours")
-      .add(-timeOffset.minute, "minutes")
-      .toDate();
-    const day = String(dateObj.getDate()).padStart(2, "0");
-    const month = monthArray[dateObj.getMonth()];
-    const year = dateObj.getFullYear();
-    const hours = String(dateObj.getHours()).padStart(2, "0");
-    const minutes = String(dateObj.getMinutes()).padStart(2, "0");
+    const notificationData = await getNotification(session.user.token);
     if (user.mode == "nong") {
       if (user.role == "nong") {
         return (
           //น้องจริง
           <div className={styles.menuContainer}>
             <Logo />
-            <DateConvert
-              day={day}
-              minutes={minutes}
-              month={month}
-              year={year}
-              hours={hours}
-            />
+            <GetTimeHtml input={Date.now()} offset={timeOffset} />
+            <NotificationClient datas={notificationData} />
             <div>{systemMode}</div>
             <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
               <TopMenuItem title="weather" pageRef="/weather" />
@@ -77,13 +50,8 @@ export default async function TopMenu() {
         return (
           <div className={styles.menuContainer}>
             <Logo />
-            <DateConvert
-              day={day}
-              minutes={minutes}
-              month={month}
-              year={year}
-              hours={hours}
-            />
+            <GetTimeHtml offset={timeOffset} input={Date.now()} />
+            <NotificationClient datas={notificationData} />
             <div>{systemMode}</div>
             <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
               <TopMenuItem title="weather" pageRef="/weather" />
@@ -107,13 +75,8 @@ export default async function TopMenu() {
         return (
           <div className={styles.menuContainer}>
             <Logo />
-            <DateConvert
-              day={day}
-              minutes={minutes}
-              month={month}
-              year={year}
-              hours={hours}
-            />
+            <GetTimeHtml offset={timeOffset} input={Date.now()} />
+            <NotificationClient datas={notificationData} />
             <div>{systemMode}</div>
             <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
               <TopMenuItem title="weather" pageRef="/weather" />
@@ -136,13 +99,8 @@ export default async function TopMenu() {
           // พี่ mode พี่
           <div className={styles.menuContainer}>
             <Logo />
-            <DateConvert
-              day={day}
-              minutes={minutes}
-              month={month}
-              year={year}
-              hours={hours}
-            />
+            <GetTimeHtml offset={timeOffset} input={Date.now()} />
+            <NotificationClient datas={notificationData} />
             <div>{systemMode}</div>
             <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
               <TopMenuItem title="weather" pageRef="/weather" />
@@ -162,23 +120,13 @@ export default async function TopMenu() {
       }
     }
   } else {
-    const dateObj = new Date(Date.now());
-    const day = String(dateObj.getDate()).padStart(2, "0");
-    const month = monthArray[dateObj.getMonth()];
-    const year = dateObj.getFullYear();
-    const hours = String(dateObj.getHours()).padStart(2, "0");
-    const minutes = String(dateObj.getMinutes()).padStart(2, "0");
+    const notificationData = await getNotification();
     return (
       // not login
       <div className={styles.menuContainer}>
         <Logo />
-        <DateConvert
-          day={day}
-          minutes={minutes}
-          month={month}
-          year={year}
-          hours={hours}
-        />
+        <GetTimeHtml offset={zeroTimeOffset} input={Date.now()} />
+        <NotificationClient datas={notificationData} />
         <div>{systemMode}</div>
         <div className="flex flex-row absolute right-10 top-0 h-full py-2 text-center">
           <TopMenuItem title="weather" pageRef="/weather" />

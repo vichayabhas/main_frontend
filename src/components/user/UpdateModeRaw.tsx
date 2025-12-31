@@ -1,11 +1,11 @@
 "use client";
 import { Session } from "next-auth";
-import { BasicCamp, Id, InterUser } from "../../../interface";
+import { BasicCamp, BasicUser, Id } from "../../../interface";
 import React from "react";
 import { useRouter } from "next/navigation";
 import peeUpdateMode from "@/libs/user/peeUpdateMode";
 import { Checkbox, Input, TextField } from "@mui/material";
-import { setSwop } from "../utility/setup";
+import { setBoolean, setSwop } from "../utility/setup";
 import FinishButton from "../utility/FinishButton";
 
 export default function UpdateModeRaw({
@@ -14,7 +14,7 @@ export default function UpdateModeRaw({
   camps,
 }: {
   session: Session | null;
-  user: InterUser | null;
+  user: BasicUser | null;
   camps: BasicCamp[];
 }) {
   const router = useRouter();
@@ -26,6 +26,9 @@ export default function UpdateModeRaw({
   const [linkHash, setLinkHash] = React.useState<string>(user.linkHash);
   const [mode, setMode] = React.useState<"pee" | "nong" | null>(null);
   const [filterIds, setFilterIds] = React.useState<Id[]>(user.filterIds);
+  const [notifyOnlyYourPart, setNotifyOnlyYourPart] = React.useState(
+    user.notifyOnlyYourPart
+  );
   //alert(filterIds.length)
 
   return (
@@ -88,12 +91,24 @@ export default function UpdateModeRaw({
           />
           <label className="w-2/5 text-2xl text-white">น้อง</label>
         </div>
+        <div className="flex flex-row items-center my-5">
+          <label className="w-2/5 text-2xl text-white">
+            แจ้งเตือนเฉพาะฝ่ายที่อยู่
+          </label>
+          <Checkbox
+            checked={notifyOnlyYourPart}
+            onChange={setBoolean(setNotifyOnlyYourPart)}
+          />
+        </div>
         <div className="flex flex-row justify-end">
           <FinishButton
             text="update mode"
             onClick={() => {
               if (mode) {
-                peeUpdateMode(session.user.token, mode, filterIds, linkHash);
+                peeUpdateMode(
+                  { mode, linkHash, filterIds, notifyOnlyYourPart },
+                  session.user.token
+                );
               }
             }}
           />

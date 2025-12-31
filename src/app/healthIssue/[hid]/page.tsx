@@ -1,5 +1,5 @@
 import { stringToId } from "@/components/utility/setup";
-import getHeathIssue from "@/libs/user/getHeathIssue";
+import getHeathIssue from "@/libs/user/getHealthIssue";
 import getUser from "@/libs/user/getUser";
 import React from "react";
 export default async function HealthIssuePage({

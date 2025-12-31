@@ -55,11 +55,11 @@ function isAvailableGewertzSquareRoom(
   if (oldRooms.includes(room)) {
     return false;
   }
-  if (room == "Demo form" || room == "E-III") {
+  if (room == 'Demo floor' || room == "E-III") {
     return true;
   }
   const oldRooms2 = oldRooms.filter(
-    (oldRoom) => oldRoom != "Demo form" && oldRoom != "E-III"
+    (oldRoom) => oldRoom != 'Demo floor' && oldRoom != "E-III"
   );
   if (oldRooms2.length == 0) {
     return true;

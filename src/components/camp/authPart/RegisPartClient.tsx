@@ -10,7 +10,6 @@ import {
   downloadText,
   getBackendUrl,
   SocketReady,
-  notify,
 } from "@/components/utility/setup";
 import StringToHtml from "@/components/utility/StringToHtml";
 import Waiting from "@/components/utility/Waiting";
@@ -27,6 +26,7 @@ import {
   MyMap,
   RegisPart,
   ShowMember,
+  TriggerNotification,
 } from "../../../../interface";
 import { io } from "socket.io-client";
 import { RealTimeCamp } from "./UpdateCampClient";
@@ -157,6 +157,22 @@ export default function RegisterPartClient({
       setNongSureIds(filterOut(data2.nongRegister.sures));
       const ids = data2.peeRegisters.map((e) => e.userId);
       setPeePassIds((previous) => previous.filter((o) => ids.includes(o)));
+      data2.regisBaans.forEach((baan) => {
+        if (baan.baan.nongIds.length > 0 && baan.baan.peeIds.length == 0) {
+          SocketReady.trigger<TriggerNotification>(
+            {
+              countDown: 600,
+              message: `${camp.groupName}${baan.baan.name} มี${camp.nongCall} โดยไม่มีพี่${camp.groupName} จากค่าย${camp.campName}`,
+              types: "เตือนมีน้องอยู่โดยไม่มีพี่",
+            },
+            "updateNotification",
+            baan.baan._id.toString(),
+            socket
+          );
+        } else {
+          return -1;
+        }
+      });
       setCountDowns((counts) =>
         data2.regisBaans.map((baan, i) => {
           if (baan.baan.nongIds.length > 0 && baan.baan.peeIds.length == 0) {
@@ -174,13 +190,10 @@ export default function RegisterPartClient({
     realTimeCamp.listen(setCamp);
     const interval = setInterval(() => {
       setCountDowns((counts) =>
-        counts.map((count, i) => {
+        counts.map((count) => {
           if (count > 0) {
             return count - 1;
           } else if (count == 0) {
-            notify(
-              `มีน้องโดยไม่มีพี่อยู่ใน${camp.groupName}${regisBaans[i].baan.name}`
-            );
             return limit;
           } else {
             return -1;
@@ -194,6 +207,24 @@ export default function RegisterPartClient({
       clearInterval(interval);
     };
   });
+  function updateNotification(newData: RegisterData) {
+    newData.regisBaans.forEach((baan) => {
+      if (baan.baan.nongIds.length > 0 && baan.baan.peeIds.length == 0) {
+        SocketReady.trigger<TriggerNotification>(
+          {
+            countDown: 600,
+            message: `${camp.groupName}${baan.baan.name} มี${camp.nongCall} โดยไม่มีพี่${camp.groupName} จากค่าย${camp.campName}`,
+            types: "เตือนมีน้องอยู่โดยไม่มีพี่",
+          },
+          "updateNotification",
+          baan.baan._id.toString(),
+          socket
+        );
+      } else {
+        return -1;
+      }
+    });
+  }
   return (
     <div
       style={{
@@ -743,7 +774,12 @@ export default function RegisterPartClient({
               token,
               "add"
             );
-            await changeBaan({ userIds: members, baanId }, token, updateSocket);
+            const newData = await changeBaan(
+              { userIds: members, baanId },
+              token,
+              updateSocket
+            );
+            updateNotification(newData)
             setNongSureIds([]);
             setPeePassIds([]);
             setMembers([]);

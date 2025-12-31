@@ -5,14 +5,19 @@ import { TextField } from "@mui/material";
 import FinishButton from "./FinishButton";
 import checkPassword from "@/libs/user/checkPassword";
 import { setTextToString } from "./setup";
+import { LockLinkType } from "./AllInOneLock";
 export default function PasswordLock({
   children,
   token,
   bypass,
+  link,
 }: {
   children: React.ReactNode;
   token: string;
   bypass: boolean;
+  link?:
+    | [LockLinkType, React.Dispatch<React.SetStateAction<LockLinkType>>]
+    | undefined;
 }) {
   const [typePassword, setPassword] = React.useState<string>("");
   const [mode, setMode] = React.useState<boolean>(bypass);
@@ -56,7 +61,12 @@ export default function PasswordLock({
             <FinishButton
               text="submit"
               onClick={() => {
-                checkPassword(typePassword, token, setMode);
+                checkPassword(typePassword, token, (res) => {
+                  setMode(res);
+                  if (link && res && link[0] == "wait for password") {
+                    link[1]("pass");
+                  }
+                });
               }}
             />
           </div>

@@ -20,6 +20,8 @@ import ShowOrders from "./components/ShowOrders";
 import ActionPlanAndTrackingSheetTap from "./components/ActionPlanAndTrackingSheetTap";
 import ChatAndQuestionTap from "./components/ChatAndQuestionTap";
 import PlaceTable from "./components/PlaceTable";
+import { getFillTimeRegisterId, RealTimeBaanJob } from "./components/setup";
+import BaanJob from "./components/BaanJob";
 
 export default function NongCampClient({
   data,
@@ -50,6 +52,7 @@ export default function NongCampClient({
   const [girl, setGirl] = React.useState(data.girl);
   const [normal, setNormal] = React.useState(data.normal);
   const [camp, setCamp] = React.useState(data.camp);
+  const [baanJobs, setBaanJobs] = React.useState(data.baanJobs);
   const socket = io(getBackendUrl());
   const realTimeFoodUpdate = new RealTimeFoodUpdate(campMemberCard._id, socket);
   const realTimeBaan = new RealTimeBaan(
@@ -62,14 +65,19 @@ export default function NongCampClient({
     allPlaceData
   );
   const realTimeCamp = new RealTimeCamp(camp._id, socket);
+  const realTimeBaanJob = new RealTimeBaanJob(baan._id, socket);
   React.useEffect(() => {
     realTimeFoodUpdate.listen(setMeals);
     realTimeBaan.listen();
     realTimeCamp.listen(setCamp);
+    realTimeBaanJob.listen((data) =>
+      setBaanJobs(getFillTimeRegisterId(data, campMemberCard._id))
+    );
     return () => {
       realTimeFoodUpdate.disconnect();
       realTimeBaan.disconnect();
       realTimeCamp.disconnect();
+      realTimeBaanJob.disconnect();
     };
   });
   const [showAllGroups, setShowAllGroups] = React.useState(false);
@@ -109,6 +117,18 @@ export default function NongCampClient({
         pees={pees}
         nongs={nongs}
         camp={camp}
+        user={user}
+        healthIssue={healthIssue}
+        token={token}
+      />
+      <BaanJob
+        token={token}
+        role="nong"
+        baanJobs={baanJobs}
+        baan={baan}
+        camp={camp}
+        campMemberCard={campMemberCard}
+        user={user}
       />
       <div>
         แสดงกลุ่มทั้งหมดหรือไม่

@@ -1,23 +1,14 @@
 "use client";
 
 import React from "react";
-import { useDownloadExcel } from "react-export-table-to-excel";
-import {
-  AddRemoveHigh,
-  downloadText,
-  getBackendUrl,
-  setBoolean,
-} from "../../utility/setup";
+import { getBackendUrl, setBoolean } from "../../utility/setup";
 import TopMenuItem from "../../randomthing/TopMenuItem";
 import styles from "../../randomthing/topMenu.module.css";
 import ImageAndDescriptions from "./components/ImageAndDescriptions";
-import UserNameTable from "../../utility/UserNameTable";
 import { Checkbox } from "@mui/material";
 import PartJob from "./components/PartJob";
-import registerJob from "@/libs/camp/registerJob";
 import AllInOneLock from "@/components/utility/AllInOneLock";
-import FinishButton from "@/components/utility/FinishButton";
-import { GetPeeData, AllPlaceData, Id } from "../../../../interface";
+import { GetPeeData, AllPlaceData } from "../../../../interface";
 import ImagesFromUrl from "@/components/utility/ImagesFromUrl";
 import ShowOwnCampData from "./components/ShowOwnCampData";
 import MirrorClient from "./components/MirrorClient";
@@ -36,6 +27,7 @@ import ActionPlanAndTrackingSheetTap from "./components/ActionPlanAndTrackingShe
 import ChatAndQuestionTap from "./components/ChatAndQuestionTap";
 import PartAndQuestionTap from "./components/PartAndQuestionTap";
 import PlaceTable from "./components/PlaceTable";
+import BaanJob from "./components/BaanJob";
 
 export default function PeeCampClient({
   data,
@@ -105,22 +97,6 @@ export default function PeeCampClient({
       realTimeBaanJob.disconnect();
     };
   });
-  const baanRef = React.useRef(null);
-  const baanDownload = useDownloadExcel({
-    currentTableRef: baanRef.current,
-    filename: `หน้าที่ของ${camp.groupName}${baan.name}`,
-  });
-  const [removeTimeRegisterIds, setRemoveTimeRegisterIds] = React.useState<
-    Id[]
-  >([]);
-  const [addJobIds, setAddJobIds] = React.useState<Id[]>([]);
-
-  const manageJobId = new AddRemoveHigh(
-    addJobIds,
-    setAddJobIds,
-    removeTimeRegisterIds,
-    setRemoveTimeRegisterIds
-  );
   const [showAllGroups, setShowAllGroups] = React.useState(false);
 
   return (
@@ -186,10 +162,13 @@ export default function PeeCampClient({
       </div>
       <BaanMembers
         baan={baan}
-        campRole={user.mode}
+        campRole={"pee"}
         pees={peeBaans}
         nongs={nongBaans}
         camp={camp}
+        user={user}
+        token={token}
+        healthIssue={healthIssue}
       />
       <PartClient
         pees={peeParts}
@@ -207,83 +186,15 @@ export default function PeeCampClient({
         gender={user.gender}
         baanId={baan._id}
       />
-      <AllInOneLock mode={user.mode}>
-        <div
-          className="w-[100%] items-center p-10 rounded-3xl "
-          style={{
-            backgroundColor: "#961A1D",
-            width: "70%",
-            marginTop: "20px",
-          }}
-        >
-          <table ref={baanRef}>
-            <tr>
-              <th>ชื่องาน</th>
-              <th>จำนวนผู้ชาย</th>
-              <th>จำนวนผู้หญิง</th>
-              <th>จำนวนรวม</th>
-              <th>รูปแบบการรับ</th>
-              <th>select</th>
-              <th>ผู้ชายที่ผ่าน</th>
-              <th>ผู้หญิงที่ผ่าน</th>
-              <th>ผู้ชายไม่ที่ผ่าน</th>
-              <th>ผู้หญิงไม่ที่ผ่าน</th>
-            </tr>
-            {baanJobs.map((baanJob, i) => {
-              return (
-                <tr key={i}>
-                  <td>{baanJob.name}</td>
-                  <td>{baanJob.male}</td>
-                  <td>{baanJob.female}</td>
-                  <td>{baanJob.sum}</td>
-                  <td>{baanJob.reqType}</td>
-                  <td>
-                    <Checkbox
-                      onChange={manageJobId.set(
-                        baanJob._id,
-                        baanJob.timeRegisterId
-                      )}
-                      checked={manageJobId.get(
-                        baanJob._id,
-                        baanJob.timeRegisterId
-                      )}
-                    />
-                  </td>
-                  <td>
-                    <UserNameTable inputs={baanJob.passMales} />
-                  </td>
-                  <td>
-                    <UserNameTable inputs={baanJob.passFemales} />
-                  </td>
-                  <td>
-                    <UserNameTable inputs={baanJob.failMales} />
-                  </td>
-                  <td>
-                    <UserNameTable inputs={baanJob.failFemales} />
-                  </td>
-                </tr>
-              );
-            })}
-          </table>
-          <FinishButton text={downloadText} onClick={baanDownload.onDownload} />
-          <FinishButton
-            text="register"
-            onClick={() =>
-              registerJob(
-                {
-                  addJobIds,
-                  removeTimeRegisterIds,
-                  campMemberCardId: campMemberCard._id,
-                  types: "baan",
-                  fromId: baan._id,
-                },
-                token,
-                socket
-              )
-            }
-          />
-        </div>
-      </AllInOneLock>
+      <BaanJob
+        token={token}
+        role="pee"
+        baanJobs={baanJobs}
+        baan={baan}
+        camp={camp}
+        campMemberCard={campMemberCard}
+        user={user}
+      />
       <div>
         แสดงกลุ่มทั้งหมดหรือไม่
         <Checkbox

@@ -8,14 +8,9 @@ import getAllAnswerAndQuestion from "@/libs/camp/getAllAnswerAndQuestion";
 import getAllPlanData from "@/libs/camp/getAllPlanData";
 import getAllQuestion from "@/libs/camp/getAllQuestion";
 import getAllWelfare from "@/libs/camp/getAllWelfare";
-import getCamp from "@/libs/camp/getCamp";
-import getPart from "@/libs/camp/getPart";
 import getPeeCamp from "@/libs/camp/getPeeCamp";
 import getRegisterData from "@/libs/camp/getRegisterData";
 import getAuthSongs from "@/libs/randomthing/getAuthSongs";
-import getCampMemberCardByCampId from "@/libs/user/getCampMemberCardByCampId";
-import getTimeOffset from "@/libs/user/getTimeOffset";
-import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";
 import React from "react";
 import UpdateImageAndDescription from "@/components/camp/authPart/UpdateImageAndDescription";
@@ -32,6 +27,9 @@ import SubGroupAdminClient from "@/components/camp/authPart/SubGroupAdminClient"
 import getCampForUpdate from "@/libs/admin/getCampForUpdate";
 import getOrderForAdmin from "@/libs/camp/getOrderForAdmin";
 import ManageItem from "@/components/camp/authPart/ManageItem";
+import getAuthPartForPage from "@/libs/camp/getAuthPartForPage";
+import getOverrideHealthIssue from "@/libs/camp/getOverrideHealthIssue";
+import UpdateOverrideHealthIssueClient from "@/components/camp/authPart/UpdateOverrideHealthIssueClient";
 export default async function Baan({ params }: { params: { pid: string } }) {
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -39,12 +37,15 @@ export default async function Baan({ params }: { params: { pid: string } }) {
   }
   const token = session.user.token;
   const partId = stringToId(params.pid);
-  const user = await getUserProfile(session.user.token);
-  const part = await getPart(partId, token);
-  const camp = await getCamp(part.campId);
-  const selectOffset = await getTimeOffset(user.selectOffsetId);
-  const displayOffset = await getTimeOffset(user.displayOffsetId);
-  const campMemberCard = await getCampMemberCardByCampId(part.campId, token);
+  const {
+    user,
+    part,
+    camp,
+    campMemberCard,
+    healthIssue,
+    selectOffset,
+    displayOffset,
+  } = await getAuthPartForPage(partId, token);
   if (!camp.boardIds.includes(user._id) && part.auths.length == 0) {
     return <BackToHome />;
   }
@@ -82,13 +83,26 @@ export default async function Baan({ params }: { params: { pid: string } }) {
       }
       case "pee": {
         const peeCamp = await getPeeCamp(campMemberCard.campModelId, token);
-        outputs.push(<UpdateBaanServer baanId={peeCamp.baanId} />);
+        outputs.push(
+          <UpdateBaanServer
+            baanId={peeCamp.baanId}
+            user={user}
+            token={token}
+            healthIssue={healthIssue}
+          />
+        );
         break;
       }
       case "peto": {
         outputs.push(
           camp.baanIds.map((baanId, i) => (
-            <UpdateBaanServer key={i} baanId={baanId} />
+            <UpdateBaanServer
+              key={i}
+              baanId={baanId}
+              user={user}
+              token={token}
+              healthIssue={healthIssue}
+            />
           ))
         );
         break;
@@ -220,6 +234,42 @@ export default async function Baan({ params }: { params: { pid: string } }) {
   if (part.auths.includes("สามารถจัดการของได้") || isBoard) {
     const data = await getOrderForAdmin(camp._id, token);
     outputs.push(<ManageItem data={data} token={token} />);
+  }
+  if (part.auths.includes("แก้ไขปัญหาสุขภาพให้เข้ากับพี่และน้อง") || isBoard) {
+    switch (campMemberCard.role) {
+      case "nong": {
+        return <BackToHome />;
+      }
+      case "pee": {
+        if (isBoard) {
+          let i = 0;
+          while (i < camp.baanIds.length) {
+            const data = await getOverrideHealthIssue(camp.baanIds[i++]);
+            outputs.push(
+              <UpdateOverrideHealthIssueClient data={data} token={token} />
+            );
+          }
+          break;
+        } else {
+          const peeCamp = await getPeeCamp(campMemberCard.campModelId, token);
+          const data = await getOverrideHealthIssue(peeCamp.baanId);
+          outputs.push(
+            <UpdateOverrideHealthIssueClient data={data} token={token} />
+          );
+          break;
+        }
+      }
+      case "peto": {
+        let i = 0;
+        while (i < camp.baanIds.length) {
+          const data = await getOverrideHealthIssue(camp.baanIds[i++]);
+          outputs.push(
+            <UpdateOverrideHealthIssueClient data={data} token={token} />
+          );
+        }
+        break;
+      }
+    }
   }
   return (
     <AllInOneLock lock={user.mode == "nong"} token={token} pushToHome>

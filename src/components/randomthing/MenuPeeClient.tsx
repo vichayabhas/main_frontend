@@ -1,10 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { InterUser } from "../../../interface";
+import { BasicUser } from "../../../interface";
 import React from "react";
 import FinishButton from "../utility/FinishButton";
-export default function MenuPeeClient({ user }: { user: InterUser }) {
+export default function MenuPeeClient({ user }: { user: BasicUser }) {
   const router = useRouter();
   return (
     <div

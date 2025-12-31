@@ -1,9 +1,9 @@
 import { getBackendUrl, userPath } from "@/components/utility/setup";
-import { Id, InterHeathIssue } from "../../../interface";
+import { Id, InterHealthIssue } from "../../../interface";
 
-export default async function getHeathIssue(id: Id): Promise<InterHeathIssue> {
+export default async function getHealthIssue(id: Id): Promise<InterHealthIssue> {
   const response = await fetch(
-    `${getBackendUrl()}/${userPath}/getHeathIssue/params/${id}`,
+    `${getBackendUrl()}/${userPath}/getHealthIssue/params/${id}`,
     {
       method: "GET",
       cache: "no-store",

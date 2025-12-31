@@ -6,7 +6,7 @@ import updateSize from "@/libs/user/updateSize";
 import updateSleep from "@/libs/user/updateSleep";
 import { Checkbox, TextField } from "@mui/material";
 import React from "react";
-import { InterUser, Size } from "../../../interface";
+import { BasicUser, Size } from "../../../interface";
 import FinishButton from "../utility/FinishButton";
 import SelectSize from "../utility/SelectSize";
 import { setTextToString, setBoolean } from "../utility/setup";
@@ -19,7 +19,7 @@ export default function UpdateProfileRaw({
   user,
   session,
 }: {
-  user: InterUser;
+  user: BasicUser;
   session: Session | null;
 }) {
   const [name, setName] = React.useState<string>(user.name);
@@ -27,7 +27,6 @@ export default function UpdateProfileRaw({
   const [email, setEmail] = React.useState<string>(user.email);
   const [nickname, setNickname] = React.useState<string>(user.nickname);
   const [lastname, setLastname] = React.useState<string>(user.lastname);
-  const [citizenId, setCitizenId] = React.useState<string>(user.citizenId);
   const [shirtSize, setShirtSize] = React.useState<Size>(user.shirtSize);
   const [haveBottle, setHaveBottle] = React.useState<boolean>(user.haveBottle);
   const [likeToSleepAtCamp, setLikeToSleepAtCamp] = React.useState<boolean>(
@@ -191,35 +190,6 @@ export default function UpdateProfileRaw({
           />
         </div>
         <div className="flex flex-row items-center my-5">
-          <label className="w-2/5 text-2xl text-white">
-            รหัสประจำตัวประชาชน
-          </label>
-          <TextField
-            name="citizenId"
-            id="citizenId"
-            type="number"
-            required
-            className="w-3/5 bg-white rounded-2xl border-gray-200"
-            sx={{
-              backgroundColor: "#f5f5f5",
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderRadius: " 1rem",
-                  borderColor: "transparent",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#5479FF",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#5479FF",
-                },
-              },
-            }}
-            onChange={setTextToString(setCitizenId)}
-            value={citizenId}
-          />
-        </div>
-        <div className="flex flex-row items-center my-5">
           <label className="w-2/5 text-2xl text-white">เลือกขนาดเสื้อ</label>
           <SelectSize select={setShirtSize} def={user.shirtSize} />
         </div>
@@ -277,7 +247,6 @@ export default function UpdateProfileRaw({
                   name,
                   nickname,
                   lastname,
-                  citizenId,
                   session.user.token
                 );
                 updateSize(shirtSize, session.user.token);

@@ -3,7 +3,7 @@ import {
   InterActionPlan,
   MapObjectId,
   MyMap,
-  HeathIssueBody,
+  HealthIssueBody,
   Id,
   UpdateTimeOffsetRaw,
   SocketEvent,
@@ -308,7 +308,7 @@ export function getId(input: { _id: Id } | null) {
   }
   return null;
 }
-export const emptyHealthIssue: HeathIssueBody = {
+export const emptyHealthIssue: HealthIssueBody = {
   food: "",
   chronicDisease: "",
   medicine: "",
@@ -626,30 +626,70 @@ export class SocketReady<T> {
   public trigger(data: T) {
     this.socket.emit(`${this.eventName}Send`, data, this.room);
   }
+  public static trigger<T>(
+    data: T,
+    eventName: SocketEvent,
+    room: string,
+    socket: Socket
+  ) {
+    socket.emit(`${eventName}Send`, data, room);
+  }
   public triggerToOther(data: T, room: Id | string) {
     this.socket.emit(`${this.eventName}Send`, data, room.toString());
   }
   public disconnect() {
     this.socket.off(this.eventName);
   }
+  public static listenMany<T>(
+    event: (arg0: T, room: string) => void,
+    eventName: SocketEvent,
+    socket: Socket
+  ) {
+    socket.on(eventName, (data: T, r: string) => {
+      event(data, r);
+    });
+    return () => socket.off(eventName);
+  }
 }
 export function notify(message: string) {
+  if (typeof window === "undefined") return;
+  if (!("Notification" in window)) return;
+
   Notification.requestPermission().then((permission) => {
-    if (permission == "granted") {
+    if (permission === "granted") {
       new Notification(message);
     }
   });
 }
-export function getLastAnd(names:string[]){
-  if(names.length==1){
-    return names[0]
+export function getLastAnd(names: string[]) {
+  if (names.length == 1) {
+    return names[0];
   }
   let out = "";
-  let i=0
-  while(i<names.length-2){
-    out+=names[i]+", "
-    i++
+  let i = 0;
+  while (i < names.length - 2) {
+    out += names[i] + ", ";
+    i++;
   }
-  out+=names[i]+" และ "+names[i+1]
-  return out
+  out += names[i] + " และ " + names[i + 1];
+  return out;
+}
+
+export function ifIsTrue<T>(
+  input: boolean,
+  id: T,
+  array1: T[],
+  array2?: T[],
+  array3?: T[]
+) {
+  if (input) {
+    array1.push(id);
+    if (array2) {
+      array2.push(id);
+    }
+    if (array3) {
+      array3.push(id);
+    }
+  }
+  return array1;
 }

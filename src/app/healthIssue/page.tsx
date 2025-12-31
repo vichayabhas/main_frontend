@@ -2,9 +2,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import getUserProfile from "@/libs/user/getUserProfile";
 import BackToHome from "@/components/utility/BackToHome";
-import { HeathIssueBody } from "../../../interface";
-import getHeathIssue from "@/libs/user/getHeathIssue";
-import HeathIssueClient from "@/components/user/HeathIssueClient";
+import { HealthIssueBody } from "../../../interface";
+import getHealthIssue from "@/libs/user/getHealthIssue";
+import HealthIssueClient from "@/components/user/HealthIssueClient";
 import React from "react";
 export default async function name() {
   const session = await getServerSession(authOptions);
@@ -12,11 +12,11 @@ export default async function name() {
     return <BackToHome />;
   }
   const user = await getUserProfile(session.user.token);
-  let heathIssue: HeathIssueBody;
+  let healthIssue: HealthIssueBody;
   if (user.healthIssueId) {
-    heathIssue = await getHeathIssue(user.healthIssueId);
+    healthIssue = await getHealthIssue(user.healthIssueId);
   } else {
-    heathIssue = {
+    healthIssue = {
       food: "",
       medicine: "",
       chronicDisease: "",
@@ -28,6 +28,6 @@ export default async function name() {
     };
   }
   return (
-    <HeathIssueClient heathIssue={heathIssue} token={session.user.token} />
+    <HealthIssueClient healthIssue={healthIssue} token={session.user.token} />
   );
 }

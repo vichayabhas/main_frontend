@@ -1,11 +1,11 @@
 import { getBackendUrl, userPath } from "@/components/utility/setup";
-import { HeathIssueBody } from "../../../interface";
+import { HealthIssueBody } from "../../../interface";
 
-export default async function updateHeath(
-  input: HeathIssueBody,
+export default async function updateHealth(
+  input: HealthIssueBody,
   token: string
 ) {
-  const response = await fetch(`${getBackendUrl()}/${userPath}/updateHeath`, {
+  const response = await fetch(`${getBackendUrl()}/${userPath}/updateHealth`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

@@ -18,8 +18,8 @@ export interface InterBaanBack {
   campId: Id;
   peeIds: Id[];
   nongIds: Id[];
-  nongHeathIssueIds: Id[];
-  peeHeathIssueIds: Id[];
+  nongHealthIssueIds: Id[];
+  peeHealthIssueIds: Id[];
   nongShirtSize: Map<"S" | "M" | "L" | "XL" | "XXL" | "3XL", number>;
   peeShirtSize: Map<"S" | "M" | "L" | "XL" | "XXL" | "3XL", number>;
   songIds: Id[];
@@ -62,8 +62,8 @@ export interface InterBaanBack {
   peeChatIds: Id[];
   nongChatIds: Id[];
   nongSendMessage: boolean;
-  nongCampMemberCardHaveHeathIssueIds: Id[];
-  peeCampMemberCardHaveHeathIssueIds: Id[];
+  nongCampMemberCardHaveHealthIssueIds: Id[];
+  peeCampMemberCardHaveHealthIssueIds: Id[];
   nongHaveBottleIds: Id[];
   peeHaveBottleIds: Id[];
   imageAndDescriptionContainerIds: Id[];
@@ -73,6 +73,13 @@ export interface InterBaanBack {
   canWriteMirror: boolean;
   groupContainerIds: Id[];
   defaultGroupId: Id | null;
+  canNongSeeAdvanceNongData: boolean;
+  canNongSeeAdvancePeeData: boolean;
+  canNongSeeJobData: boolean;
+  canNongSeeNongExtra: boolean;
+  canNongSeePeeExtra: boolean;
+  canPeeSeeAdvanceNongData: boolean;
+  canPeeSeeAdvancePeeData: boolean;
 
   //public
 }
@@ -157,9 +164,9 @@ export interface InterCampBack {
   currentPee: number;
   mdTime: Date;
   allPetoChatIds: Id[];
-  nongCampMemberCardHaveHeathIssueIds: Id[];
-  peeCampMemberCardHaveHeathIssueIds: Id[];
-  petoCampMemberCardHaveHeathIssueIds: Id[];
+  nongCampMemberCardHaveHealthIssueIds: Id[];
+  peeCampMemberCardHaveHealthIssueIds: Id[];
+  petoCampMemberCardHaveHealthIssueIds: Id[];
   choiceQuestionIds: Id[];
   textQuestionIds: Id[];
   nongAnswerPackIds: Id[];
@@ -199,7 +206,7 @@ export interface InterFridayAct {
   _id: Id;
   //public
 }
-export interface InterHeathIssue extends HeathIssueBody {
+export interface InterHealthIssue extends HealthIssueBody {
   userId: Id;
   _id: Id;
   campIds: Id[];
@@ -225,8 +232,8 @@ export interface InterPartBack {
   campId: Id;
   peeIds: Id[];
   petoIds: Id[];
-  peeHeathIssueIds: Id[];
-  petoHeathIssueIds: Id[];
+  peeHealthIssueIds: Id[];
+  petoHealthIssueIds: Id[];
   peeShirtSize: Map<"S" | "M" | "L" | "XL" | "XXL" | "3XL", number>;
   petoShirtSize: Map<"S" | "M" | "L" | "XL" | "XXL" | "3XL", number>;
   peeModelIds: Id[];
@@ -243,8 +250,8 @@ export interface InterPartBack {
   peeSleepIds: Id[];
   chatIds: Id[];
   petoSleepIds: Id[];
-  peeCampMemberCardHaveHeathIssueIds: Id[];
-  petoCampMemberCardHaveHeathIssueIds: Id[];
+  peeCampMemberCardHaveHealthIssueIds: Id[];
+  petoCampMemberCardHaveHealthIssueIds: Id[];
   peeHaveBottleIds: Id[];
   petoHaveBottleIds: Id[];
   auths: AuthType[];
@@ -313,6 +320,8 @@ export interface InterCampMemberCard {
   mirrorBaanIds: Id[];
   subGroupIds: Id[];
   orderIds: Id[];
+  peeReplaceExtra?: string | null | undefined;
+  nongReplaceExtra?: string | null | undefined;
   //private
 }
 export interface InterSong {
@@ -358,7 +367,6 @@ export interface InterUser {
   lostAndFoundIds: Id[];
   createdAt: Date;
   linkHash: string;
-  citizenId: string;
   likeToSleepAtCamp: boolean;
   authPartIds: Id[];
   selectOffsetId: Id;
@@ -399,8 +407,8 @@ export interface InterBaanFront {
   campId: Id;
   peeIds: Id[];
   nongIds: Id[];
-  nongHeathIssueIds: Id[];
-  peeHeathIssueIds: Id[];
+  nongHealthIssueIds: Id[];
+  peeHealthIssueIds: Id[];
   nongShirtSize: InterSize;
   peeShirtSize: InterSize;
   songIds: Id[];
@@ -442,8 +450,8 @@ export interface InterBaanFront {
   peeChatIds: Id[];
   nongChatIds: Id[];
   nongSendMessage: boolean;
-  nongCampMemberCardHaveHeathIssueIds: Id[];
-  peeCampMemberCardHaveHeathIssueIds: Id[];
+  nongCampMemberCardHaveHealthIssueIds: Id[];
+  peeCampMemberCardHaveHealthIssueIds: Id[];
   nongHaveBottleIds: Id[];
   peeHaveBottleIds: Id[];
   imageAndDescriptionContainerIds: Id[];
@@ -467,9 +475,9 @@ export interface InterCampFront {
   partIds: Id[];
   petoIds: Id[];
   authorizeIds: Id[];
-  nongHeathIssueIds: Id[];
-  peeHeathIssueIds: Id[];
-  petoHeathIssueIds: Id[];
+  nongHealthIssueIds: Id[];
+  peeHealthIssueIds: Id[];
+  petoHealthIssueIds: Id[];
   nongDataLock: boolean;
   nongShirtSize: InterSize;
   peeShirtSize: InterSize;
@@ -533,9 +541,9 @@ export interface InterCampFront {
   mdTime: Date;
   allPetoChatIds: Id[];
   petoSleepIds: Id[];
-  nongCampMemberCardHaveHeathIssueIds: Id[];
-  peeCampMemberCardHaveHeathIssueIds: Id[];
-  petoCampMemberCardHaveHeathIssueIds: Id[];
+  nongCampMemberCardHaveHealthIssueIds: Id[];
+  peeCampMemberCardHaveHealthIssueIds: Id[];
+  petoCampMemberCardHaveHealthIssueIds: Id[];
   nongHaveBottleIds: Id[];
   peeHaveBottleIds: Id[];
   petoHaveBottleIds: Id[];
@@ -567,8 +575,8 @@ export interface InterPartFront {
   campId: Id;
   peeIds: Id[];
   petoIds: Id[];
-  peeHeathIssueIds: Id[];
-  petoHeathIssueIds: Id[];
+  peeHealthIssueIds: Id[];
+  petoHealthIssueIds: Id[];
   peeShirtSize: InterSize;
   petoShirtSize: InterSize;
   peeModelIds: Id[];
@@ -584,8 +592,8 @@ export interface InterPartFront {
   peeSleepIds: Id[];
   chatIds: Id[];
   petoSleepIds: Id[];
-  peeCampMemberCardHaveHeathIssueIds: Id[];
-  petoCampMemberCardHaveHeathIssueIds: Id[];
+  peeCampMemberCardHaveHealthIssueIds: Id[];
+  petoCampMemberCardHaveHealthIssueIds: Id[];
   peeHaveBottleIds: Id[];
   petoHaveBottleIds: Id[];
   auths: AuthType[];
@@ -618,7 +626,6 @@ export interface Register {
   shirtSize: "S" | "M" | "L" | "XL" | "XXL" | "3XL";
   haveBottle: boolean;
   tel: string;
-  citizenId: string;
   likeToSleepAtCamp: boolean;
   //private
 }
@@ -716,6 +723,8 @@ export interface ShowMember {
   spicy: boolean;
   id: number;
   campMemberCardId: Id;
+  campMemberCard: InterCampMemberCard;
+  healthIssue: HealthIssueBody;
   //private
 }
 export interface UpdateBaan {
@@ -729,6 +738,13 @@ export interface UpdateBaan {
   nongSendMessage: boolean;
   canReadMirror: boolean;
   canWriteMirror: boolean;
+  canNongSeeAdvanceNongData: boolean;
+  canNongSeeAdvancePeeData: boolean;
+  canNongSeeJobData: boolean;
+  canNongSeeNongExtra: boolean;
+  canNongSeePeeExtra: boolean;
+  canPeeSeeAdvanceNongData: boolean;
+  canPeeSeeAdvancePeeData: boolean;
   //public
 }
 export type Group =
@@ -754,7 +770,7 @@ export type Size = "S" | "M" | "L" | "XL" | "XXL" | "3XL";
 export type RoleCamp = Mode | "peto";
 export type Role = RoleCamp | "admin";
 export type Mode = "nong" | "pee";
-export interface HeathIssueBody {
+export interface HealthIssueBody {
   food: string;
   chronicDisease: string;
   medicine: string;
@@ -979,10 +995,17 @@ export interface ChatReady {
   chats: ShowChat[];
   timeOffset: InterTimeOffset;
   mode: Mode;
-  sendType: {
-    id: Id;
-    roomType: TypeChat;
-  } | null;
+  sendType:
+    | {
+        id: Id;
+        roomType: Exclude<TypeChat, "น้องคุยส่วนตัวกับพี่">;
+      }
+    | {
+        id: Id;
+        roomType: TypeChat;
+        baanId: Id;
+      }
+    | null;
   success: boolean;
   roomName: string;
   userId: Id;
@@ -998,8 +1021,8 @@ export const foodLimits = [
   "ไม่มีข้อจำกัดด้านความเชื่อ",
 ] as const;
 export type FoodLimit = (typeof foodLimits)[number];
-export interface HeathIssuePack {
-  heathIssue: HeathIssueBody;
+export interface HealthIssuePack {
+  healthIssue: HealthIssueBody;
   user: BasicUser;
   campMemberCardId: Id;
   //private
@@ -1031,9 +1054,9 @@ export interface CampWelfarePack {
   //public
 }
 export interface WelfarePack {
-  nongHealths: HeathIssuePack[];
-  peeHealths: HeathIssuePack[];
-  petoHealths: HeathIssuePack[];
+  nongHealths: HealthIssuePack[];
+  peeHealths: HealthIssuePack[];
+  petoHealths: HealthIssuePack[];
   name: string;
   nongSize: InterSize;
   peeSize: InterSize;
@@ -1319,9 +1342,9 @@ export interface UpdateFood {
 }
 export interface GetFoodForUpdate {
   isWhiteList: boolean;
-  nongHealths: HeathIssuePack[];
-  peeHealths: HeathIssuePack[];
-  petoHealths: HeathIssuePack[];
+  nongHealths: HealthIssuePack[];
+  peeHealths: HealthIssuePack[];
+  petoHealths: HealthIssuePack[];
   nongCampMemberCardIds: Id[];
   peeCampMemberCardIds: Id[];
   petoCampMemberCardIds: Id[];
@@ -1363,9 +1386,9 @@ export interface CampHealthIssuePack {
   //public
 }
 export interface ShowHealthIssuePack {
-  nongHealths: HeathIssuePack[];
-  peeHealths: HeathIssuePack[];
-  petoHealths: HeathIssuePack[];
+  nongHealths: HealthIssuePack[];
+  peeHealths: HealthIssuePack[];
+  petoHealths: HealthIssuePack[];
   name: string;
   //public
 }
@@ -1375,8 +1398,8 @@ export interface GetCoopData {
   boy: InterPlace | null;
   girl: InterPlace | null;
   normal: InterPlace | null;
-  nongHealths: HeathIssuePack[];
-  peeHealths: HeathIssuePack[];
+  nongHealths: HealthIssuePack[];
+  peeHealths: HealthIssuePack[];
   baanJobs: GetJob[];
   pees: ShowMember[];
   nongs: ShowMember[];
@@ -1413,7 +1436,7 @@ export interface GetNongData {
   pees: ShowMember[];
   nongs: ShowMember[];
   meals: GetMeals[];
-  healthIssue: HeathIssueBody;
+  healthIssue: HealthIssueBody;
   displayOffset: UpdateTimeOffsetRaw;
   mirrorData: GetMirrorPack;
   defaultGroup: GetGroupContainer | null;
@@ -1421,6 +1444,7 @@ export interface GetNongData {
   items: InterItem[];
   baanOrders: ShowOrder[];
   campMemberCardOrders: ShowOrder[];
+  baanJobs: GetJob[];
   //private
 }
 export interface GetPeeData {
@@ -1434,7 +1458,7 @@ export interface GetPeeData {
   peeBaans: ShowMember[];
   nongBaans: ShowMember[];
   meals: GetMeals[];
-  healthIssue: HeathIssueBody;
+  healthIssue: HealthIssueBody;
   displayOffset: UpdateTimeOffsetRaw;
   selectOffset: UpdateTimeOffsetRaw;
   partPlace: ShowPlace | null;
@@ -1458,7 +1482,7 @@ export interface GetPetoData {
   camp: BasicCamp;
   campMemberCard: InterCampMemberCard;
   meals: GetMeals[];
-  healthIssue: HeathIssueBody;
+  healthIssue: HealthIssueBody;
   displayOffset: UpdateTimeOffsetRaw;
   selectOffset: UpdateTimeOffsetRaw;
   partPlace: ShowPlace | null;
@@ -1573,6 +1597,16 @@ export interface BasicUser {
   gewertzSquareBookingIds: Id[];
   departureAuths: Departure[];
   extraAuth: ExtraAuths[];
+  notifyOnlyYourPart: boolean;
+  linkHash: string;
+  filterIds: Id[];
+  selectOffsetId: Id;
+  displayOffsetId: Id;
+  healthIssueId: Id | null;
+  authPartIds: Id[];
+  tel: string;
+  email: string;
+  registerIds:Id[]
   //private
 }
 export interface BasicBaan {
@@ -1589,6 +1623,13 @@ export interface BasicBaan {
   mirrorIds: Id[];
   nongIds: Id[];
   peeIds: Id[];
+  canNongSeeAdvanceNongData: boolean;
+  canNongSeeAdvancePeeData: boolean;
+  canNongSeeJobData: boolean;
+  canNongSeeNongExtra: boolean;
+  canNongSeePeeExtra: boolean;
+  canPeeSeeAdvanceNongData: boolean;
+  canPeeSeeAdvancePeeData: boolean;
   //public
 }
 export interface BasicCamp {
@@ -1741,6 +1782,7 @@ export const authTypes = [
   "แก้ไขรูปภาพและคำอธิบายได้เฉพาะบ้านตัวเอง",
   "แก้ไขกลุ่มได้",
   "สามารถจัดการของได้",
+  "แก้ไขปัญหาสุขภาพให้เข้ากับพี่และน้อง",
 ] as const;
 export type AuthType = (typeof authTypes)[number];
 export interface CreateAuthCamp {
@@ -1958,6 +2000,8 @@ export const socketEvents = [
   "updateBaanJob",
   "updateGewertzSquareBookingAll",
   "updateGewertzSquareBookingOwn",
+  "updateOverrideHealthIssue",
+  "updateNotification",
 ] as const;
 export type SocketEvent = (typeof socketEvents)[number];
 export type QuestionType =
@@ -2316,7 +2360,7 @@ export const gewertzSquareRoomTypes = [
   "Spark2&3",
   "Spark1&2&3",
   "E-III",
-  "Demo form",
+  "Demo floor",
 ] as const;
 export type GewertzSquareRoomType = (typeof gewertzSquareRoomTypes)[number];
 export const gewertzSquareAvailableTimes = [
@@ -2389,3 +2433,55 @@ export interface UpdateGewertzSquareAccount {
 }
 export const extraAuths = ["gewertz square admin"] as const;
 export type ExtraAuths = (typeof extraAuths)[number];
+export interface UpdateOverrideHealthIssue {
+  baanId: Id;
+  datas: {
+    campMemberCardId: Id;
+    nongReplaceExtra: string | null | undefined;
+    peeReplaceExtra: string | null | undefined;
+  }[];
+}
+export interface HealthIssueOverrideData {
+  campMemberCard: InterCampMemberCard;
+  user: BasicUser;
+  healthIssue: HealthIssueBody;
+}
+export interface GetOverrideHealthIssue {
+  camp: BasicCamp;
+  baan: BasicBaan;
+  nongs: HealthIssueOverrideData[];
+  pees: HealthIssueOverrideData[];
+}
+export interface GetAuthPartForPage {
+  user: BasicUser;
+  part: BasicPart;
+  camp: BasicCamp;
+  selectOffset: UpdateTimeOffsetRaw;
+  displayOffset: UpdateTimeOffsetRaw;
+  campMemberCard: InterCampMemberCard;
+  healthIssue: HealthIssueBody;
+}
+export const notificationTypes = [
+  "คุณภาพอากาศ",
+  "เตือนมีน้องอยู่โดยไม่มีพี่",
+  ...typeChats,
+] as const;
+export type NotificationType = (typeof notificationTypes)[number];
+export interface GetNotification {
+  id: string;
+  countDown: number;
+  message: string;
+  notificationEveryMinute: number;
+  types: NotificationType;
+}
+export interface TriggerNotification {
+  message: string;
+  countDown: number;
+  types: NotificationType;
+}
+export interface PeeUpdateMode {
+  mode: Mode;
+  filterIds: Id[];
+  linkHash: string;
+  notifyOnlyYourPart: boolean;
+}

@@ -6,7 +6,6 @@ export async function updateProfile(
   name: string,
   nickname: string,
   lastname: string,
-  citizenId: string,
   token: string
 ) {
   const response = await fetch(`${getBackendUrl()}/${userPath}/updateProfile`, {
@@ -16,7 +15,7 @@ export async function updateProfile(
 
       authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ email, tel, name, nickname, lastname, citizenId }),
+    body: JSON.stringify({ email, tel, name, nickname, lastname }),
     cache: "no-store",
   });
   return await response.json();

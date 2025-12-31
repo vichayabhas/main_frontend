@@ -15,6 +15,7 @@ import {
   setTextToInt,
   getBackendUrl,
   SocketReady,
+  SetUpMiddleDownPack,
 } from "@/components/utility/setup";
 import updateBaan from "@/libs/admin/updateBaan";
 import { TextField, Checkbox, Select, MenuItem } from "@mui/material";
@@ -30,6 +31,8 @@ import {
   UpdateBaanOut,
   BasicBaan,
   ShowPlace,
+  BasicUser,
+  HealthIssueBody,
 } from "../../../../interface";
 import BaanMembers from "../member/components/BaanMembers";
 import { io, Socket } from "socket.io-client";
@@ -75,7 +78,6 @@ export class RealTimeBaan {
   }
 }
 export class RealTimeBasicBaan {
-  private room: string;
   private socket: SocketReady<UpdateBaanOut>;
   private setBaan: React.Dispatch<React.SetStateAction<BasicBaan>>;
   constructor(
@@ -83,7 +85,6 @@ export class RealTimeBasicBaan {
     socket: Socket,
     setBaan: React.Dispatch<React.SetStateAction<BasicBaan>>
   ) {
-    this.room = baanId.toString();
     this.socket = new SocketReady<UpdateBaanOut>(socket, "updateBaan", baanId);
     this.setBaan = setBaan;
   }
@@ -99,9 +100,15 @@ export class RealTimeBasicBaan {
 export default function UpdateBaanClient({
   coopData,
   allPlaceData,
+  user,
+  token,
+  healthIssue,
 }: {
   coopData: GetCoopData;
   allPlaceData: AllPlaceData;
+  user: BasicUser;
+  token: string;
+  healthIssue: HealthIssueBody;
 }) {
   // dispatch = useDispatch<AppDispatch>();
   //const update = useAppSelector((state) => state.bookSlice.bookItem);
@@ -133,6 +140,39 @@ export default function UpdateBaanClient({
     coopData.baan.canWriteMirror
   );
   const [baanJobs, setBaanJobs] = React.useState(coopData.baanJobs);
+  const [canNongSeeJobData, setCanNongSeeJobData] = React.useState(
+    coopData.baan.canNongSeeJobData
+  );
+  const nongPack = React.useState(
+    SetUpMiddleDownPack.init(
+      coopData.baan.canNongSeeNongExtra,
+      coopData.baan.canPeeSeeAdvanceNongData,
+      coopData.baan.canNongSeeAdvanceNongData
+    )
+  );
+  const {
+    up: canNongSeeNongExtra,
+    down: canNongSeeAdvanceNongData,
+    setUp: setCanNongSeeNongExtra,
+    setDown: setCanNongSeeAdvanceNongData,
+    middle: canPeeSeeAdvanceNongData,
+    setMiddle: setCanPeeSeeAdvanceNongData,
+  } = new SetUpMiddleDownPack(nongPack);
+  const peePack = React.useState(
+    SetUpMiddleDownPack.init(
+      coopData.baan.canNongSeePeeExtra,
+      coopData.baan.canPeeSeeAdvanceNongData,
+      coopData.baan.canNongSeeAdvancePeeData
+    )
+  );
+  const {
+    up: canNongSeePeeExtra,
+    down: canNongSeeAdvancePeeData,
+    setUp: setCanNongSeePeeExtra,
+    setDown: setCanNongSeeAdvancePeeData,
+    middle: canPeeSeeAdvancePeeData,
+    setMiddle: setCanPeeSeeAdvancePeeData,
+  } = new SetUpMiddleDownPack(peePack);
   const realTimeBaanJob = new RealTimeBaanJob(coopData.baan._id, socket);
   const updateBaanSocket = new SocketReady<UpdateBaanOut>(
     socket,
@@ -150,6 +190,13 @@ export default function UpdateBaanClient({
       setNongSendMessage(data.baan.nongSendMessage);
       setCanReadMirror(data.baan.canReadMirror);
       setCanWriteMirror(data.baan.canWriteMirror);
+      setCanNongSeeAdvanceNongData(data.baan.canNongSeeAdvanceNongData);
+      setCanNongSeeAdvancePeeData(data.baan.canNongSeeAdvancePeeData);
+      setCanNongSeeJobData(data.baan.canNongSeeJobData);
+      setCanNongSeeNongExtra(data.baan.canNongSeeNongExtra);
+      setCanNongSeePeeExtra(data.baan.canNongSeePeeExtra);
+      setCanPeeSeeAdvanceNongData(data.baan.canPeeSeeAdvanceNongData);
+      setCanPeeSeeAdvancePeeData(data.baan.canPeeSeeAdvancePeeData);
     });
     realTimeBaanJob.listen(setBaanJobs);
     return () => {
@@ -233,7 +280,7 @@ export default function UpdateBaanClient({
           />
           <div className="flex flex-row items-center my-5">
             <label className="w-2/5 text-2xl text-white">
-              อนุญาตให้น้องส่งข้อขวามในห้องบ้านหรือไม่
+              อนุญาตให้{coopData.camp.nongCall}ส่งข้อขวามในห้องบ้านหรือไม่
             </label>
             <Checkbox
               onChange={setBoolean(setNongSendMessage)}
@@ -273,6 +320,113 @@ export default function UpdateBaanClient({
               checked={canReadMirror}
             />
           </div>
+          <div className="flex flex-row items-center my-5">
+            <label className="w-2/5 text-2xl text-white">
+              อนุญาต{coopData.camp.nongCall}อ่านหมายเหตุของ
+              {coopData.camp.nongCall}หรือไม่
+            </label>
+            <Checkbox
+              onChange={setBoolean(setCanNongSeeNongExtra)}
+              sx={{
+                "&.Mui-checked": {
+                  color: "#FFFFFF", // Custom color when checked
+                },
+              }}
+              checked={canNongSeeNongExtra}
+            />
+          </div>
+          <div className="flex flex-row items-center my-5">
+            <label className="w-2/5 text-2xl text-white">
+              อนุญาต{coopData.camp.nongCall}อ่านหมายเหตุของพี่
+              {coopData.camp.groupName}หรือไม่
+            </label>
+            <Checkbox
+              onChange={setBoolean(setCanNongSeePeeExtra)}
+              sx={{
+                "&.Mui-checked": {
+                  color: "#FFFFFF", // Custom color when checked
+                },
+              }}
+              checked={canNongSeePeeExtra}
+            />
+          </div>
+
+          <div className="flex flex-row items-center my-5">
+            <label className="w-2/5 text-2xl text-white">
+              อนุญาต{coopData.camp.nongCall}อ่านข้อมูลขั้นสูงของ
+              {coopData.camp.nongCall}หรือไม่
+            </label>
+            <Checkbox
+              onChange={setBoolean(setCanNongSeeAdvanceNongData)}
+              sx={{
+                "&.Mui-checked": {
+                  color: "#FFFFFF", // Custom color when checked
+                },
+              }}
+              checked={canNongSeeAdvanceNongData}
+            />
+          </div>
+          <div className="flex flex-row items-center my-5">
+            <label className="w-2/5 text-2xl text-white">
+              อนุญาต{coopData.camp.nongCall}อ่านข้อมูลขั้นสูงของพี่
+              {coopData.camp.groupName}หรือไม่
+            </label>
+            <Checkbox
+              onChange={setBoolean(setCanNongSeeAdvancePeeData)}
+              sx={{
+                "&.Mui-checked": {
+                  color: "#FFFFFF", // Custom color when checked
+                },
+              }}
+              checked={canNongSeeAdvancePeeData}
+            />
+          </div>
+
+          <div className="flex flex-row items-center my-5">
+            <label className="w-2/5 text-2xl text-white">
+              อนุญาตพี่{coopData.camp.groupName}อ่านข้อมูลขั้นสูงของ
+              {coopData.camp.nongCall}หรือไม่
+            </label>
+            <Checkbox
+              onChange={setBoolean(setCanPeeSeeAdvanceNongData)}
+              sx={{
+                "&.Mui-checked": {
+                  color: "#FFFFFF", // Custom color when checked
+                },
+              }}
+              checked={canPeeSeeAdvanceNongData}
+            />
+          </div>
+          <div className="flex flex-row items-center my-5">
+            <label className="w-2/5 text-2xl text-white">
+              อนุญาตพี่{coopData.camp.groupName}อ่านข้อมูลขั้นสูงของพี่
+              {coopData.camp.groupName}หรือไม่
+            </label>
+            <Checkbox
+              onChange={setBoolean(setCanPeeSeeAdvancePeeData)}
+              sx={{
+                "&.Mui-checked": {
+                  color: "#FFFFFF", // Custom color when checked
+                },
+              }}
+              checked={canPeeSeeAdvancePeeData}
+            />
+          </div>
+          <div className="flex flex-row items-center my-5">
+            <label className="w-2/5 text-2xl text-white">
+              อนุญาต{coopData.camp.nongCall}อ่านข้อมูลงานของพี่
+              {coopData.camp.groupName}หรือไม่
+            </label>
+            <Checkbox
+              onChange={setBoolean(setCanNongSeeAdvanceNongData)}
+              sx={{
+                "&.Mui-checked": {
+                  color: "#FFFFFF", // Custom color when checked
+                },
+              }}
+              checked={canNongSeeAdvanceNongData}
+            />
+          </div>
           <div className="flex flex-row justify-end">
             <button
               className="bg-pink-300 p-3 rounded-lg shadow-[10px_10px_10px_-10px_rgba(0,0,0,0.5)] hover:bg-rose-700 hover:text-pink-50"
@@ -290,9 +444,16 @@ export default function UpdateBaanClient({
                       nongSendMessage,
                       canReadMirror,
                       canWriteMirror,
+                      canNongSeeAdvanceNongData,
+                      canNongSeeAdvancePeeData,
+                      canNongSeeJobData,
+                      canNongSeeNongExtra,
+                      canNongSeePeeExtra,
+                      canPeeSeeAdvanceNongData,
+                      canPeeSeeAdvancePeeData,
                     },
                     session.user.token,
-                    updateBaanSocket,
+                    updateBaanSocket
                   );
                 } catch (error) {
                   console.log(error);
@@ -332,10 +493,10 @@ export default function UpdateBaanClient({
                 <td>{health.user.name}</td>
                 <td>{health.user.lastname}</td>
                 <td>พี่{coopData.camp.groupName}</td>
-                <td>{health.heathIssue.extra}</td>
-                <td>{health.heathIssue.chronicDisease}</td>
+                <td>{health.healthIssue.extra}</td>
+                <td>{health.healthIssue.chronicDisease}</td>
                 {highMode ? (
-                  <td>{health.heathIssue.isWearing ? "ใส่" : "ไม่ใส่"}</td>
+                  <td>{health.healthIssue.isWearing ? "ใส่" : "ไม่ใส่"}</td>
                 ) : null}
               </tr>
             )),
@@ -345,10 +506,10 @@ export default function UpdateBaanClient({
                 <td>{health.user.name}</td>
                 <td>{health.user.lastname}</td>
                 <td>{coopData.camp.nongCall}</td>
-                <td>{health.heathIssue.extra}</td>
-                <td>{health.heathIssue.chronicDisease}</td>
+                <td>{health.healthIssue.extra}</td>
+                <td>{health.healthIssue.chronicDisease}</td>
                 {highMode ? (
-                  <td>{health.heathIssue.isWearing ? "ใส่" : "ไม่ใส่"}</td>
+                  <td>{health.healthIssue.isWearing ? "ใส่" : "ไม่ใส่"}</td>
                 ) : null}
               </tr>
             ))
@@ -662,6 +823,9 @@ export default function UpdateBaanClient({
         baan={coopData.baan}
         camp={coopData.camp}
         campRole="pee"
+        user={user}
+        token={token}
+        healthIssue={healthIssue}
       />
     </>
   );

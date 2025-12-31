@@ -4,7 +4,7 @@ import React from "react";
 import { useDownloadExcel } from "react-export-table-to-excel";
 import {
   GetMeals,
-  HeathIssueBody,
+  HealthIssueBody,
   InterCampMemberCard,
   BasicUser,
   UpdateTimeOffsetRaw,
@@ -22,7 +22,7 @@ export default function ShowOwnCampData({
   displayOffset,
   token,
 }: {
-  healthIssue: HeathIssueBody;
+  healthIssue: HealthIssueBody;
   campMemberCard: InterCampMemberCard;
   user: BasicUser;
   meals: GetMeals[];

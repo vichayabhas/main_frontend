@@ -7,7 +7,7 @@ export default async function changeBaan(
     baanId: Id;
   },
   token: string,
-  socket: SocketReady<RegisterData>,
+  socket: SocketReady<RegisterData>
 ) {
   const res = await fetch(`${getBackendUrl()}/camp/changeBaan`, {
     method: "POST",
@@ -18,7 +18,7 @@ export default async function changeBaan(
     cache: "no-store",
     body: JSON.stringify(input),
   });
-  const data = await res.json();
+  const data: RegisterData = await res.json();
   if (!res.ok) {
     return data;
   }

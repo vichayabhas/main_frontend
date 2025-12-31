@@ -17,7 +17,6 @@ export default function signupPage() {
   >(null);
   const [gender, setGender] = React.useState<"Male" | "Female" | null>(null);
   const [haveBottle, setHaveBottle] = React.useState<boolean>(false);
-  const [citizenId, setCitizenId] = React.useState<string | null>(null);
   const [likeToSleepAtCamp, setLikeToSleepAtCamp] =
     React.useState<boolean>(false);
   return (
@@ -193,34 +192,6 @@ export default function signupPage() {
           />
         </div>
         <div className="flex flex-row items-center my-5">
-          <label className="w-2/5 text-2xl text-white">
-            รหัสประจำตัวประชาชน
-          </label>
-          <TextField
-            name="citizenId"
-            id="citizenId"
-            className="w-3/5 bg-white rounded-2xl border-gray-200"
-            sx={{
-              backgroundColor: "#f5f5f5",
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderRadius: " 1rem",
-                  borderColor: "transparent",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#5479FF",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#5479FF",
-                },
-              },
-            }}
-            onChange={setTextToString(setCitizenId)}
-            value={citizenId}
-            required
-          />
-        </div>
-        <div className="flex flex-row items-center my-5">
           <label className="w-2/5 text-2xl text-white">เพศ</label>
           <Input
             type="radio"
@@ -286,8 +257,7 @@ export default function signupPage() {
                 shirtSize &&
                 gender &&
                 lastname &&
-                nickname &&
-                citizenId
+                nickname
               ) {
                 try {
                   await userSignup({
@@ -300,7 +270,6 @@ export default function signupPage() {
                     shirtSize,
                     gender,
                     haveBottle,
-                    citizenId,
                     likeToSleepAtCamp,
                   });
                 } catch (error) {

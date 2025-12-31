@@ -2,6 +2,8 @@ import React from "react";
 import { Mode, Role, RoleCamp } from "../../../interface";
 import BackToHome from "./BackToHome";
 import PasswordLock from "./PasswordLock";
+export type LockLinkType = "lock" | "wait for password" | "pass";
+export const lockLinkInit: boolean = false;
 
 export default function AllInOneLock({
   children,
@@ -12,6 +14,8 @@ export default function AllInOneLock({
   mode,
   pushToHome,
   spacialBypass,
+  link,
+  alternativeChildren,
 }: {
   children: React.ReactNode;
   token?: string;
@@ -24,6 +28,8 @@ export default function AllInOneLock({
     role: Role;
     bypass: boolean;
   };
+  link?: [LockLinkType, React.Dispatch<React.SetStateAction<LockLinkType>>];
+  alternativeChildren?: React.ReactNode;
 }) {
   if (bypass) {
     return children;
@@ -50,7 +56,7 @@ export default function AllInOneLock({
             switch (mode) {
               case "nong":
                 return (
-                  <PasswordLock token={token} bypass={false}>
+                  <PasswordLock token={token} bypass={false} link={link}>
                     {children}
                   </PasswordLock>
                 );
@@ -58,7 +64,22 @@ export default function AllInOneLock({
                 return children;
             }
           } else {
-            return children;
+            if (spacialBypass) {
+              if (!spacialBypass.bypass) {
+                return null;
+              }
+              if (spacialBypass.role == "nong") {
+                return (
+                  <PasswordLock token={token} bypass={false} link={link}>
+                    {children}
+                  </PasswordLock>
+                );
+              } else {
+                return children;
+              }
+            } else {
+              return children;
+            }
           }
           break;
         }
@@ -67,7 +88,7 @@ export default function AllInOneLock({
             switch (mode) {
               case "nong":
                 return (
-                  <PasswordLock token={token} bypass={false}>
+                  <PasswordLock token={token} bypass={false} link={link}>
                     {children}
                   </PasswordLock>
                 );
@@ -75,7 +96,19 @@ export default function AllInOneLock({
                 return children;
             }
           } else {
-            return children;
+            if (spacialBypass) {
+              if (spacialBypass.bypass && spacialBypass.role != "nong") {
+                return children;
+              } else {
+                return (
+                  <PasswordLock token={token} bypass={false} link={link}>
+                    {children}
+                  </PasswordLock>
+                );
+              }
+            } else {
+              return children;
+            }
           }
         }
       }
@@ -84,7 +117,7 @@ export default function AllInOneLock({
         switch (mode) {
           case "nong":
             return (
-              <PasswordLock token={token} bypass={false}>
+              <PasswordLock token={token} bypass={false} link={link}>
                 {children}
               </PasswordLock>
             );
@@ -93,7 +126,7 @@ export default function AllInOneLock({
         }
       } else
         return (
-          <PasswordLock token={token} bypass={false}>
+          <PasswordLock token={token} bypass={false} link={link}>
             {children}
           </PasswordLock>
         );
@@ -162,7 +195,20 @@ export default function AllInOneLock({
           case "pee":
             return children;
         }
-      } else return children;
+      } else {
+        if (link) {
+          switch (link[0]) {
+            case "lock":
+              return null;
+            case "wait for password":
+              return alternativeChildren;
+            case "pass":
+              return children;
+          }
+        } else {
+          return children;
+        }
+      }
     }
   }
 }
@@ -193,7 +239,7 @@ export function checkValid({
       case "nong": {
         return (
           mode == "pee" &&
-          spacialBypass &&
+          !!spacialBypass &&
           spacialBypass.bypass &&
           spacialBypass.role != "nong"
         );
@@ -207,8 +253,13 @@ export function checkValid({
               return true;
           }
         } else {
-          return true;
+          if (spacialBypass) {
+            return spacialBypass.bypass && spacialBypass.role != "nong";
+          } else {
+            return true;
+          }
         }
+        break;
       }
       case "peto": {
         if (mode) {
@@ -233,6 +284,146 @@ export function checkValid({
       }
     } else {
       return true;
+    }
+  }
+}
+
+export function getDefaultLockInit({
+  token,
+  role,
+  bypass,
+  lock,
+  mode,
+  spacialBypass,
+}: {
+  token?: string;
+  role?: RoleCamp;
+  bypass?: boolean;
+  lock?: boolean;
+  mode?: Mode;
+  spacialBypass?: {
+    role: Role;
+    bypass: boolean;
+  };
+}): LockLinkType {
+  if (bypass) {
+    return "pass";
+  }
+  if (lock) {
+    return "lock";
+  }
+  if (token) {
+    if (role) {
+      switch (role) {
+        case "nong": {
+          return "lock";
+        }
+        case "pee": {
+          if (mode) {
+            switch (mode) {
+              case "nong":
+                return "wait for password";
+              case "pee":
+                return "pass";
+            }
+          } else {
+            if (spacialBypass) {
+              if (!spacialBypass.bypass) {
+                return "lock";
+              }
+              if (spacialBypass.role == "nong") {
+                return "wait for password";
+              } else {
+                return "pass";
+              }
+            } else {
+              return "pass";
+            }
+          }
+          break;
+        }
+        case "peto": {
+          if (mode) {
+            switch (mode) {
+              case "nong":
+                return "wait for password";
+              case "pee":
+                return "pass";
+            }
+          } else {
+            if (spacialBypass) {
+              if (spacialBypass.bypass && spacialBypass.role != "nong") {
+                return "pass";
+              } else {
+                return "wait for password";
+              }
+            } else {
+              return "pass";
+            }
+          }
+        }
+      }
+    } else {
+      if (mode) {
+        switch (mode) {
+          case "nong":
+            return "wait for password";
+          case "pee":
+            return "pass";
+        }
+      } else return "wait for password";
+    }
+  } else {
+    if (role) {
+      switch (role) {
+        case "nong": {
+          if (
+            mode == "pee" &&
+            spacialBypass &&
+            spacialBypass.bypass &&
+            spacialBypass.role != "nong"
+          ) {
+            return "pass";
+          }
+          return "lock";
+        }
+        case "pee": {
+          if (mode) {
+            switch (mode) {
+              case "nong":
+                return "lock";
+              case "pee":
+                return "pass";
+            }
+          } else {
+            return "pass";
+          }
+          break;
+        }
+        case "peto": {
+          if (mode) {
+            switch (mode) {
+              case "nong":
+                return "lock";
+              case "pee":
+                return "pass";
+            }
+          } else {
+            return "pass";
+          }
+        }
+      }
+    } else {
+      if (mode) {
+        switch (mode) {
+          case "nong":
+            return "lock";
+          case "pee":
+            return "pass";
+        }
+      } else {
+        return "pass";
+      }
     }
   }
 }

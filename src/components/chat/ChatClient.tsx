@@ -7,7 +7,7 @@ import createPeeBaanChat from "@/libs/randomthing/createPeeBaanChat";
 import { TextField } from "@mui/material";
 
 import React from "react";
-import { ChatReady, ShowChat } from "../../../interface";
+import { ChatReady, ShowChat, TriggerNotification } from "../../../interface";
 import GetTimeHtml from "../utility/GetTimeHtml";
 import {
   addItemInUseStateArray,
@@ -32,14 +32,18 @@ export default function ChatClient({
   const [camp, setCamp] = React.useState(data.camp);
   const realTimeCamp = new RealTimeCamp(camp._id, socket);
   const sendType = data.sendType;
-  const newChatSocket = new SocketReady<ShowChat>(socket, "newChat",data.subscribe);
+  const newChatSocket = new SocketReady<ShowChat>(
+    socket,
+    "newChat",
+    data.subscribe
+  );
   React.useEffect(() => {
     const handleNewChat = (newChat: ShowChat) => {
       if (newChat.canReadInModeNong || data.mode == "pee") {
         setMessages(addItemInUseStateArray(newChat));
       }
     };
-    newChatSocket.listen( handleNewChat);
+    newChatSocket.listen(handleNewChat);
     realTimeCamp.listen(setCamp);
     return () => {
       newChatSocket.disconnect();
@@ -213,13 +217,19 @@ export default function ChatClient({
               }}
               onClick={() => {
                 if (message) {
+                  SocketReady.trigger<TriggerNotification>(
+                    { types: sendType.roomType, message, countDown: 1 },
+                    "updateNotification",
+                    sendType.id,
+                    socket
+                  );
                   try {
                     switch (sendType.roomType) {
                       case "คุยกันในบ้าน": {
                         createNongBaanChat(
                           { baanId: sendType.id, message },
                           token,
-                          newChatSocket,
+                          newChatSocket
                         );
                         break;
                       }
@@ -227,7 +237,13 @@ export default function ChatClient({
                         createPartChat(
                           { partId: sendType.id, message },
                           token,
-                          newChatSocket,
+                          newChatSocket
+                        );
+                        SocketReady.trigger<TriggerNotification>(
+                          { types: "คุยกันในฝ่าย", message, countDown: 1 },
+                          "updateNotification",
+                          data.camp._id.toString(),
+                          socket
                         );
                         break;
                       }
@@ -235,7 +251,17 @@ export default function ChatClient({
                         createNongChat(
                           { CampMemberCard: sendType.id, message },
                           token,
-                          newChatSocket,
+                          newChatSocket
+                        );
+                        SocketReady.trigger<TriggerNotification>(
+                          {
+                            types: "น้องคุยส่วนตัวกับพี่",
+                            message,
+                            countDown: 1,
+                          },
+                          "updateNotification",
+                          sendType.baanId,
+                          socket
                         );
                         break;
                       }
@@ -243,7 +269,7 @@ export default function ChatClient({
                         createPeeBaanChat(
                           { baanId: sendType.id, message },
                           token,
-                          newChatSocket,
+                          newChatSocket
                         );
                         break;
                       }
@@ -251,7 +277,7 @@ export default function ChatClient({
                         createPartChat(
                           { partId: sendType.id, message },
                           token,
-                          newChatSocket,
+                          newChatSocket
                         );
                         break;
                       }

@@ -23,13 +23,13 @@ export default async function TMD({
   });
   const raw = await res.text();
   const raw7 = await res7.text();
-  const out = `<div${raw.split("div")[246]}div>`;
-  const confirm = `<h1${raw.split("div")[145].split("h1")[1]}h1>`;
+  const out = `<div${raw.split("div")[252]}div>`;
+  const confirm = `<h1${raw.split("div")[151].split("h1")[1]}h1>`;
   const op = raw
     .split('onchange="selectFilter()">')[1]
     .split("</select>")[0]
     .split("</option>");
-  const seven = `<div${raw7.split("div")[226]}div>`;
+  const seven = `<div${raw7.split("div")[228]}div>`;
   op.pop();
   function getChoice(input: string): Choice {
     return {

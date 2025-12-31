@@ -11,7 +11,7 @@ import {
 } from "../../../../../interface";
 import AllInOneLock, { checkValid } from "@/components/utility/AllInOneLock";
 import { useDownloadExcel } from "react-export-table-to-excel";
-import { downloadText, getLastAnd, notEmpty } from "@/components/utility/setup";
+import { downloadText, getLastAnd, ifIsTrue } from "@/components/utility/setup";
 import FinishButton from "@/components/utility/FinishButton";
 export default function PlaceTable({
   baanData,
@@ -29,38 +29,37 @@ export default function PlaceTable({
   partData?: { partPlace: ShowPlace | null; part: BasicPart };
   user: BasicUser;
 }) {
+  const filenameParts: string[] = [];
+  if (baanData) {
+    filenameParts.push(`ห้อง${baanData.camp.groupName}${baanData.baan.name}`);
+    ifIsTrue(
+      checkValid({
+        role: baanData.campMemberCard.role,
+        mode: user.mode,
+        bypass: baanData.campMemberCard.sleepAtCamp && user.gender == "Male",
+        lock: baanData.camp.nongSleepModel == "ไม่มีการค้างคืน",
+      }),
+      `ห้องนอน${baanData.camp.nongCall}ผู้ชาย${baanData.camp.groupName}${baanData.baan.name}`,
+      filenameParts
+    );
+    ifIsTrue(
+      checkValid({
+        role: baanData.campMemberCard.role,
+        mode: user.mode,
+        bypass: baanData.campMemberCard.sleepAtCamp && user.gender == "Female",
+        lock: baanData.camp.nongSleepModel == "ไม่มีการค้างคืน",
+      }),
+      `ห้องนอน${baanData.camp.nongCall}ผู้หญิง${baanData.camp.groupName}${baanData.baan.name}`,
+      filenameParts
+    );
+  }
+  if (partData) {
+    filenameParts.push(`ห้องฝ่าย${partData.part.partName}`);
+  }
   const ref = React.useRef<HTMLTableElement>(null);
   const download = useDownloadExcel({
     currentTableRef: ref.current,
-    filename: getLastAnd(
-      [
-        ...(baanData
-          ? [
-              `ห้อง${baanData.camp.groupName}${baanData.baan.name}`,
-              checkValid({
-                role: baanData.campMemberCard.role,
-                mode: user.mode,
-                bypass:
-                  baanData.campMemberCard.sleepAtCamp && user.gender == "Male",
-                lock: baanData.camp.nongSleepModel == "ไม่มีการค้างคืน",
-              })
-                ? `ห้องนอน${baanData.camp.nongCall}ผู้ชาย${baanData.camp.groupName}${baanData.baan.name}`
-                : null,
-              checkValid({
-                role: baanData.campMemberCard.role,
-                mode: user.mode,
-                bypass:
-                  baanData.campMemberCard.sleepAtCamp &&
-                  user.gender == "Female",
-                lock: baanData.camp.nongSleepModel == "ไม่มีการค้างคืน",
-              })
-                ? `ห้องนอน${baanData.camp.nongCall}ผู้หญิง${baanData.camp.groupName}${baanData.baan.name}`
-                : null,
-            ]
-          : []),
-        partData ? `ห้องฝ่าย${partData.part.partName}` : null,
-      ].filter(notEmpty)
-    ),
+    filename: getLastAnd(filenameParts),
   });
   return (
     <>

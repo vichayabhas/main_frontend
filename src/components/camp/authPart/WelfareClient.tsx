@@ -3,7 +3,6 @@
 import {
   CampWelfarePack,
   InterMeal,
-  InterTimeOffset,
   RoleCamp,
   UpdateTimeOffsetRaw,
 } from "../../../../interface";
@@ -40,7 +39,7 @@ export default function WelfareClient({
   displayOffset: UpdateTimeOffsetRaw;
   partIdString: string;
   token: string;
-  selectOffset: InterTimeOffset;
+  selectOffset: UpdateTimeOffsetRaw;
 }) {
   const welfareModes = [
     "ดูเฉพาะขนาดเสื้อ",
@@ -243,11 +242,11 @@ export default function WelfareClient({
                     <td>{nong.user.lastname}</td>
                     <td>{baan.name}</td>
                     <td>{camp.nongCall}</td>
-                    <td>{nong.heathIssue.food}</td>
-                    <td>{nong.heathIssue.foodConcern}</td>
-                    <td>{nong.heathIssue.spicy ? "ไม่ได้" : "ได้"}</td>
+                    <td>{nong.healthIssue.food}</td>
+                    <td>{nong.healthIssue.foodConcern}</td>
+                    <td>{nong.healthIssue.spicy ? "ไม่ได้" : "ได้"}</td>
                     {welfareMode == "ขั้นสูง" ? (
-                      <td>{nong.heathIssue.isWearing ? "ใส่" : "ไม่ใส่"}</td>
+                      <td>{nong.healthIssue.isWearing ? "ใส่" : "ไม่ใส่"}</td>
                     ) : null}
                   </tr>
                 ))}
@@ -258,11 +257,11 @@ export default function WelfareClient({
                     <td>{pee.user.lastname}</td>
                     <td>{baan.name}</td>
                     <td>พี่{camp.groupName}</td>
-                    <td>{pee.heathIssue.food}</td>
-                    <td>{pee.heathIssue.foodConcern}</td>
-                    <td>{pee.heathIssue.spicy ? "ไม่ได้" : "ได้"}</td>
+                    <td>{pee.healthIssue.food}</td>
+                    <td>{pee.healthIssue.foodConcern}</td>
+                    <td>{pee.healthIssue.spicy ? "ไม่ได้" : "ได้"}</td>
                     {welfareMode == "ขั้นสูง" ? (
-                      <td>{pee.heathIssue.isWearing ? "ใส่" : "ไม่ใส่"}</td>
+                      <td>{pee.healthIssue.isWearing ? "ใส่" : "ไม่ใส่"}</td>
                     ) : null}
                   </tr>
                 ))}
@@ -280,12 +279,12 @@ export default function WelfareClient({
                             <td>{peto.user.lastname}</td>
                             <td>{part.name}</td>
                             <td>ปีโต</td>
-                            <td>{peto.heathIssue.food}</td>
-                            <td>{peto.heathIssue.foodConcern}</td>
-                            <td>{peto.heathIssue.spicy ? "ไม่ได้" : "ได้"}</td>
+                            <td>{peto.healthIssue.food}</td>
+                            <td>{peto.healthIssue.foodConcern}</td>
+                            <td>{peto.healthIssue.spicy ? "ไม่ได้" : "ได้"}</td>
                             {welfareMode == "ขั้นสูง" ? (
                               <td>
-                                {peto.heathIssue.isWearing ? "ใส่" : "ไม่ใส่"}
+                                {peto.healthIssue.isWearing ? "ใส่" : "ไม่ใส่"}
                               </td>
                             ) : null}
                           </tr>
@@ -299,12 +298,12 @@ export default function WelfareClient({
                             <td>{pee.user.lastname}</td>
                             <td>{part.name}</td>
                             <td>พี่{camp.groupName}</td>
-                            <td>{pee.heathIssue.food}</td>
-                            <td>{pee.heathIssue.foodConcern}</td>
-                            <td>{pee.heathIssue.spicy ? "ไม่ได้" : "ได้"}</td>
+                            <td>{pee.healthIssue.food}</td>
+                            <td>{pee.healthIssue.foodConcern}</td>
+                            <td>{pee.healthIssue.spicy ? "ไม่ได้" : "ได้"}</td>
                             {welfareMode == "ขั้นสูง" ? (
                               <td>
-                                {pee.heathIssue.isWearing ? "ใส่" : "ไม่ใส่"}
+                                {pee.healthIssue.isWearing ? "ใส่" : "ไม่ใส่"}
                               </td>
                             ) : null}
                           </tr>

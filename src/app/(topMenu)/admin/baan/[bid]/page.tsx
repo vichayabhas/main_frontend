@@ -1,6 +1,6 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import BackToHome from "@/components/utility/BackToHome";
-import { stringToId } from "@/components/utility/setup";
+import { emptyHealthIssue, stringToId } from "@/components/utility/setup";
 import UpdateBaanServer from "@/components/camp/authPart/UpdateBaanServer";
 import getBaan from "@/libs/camp/getBaan";
 import getCamp from "@/libs/camp/getCamp";
@@ -11,6 +11,7 @@ import getCampMemberCardByCampId from "@/libs/user/getCampMemberCardByCampId";
 import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";
 import React from "react";
+import getHealthIssue from "@/libs/user/getHealthIssue";
 export default async function Baan({ params }: { params: { bid: string } }) {
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -19,8 +20,9 @@ export default async function Baan({ params }: { params: { bid: string } }) {
   const token = session.user.token;
   const user = await getUserProfile(session.user.token);
   const baanId = stringToId(params.bid);
+  const healthIssue=user.healthIssueId?await getHealthIssue(user.healthIssueId):emptyHealthIssue
   if (user.role === "admin") {
-    return <UpdateBaanServer baanId={baanId} />;
+    return <UpdateBaanServer baanId={baanId} user={user} token={token} healthIssue={healthIssue} />;
   }
   const baan = await getBaan(baanId);
   const camp = await getCamp(baan.campId);
@@ -33,13 +35,13 @@ export default async function Baan({ params }: { params: { bid: string } }) {
       const peeCamp = await getPeeCamp(campMemberCard.campModelId, token);
       const part = await getPart(peeCamp.partId, token);
       if (camp.boardIds.includes(user._id)) {
-        return <UpdateBaanServer baanId={baanId} />;
+        return <UpdateBaanServer baanId={baanId} user={user} token={token} healthIssue={healthIssue} />;
       }
       if (
         part.auths.includes("หัวหน้าพี่เลี้ยง") &&
         peeCamp.baanId.toString() == params.bid
       ) {
-        return <UpdateBaanServer baanId={baanId} />;
+        return <UpdateBaanServer baanId={baanId} user={user} token={token} healthIssue={healthIssue}/>;
       }
       return <BackToHome />;
     }
@@ -47,10 +49,10 @@ export default async function Baan({ params }: { params: { bid: string } }) {
       const petoCamp = await getPetoCamp(campMemberCard.campModelId, token);
       const part = await getPart(petoCamp.partId, token);
       if (camp.boardIds.includes(user._id)) {
-        return <UpdateBaanServer baanId={baanId} />;
+        return <UpdateBaanServer baanId={baanId} user={user} token={token} healthIssue={healthIssue}/>;
       }
       if (part.auths.includes("หัวหน้าพี่เลี้ยง")) {
-        return <UpdateBaanServer baanId={baanId} />;
+        return <UpdateBaanServer baanId={baanId} user={user} token={token} healthIssue={healthIssue}/>;
       }
       return <BackToHome />;
     }
