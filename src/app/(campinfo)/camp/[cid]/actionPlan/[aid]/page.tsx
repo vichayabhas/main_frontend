@@ -1,11 +1,11 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import BackToHome from "@/components/utility/BackToHome";
 import { getServerSession } from "next-auth";
-import EditActionPlan from "@/components/camp/EditActionPlan";
 import { stringToId } from "@/components/utility/setup";
 import React from "react";
 import { getAllPlaceData } from "@/components/randomthing/placeSetUp";
 import getActionPlanForEdit from "@/libs/camp/getActionPlanForEdit";
+import EditActionPlan from "@/components/camp/actionPlan/EditActionPlan";
 export default async function HospitalDetailPage({
   params,
 }: {

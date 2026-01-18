@@ -693,3 +693,6 @@ export function ifIsTrue<T>(
   }
   return array1;
 }
+export function getIndexArray(length:number){
+  return Array.from(Array(length).keys())
+}

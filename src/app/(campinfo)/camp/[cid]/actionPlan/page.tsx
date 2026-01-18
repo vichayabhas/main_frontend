@@ -1,5 +1,5 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import ActionPlanClient from "@/components/camp/ActionPlanClient";
+import ActionPlanClient from "@/components/camp/actionPlan/ActionPlanClient";
 import BackToHome from "@/components/utility/BackToHome";
 import { stringToId } from "@/components/utility/setup";
 import getActionPlanByCampId from "@/libs/camp/getActionPlanByCampId";

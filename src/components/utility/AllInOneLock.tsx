@@ -16,6 +16,8 @@ export default function AllInOneLock({
   spacialBypass,
   link,
   alternativeChildren,
+  inBaan,
+  nongBypass,
 }: {
   children: React.ReactNode;
   token?: string;
@@ -30,6 +32,8 @@ export default function AllInOneLock({
   };
   link?: [LockLinkType, React.Dispatch<React.SetStateAction<LockLinkType>>];
   alternativeChildren?: React.ReactNode;
+  inBaan?: boolean;
+  nongBypass?: boolean;
 }) {
   if (bypass) {
     return children;
@@ -45,6 +49,13 @@ export default function AllInOneLock({
     if (role) {
       switch (role) {
         case "nong": {
+          if (nongBypass) {
+            return (
+              <PasswordLock token={token} bypass={false} link={link}>
+                {children}
+              </PasswordLock>
+            );
+          }
           if (pushToHome) {
             return <BackToHome />;
           } else {
@@ -52,6 +63,13 @@ export default function AllInOneLock({
           }
         }
         case "pee": {
+          if (nongBypass) {
+            return (
+              <PasswordLock token={token} bypass={false} link={link}>
+                {children}
+              </PasswordLock>
+            );
+          }
           if (mode) {
             switch (mode) {
               case "nong":
@@ -84,6 +102,13 @@ export default function AllInOneLock({
           break;
         }
         case "peto": {
+          if (inBaan) {
+            if (pushToHome) {
+              return <BackToHome />;
+            } else {
+              return null;
+            }
+          }
           if (mode) {
             switch (mode) {
               case "nong":
@@ -135,6 +160,9 @@ export default function AllInOneLock({
     if (role) {
       switch (role) {
         case "nong": {
+          if (nongBypass) {
+            return children;
+          }
           if (
             mode == "pee" &&
             spacialBypass &&
@@ -150,6 +178,9 @@ export default function AllInOneLock({
           }
         }
         case "pee": {
+          if (nongBypass) {
+            return children;
+          }
           if (mode) {
             switch (mode) {
               case "nong":
@@ -167,6 +198,13 @@ export default function AllInOneLock({
           break;
         }
         case "peto": {
+          if (inBaan) {
+            if (pushToHome) {
+              return <BackToHome />;
+            } else {
+              return null;
+            }
+          }
           if (mode) {
             switch (mode) {
               case "nong":
@@ -295,6 +333,8 @@ export function getDefaultLockInit({
   lock,
   mode,
   spacialBypass,
+  inBaan,
+  nongBypass,
 }: {
   token?: string;
   role?: RoleCamp;
@@ -305,6 +345,8 @@ export function getDefaultLockInit({
     role: Role;
     bypass: boolean;
   };
+  inBaan?: boolean;
+  nongBypass?: boolean;
 }): LockLinkType {
   if (bypass) {
     return "pass";
@@ -316,9 +358,15 @@ export function getDefaultLockInit({
     if (role) {
       switch (role) {
         case "nong": {
+          if (nongBypass) {
+            return "wait for password";
+          }
           return "lock";
         }
         case "pee": {
+          if (nongBypass) {
+            return "wait for password";
+          }
           if (mode) {
             switch (mode) {
               case "nong":
@@ -343,6 +391,9 @@ export function getDefaultLockInit({
           break;
         }
         case "peto": {
+          if (inBaan) {
+            return "lock";
+          }
           if (mode) {
             switch (mode) {
               case "nong":
@@ -377,6 +428,9 @@ export function getDefaultLockInit({
     if (role) {
       switch (role) {
         case "nong": {
+          if (nongBypass) {
+            return "pass";
+          }
           if (
             mode == "pee" &&
             spacialBypass &&
@@ -388,6 +442,9 @@ export function getDefaultLockInit({
           return "lock";
         }
         case "pee": {
+          if (nongBypass) {
+            return "pass";
+          }
           if (mode) {
             switch (mode) {
               case "nong":
@@ -401,6 +458,9 @@ export function getDefaultLockInit({
           break;
         }
         case "peto": {
+          if (inBaan) {
+            return "lock";
+          }
           if (mode) {
             switch (mode) {
               case "nong":

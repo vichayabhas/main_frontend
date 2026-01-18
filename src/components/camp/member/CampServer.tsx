@@ -7,16 +7,15 @@ import getPart from "@/libs/camp/getPart";
 import getPeeCampData from "@/libs/camp/getPeeCampData";
 import getPetoCampData from "@/libs/camp/getPetoCampData";
 import React from "react";
-import LocationDateReserve from "./LocationDateReserve";
-import NongCampClient from "./NongCampClient";
-import NongPendingPage from "./NongPendingPage";
-import NongSureClient from "./NongSureClient";
-import PeeCampClient from "./PeeCampClient";
-import PetoCampClient from "./PetoCampClient";
+import NongCampClient from "./inCamp/NongCampClient";
+import NongPendingPage from "../admission/NongPendingPage";
+import NongSureClient from "../admission/NongSureClient";
+import PeeCampClient from "./inCamp/PeeCampClient";
+import PetoCampClient from "./inCamp/PetoCampClient";
 import { Id } from "../../../../configTypes";
-import { CampState, MyMap } from "../../../../interface";
-import getParts from "@/libs/camp/getParts";
-import RegisterCamp from "./RegisterCamp";
+import getDataForStaffUpdateRegister from "@/libs/camp/getDataForStaffUpdateRegister";
+import RegisterCamp from "../admission/RegisterCamp";
+import UpdateStaffRegister from "../admission/UpdateStaffRegister";
 export default async function CampServer({
   token,
   campId,
@@ -24,16 +23,6 @@ export default async function CampServer({
   token: string;
   campId: Id;
 }) {
-  async function getPartMaps(campState: CampState, token: string) {
-    const partMap: MyMap[] = [];
-    let i = 0;
-    const parts = await getParts(campState.camp._id, token);
-    while (i < parts.length) {
-      const part = parts[i++];
-      partMap.push({ key: part._id, value: part.partName });
-    }
-    return partMap;
-  }
   const allPlaceData = await getAllPlaceData();
   const campState = await getCampState(campId, token);
   switch (campState.state) {
@@ -82,27 +71,22 @@ export default async function CampServer({
       );
     case "peePass": {
       const part = await getPart(stringToId(campState.link), token);
-      if (!campState.camp.peeLock) {
-        const partMap = await getPartMaps(campState, token);
-        return (
-          <LocationDateReserve
-            partMap={partMap}
-            defaultSelect={{ key: part._id, value: part.partName }}
-            token={token}
-            user={campState.user}
-          />
-        );
-      } else {
-        return (
-          <>
-            <ImagesFromUrl urls={campState.camp.pictureUrls} />
-            {part.partName}
-          </>
-        );
-      }
+      return (
+        <>
+          <ImagesFromUrl urls={campState.camp.pictureUrls} />
+          {part.partName}
+        </>
+      );
     }
     case "notRegister": {
       return <RegisterCamp campState={campState} token={token} />;
+    }
+    case "staffRegister": {
+      const data = await getDataForStaffUpdateRegister(
+        campState.camp._id,
+        token
+      );
+      return <UpdateStaffRegister token={token} data={data} />;
     }
   }
 }

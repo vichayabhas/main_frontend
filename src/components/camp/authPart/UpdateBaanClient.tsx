@@ -34,10 +34,10 @@ import {
   BasicUser,
   HealthIssueBody,
 } from "../../../../interface";
-import BaanMembers from "../member/components/BaanMembers";
+import BaanMembers from "../member/components/baan/BaanMembers";
 import { io, Socket } from "socket.io-client";
 import { getShowPlaceFromInterPlace } from "@/components/randomthing/placeSetUp";
-import { RealTimeBaanJob } from "../member/components/setup";
+import { RealTimeBaanJob } from "../member/components/general/setup";
 const socket = io(getBackendUrl());
 
 export class RealTimeBaan {

@@ -4,7 +4,7 @@ import { GetGroupContainer, UpdateSubGroup } from "../../../interface";
 export default async function updateSubGroupByAnyone(
   input: UpdateSubGroup,
   token: string,
-  socket: SocketReady<GetGroupContainer>,
+  socket: SocketReady<GetGroupContainer>
 ) {
   const response = await fetch(
     `${getBackendUrl()}/camp/updateSubGroupByAnyone/`,

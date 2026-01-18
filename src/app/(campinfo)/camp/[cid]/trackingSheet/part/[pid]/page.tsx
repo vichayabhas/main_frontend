@@ -1,12 +1,12 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import BackToHome from "@/components/utility/BackToHome";
-import WorkingItemClient from "@/components/camp/WorkingItemClient";
 import getWorkingItemByPartId from "@/libs/camp/getWorkingItemByPartId";
 import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";
 import PasswordLock from "@/components/utility/PasswordLock";
 import { stringToId } from "@/components/utility/setup";
 import React from "react";
+import WorkingItemClient from "@/components/camp/workingItem/WorkingItemClient";
 export default async function HospitalDetailPage({
   params,
 }: {

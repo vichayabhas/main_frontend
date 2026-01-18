@@ -5,7 +5,7 @@ import getUserProfile from "@/libs/user/getUserProfile";
 import { getServerSession } from "next-auth";
 import PasswordLock from "@/components/utility/PasswordLock";
 import React from "react";
-import WorkingItemWithoutSocketClient from "@/components/camp/WorkingItemWithoutSocketClient";
+import WorkingItemWithoutSocketClient from "@/components/camp/workingItem/WorkingItemWithoutSocketClient";
 export default async function page() {
   const session = await getServerSession(authOptions);
   if (!session) {

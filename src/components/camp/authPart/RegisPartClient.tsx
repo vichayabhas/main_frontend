@@ -10,6 +10,11 @@ import {
   downloadText,
   getBackendUrl,
   SocketReady,
+  getIndexArray,
+  setBoolean,
+  setMap,
+  modifyElementInUseStateArray,
+  notEmpty,
 } from "@/components/utility/setup";
 import StringToHtml from "@/components/utility/StringToHtml";
 import Waiting from "@/components/utility/Waiting";
@@ -27,9 +32,12 @@ import {
   RegisPart,
   ShowMember,
   TriggerNotification,
+  BasicPart,
 } from "../../../../interface";
 import { io } from "socket.io-client";
 import { RealTimeCamp } from "./UpdateCampClient";
+import addStaffToCamp from "@/libs/camp/addStaffToCamp";
+import AllInOneLock from "@/components/utility/AllInOneLock";
 const socket = io(getBackendUrl());
 function filterOut(inputs: ShowRegisterNong[]): (previous: Id[]) => Id[] {
   const ids = inputs.map((e) => e.user._id);
@@ -48,7 +56,7 @@ export default function RegisterPartClient({
   const updateSocket = new SocketReady<RegisterData>(
     socket,
     "registerUpdate",
-    data.camp._id
+    data.camp._id,
   );
   const router = useRouter();
   const [nongPendingIds, setNongPendingIds] = React.useState<Id[]>([]);
@@ -70,9 +78,23 @@ export default function RegisterPartClient({
       partMap,
       nongRegister,
       partBoardIdString,
+      peeRegister,
+      petoRegister,
     },
     setData,
   ] = React.useState(data);
+  const [peeParts, setPeeParts] = React.useState<(BasicPart | null)[]>(
+    peeRegister.map(() => null),
+  );
+  const [peeOverrides, setPeeOverrides] = React.useState<boolean[]>(
+    peeRegister.map(() => false),
+  );
+  const [petoParts, setPetoParts] = React.useState<(BasicPart | null)[]>(
+    petoRegister.map(() => null),
+  );
+  const [petoOverrides, setPetoOverrides] = React.useState<boolean[]>(
+    petoRegister.map(() => false),
+  );
   const [camp, setCamp] = React.useState(data.camp);
   const [countDowns, setCountDowns] = React.useState<number[]>(
     regisBaans.map((baan) => {
@@ -81,7 +103,7 @@ export default function RegisterPartClient({
       } else {
         return -1;
       }
-    })
+    }),
   );
   const realTimeCamp = new RealTimeCamp(camp._id, socket);
   const mapIn: MyMap[] = regisBaans.map((regisBaan) => ({
@@ -95,7 +117,7 @@ export default function RegisterPartClient({
   const regisRaw = regisParts.filter(
     (e) =>
       e.part._id.toString() !== partBoardIdString &&
-      e.part.auths.includes("ทะเบียน")
+      e.part.auths.includes("ทะเบียน"),
   );
   const regis = regisRaw.map(partToMyMap);
 
@@ -124,6 +146,8 @@ export default function RegisterPartClient({
   const paidRef = React.useRef(null);
   const sureRef = React.useRef(null);
   const peePassRef = React.useRef(null);
+  const peeRegisterRef = React.useRef(null);
+  const petoRegisterRef = React.useRef(null);
   const pendingDownload = useDownloadExcel({
     currentTableRef: pendingRef.current,
     filename: "น้องที่สมัครเข้ามา",
@@ -146,10 +170,43 @@ export default function RegisterPartClient({
   });
   const peePassDownload = useDownloadExcel({
     currentTableRef: peePassRef.current,
-    filename: "พี่ที่สมัครเข้ามา",
+    filename: `พี่${camp.groupName} รอหา${camp.groupName}`,
+  });
+  const peeRegisterDownload = useDownloadExcel({
+    currentTableRef: peeRegisterRef.current,
+    filename: `พี่${camp.groupName} ลงทะเบียน`,
+  });
+  const petoRegisterDownload = useDownloadExcel({
+    currentTableRef: petoRegisterRef.current,
+    filename: `พี่ปีโต ลงทะเบียน`,
   });
   React.useEffect(() => {
     updateSocket.listen((data2: RegisterData) => {
+      interface BackupStaffRegister {
+        override: boolean;
+        part: BasicPart;
+        id: Id;
+      }
+      const peeRegisterUserIds = data2.peeRegister.map((v) => v.user._id);
+      const petoRegisterUserIds = data2.petoRegister.map((v) => v.user._id);
+      const backupPeeRegisters: BackupStaffRegister[] = peeRegister
+        .map((v, i) => ({
+          override: peeOverrides[i],
+          part: peeParts[i] ?? data.partPeeBaan,
+          id: v.user._id,
+        }))
+        .filter((v) => peeRegisterUserIds.includes(v.id));
+      const backupPetoRegisters: BackupStaffRegister[] = petoRegister
+        .map((v, i) => ({
+          override: petoOverrides[i],
+          part: petoParts[i] ?? data.partPeeBaan,
+          id: v.user._id,
+        }))
+        .filter((v) => petoRegisterUserIds.includes(v.id));
+      setPeeParts(backupPeeRegisters.map((v) => v.part));
+      setPeeOverrides(backupPeeRegisters.map((v) => v.override));
+      setPetoParts(backupPetoRegisters.map((v) => v.part));
+      setPetoOverrides(backupPetoRegisters.map((v) => v.override));
       setData(data2);
       setNongPendingIds(filterOut(data2.nongRegister.pendings));
       setNongInterviewIds(filterOut(data2.nongRegister.interviews));
@@ -167,7 +224,7 @@ export default function RegisterPartClient({
             },
             "updateNotification",
             baan.baan._id.toString(),
-            socket
+            socket,
           );
         } else {
           return -1;
@@ -184,7 +241,7 @@ export default function RegisterPartClient({
           } else {
             return -1;
           }
-        })
+        }),
       );
     });
     realTimeCamp.listen(setCamp);
@@ -198,7 +255,7 @@ export default function RegisterPartClient({
           } else {
             return -1;
           }
-        })
+        }),
       );
     }, 1000);
     return () => {
@@ -218,13 +275,14 @@ export default function RegisterPartClient({
           },
           "updateNotification",
           baan.baan._id.toString(),
-          socket
+          socket,
         );
       } else {
         return -1;
       }
     });
   }
+  const maxPartIndexes = getIndexArray(camp.maxRegister);
   return (
     <div
       style={{
@@ -317,6 +375,298 @@ export default function RegisterPartClient({
               marginTop: "30px",
             }}
           >
+            พี่{camp.groupName}ที่สมัครเข้ามา
+          </div>
+          <table
+            className="table-auto border border-x-black border-separate"
+            ref={peeRegisterRef}
+          >
+            <tr>
+              <th>ชื่อจริง</th>
+              <th>นามสกุล</th>
+              <th>ชือเล่น</th>
+              {maxPartIndexes.map((i) => (
+                <>
+                  <th>ฝ่ายที่{i + 1}</th>
+                  <th>link</th>
+                  <th>select</th>
+                </>
+              ))}
+              <th>ฝ่ายพี่บ้าน</th>
+              <AllInOneLock
+                bypass={
+                  camp.memberStructure ==
+                  "nong->highSchool,pee->1year,peto->2upYear"
+                }
+                lock
+              >
+                <th>override</th>
+              </AllInOneLock>
+            </tr>
+            {peeRegister.map((v, i) => (
+              <tr key={i}>
+                <td>{v.user.name}</td>
+                <td>{v.user.lastname}</td>
+                <td>{v.user.nickname}</td>
+                {maxPartIndexes.map((j) =>
+                  j < peeRegister[i].parts.length ? (
+                    <>
+                      <td>{peeRegister[i].parts[j].part.partName}</td>
+                      <td>
+                        <StringToHtml input={peeRegister[i].parts[j].link} />
+                      </td>
+                      <td>
+                        <Checkbox
+                          onChange={setBoolean((check) => {
+                            if (check) {
+                              setMap(
+                                setPeeParts,
+                                modifyElementInUseStateArray(i),
+                              )(peeRegister[i].parts[j].part);
+                            } else {
+                              setMap(
+                                setPeeParts,
+                                modifyElementInUseStateArray(i),
+                              )(null);
+                            }
+                          })}
+                          checked={
+                            peeRegister[i].parts[j].part._id.toString() ==
+                            peeParts[i]?._id.toString()
+                          }
+                        />
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </>
+                  ),
+                )}
+                <td>
+                  <Checkbox
+                    checked={
+                      peeParts[i]?._id.toString() ==
+                      data.partPeeBaan._id.toString()
+                    }
+                    onChange={setBoolean((check) => {
+                      if (check) {
+                        setMap(
+                          setPeeParts,
+                          modifyElementInUseStateArray(i),
+                        )(data.partPeeBaan);
+                      } else {
+                        setMap(
+                          setPeeParts,
+                          modifyElementInUseStateArray(i),
+                        )(null);
+                      }
+                    })}
+                  />
+                </td>
+                <AllInOneLock
+                  bypass={
+                    camp.memberStructure ==
+                    "nong->highSchool,pee->1year,peto->2upYear"
+                  }
+                  lock
+                >
+                  <td>
+                    <Checkbox
+                      checked={peeOverrides[i]}
+                      onChange={setBoolean(
+                        setMap(
+                          setPeeOverrides,
+                          modifyElementInUseStateArray(i),
+                        ),
+                      )}
+                    />
+                  </td>
+                </AllInOneLock>
+              </tr>
+            ))}
+          </table>
+          <FinishButton
+            text={downloadText}
+            onClick={peeRegisterDownload.onDownload}
+          />
+          <AllInOneLock
+            bypass={
+              camp.memberStructure ==
+              "nong->highSchool,pee->1year,peto->2upYear"
+            }
+            lock
+          >
+            <div
+              style={{
+                color: "#961A1D",
+                fontWeight: "bold",
+                marginTop: "30px",
+              }}
+            >
+              พี่ปีโตที่สมัครเข้ามา
+            </div>
+            <table
+              className="table-auto border border-x-black border-separate"
+              ref={petoRegisterRef}
+            >
+              <tr>
+                <th>ชื่อจริง</th>
+                <th>นามสกุล</th>
+                <th>ชือเล่น</th>
+                {maxPartIndexes.map((i) => (
+                  <>
+                    <th>ฝ่ายที่{i + 1}</th>
+                    <th>link</th>
+                    <th>select</th>
+                  </>
+                ))}
+                <th>ฝ่ายพี่บ้าน</th>
+                <th>override</th>
+              </tr>
+              {petoRegister.map((v, i) => (
+                <tr key={i}>
+                  <td>{v.user.name}</td>
+                  <td>{v.user.lastname}</td>
+                  <td>{v.user.nickname}</td>
+                  {maxPartIndexes.map((j) =>
+                    j < petoRegister[i].parts.length ? (
+                      <>
+                        <td>{petoRegister[i].parts[j].part.partName}</td>
+                        <td>
+                          <StringToHtml input={petoRegister[i].parts[j].link} />
+                        </td>
+                        <td>
+                          <Checkbox
+                            onChange={setBoolean((check) => {
+                              if (check) {
+                                setMap(
+                                  setPetoParts,
+                                  modifyElementInUseStateArray(i),
+                                )(petoRegister[i].parts[j].part);
+                              } else {
+                                setMap(
+                                  setPetoParts,
+                                  modifyElementInUseStateArray(i),
+                                )(null);
+                              }
+                            })}
+                            checked={
+                              petoRegister[i].parts[j].part._id.toString() ==
+                              petoParts[i]?._id.toString()
+                            }
+                          />
+                        </td>
+                      </>
+                    ) : (
+                      <>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </>
+                    ),
+                  )}
+                  <td>
+                    <Checkbox
+                      checked={
+                        petoParts[i]?._id.toString() ==
+                        data.partPeeBaan._id.toString()
+                      }
+                      onChange={setBoolean((check) => {
+                        if (check) {
+                          setMap(
+                            setPetoParts,
+                            modifyElementInUseStateArray(i),
+                          )(data.partPeeBaan);
+                        } else {
+                          setMap(
+                            setPetoParts,
+                            modifyElementInUseStateArray(i),
+                          )(null);
+                        }
+                      })}
+                    />
+                  </td>
+                  <td>
+                    <Checkbox
+                      checked={petoOverrides[i]}
+                      onChange={setBoolean(
+                        setMap(
+                          setPetoOverrides,
+                          modifyElementInUseStateArray(i),
+                        ),
+                      )}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </table>
+            <FinishButton
+              text={downloadText}
+              onClick={petoRegisterDownload.onDownload}
+            />
+          </AllInOneLock>
+          <FinishButton
+            text="add staff"
+            onClick={() => {
+              addStaffToCamp(
+                {
+                  peePartRegisters: peeRegister
+                    .map((v, i) => {
+                      const peePart = peeParts[i];
+                      if (!peePart || peeOverrides[i]) {
+                        return null;
+                      } else {
+                        return { partId: peePart._id, userId: v.user._id };
+                      }
+                    })
+                    .concat(
+                      petoRegister.map((v, i) => {
+                        const petoPart = petoParts[i];
+                        if (!petoPart || !petoOverrides[i]) {
+                          return null;
+                        } else {
+                          return { partId: petoPart._id, userId: v.user._id };
+                        }
+                      }),
+                    )
+                    .filter(notEmpty),
+                  petoPartRegisters: petoRegister
+                    .map((v, i) => {
+                      const petoPart = petoParts[i];
+                      if (!petoPart || petoOverrides[i]) {
+                        return null;
+                      } else {
+                        return { partId: petoPart._id, userId: v.user._id };
+                      }
+                    })
+                    .concat(
+                      peeRegister.map((v, i) => {
+                        const peePart = peeParts[i];
+                        if (!peePart || !peeOverrides[i]) {
+                          return null;
+                        } else {
+                          return { partId: peePart._id, userId: v.user._id };
+                        }
+                      }),
+                    )
+                    .filter(notEmpty),
+                  campId: data.camp._id,
+                },
+                token,
+                updateSocket,
+              );
+            }}
+          />
+          <div
+            style={{
+              color: "#961A1D",
+              fontWeight: "bold",
+              marginTop: "30px",
+            }}
+          >
             น้องที่สมัครเข้ามา
           </div>
           <table
@@ -379,7 +729,7 @@ export default function RegisterPartClient({
                         { members: nongPendingIds, campId: camp._id },
                         "interview",
                         token,
-                        updateSocket
+                        updateSocket,
                       );
                       setNongPendingIds([]);
                     });
@@ -393,7 +743,7 @@ export default function RegisterPartClient({
                         { members: nongPendingIds, campId: camp._id },
                         "kick/nong",
                         token,
-                        updateSocket
+                        updateSocket,
                       );
                       setNongPendingIds([]);
                     });
@@ -467,7 +817,7 @@ export default function RegisterPartClient({
                         { members: nongInterviewIds, campId: camp._id },
                         "pass",
                         token,
-                        updateSocket
+                        updateSocket,
                       );
                       setNongInterviewIds([]);
                     });
@@ -481,7 +831,7 @@ export default function RegisterPartClient({
                         { members: nongInterviewIds, campId: camp._id },
                         "kick/nong",
                         token,
-                        updateSocket
+                        updateSocket,
                       );
                       setNongInterviewIds([]);
                     });
@@ -508,7 +858,7 @@ export default function RegisterPartClient({
                         { members: nongPendingIds, campId: camp._id },
                         "pass",
                         token,
-                        updateSocket
+                        updateSocket,
                       );
                       setNongPendingIds([]);
                     });
@@ -522,7 +872,7 @@ export default function RegisterPartClient({
                         { members: nongPendingIds, campId: camp._id },
                         "kick/nong",
                         token,
-                        updateSocket
+                        updateSocket,
                       );
                       setNongPendingIds([]);
                     });
@@ -643,7 +993,7 @@ export default function RegisterPartClient({
                         { members: nongPaidIds, campId: camp._id },
                         "sure",
                         token,
-                        updateSocket
+                        updateSocket,
                       );
                       setNongPaidIds([]);
                     });
@@ -657,7 +1007,7 @@ export default function RegisterPartClient({
                         { members: nongPaidIds, campId: camp._id },
                         "kick/nong",
                         token,
-                        updateSocket
+                        updateSocket,
                       );
                       setNongPendingIds([]);
                     });
@@ -717,7 +1067,7 @@ export default function RegisterPartClient({
               marginTop: "30px",
             }}
           >
-            พี่ที่สมัครเข้ามา
+            พี่{camp.groupName}รอหา{camp.groupName}
           </div>
           <table
             ref={peePassRef}
@@ -727,7 +1077,7 @@ export default function RegisterPartClient({
             <th className=" border border-x-black">ชือเล่น</th>
             <th className=" border border-x-black">ชื่อจริง</th>
             <th className=" border border-x-black">นามสกุล</th>
-            <th className=" border border-x-black">link</th>
+            <th className=" border border-x-black">ฝ่าย</th>
             <th className=" border border-x-black">select</th>
             {peeRegisters.map((v, i) => (
               <tr key={i}>
@@ -766,20 +1116,20 @@ export default function RegisterPartClient({
               { baanId, members: nongSureIds },
               "nong",
               token,
-              "add"
+              "add",
             );
             await addMemberToBaan(
               { baanId, members: peePassIds },
               "pee",
               token,
-              "add"
+              "add",
             );
             const newData = await changeBaan(
               { userIds: members, baanId },
               token,
-              updateSocket
+              updateSocket,
             );
-            updateNotification(newData)
+            updateNotification(newData);
             setNongSureIds([]);
             setPeePassIds([]);
             setMembers([]);
@@ -872,7 +1222,7 @@ export default function RegisterPartClient({
                           className=" border border-x-black"
                           onClick={() => {
                             router.push(
-                              `/healthIssue/${user.healthIssueId?.toString()}`
+                              `/healthIssue/${user.healthIssueId?.toString()}`,
                             );
                           }}
                         >
@@ -966,7 +1316,7 @@ export default function RegisterPartClient({
                           className=" border border-x-black"
                           onClick={() => {
                             router.push(
-                              `/healthIssue/${user.healthIssueId?.toString()}`
+                              `/healthIssue/${user.healthIssueId?.toString()}`,
                             );
                           }}
                         >
@@ -1079,7 +1429,7 @@ export default function RegisterPartClient({
                           className=" border border-x-black"
                           onClick={() => {
                             router.push(
-                              `/healthIssue/${user.healthIssueId?.toString()}`
+                              `/healthIssue/${user.healthIssueId?.toString()}`,
                             );
                           }}
                         >
@@ -1173,7 +1523,7 @@ export default function RegisterPartClient({
                           className=" border border-x-black"
                           onClick={() => {
                             router.push(
-                              `/healthIssue/${user.healthIssueId?.toString()}`
+                              `/healthIssue/${user.healthIssueId?.toString()}`,
                             );
                           }}
                         >

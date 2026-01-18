@@ -7,7 +7,6 @@ export default async function getNotification(
   const response = await fetch(
     `${getBackendUrl()}/randomthing/getNotification/`,
     {
-      method: "POST",
       cache: "no-store",
       headers: {
         "Content-Type": "application/json",

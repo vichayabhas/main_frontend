@@ -5,11 +5,13 @@ import {
   Id,
   ImageAndDescriptionType,
   imageAndDescriptionTypes,
+  Mode,
   ShowImageAndDescriptions,
 } from "../../../../interface";
 import { MenuItem, Select, TextField } from "@mui/material";
 import {
   addItemInUseStateArray,
+  copy,
   getBackendUrl,
   modifyElementInUseStateArray,
   removeElementInUseStateArray,
@@ -43,9 +45,11 @@ export default function UpdateImageAndDescription({
     React.useState(
       imageAndDescriptionContainersPack.imageAndDescriptionContainers
     );
+  const [mode, setMode] = React.useState<Mode>("pee");
   const updateSocket = new SocketReady<ShowImageAndDescriptions[]>(
     socket,
-    "updateImageAndDescriptions",imageAndDescriptionContainersPack.baan._id
+    "updateImageAndDescriptions",
+    imageAndDescriptionContainersPack.baan._id
   );
   React.useEffect(() => {
     updateSocket.listen(setImageAndDescriptionContainers);
@@ -90,6 +94,7 @@ export default function UpdateImageAndDescription({
                   );
                   set_id(imageAndDescriptionContainer._id);
                   setName(imageAndDescriptionContainer.name);
+                  setMode(imageAndDescriptionContainer.mode);
                 }}
                 key={i}
                 value={imageAndDescriptionContainer.name}
@@ -116,6 +121,7 @@ export default function UpdateImageAndDescription({
               setImageUrls([]);
               set_id(null);
               setName("");
+              setMode("pee");
             }}
             value="สร้างจากของใหม่"
           >
@@ -163,6 +169,15 @@ export default function UpdateImageAndDescription({
             ))}
           </Select>
         ) : null}
+        mode
+        <Select value={mode} renderValue={copy}>
+          <MenuItem onClick={() => setMode("pee")} value="pee">
+            เฉพาะพี่บ้าน
+          </MenuItem>
+          <MenuItem onClick={() => setMode("nong")} value="nong">
+            น้องค่ายสามารถเห็นได้
+          </MenuItem>
+        </Select>
         <table>
           <tr>
             <th>รูปภาพ</th>
@@ -269,6 +284,7 @@ export default function UpdateImageAndDescription({
                     description: descriptions[i],
                     order: orders[i],
                   })),
+                  mode,
                 },
                 token,
                 updateSocket
@@ -289,6 +305,7 @@ export default function UpdateImageAndDescription({
                     description: descriptions[i],
                   })),
                   baanId: imageAndDescriptionContainersPack.baan._id,
+                  mode,
                 },
                 token,
                 updateSocket

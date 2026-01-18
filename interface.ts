@@ -188,6 +188,7 @@ export interface InterCampBack {
   boyZoneLadyZoneState: BoyZoneLadyZoneState;
   canNongSeeBaanOrder: boolean;
   scoreIds: Id[];
+  maxRegister: number;
   //public
 }
 export interface InterCampStyle {
@@ -656,6 +657,7 @@ export interface UpdateCamp {
   canReadTimeOnMirror: boolean;
   nongCall: string;
   canNongSeeBaanOrder: boolean;
+  maxRegister: number;
   //public
 }
 export interface CreateCamp {
@@ -1445,6 +1447,7 @@ export interface GetNongData {
   baanOrders: ShowOrder[];
   campMemberCardOrders: ShowOrder[];
   baanJobs: GetJob[];
+  imageAndDescriptions: ShowImageAndDescriptions[];
   //private
 }
 export interface GetPeeData {
@@ -1606,7 +1609,7 @@ export interface BasicUser {
   authPartIds: Id[];
   tel: string;
   email: string;
-  registerIds:Id[]
+  registerIds: Id[];
   //private
 }
 export interface BasicBaan {
@@ -1685,6 +1688,7 @@ export interface BasicCamp {
   boardIds: Id[];
   baanIds: Id[];
   partIds: Id[];
+  maxRegister: number;
   //public
 }
 export interface BasicPart {
@@ -1712,6 +1716,9 @@ export interface RegisterData {
   partMap: MyMap[];
   nongRegister: AllNongRegister;
   partBoardIdString: string;
+  peeRegister: ShowStaffRegister[];
+  petoRegister: ShowStaffRegister[];
+  partPeeBaan:BasicPart
 }
 export type QuestionCategory =
   | "พี่พี่"
@@ -1761,6 +1768,7 @@ export interface CampState {
     | "paid"
     | "sure"
     | "peePass"
+    | "staffRegister"
     | "nong"
     | "pee"
     | "peto";
@@ -1817,6 +1825,7 @@ export interface InterImageAndDescriptionContainer {
   childIds: Id[];
   types: ImageAndDescriptionType;
   _id: Id;
+  mode: Mode;
   name: string;
 }
 export interface EditImageAndDescription {
@@ -1835,12 +1844,14 @@ export interface EditImageAndDescriptionContainer {
   _id: Id;
   name: string;
   children: EditImageAndDescription[];
+  mode: Mode;
 }
 export interface ShowImageAndDescriptions {
   types: ImageAndDescriptionType;
   _id: Id | null;
   name: string;
   children: InterImageAndDescription[];
+  mode: Mode;
   baanId: Id | null;
 }
 export interface CreateImageAndDescriptionContainer {
@@ -1848,6 +1859,7 @@ export interface CreateImageAndDescriptionContainer {
   name: string;
   children: CreateImageAndDescription[];
   baanId: Id;
+  mode: Mode;
 }
 export interface GetImageAndDescriptionsPackForUpdate {
   imageAndDescriptionContainers: ShowImageAndDescriptions[];
@@ -2370,25 +2382,21 @@ export type GewertzSquareAvailableTime =
   (typeof gewertzSquareAvailableTimes)[number];
 export const gewertzSquareMaxContinue = 3;
 export interface InterGewertzSquareBooking {
-  day: number;
-  month: number;
-  year: number;
-  time: GewertzSquareAvailableTime;
   room: GewertzSquareRoomType;
   userId: Id;
   userType: UserType;
   _id: Id;
   tel: string;
-  period: number;
+  start: Date;
+  end: Date;
+  approved: boolean;
 }
 export interface BookingGewertzSquareRoom {
-  day: number;
-  month: number;
-  year: number;
-  time: GewertzSquareAvailableTime;
   room: GewertzSquareRoomType;
   tel: string;
-  period: number;
+  start: Date;
+  end: Date;
+  approved: boolean;
 }
 export interface CommonUser {
   gewertzSquareBookingIds: Id[];
@@ -2404,6 +2412,8 @@ export interface CommonUser {
 export interface GetGewertzSquareBooking {
   all: InterGewertzSquareBooking[];
   own: InterGewertzSquareBooking[];
+  displayOffset: UpdateTimeOffsetRaw;
+  selectOffset: UpdateTimeOffsetRaw;
 }
 export interface UpdateBookingGewertzSquareRoom
   extends BookingGewertzSquareRoom {
@@ -2484,4 +2494,30 @@ export interface PeeUpdateMode {
   filterIds: Id[];
   linkHash: string;
   notifyOnlyYourPart: boolean;
+}
+export interface ShowStaffRegister {
+  user: BasicUser;
+  parts: {
+    link: string;
+    part: BasicPart;
+    rank: number;
+  }[];
+}
+export interface StaffRegisterCamp {
+  parts: {
+    link: string;
+    partId: Id;
+    rank: number;
+  }[];
+  campId: Id;
+}
+export interface AddStaffToCamp {
+  peePartRegisters: { partId: Id; userId: Id }[];
+  petoPartRegisters: { partId: Id; userId: Id }[];
+  campId: Id;
+}
+export interface GetDataForStaffUpdateRegister {
+  parts: BasicPart[];
+  camp: BasicCamp;
+  oldStaffRegister: ShowStaffRegister;
 }

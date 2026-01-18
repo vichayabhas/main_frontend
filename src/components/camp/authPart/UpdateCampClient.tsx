@@ -14,6 +14,7 @@ import {
   notEmpty,
   SocketReady,
   getBackendUrl,
+  setTextToInt,
 } from "@/components/utility/setup";
 import TypingImageSource from "@/components/utility/TypingImageSource";
 import addBaan from "@/libs/admin/addBaan";
@@ -47,7 +48,7 @@ interface RealTimeAuthPart {
 export class RealTimeCamp {
   private socket: SocketReady<UpdateCampOut>;
   constructor(campId: Id, socket: Socket) {
-    this.socket = new SocketReady<UpdateCampOut>(socket, "updateCamp",campId);
+    this.socket = new SocketReady<UpdateCampOut>(socket, "updateCamp", campId);
   }
   public listen(setCamp: React.Dispatch<React.SetStateAction<BasicCamp>>) {
     this.socket.listen((event) => {
@@ -99,6 +100,7 @@ export default function UpdateCampClient({
   const [haveCloth, setHaveCloth] = React.useState<boolean>(camp.haveCloth);
   const [showCorrectAnswerAndScore, setShowCorrectAnswerAndScore] =
     React.useState(camp.showCorrectAnswerAndScore);
+  const [maxRegister, setMaxRegister] = React.useState(camp.maxRegister);
   const {
     up: lockChangeQuestion,
     middle: canAnswerTheQuestion,
@@ -171,12 +173,18 @@ export default function UpdateCampClient({
     );
     setCanReadTimeOnMirror(newCampData.canReadTimeOnMirror);
     setNongCall(newCampData.nongCall);
+    setMaxRegister(newCampData.maxRegister);
   }
   const realTimeAuthPartSocket = new SocketReady<RealTimeAuthPart>(
     socket,
-    "realTimeAuthPart",data.camp._id
+    "realTimeAuthPart",
+    data.camp._id
   );
-  const updateCampSocket = new SocketReady<UpdateCampOut>(socket, "updateCamp",data.camp._id);
+  const updateCampSocket = new SocketReady<UpdateCampOut>(
+    socket,
+    "updateCamp",
+    data.camp._id
+  );
   React.useEffect(() => {
     updateCampSocket.listen((newData) => {
       reset(newData.camp, newData.parts);
@@ -417,6 +425,34 @@ export default function UpdateCampClient({
             }}
             onChange={setTextToString(setNongCall)}
             value={nongCall}
+          />
+        </div>
+        <div className="flex flex-row items-center my-5">
+          <label className="w-2/5 text-2xl text-white">
+            อนุญาติให้สมัครได้กี่ฝ่าย
+          </label>
+          <TextField
+            name="Tel"
+            id="Tel"
+            className="w-3/5 bg-white rounded-2xl "
+            sx={{
+              backgroundColor: "#f5f5f5",
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderRadius: " 1rem",
+                  borderColor: "transparent",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#5479FF",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#5479FF",
+                },
+              },
+            }}
+            onChange={setTextToInt(setMaxRegister)}
+            value={maxRegister.toString()}
+            type="number"
           />
         </div>
         <div className="flex flex-row items-center my-5">
@@ -799,10 +835,11 @@ export default function UpdateCampClient({
                       canReadTimeOnMirror,
                       nongCall,
                       canNongSeeBaanOrder,
+                      maxRegister,
                     },
                     camp._id,
                     token,
-                    updateCampSocket,
+                    updateCampSocket
                   );
                 } catch (error) {
                   console.log(error);

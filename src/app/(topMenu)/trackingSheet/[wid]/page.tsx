@@ -5,11 +5,11 @@ import getWorkingItem from "@/libs/camp/getWorkingItem";
 import getUserProfile from "@/libs/user/getUserProfile";
 import bcrypt from "bcrypt";
 import getPart from "@/libs/camp/getPart";
-import EditWorkingItem from "@/components/camp/EditWorkingItem";
 import PasswordLock from "@/components/utility/PasswordLock";
 import { stringToId } from "@/components/utility/setup";
 import React from "react";
 import getParts from "@/libs/camp/getParts";
+import EditWorkingItem from "@/components/camp/workingItem/EditWorkingItem";
 export default async function HospitalDetailPage({
   params,
 }: {

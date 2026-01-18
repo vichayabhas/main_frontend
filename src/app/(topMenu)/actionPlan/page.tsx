@@ -1,5 +1,5 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import ActionPlanWithoutSocketClient from "@/components/camp/ActionPlanWithoutSocketClient";
+import ActionPlanWithoutSocketClient from "@/components/camp/actionPlan/ActionPlanWithoutSocketClient";
 import BackToHome from "@/components/utility/BackToHome";
 import getActionPlans from "@/libs/camp/getActionPlans";
 import getTimeOffset from "@/libs/user/getTimeOffset";
