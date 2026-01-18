@@ -260,7 +260,7 @@ export default function UpdateProfileRaw({
             update all
           </button>
         </div>
-        {user ? (
+        {user.fridayActEn ? (
           <>
             <div className="flex flex-row items-center my-5">
               <label className="w-2/5 text-2xl text-white">bypass</label>
