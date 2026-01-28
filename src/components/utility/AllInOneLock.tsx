@@ -18,6 +18,7 @@ export default function AllInOneLock({
   alternativeChildren,
   inBaan,
   nongBypass,
+  canNongAccidentallySee,
 }: {
   children: React.ReactNode;
   token?: string;
@@ -34,6 +35,7 @@ export default function AllInOneLock({
   alternativeChildren?: React.ReactNode;
   inBaan?: boolean;
   nongBypass?: boolean;
+  canNongAccidentallySee?: boolean;
 }) {
   if (bypass) {
     return children;
@@ -181,6 +183,9 @@ export default function AllInOneLock({
           if (nongBypass) {
             return children;
           }
+          if (canNongAccidentallySee) {
+            return children;
+          }
           if (mode) {
             switch (mode) {
               case "nong":
@@ -204,6 +209,9 @@ export default function AllInOneLock({
             } else {
               return null;
             }
+          }
+          if (canNongAccidentallySee) {
+            return children;
           }
           if (mode) {
             switch (mode) {
@@ -335,6 +343,7 @@ export function getDefaultLockInit({
   spacialBypass,
   inBaan,
   nongBypass,
+  canNongAccidentallySee,
 }: {
   token?: string;
   role?: RoleCamp;
@@ -347,6 +356,7 @@ export function getDefaultLockInit({
   };
   inBaan?: boolean;
   nongBypass?: boolean;
+  canNongAccidentallySee?: boolean;
 }): LockLinkType {
   if (bypass) {
     return "pass";
@@ -445,6 +455,9 @@ export function getDefaultLockInit({
           if (nongBypass) {
             return "pass";
           }
+          if (canNongAccidentallySee) {
+            return "pass";
+          }
           if (mode) {
             switch (mode) {
               case "nong":
@@ -460,6 +473,9 @@ export function getDefaultLockInit({
         case "peto": {
           if (inBaan) {
             return "lock";
+          }
+          if (canNongAccidentallySee) {
+            return "pass";
           }
           if (mode) {
             switch (mode) {

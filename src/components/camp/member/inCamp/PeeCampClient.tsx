@@ -1,13 +1,17 @@
 "use client";
 
 import React from "react";
-import { getBackendUrl, setBoolean } from "../../../utility/setup";
+import { getBackendUrl, setBoolean, SocketReady } from "../../../utility/setup";
 import TopMenuItem from "../../../randomthing/TopMenuItem";
 import styles from "../../../randomthing/topMenu.module.css";
 import ImageAndDescriptions from "../components/baan/ImageAndDescriptions";
 import { Checkbox } from "@mui/material";
 import AllInOneLock from "@/components/utility/AllInOneLock";
-import { GetPeeData, AllPlaceData } from "../../../../../interface";
+import {
+  GetPeeData,
+  AllPlaceData,
+  InterCampDict,
+} from "../../../../../interface";
 import ImagesFromUrl from "@/components/utility/ImagesFromUrl";
 import ShowOwnCampData from "../components/general/ShowOwnCampData";
 import BaanMembers from "../components/baan/BaanMembers";
@@ -31,6 +35,7 @@ import MirrorClient from "../components/baan/MirrorClient";
 import SubGroupClient from "../components/baan/SubGroupClient";
 import PartClient from "../components/part/PartClient";
 import PartJob from "../components/part/PartJob";
+import CampDictClient from "../components/general/CampDictClient";
 
 export default function PeeCampClient({
   data,
@@ -70,6 +75,9 @@ export default function PeeCampClient({
   const [camp, setCamp] = React.useState(data.camp);
   const [partPlace, setPartPlace] = React.useState(data.partPlace);
   const [baanJobs, setBaanJobs] = React.useState(data.baanJobs);
+  const [baanDicts, setBaanDicts] = React.useState(data.baanDicts);
+  const [campDicts, setCampDicts] = React.useState(data.campDicts);
+  const [partDicts, setPartDicts] = React.useState(data.partDicts);
   const socket = io(getBackendUrl());
   const realTimeFoodUpdate = new RealTimeFoodUpdate(campMemberCard._id, socket);
   const realTimeBaan = new RealTimeBaan(
@@ -79,25 +87,46 @@ export default function PeeCampClient({
     setGirl,
     setNormal,
     setBaan,
-    allPlaceData
+    allPlaceData,
   );
   const realTimeCamp = new RealTimeCamp(camp._id, socket);
   const realTimePart = new RealTimePart(part._id, socket);
   const realTimeBaanJob = new RealTimeBaanJob(baan._id, socket);
+  const realTimeBaanDicts = new SocketReady<InterCampDict[]>(
+    socket,
+    "baanUpdateDict",
+    baan._id,
+  );
+  const realTimeCampDicts = new SocketReady<InterCampDict[]>(
+    socket,
+    "campUpdateDict",
+    camp._id,
+  );
+  const realTimePartDicts = new SocketReady<InterCampDict[]>(
+    socket,
+    "partUpdateDict",
+    part._id,
+  );
   React.useEffect(() => {
     realTimeFoodUpdate.listen(setMeals);
     realTimeBaan.listen();
     realTimeCamp.listen(setCamp);
     realTimePart.listen(setPartPlace, allPlaceData);
     realTimeBaanJob.listen((data) =>
-      setBaanJobs(getFillTimeRegisterId(data, campMemberCard._id))
+      setBaanJobs(getFillTimeRegisterId(data, campMemberCard._id)),
     );
+    realTimeBaanDicts.listen(setBaanDicts);
+    realTimeCampDicts.listen(setCampDicts);
+    realTimePartDicts.listen(setPartDicts);
     return () => {
       realTimeFoodUpdate.disconnect();
       realTimeBaan.disconnect();
       realTimeCamp.disconnect();
       realTimePart.disconnect();
       realTimeBaanJob.disconnect();
+      realTimeBaanDicts.disconnect();
+      realTimePartDicts.disconnect();
+      realTimeCampDicts.disconnect();
     };
   });
   const [showAllGroups, setShowAllGroups] = React.useState(false);
@@ -284,6 +313,14 @@ export default function PeeCampClient({
           types="part"
         />
       </AllInOneLock>
+      <CampDictClient
+        user={user}
+        baanData={{ baan, baanDicts }}
+        camp={camp}
+        campDicts={campDicts}
+        role="pee"
+        partData={{ part, partDicts }}
+      />
       <ShowOwnCampData
         user={user}
         campMemberCard={campMemberCard}

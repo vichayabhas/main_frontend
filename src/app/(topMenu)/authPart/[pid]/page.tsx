@@ -30,6 +30,12 @@ import ManageItem from "@/components/camp/authPart/ManageItem";
 import getAuthPartForPage from "@/libs/camp/getAuthPartForPage";
 import getOverrideHealthIssue from "@/libs/camp/getOverrideHealthIssue";
 import UpdateOverrideHealthIssueClient from "@/components/camp/authPart/UpdateOverrideHealthIssueClient";
+import getCampDictsForUpdate from "@/libs/camp/getCampDictsForUpdate";
+import UpdateCampDictClient from "@/components/camp/authPart/UpdateCampDictClient";
+import getPartDictsForUpdate from "@/libs/camp/getPartDictsForUpdate";
+import UpdatePartDictClient from "@/components/camp/authPart/UpdatePartDictClient";
+import getBaanDictsForUpdate from "@/libs/camp/getBaanDictsForUpdate";
+import UpdateBaanDictClient from "@/components/camp/authPart/UpdateBaanDictClient";
 export default async function Baan({ params }: { params: { pid: string } }) {
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -56,14 +62,14 @@ export default async function Baan({ params }: { params: { pid: string } }) {
     outputs.push(
       <>
         <UpdateCampClient data={data} token={token} />
-      </>
+      </>,
     );
     isBoard = true;
   }
   if (part.auths.includes("แก้ไขคำถาม")) {
     const questions = await getAllQuestion(token, camp._id);
     outputs.push(
-      <UpdateQuestionClient camp={camp} token={token} questions={questions} />
+      <UpdateQuestionClient camp={camp} token={token} questions={questions} />,
     );
   }
   if (part.auths.includes("ตรวจคำตอบข้อเขียน") || isBoard) {
@@ -73,7 +79,7 @@ export default async function Baan({ params }: { params: { pid: string } }) {
         dataInput={allAnswerAndQuestion}
         token={token}
         campIdInput={camp._id.toString()}
-      />
+      />,
     );
   }
   if (part.auths.includes("หัวหน้าพี่เลี้ยง") || isBoard) {
@@ -89,7 +95,7 @@ export default async function Baan({ params }: { params: { pid: string } }) {
             user={user}
             token={token}
             healthIssue={healthIssue}
-          />
+          />,
         );
         break;
       }
@@ -103,7 +109,7 @@ export default async function Baan({ params }: { params: { pid: string } }) {
               token={token}
               healthIssue={healthIssue}
             />
-          ))
+          )),
         );
         break;
       }
@@ -113,7 +119,7 @@ export default async function Baan({ params }: { params: { pid: string } }) {
     const data = await getAllPlanData(camp._id);
     const allPlaceData = await getAllPlaceData();
     outputs.push(
-      <PlanClient token={token} allPlaceData={allPlaceData} data={data} />
+      <PlanClient token={token} allPlaceData={allPlaceData} data={data} />,
     );
   }
   if (part.auths.includes("สวัสดิการ") || isBoard) {
@@ -125,7 +131,7 @@ export default async function Baan({ params }: { params: { pid: string } }) {
         partIdString={part._id.toString()}
         token={token}
         selectOffset={selectOffset}
-      />
+      />,
     );
   }
   if (part.auths.includes("pr/studio") || isBoard) {
@@ -135,13 +141,13 @@ export default async function Baan({ params }: { params: { pid: string } }) {
         authSong={authSong}
         token={token}
         partIdString={part._id.toString()}
-      />
+      />,
     );
   }
   if (part.auths.includes("ทะเบียน") || isBoard) {
     const data = await getRegisterData(camp._id);
     outputs.push(
-      <RegisterPartClient isBoard={isBoard} data={data} token={token} />
+      <RegisterPartClient isBoard={isBoard} data={data} token={token} />,
     );
   }
   if (
@@ -156,7 +162,7 @@ export default async function Baan({ params }: { params: { pid: string } }) {
         const peeCamp = await getPeeCamp(campMemberCard.campModelId, token);
         const imageAndDescriptionContainersPack = await getImageAndDescriptions(
           peeCamp.baanId,
-          token
+          token,
         );
         outputs.push(
           <UpdateImageAndDescription
@@ -164,7 +170,7 @@ export default async function Baan({ params }: { params: { pid: string } }) {
               imageAndDescriptionContainersPack
             }
             token={token}
-          />
+          />,
         );
         break;
       }
@@ -179,7 +185,7 @@ export default async function Baan({ params }: { params: { pid: string } }) {
                 imageAndDescriptionContainersPack
               }
               token={token}
-            />
+            />,
           );
         }
         break;
@@ -191,13 +197,13 @@ export default async function Baan({ params }: { params: { pid: string } }) {
     while (i < camp.baanIds.length) {
       const imageAndDescriptionContainersPack = await getImageAndDescriptions(
         camp.baanIds[i++],
-        token
+        token,
       );
       outputs.push(
         <UpdateImageAndDescription
           imageAndDescriptionContainersPack={imageAndDescriptionContainersPack}
           token={token}
-        />
+        />,
       );
     }
   }
@@ -246,7 +252,7 @@ export default async function Baan({ params }: { params: { pid: string } }) {
           while (i < camp.baanIds.length) {
             const data = await getOverrideHealthIssue(camp.baanIds[i++]);
             outputs.push(
-              <UpdateOverrideHealthIssueClient data={data} token={token} />
+              <UpdateOverrideHealthIssueClient data={data} token={token} />,
             );
           }
           break;
@@ -254,7 +260,7 @@ export default async function Baan({ params }: { params: { pid: string } }) {
           const peeCamp = await getPeeCamp(campMemberCard.campModelId, token);
           const data = await getOverrideHealthIssue(peeCamp.baanId);
           outputs.push(
-            <UpdateOverrideHealthIssueClient data={data} token={token} />
+            <UpdateOverrideHealthIssueClient data={data} token={token} />,
           );
           break;
         }
@@ -264,8 +270,46 @@ export default async function Baan({ params }: { params: { pid: string } }) {
         while (i < camp.baanIds.length) {
           const data = await getOverrideHealthIssue(camp.baanIds[i++]);
           outputs.push(
-            <UpdateOverrideHealthIssueClient data={data} token={token} />
+            <UpdateOverrideHealthIssueClient data={data} token={token} />,
           );
+        }
+        break;
+      }
+    }
+  }
+  if (part.auths.includes("สามารถแก้ไข dict ค่ายได้") || isBoard) {
+    const data = await getCampDictsForUpdate(camp._id);
+    outputs.push(<UpdateCampDictClient data={data} token={token} />);
+  }
+  if (part.auths.includes("สามารถแก้ไข dict ฝ่ายได้") || isBoard) {
+    const data = await getPartDictsForUpdate(part._id);
+    outputs.push(<UpdatePartDictClient data={data} token={token} />);
+  }
+  if (part.auths.includes("สามารถแก้ไข dict บ้านได้") || isBoard) {
+    switch (campMemberCard.role) {
+      case "nong": {
+        return <BackToHome />;
+      }
+      case "pee": {
+        if (isBoard) {
+          let i = 0;
+          while (i < camp.baanIds.length) {
+            const data = await getBaanDictsForUpdate(camp.baanIds[i++]);
+            outputs.push(<UpdateBaanDictClient data={data} token={token} />);
+          }
+          break;
+        } else {
+          const peeCamp = await getPeeCamp(campMemberCard.campModelId, token);
+          const data = await getBaanDictsForUpdate(peeCamp.baanId);
+          outputs.push(<UpdateBaanDictClient data={data} token={token} />);
+          break;
+        }
+      }
+      case "peto": {
+        let i = 0;
+        while (i < camp.baanIds.length) {
+          const data = await getBaanDictsForUpdate(camp.baanIds[i++]);
+          outputs.push(<UpdateBaanDictClient data={data} token={token} />);
         }
         break;
       }

@@ -1448,6 +1448,8 @@ export interface GetNongData {
   campMemberCardOrders: ShowOrder[];
   baanJobs: GetJob[];
   imageAndDescriptions: ShowImageAndDescriptions[];
+  campDicts: InterCampDict[];
+  baanDicts: InterCampDict[];
   //private
 }
 export interface GetPeeData {
@@ -1478,6 +1480,9 @@ export interface GetPeeData {
   campMemberCardOrders: ShowOrder[];
   baanOrders: ShowOrder[];
   partOrders: ShowOrder[];
+  campDicts: InterCampDict[];
+  baanDicts: InterCampDict[];
+  partDicts: InterCampDict[];
   //private
 }
 export interface GetPetoData {
@@ -1496,6 +1501,8 @@ export interface GetPetoData {
   items: InterItem[];
   campMemberCardOrders: ShowOrder[];
   partOrders: ShowOrder[];
+  campDicts: InterCampDict[];
+  partDicts: InterCampDict[];
   //private
 }
 export interface GetMenuSongs {
@@ -1718,7 +1725,7 @@ export interface RegisterData {
   partBoardIdString: string;
   peeRegister: ShowStaffRegister[];
   petoRegister: ShowStaffRegister[];
-  partPeeBaan:BasicPart
+  partPeeBaan: BasicPart;
 }
 export type QuestionCategory =
   | "พี่พี่"
@@ -1791,6 +1798,9 @@ export const authTypes = [
   "แก้ไขกลุ่มได้",
   "สามารถจัดการของได้",
   "แก้ไขปัญหาสุขภาพให้เข้ากับพี่และน้อง",
+  "สามารถแก้ไข dict บ้านได้",
+  "สามารถแก้ไข dict ฝ่ายได้",
+  "สามารถแก้ไข dict ค่ายได้",
 ] as const;
 export type AuthType = (typeof authTypes)[number];
 export interface CreateAuthCamp {
@@ -2014,6 +2024,9 @@ export const socketEvents = [
   "updateGewertzSquareBookingOwn",
   "updateOverrideHealthIssue",
   "updateNotification",
+  "campUpdateDict",
+  "baanUpdateDict",
+  "partUpdateDict",
 ] as const;
 export type SocketEvent = (typeof socketEvents)[number];
 export type QuestionType =
@@ -2415,8 +2428,7 @@ export interface GetGewertzSquareBooking {
   displayOffset: UpdateTimeOffsetRaw;
   selectOffset: UpdateTimeOffsetRaw;
 }
-export interface UpdateBookingGewertzSquareRoom
-  extends BookingGewertzSquareRoom {
+export interface UpdateBookingGewertzSquareRoom extends BookingGewertzSquareRoom {
   _id: Id;
 }
 export interface UpdateUniversityStaff {
@@ -2520,4 +2532,44 @@ export interface GetDataForStaffUpdateRegister {
   parts: BasicPart[];
   camp: BasicCamp;
   oldStaffRegister: ShowStaffRegister;
+}
+export const campDictTypes = ["camp", "part", "baan"] as const;
+export type CampDictType = (typeof campDictTypes)[number];
+export interface InterCampDict {
+  _id: Id;
+  key: string;
+  value: string;
+  types: CampDictType;
+  parentId: Id;
+  canNongAccidentallySee: boolean;
+  canNongSee: boolean;
+}
+export interface CreateCampDict {
+  key: string;
+  value: string;
+  types: CampDictType;
+  parentId: Id;
+  canNongAccidentallySee: boolean;
+  canNongSee: boolean;
+}
+export interface UpdateCampDict {
+  key: string;
+  value: string;
+  canNongAccidentallySee: boolean;
+  canNongSee: boolean;
+  _id: Id;
+}
+export interface GetCampDictForUpdate {
+  camp: BasicCamp;
+  campDicts: InterCampDict[];
+}
+export interface GetBaanDictForUpdate {
+  camp: BasicCamp;
+  campDicts: InterCampDict[];
+  baan: BasicBaan;
+}
+export interface GetPartDictForUpdate {
+  camp: BasicCamp;
+  campDicts: InterCampDict[];
+  part: BasicPart;
 }

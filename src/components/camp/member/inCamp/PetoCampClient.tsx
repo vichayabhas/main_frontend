@@ -1,12 +1,16 @@
 "use client";
 import React from "react";
-import { getBackendUrl } from "../../../utility/setup";
+import { getBackendUrl, SocketReady } from "../../../utility/setup";
 import TopMenuItem from "../../../randomthing/TopMenuItem";
 import styles from "../../../randomthing/topMenu.module.css";
 import AllInOneLock from "@/components/utility/AllInOneLock";
 import ImagesFromUrl from "@/components/utility/ImagesFromUrl";
 import ShowOwnCampData from "../components/general/ShowOwnCampData";
-import { GetPetoData, AllPlaceData } from "../../../../../interface";
+import {
+  GetPetoData,
+  AllPlaceData,
+  InterCampDict,
+} from "../../../../../interface";
 import { RealTimeFoodUpdate } from "../../meal/setup";
 import { io } from "socket.io-client";
 import { RealTimeCamp } from "../../authPart/UpdateCampClient";
@@ -18,6 +22,7 @@ import PartAndQuestionTap from "../components/part/PartAndQuestionTap";
 import PlaceTable from "../components/general/PlaceTable";
 import PartClient from "../components/part/PartClient";
 import PartJob from "../components/part/PartJob";
+import CampDictClient from "../components/general/CampDictClient";
 export default function PetoCampClient({
   data,
   token,
@@ -44,18 +49,34 @@ export default function PetoCampClient({
   const [meals, setMeals] = React.useState(data.meals);
   const [camp, setCamp] = React.useState(data.camp);
   const [partPlace, setPartPlace] = React.useState(data.partPlace);
+  const [campDicts, setCampDicts] = React.useState(data.campDicts);
+  const [partDicts, setPartDicts] = React.useState(data.partDicts);
   const socket = io(getBackendUrl());
   const realTimeFoodUpdate = new RealTimeFoodUpdate(campMemberCard._id, socket);
   const realTimeCamp = new RealTimeCamp(camp._id, socket);
   const realTimePart = new RealTimePart(part._id, socket);
+  const realTimeCampDicts = new SocketReady<InterCampDict[]>(
+    socket,
+    "campUpdateDict",
+    camp._id,
+  );
+  const realTimePartDicts = new SocketReady<InterCampDict[]>(
+    socket,
+    "partUpdateDict",
+    part._id,
+  );
   React.useEffect(() => {
     realTimeFoodUpdate.listen(setMeals);
     realTimeCamp.listen(setCamp);
     realTimePart.listen(setPartPlace, allPlaceData);
+    realTimeCampDicts.listen(setCampDicts);
+    realTimePartDicts.listen(setPartDicts);
     return () => {
       realTimeFoodUpdate.disconnect();
       realTimeCamp.disconnect();
       realTimePart.disconnect();
+      realTimeCampDicts.disconnect();
+      realTimePartDicts.disconnect();
     };
   });
   return (
@@ -146,6 +167,13 @@ export default function PetoCampClient({
           types="part"
         />
       </AllInOneLock>
+      <CampDictClient
+        user={user}
+        camp={camp}
+        campDicts={campDicts}
+        role="peto"
+        partData={{ part, partDicts }}
+      />
       <ShowOwnCampData
         user={user}
         campMemberCard={campMemberCard}

@@ -1,10 +1,14 @@
 "use client";
 
-import { AllPlaceData, GetNongData } from "../../../../../interface";
+import {
+  AllPlaceData,
+  GetNongData,
+  InterCampDict,
+} from "../../../../../interface";
 import ImagesFromUrl from "../../../utility/ImagesFromUrl";
 import ShowOwnCampData from "../components/general/ShowOwnCampData";
 import React from "react";
-import { getBackendUrl, setBoolean } from "../../../utility/setup";
+import { getBackendUrl, setBoolean, SocketReady } from "../../../utility/setup";
 import styles from "../../../randomthing/topMenu.module.css";
 import AllInOneLock from "@/components/utility/AllInOneLock";
 import { Checkbox } from "@mui/material";
@@ -26,6 +30,7 @@ import BaanJob from "../components/baan/BaanJob";
 import ImageAndDescriptions from "../components/baan/ImageAndDescriptions";
 import SubGroupClient from "../components/baan/SubGroupClient";
 import MirrorClient from "../components/baan/MirrorClient";
+import CampDictClient from "../components/general/CampDictClient";
 
 export default function NongCampClient({
   data,
@@ -58,6 +63,8 @@ export default function NongCampClient({
   const [normal, setNormal] = React.useState(data.normal);
   const [camp, setCamp] = React.useState(data.camp);
   const [baanJobs, setBaanJobs] = React.useState(data.baanJobs);
+  const [baanDicts, setBaanDicts] = React.useState(data.baanDicts);
+  const [campDicts, setCampDicts] = React.useState(data.campDicts);
   const socket = io(getBackendUrl());
   const realTimeFoodUpdate = new RealTimeFoodUpdate(campMemberCard._id, socket);
   const realTimeBaan = new RealTimeBaan(
@@ -67,22 +74,36 @@ export default function NongCampClient({
     setGirl,
     setNormal,
     setBaan,
-    allPlaceData
+    allPlaceData,
   );
   const realTimeCamp = new RealTimeCamp(camp._id, socket);
   const realTimeBaanJob = new RealTimeBaanJob(baan._id, socket);
+  const realTimeBaanDicts = new SocketReady<InterCampDict[]>(
+    socket,
+    "baanUpdateDict",
+    baan._id,
+  );
+  const realTimeCampDicts = new SocketReady<InterCampDict[]>(
+    socket,
+    "campUpdateDict",
+    camp._id,
+  );
   React.useEffect(() => {
     realTimeFoodUpdate.listen(setMeals);
     realTimeBaan.listen();
     realTimeCamp.listen(setCamp);
     realTimeBaanJob.listen((data) =>
-      setBaanJobs(getFillTimeRegisterId(data, campMemberCard._id))
+      setBaanJobs(getFillTimeRegisterId(data, campMemberCard._id)),
     );
+    realTimeBaanDicts.listen(setBaanDicts);
+    realTimeCampDicts.listen(setCampDicts);
     return () => {
       realTimeFoodUpdate.disconnect();
       realTimeBaan.disconnect();
       realTimeCamp.disconnect();
       realTimeBaanJob.disconnect();
+      realTimeBaanDicts.disconnect();
+      realTimeCampDicts.disconnect();
     };
   });
   const [showAllGroups, setShowAllGroups] = React.useState(false);
@@ -212,6 +233,13 @@ export default function NongCampClient({
           types="baan"
         />
       </AllInOneLock>
+      <CampDictClient
+        user={user}
+        baanData={{ baan, baanDicts }}
+        camp={camp}
+        campDicts={campDicts}
+        role="nong"
+      />
       <ShowOwnCampData
         user={user}
         campMemberCard={campMemberCard}
